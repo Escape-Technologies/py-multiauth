@@ -164,7 +164,7 @@ def aws_auth_attach(user: User, auth_config: AuthConfigAWS) -> AuthResponse:
 
     # Extract the access_token and the refresh token
     access_token: str = aws_response['AuthenticationResult']['AccessToken']
-    refresh_token: str = aws_response['AuthenticationResult']['RefreshToken']
+    refresh_token = aws_response['AuthenticationResult']['RefreshToken']
 
     # Now we to have prepare the header
     if auth_config['header_name'] is not None:
