@@ -304,7 +304,7 @@ def oauth_auth_attach(user: User, auth_config: AuthConfigOAuth) -> AuthResponse:
 
     elif grant_type == AuthOAuthGrantType.PASSWORD_CRED:
         oauth_response = password_cred_handler(user, auth_config)
-     
+
     elif grant_type == AuthOAuthGrantType.REFRESH_TOKEN:
         if not user.credentials:
             raise AuthenticationError('Configuration file error. Missing credentials')
