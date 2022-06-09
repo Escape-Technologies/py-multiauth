@@ -4,6 +4,7 @@
 
 ![PyPI - License](https://img.shields.io/pypi/l/py-multiauth) ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/py-multiauth)
 ![PyPI - Downloads](https://img.shields.io/pypi/dm/py-multiauth)
+
 ## Supported methods
 
 |Name     |Authenticate|Refresh|Extra    |
