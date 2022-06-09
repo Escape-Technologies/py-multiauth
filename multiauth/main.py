@@ -78,14 +78,20 @@ class MultiAuth(MultiAuthBase):
     ) -> tuple[dict[str, str], str]:
         """Authenticate the client using the current user."""
 
+        # Reset the user's headers
+        self._headers[username] = {}
+
         user_info: User = self._manager.users[username]
 
+        # Call the auth handler
         auth_response = auth_handler(self._schemas, user_info)
         if auth_response and isinstance(auth_response, dict):
             self._headers[username] = auth_response['headers']
             logger.info('Authentication Successful')
-        else:
-            self._headers[username] = {}
+
+        # In case we provided custom headers, we need to merge them with the ones we got from auth_handler
+        if user_info.headers:
+            self._headers[username] |= user_info.headers
 
         return self._headers[username], username
 

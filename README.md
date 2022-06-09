@@ -5,6 +5,18 @@
 ![PyPI - License](https://img.shields.io/pypi/l/py-multiauth) ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/py-multiauth)
 ![PyPI - Downloads](https://img.shields.io/pypi/dm/py-multiauth)
 
+[View it on pypi!](https://pypi.org/project/py-multiauth/)
+
+## Installation
+
+```bash
+pip install py-multiauth
+```
+
+```python
+from multiauth import ...
+```
+
 ## Supported methods
 
 |Name     |Authenticate|Refresh|Extra    |
