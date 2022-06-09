@@ -327,7 +327,7 @@ def oauth_authenticator(user: User, schema: dict) -> AuthResponse:
     return oauth_auth_attach(user, auth_config)
 
 
-def oauth_reauthenticator(user: User, schema: dict, refresh_token: str, parse: bool=True) -> AuthResponse:
+def oauth_reauthenticator(user: User, schema: dict, refresh_token: str, parse: bool = True) -> AuthResponse:
     """This function is a function that implements the OAuth reauthentication.
 
     It takes the schema and user, and it starts the reauthentication process using the refresh token.
