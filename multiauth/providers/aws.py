@@ -158,7 +158,7 @@ def aws_auth_attach(user: User, auth_config: AuthConfigAWS) -> AuthResponse:
         if not user.credentials.get('refresh_token'):
             raise AuthenticationError('Please provide the user with refresh token')
         refresh_token = user.credentials['refresh_token']
-        aws_response = aws_reauthenticator(user, auth_config, refresh_token)
+        return aws_reauthenticator(user, cast(dict, auth_config), refresh_token, parse = False)
     else:
         return AuthResponse({'tech': AuthTech.AWS, 'headers': {}})
 
@@ -219,14 +219,17 @@ def aws_authenticator(user: User, schema: dict) -> AuthResponse:
     return aws_auth_attach(user, auth_config)
 
 
-def aws_reauthenticator(user: User, schema: dict, refresh_token: str) -> AuthResponse:
+def aws_reauthenticator(user: User, schema: dict, refresh_token: str, parse: bool = True) -> AuthResponse:
     """This function is a function that implements the AWS Authentication reauthentication.
 
     It takes schema and user as input, and it starts tth reauthentication process using the refreash token
     """
 
     # Reparse the configuration
-    auth_config = aws_config_parser(user, schema)
+    if parse:
+        auth_config = aws_config_parser(user, schema)
+    else:
+        auth_config = cast(AuthConfigAWS, schema)
 
     # Now we have to initiate the reauth
     if auth_config['type'] == AuthAWSType.AWS_SIGNATURE:

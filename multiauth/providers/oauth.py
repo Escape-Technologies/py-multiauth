@@ -1,6 +1,7 @@
 """Implementation of the OAuth authentication schema."""
 
 import time
+from typing import cast
 
 from authlib.integrations.requests_client import OAuth2Session  # type: ignore[import]
 
@@ -311,7 +312,7 @@ def oauth_auth_attach(user: User, auth_config: AuthConfigOAuth) -> AuthResponse:
         if not user.credentials.get('refresh_token'):
             raise AuthenticationError('Please provide the user with refresh token')
         refresh_token = user.credentials['refresh_token']
-        oauth_response = oauth_reauthenticator(user, auth_config, refresh_token)
+        return oauth_reauthenticator(user, cast(dict, auth_config), refresh_token)
 
     return extract_oauth_token(user, auth_config, oauth_response)
 
@@ -326,14 +327,17 @@ def oauth_authenticator(user: User, schema: dict) -> AuthResponse:
     return oauth_auth_attach(user, auth_config)
 
 
-def oauth_reauthenticator(user: User, schema: dict, refresh_token: str) -> AuthResponse:
+def oauth_reauthenticator(user: User, schema: dict, refresh_token: str, parse = True) -> AuthResponse:
     """This function is a function that implements the OAuth reauthentication.
 
     It takes the schema and user, and it starts the reauthentication process using the refresh token.
     """
 
     # Reparse the configuration
-    auth_config = oauth_config_parser(schema)
+    if parse:
+        auth_config = oauth_config_parser(schema)
+    else:
+        auth_config = cast(AuthConfigOAuth, schema)
 
     # Since authentication requires the existance of an authentication token, Only check the grant type that require an authentication token endpoint as input
 
