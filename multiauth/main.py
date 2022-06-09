@@ -9,7 +9,7 @@ from multiauth.manager import User, UserManager
 from multiauth.providers.aws import aws_signature
 from multiauth.types.abst import MultiAuthBase
 from multiauth.types.http import HTTPMethod
-from multiauth.types.main import Token
+from multiauth.types.main import AuthTech, Token
 
 
 class MultiAuth(MultiAuthBase):
@@ -26,6 +26,14 @@ class MultiAuth(MultiAuthBase):
         self._manager: UserManager = UserManager(users)
         self._headers: dict[str, dict] = {}
         self._schemas = schemas
+
+        # Link users to schemas
+        for user in self._manager.users.values():
+            if user.auth_tech == AuthTech.NOAUTH:
+                if not user.auth_schema in self._schemas:
+                    continue
+
+                user.auth_tech = self._schemas[user.auth_schema]['tech']
 
     @property
     def headers(self) -> dict[str, dict]:
@@ -78,14 +86,21 @@ class MultiAuth(MultiAuthBase):
     ) -> tuple[dict[str, str], str]:
         """Authenticate the client using the current user."""
 
+        # Reset the user's headers
+        self._headers[username] = {}
+
         user_info: User = self._manager.users[username]
 
+        # Call the auth handler
+        print(f'Authenticating users : {username}')
         auth_response = auth_handler(self._schemas, user_info)
         if auth_response and isinstance(auth_response, dict):
             self._headers[username] = auth_response['headers']
             logger.info('Authentication Successful')
-        else:
-            self._headers[username] = {}
+
+        # In case we provided custom headers, we need to merge them with the ones we got from auth_handler
+        if user_info.headers:
+            self._headers[username] |= user_info.headers
 
         return self._headers[username], username
 

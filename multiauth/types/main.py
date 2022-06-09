@@ -4,7 +4,7 @@ from enum import Enum, unique
 from typing import Any, TypedDict
 
 from multiauth.types.http import HTTPMethod, Location
-from multiauth.types.providers.aws import AuthAWSType  # noqa # pylint: disable=unused-import
+from multiauth.types.providers.aws import AuthAWSType
 from multiauth.types.providers.oauth import AuthOAuthGrantType
 
 
@@ -119,31 +119,3 @@ class JWTToken(TypedDict):
 # Helper Entities
 
 AuthType = AuthAWSType | AuthOAuthGrantType
-
-
-# pylint: disable=missing-docstring, too-few-public-methods
-class UserBase:
-
-    """The base class for the user entity."""
-
-    _auth_schema: str | None
-    _auth_tech: AuthTech
-    _auth_type: AuthType | None
-    _credentials: dict[str, Any] | None
-    _expired_token: Token | None
-    _expires_in: float | None
-    _refresh_token: Token | None
-    _token_info: JWTToken | None
-    _token: Token | None
-
-    def reset(self) -> None:
-        raise NotImplementedError()
-
-    def set_token(self, token: Token | None, expires_in: float | None) -> None:
-        raise NotImplementedError()
-
-    def get_credentials(self) -> tuple[str, str]:
-        raise NotImplementedError()
-
-    def to_dict(self) -> dict[str, Any]:
-        raise NotImplementedError()

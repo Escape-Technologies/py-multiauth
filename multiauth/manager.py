@@ -3,8 +3,9 @@
 from typing import Any
 
 from multiauth.helpers import jwt_token_analyzer
+from multiauth.types.abst import UserBase
 from multiauth.types.errors import AuthenticationError
-from multiauth.types.main import AuthTech, AuthType, JWTToken, Token, UserBase
+from multiauth.types.main import AuthTech, AuthType, JWTToken, Token
 
 
 # pylint: disable=too-many-instance-attributes
@@ -29,9 +30,10 @@ class User(UserBase):
         self._auth_schema: str | None = None
         self._auth_tech: AuthTech = AuthTech.NOAUTH
         self._auth_type: AuthType | None = None
-        self._credentials: dict[str, Any] | None
+        self._credentials: dict[str, Any] | None = None
         self._expired_token: Token | None = None
         self._expires_in: float | None = None
+        self._headers: dict[str, Any] | None = None
         self._refresh_token: Token | None = None
         self._token_info: JWTToken | None = None
         self._token: Token | None = None
@@ -107,6 +109,12 @@ class User(UserBase):
         """Set the expiration time."""
 
         self._expires_in = expires_in
+
+    @property
+    def headers(self) -> dict[str, Any] | None:
+        """Get headers."""
+
+        return self._headers
 
     @property
     def refresh_token(self) -> Token | None:
