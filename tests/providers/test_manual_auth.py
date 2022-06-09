@@ -20,7 +20,7 @@ def auth_schema() -> dict:
 
 
 @pytest.fixture
-def user_config() -> dict[str, User]:
+def user_config_credentials() -> dict[str, User]:
     """Return a fixture of users."""
 
     return {
@@ -35,10 +35,24 @@ def user_config() -> dict[str, User]:
     }
 
 
-def test_manual_authentication(user_config: dict[str, User], auth_schema: dict) -> None:
+@pytest.fixture
+def user_config_headers() -> dict[str, User]:
+    """Return a fixture of users."""
+
+    return {
+        'user_lambda': User({
+            'auth_schema': 'manual_headers',
+            'headers': {
+                'Authorization': 'Bearer 12345'
+            }
+        }),
+    }
+
+
+def test_manual_authentication_credentials(user_config_credentials: dict[str, User], auth_schema: dict) -> None:
     """Test manual authentication."""
 
-    instance = MultiAuth(auth_schema, user_config)
+    instance = MultiAuth(auth_schema, user_config_credentials)
     instance.authenticate_users()
 
     assert instance.headers['user_lambda']['Authorization'] == 'Bearer 12345'
@@ -47,9 +61,29 @@ def test_manual_authentication(user_config: dict[str, User], auth_schema: dict) 
     assert headers['Authorization'] == 'Bearer 12345'
 
 
-def test_manual_handler(user_config: dict[str, User]) -> None:
+def test_manual_authentication_headers(user_config_headers: dict[str, User], auth_schema: dict) -> None:
+    """Test manual authentication."""
+
+    instance = MultiAuth(auth_schema, user_config_headers)
+    instance.authenticate_users()
+
+    assert instance.headers['user_lambda']['Authorization'] == 'Bearer 12345'
+
+    headers, _ = instance.authenticate('user_lambda')
+    assert headers['Authorization'] == 'Bearer 12345'
+
+
+def test_manual_handler_credentials(user_config_credentials: dict[str, User]) -> None:
     """Test manual handler."""
 
-    auth_response = manual_authenticator(user_config['user_lambda'])
+    auth_response = manual_authenticator(user_config_credentials['user_lambda'])
+
+    assert auth_response['headers']['Authorization'] == 'Bearer 12345'
+
+
+def test_manual_handler_headers(user_config_headers: dict[str, User]) -> None:
+    """Test manual handler."""
+
+    auth_response = manual_authenticator(user_config_headers['user_lambda'])
 
     assert auth_response['headers']['Authorization'] == 'Bearer 12345'
