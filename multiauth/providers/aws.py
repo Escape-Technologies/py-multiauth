@@ -152,6 +152,13 @@ def aws_auth_attach(user: User, auth_config: AuthConfigAWS) -> AuthResponse:
         aws_response = aws_user_password_handler(user, auth_config)
     elif auth_config['type'] == AuthAWSType.USER_SRP_AUTH:
         aws_response = aws_user_srp_handler(user, auth_config)
+    elif auth_config['type'] == AuthAWSType.REFRESH_TOKEN:
+        if not user.credentials:
+            raise AuthenticationError('Configuration file error. Missing credentials')
+        if not user.credentials.get('refresh_token'):
+            raise AuthenticationError('Please provide the user with refresh token')
+        refresh_token = user.credentials['refresh_token']
+        aws_response = aws_reauthenticator(user, auth_config, refresh_token)
     else:
         return AuthResponse({'tech': AuthTech.AWS, 'headers': {}})
 

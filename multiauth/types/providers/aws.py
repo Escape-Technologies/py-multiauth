@@ -13,6 +13,7 @@ class AuthAWSType(str, Enum):
     USER_SRP_AUTH = 'SRP'
     USER_PASSWORD_AUTH = 'Password Authentication'
     AWS_SIGNATURE = 'AWS Signature'
+    REFRESH_TOKEN = 'refresh_token'
 
 
 @unique

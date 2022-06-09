@@ -22,6 +22,7 @@ class AuthOAuthGrantType(str, Enum):
     CLIENT_CRED = 'client_cred'
     IMPLICIT = 'implicit'
     PASSWORD_CRED = 'password_cred'
+    REFRESH_TOKEN = 'refresh_token'
 
 
 # class AuthHashAlgorithmOAuth(Enum):
