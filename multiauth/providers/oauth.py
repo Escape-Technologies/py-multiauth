@@ -1,6 +1,7 @@
 """Implementation of the OAuth authentication schema."""
 
 import time
+from typing import cast
 
 from authlib.integrations.requests_client import OAuth2Session  # type: ignore[import]
 
@@ -305,6 +306,14 @@ def oauth_auth_attach(user: User, auth_config: AuthConfigOAuth) -> AuthResponse:
     elif grant_type == AuthOAuthGrantType.PASSWORD_CRED:
         oauth_response = password_cred_handler(user, auth_config)
 
+    elif grant_type == AuthOAuthGrantType.REFRESH_TOKEN:
+        if not user.credentials:
+            raise AuthenticationError('Configuration file error. Missing credentials')
+        if not user.credentials.get('refresh_token'):
+            raise AuthenticationError('Please provide the user with refresh token')
+        refresh_token = user.credentials['refresh_token']
+        return oauth_reauthenticator(user, cast(dict, auth_config), refresh_token, parse=False)
+
     return extract_oauth_token(user, auth_config, oauth_response)
 
 
@@ -318,18 +327,21 @@ def oauth_authenticator(user: User, schema: dict) -> AuthResponse:
     return oauth_auth_attach(user, auth_config)
 
 
-def oauth_reauthenticator(user: User, schema: dict, refresh_token: str) -> AuthResponse:
+def oauth_reauthenticator(user: User, schema: dict, refresh_token: str, parse: bool = True) -> AuthResponse:
     """This function is a function that implements the OAuth reauthentication.
 
     It takes the schema and user, and it starts the reauthentication process using the refresh token.
     """
 
     # Reparse the configuration
-    auth_config = oauth_config_parser(schema)
+    if parse:
+        auth_config = oauth_config_parser(schema)
+    else:
+        auth_config = cast(AuthConfigOAuth, schema)
 
     # Since authentication requires the existance of an authentication token, Only check the grant type that require an authentication token endpoint as input
 
-    if auth_config['grant_type'] == AuthOAuthGrantType.AUTH_CODE:
+    if auth_config['grant_type'] in (AuthOAuthGrantType.AUTH_CODE, AuthOAuthGrantType.REFRESH_TOKEN):
         client = auth_code_session(user, auth_config)
 
     elif auth_config['grant_type'] == AuthOAuthGrantType.CLIENT_CRED:
@@ -345,5 +357,8 @@ def oauth_reauthenticator(user: User, schema: dict, refresh_token: str) -> AuthR
         new_token = client.refresh_token(auth_config['token_endpoint'], refresh_token)
 
         return extract_oauth_token(user, auth_config, new_token)
+
+    if auth_config['grant_type'] == AuthOAuthGrantType.REFRESH_TOKEN and not auth_config['token_endpoint']:
+        raise AuthenticationError('Please provide the token endpoint')
 
     return oauth_auth_attach(user, auth_config)
