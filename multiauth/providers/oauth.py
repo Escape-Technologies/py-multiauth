@@ -304,7 +304,7 @@ def oauth_auth_attach(user: User, auth_config: AuthConfigOAuth) -> AuthResponse:
 
     elif grant_type == AuthOAuthGrantType.PASSWORD_CRED:
         oauth_response = password_cred_handler(user, auth_config)
-        
+     
     elif grant_type == AuthOAuthGrantType.REFRESH_TOKEN:
         if not user.credentials:
             raise AuthenticationError('Configuration file error. Missing credentials')
@@ -348,12 +348,12 @@ def oauth_reauthenticator(user: User, schema: dict, refresh_token: str) -> AuthR
 
     elif auth_config['grant_type'] == AuthOAuthGrantType.IMPLICIT:
         client = implicit_session(user, auth_config)
-        
+
     if auth_config['token_endpoint']:
         new_token = client.refresh_token(auth_config['token_endpoint'], refresh_token)
 
         return extract_oauth_token(user, auth_config, new_token)
-    
+
     if auth_config['grant_type'] == AuthOAuthGrantType.REFRESH_TOKEN and not auth_config['token_endpoint']:
         raise AuthenticationError('Please provide the token endpoint')
 
