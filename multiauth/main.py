@@ -9,7 +9,7 @@ from multiauth.manager import User, UserManager
 from multiauth.providers.aws import aws_signature
 from multiauth.types.abst import MultiAuthBase
 from multiauth.types.http import HTTPMethod
-from multiauth.types.main import Token
+from multiauth.types.main import AuthTech, Token
 
 
 class MultiAuth(MultiAuthBase):
@@ -26,6 +26,14 @@ class MultiAuth(MultiAuthBase):
         self._manager: UserManager = UserManager(users)
         self._headers: dict[str, dict] = {}
         self._schemas = schemas
+
+        # Link users to schemas
+        for user in self._manager.users.values():
+            if user.auth_tech == AuthTech.NOAUTH:
+                if not user.auth_schema in self._schemas:
+                    continue
+
+                user.auth_tech = self._schemas[user.auth_schema]['tech']
 
     @property
     def headers(self) -> dict[str, dict]:
@@ -84,6 +92,7 @@ class MultiAuth(MultiAuthBase):
         user_info: User = self._manager.users[username]
 
         # Call the auth handler
+        print(f'Authenticating users : {username}')
         auth_response = auth_handler(self._schemas, user_info)
         if auth_response and isinstance(auth_response, dict):
             self._headers[username] = auth_response['headers']

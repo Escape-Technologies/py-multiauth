@@ -18,12 +18,17 @@ def manual_authenticator(user: User) -> AuthResponse:
         'tech': AuthTech.MANUAL,
     })
 
-    if not user.credentials:
-        raise AuthenticationError('Configuration file error. Missing credentials')
-    if 'headers' not in user.credentials:
-        raise AuthenticationError('Please input the necessary authentication headers.')
+    headers = user.headers
 
-    auth_response['headers'] = cast(dict[str, Any], user.credentials['headers'])
+    if not headers:
+        if not user.credentials:
+            raise AuthenticationError('Configuration file error. Missing credentials')
+        if 'headers' not in user.credentials:
+            raise AuthenticationError('Please input the necessary authentication headers.')
+
+        headers = user.credentials['headers']
+
+    auth_response['headers'] = cast(dict[str, Any], headers)
     auth_response['tech'] = AuthTech.MANUAL
 
     return auth_response

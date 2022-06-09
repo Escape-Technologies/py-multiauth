@@ -30,10 +30,10 @@ class User(UserBase):
         self._auth_schema: str | None = None
         self._auth_tech: AuthTech = AuthTech.NOAUTH
         self._auth_type: AuthType | None = None
-        self._credentials: dict[str, Any] | None
+        self._credentials: dict[str, Any] | None = None
         self._expired_token: Token | None = None
         self._expires_in: float | None = None
-        self._headers: dict[str, Any] | None
+        self._headers: dict[str, Any] | None = None
         self._refresh_token: Token | None = None
         self._token_info: JWTToken | None = None
         self._token: Token | None = None
