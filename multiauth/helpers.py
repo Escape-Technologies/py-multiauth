@@ -78,7 +78,7 @@ def extract_token(
                     raise AuthenticationError(f'{type(e).__name__}: The Authentication token wasn\'t fetched properly.') from e
                 header_arg = header_arg.replace('{{' + token_name + '}}', res_token)
             headers_to_add[header_name] = header_arg
-            
+ 
     # Here we are going to retrieve the refresh token from the response
     if refresh_token_name is not None:
         refresh_token: str = _find_token(refresh_token_name.split('.'), response_dict)
