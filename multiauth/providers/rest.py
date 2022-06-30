@@ -162,7 +162,7 @@ def rest_reauthenticator(user: User, schema: dict, refresh_token: str) -> AuthRe
     payload: dict = {auth_config['refresh_token_name']: refresh_token}
 
     # Now we have to send the payload
-    response = requests.request(auth_config['method'], cast(str, auth_config['refresh_url']), json=payload)
+    response = requests.request(auth_config['method'], auth_config['refresh_url'], json=payload)
 
     # If there is a cookie that is fetched, added it to the auth response header
     cookie_header = response.cookies.get_dict()  # type: ignore[no-untyped-call]
