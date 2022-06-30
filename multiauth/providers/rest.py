@@ -130,7 +130,7 @@ def rest_auth_attach(user: User, auth_config: AuthConfigRest) -> AuthResponse:
     finally:
         user.set_token(token, expiry_time)
 
-    user.refresh_token(refresh_token)
+    user.refresh_token = refresh_token
 
     return auth_response
 
@@ -157,10 +157,12 @@ def rest_reauthenticator(user: User, schema: dict, refresh_token: str) -> AuthRe
 
     # Now we will do the same thing we are doing in the authentication function
     # First we have to create a payload
+    if auth_config['refresh_token_name'] is None or auth_config['refresh_url'] is None:
+        raise AuthenticationError('Refresh Token found, please provide the refresh token name and the refresh URL')
     payload: dict = {auth_config['refresh_token_name']: refresh_token}
 
     # Now we have to send the payload
-    response = requests.request(auth_config['method'], auth_config['refresh_url'], json=payload)
+    response = requests.request(auth_config['method'], cast(str, auth_config['refresh_url']), json=payload)
 
     # If there is a cookie that is fetched, added it to the auth response header
     cookie_header = response.cookies.get_dict()  # type: ignore[no-untyped-call]
@@ -212,7 +214,7 @@ def rest_reauthenticator(user: User, schema: dict, refresh_token: str) -> AuthRe
                 'headers': headers,
             })
 
-    auth_response, refresh_token = extract_token(response, AuthTech.REST, headers, auth_config['refresh_token_name'])
+    auth_response, refresh_token_result = extract_token(response, AuthTech.REST, headers, auth_config['refresh_token_name'])
 
     token = auth_response['headers'][next(iter(headers))].split(' ')[1]
 
@@ -228,6 +230,6 @@ def rest_reauthenticator(user: User, schema: dict, refresh_token: str) -> AuthRe
     finally:
         user.set_token(token, expiry_time)
 
-    user.refresh_token(refresh_token)
+    user.refresh_token = refresh_token_result
 
     return auth_response
