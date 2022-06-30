@@ -24,7 +24,7 @@ from multiauth import ...
 |`API_KEY`|✓           |       |         |
 |`AWS`    |✓           |✓      |Signature|
 |`BASIC`  |✓           |       |         |
-|`REST`   |✓           |       |         |
+|`REST`   |✓           |✓      |         |
 |`DIGEST` |✓           |       |         |
 |`GRAPHQL`|✓           |       |         |
 |`HAWK`   |✓           |       |         |
