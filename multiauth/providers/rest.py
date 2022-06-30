@@ -145,6 +145,7 @@ def rest_authenticator(user: User, schema: dict) -> AuthResponse:
     auth_config = rest_config_parser(schema)
     return rest_auth_attach(user, auth_config)
 
+
 def rest_reauthenticator(user: User, schema: dict, refresh_token: str) -> AuthResponse:
     """This funciton is a wrapper function that implements the Rest reauthentication schema.
 

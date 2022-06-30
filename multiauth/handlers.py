@@ -3,6 +3,7 @@
 from multiauth.manager import User
 from multiauth.providers import apikey_authenticator, aws_authenticator, aws_reauthenticator, basic_authenticator, digest_authenticator, graphql_authenticator
 from multiauth.providers import manual_authenticator, oauth_authenticator, oauth_reauthenticator, rest_authenticator
+from multiauth.providers.rest import rest_reauthenticator
 from multiauth.types.http import HTTPMethod
 from multiauth.types.main import AuthResponse, AuthTech
 
@@ -79,5 +80,8 @@ def reauth_handler(
 
     elif authentication == AuthTech.AWS:
         return aws_reauthenticator(user, schema, refresh_token)
+
+    elif authentication == AuthTech.REST:
+        return rest_reauthenticator(user, schema, refresh_token)
 
     return None
