@@ -11,6 +11,8 @@ class AuthConfigRest(TypedDict):
     url: str
     method: HTTPMethod
     cookie_auth: bool
+    refresh_url: str | None
+    refresh_token_name: str | None
     token_name: str | None
     header_name: str | None
     header_key: str | None

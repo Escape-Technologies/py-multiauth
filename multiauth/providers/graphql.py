@@ -170,7 +170,7 @@ def graphql_auth_attach(user: User, auth_config: AuthConfigGraphQl) -> AuthRespo
             })
 
     # Now fetch the token and create the Authentication Response
-    auth_response: AuthResponse = extract_token(response, AuthTech.REST, headers)
+    auth_response, _ = extract_token(response, AuthTech.REST, headers)
 
     token = auth_response['headers'][next(iter(headers))].split(' ')[1]
 
