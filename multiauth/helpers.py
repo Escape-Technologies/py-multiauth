@@ -33,7 +33,8 @@ def extract_token(
     response: requests.Response,
     tech: AuthTech,
     headers: dict[str, str],
-) -> AuthResponse:
+    refresh_token_name: str,
+) -> tuple[AuthResponse, str]:
     """This function takes the response and tries to extract the tokens.
 
     This function is mainly a helper function to the REST and the GraphQL authenctication schema. The goal of the function is to generate the authentication
@@ -77,8 +78,11 @@ def extract_token(
                     raise AuthenticationError(f'{type(e).__name__}: The Authentication token wasn\'t fetched properly.') from e
                 header_arg = header_arg.replace('{{' + token_name + '}}', res_token)
             headers_to_add[header_name] = header_arg
+            
+    # Here we are going to retrieve the refresh token from the response
+    refresh_token: str = _find_token(refresh_token_name.split('.'), response_dict)
 
-    return AuthResponse(tech=tech, headers=headers_to_add)
+    return AuthResponse(tech=tech, headers=headers_to_add), refresh_token
 
 
 def hash_calculator(hash_type: AuthHashAlgorithmDigest, input_data: str | bytes) -> str:
