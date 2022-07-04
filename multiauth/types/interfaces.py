@@ -1,6 +1,6 @@
-"""Abstract representation."""
-
 # pylint: disable=missing-docstring, too-few-public-methods
+
+"""Abstract representation."""
 
 from typing import Any
 
@@ -8,8 +8,7 @@ from multiauth.types.http import HTTPMethod
 from multiauth.types.main import AuthTech, AuthType, JWTToken, Token
 
 
-# pylint: disable=missing-docstring, too-few-public-methods
-class UserBase:
+class IBase:
 
     """The base class for the user entity."""
 
@@ -37,7 +36,7 @@ class UserBase:
         raise NotImplementedError()
 
 
-class MultiAuthBase:
+class IMultiAuth:
 
     _manager: Any
     _headers: dict[str, dict]
