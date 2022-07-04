@@ -3,13 +3,13 @@
 from typing import Any
 
 from multiauth.helpers import jwt_token_analyzer
-from multiauth.types.abst import UserBase
 from multiauth.types.errors import AuthenticationError
+from multiauth.types.interfaces import IBase
 from multiauth.types.main import AuthTech, AuthType, JWTToken, Token
 
 
 # pylint: disable=too-many-instance-attributes
-class User(UserBase):
+class User(IBase):
 
     """User entity."""
 

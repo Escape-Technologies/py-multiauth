@@ -7,12 +7,12 @@ from multiauth.config import PY_MULTIAUTH_LOGGER as logger
 from multiauth.handlers import auth_handler, reauth_handler
 from multiauth.manager import User, UserManager
 from multiauth.providers.aws import aws_signature
-from multiauth.types.abst import MultiAuthBase
 from multiauth.types.http import HTTPMethod
+from multiauth.types.interfaces import IMultiAuth
 from multiauth.types.main import AuthTech, Token
 
 
-class MultiAuth(MultiAuthBase):
+class MultiAuth(IMultiAuth):
 
     """Multiauth manager."""
 
