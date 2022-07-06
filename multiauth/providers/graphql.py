@@ -125,9 +125,10 @@ def graphql_auth_attach(user: User, auth_config: AuthConfigGraphQl) -> AuthRespo
     if cookie_header:
         cookie_header = [f'{name}={value}' for name, value in cookie_header.items()]
         cookie_header = ';'.join(cookie_header)
-        if auth_config['cookie_auth'] and not cookie_header:
-            raise AuthenticationError('Authentication Failed: No cookie was found')
     else:
+        if auth_config['cookie_auth']:
+            raise AuthenticationError('No cookie found in the response')
+
         cookie_header = None
 
     # Prepare the header in order to fetch the token
