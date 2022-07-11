@@ -1,9 +1,10 @@
 """User manager."""
 
+import time
 from typing import Any
 
 from multiauth.helpers import jwt_token_analyzer
-from multiauth.types.errors import AuthenticationError
+from multiauth.types.errors import AuthenticationError, ExpiredTokenError
 from multiauth.types.interfaces import IBase
 from multiauth.types.main import AuthTech, AuthType, JWTToken, Token
 
@@ -22,7 +23,16 @@ class User(IBase):
             for key, value in kwargs.items():
                 if not key.startswith('_'):
                     key = '_' + key
+
                 setattr(self, key, value)
+
+        for token in [self.token, self.refresh_token]:
+            if not token:
+                continue
+
+            serialized_token = jwt_token_analyzer(token)
+            if serialized_token.get('exp') and float(serialized_token['exp']) < time.time():  # type: ignore[arg-type]
+                raise ExpiredTokenError('Token expired.')
 
     def reset(self) -> None:
         """Reset user."""

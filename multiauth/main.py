@@ -92,11 +92,11 @@ class MultiAuth(IMultiAuth):
         user_info: User = self._manager.users[username]
 
         # Call the auth handler
-        print(f'Authenticating users : {username}')
+        logger.info(f'Authenticating user: {username}')
         auth_response = auth_handler(self._schemas, user_info)
         if auth_response and isinstance(auth_response, dict):
             self._headers[username] = auth_response['headers']
-            logger.info('Authentication Successful')
+            logger.info(f'Authentication successful for {username}')
 
         # In case we provided custom headers, we need to merge them with the ones we got from auth_handler
         if user_info.headers:
