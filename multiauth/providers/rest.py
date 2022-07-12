@@ -149,7 +149,7 @@ def rest_authenticator(user: User, schema: dict) -> AuthResponse:
 def rest_reauthenticator(user: User, schema: dict, refresh_token: str) -> AuthResponse:
     """This funciton is a wrapper function that implements the Rest reauthentication schema.
 
-    It takes the user information, the schema information and the refresh_toke and attempts reauthenticating the user using the refresh token
+    It takes the user information, the schema information and the refresh token and attempts reauthenticating the user using the refresh token
     """
 
     # Reparse the configuration

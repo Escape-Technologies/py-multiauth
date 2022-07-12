@@ -16,6 +16,9 @@ class AuthConfigGraphQl(TypedDict):
     method: HTTPMethod
     mutation_field: str
     operation: Operation
+    refresh_mutation_name: str | None
+    refresh_field_name: str | None
+    refresh_field: bool
     header_name: str | None
     header_key: str | None
     headers: dict[str, str] | None
