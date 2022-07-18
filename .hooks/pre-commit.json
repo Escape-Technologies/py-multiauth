@@ -3,6 +3,11 @@
     "venvActivate": "./.venv/bin/activate",
     "steps": [
         {
+            "name": "generate checks docs from yaml",
+            "command": "python3 scripts/generate_docs.py",
+            "onlyOn": "**/static/**"
+        },
+        {
             "name": "autoflake",
             "command": "autoflake -ri --remove-unused-variable --ignore-init-module-imports --remove-all-unused-imports multiauth tests"
         },

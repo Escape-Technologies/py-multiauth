@@ -1,0 +1,1190 @@
+{
+  "aws": {
+    "_escapeUI": {
+      "label": "AWS"
+    },
+    "authSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "required": [
+        "tech",
+        "type",
+        "region",
+        "location"
+      ],
+      "description": "The auth configuration schema for AWS authentication",
+      "properties": {
+        "tech": {
+          "_escapeUI": {
+            "label": "Tech",
+            "inputType": "text",
+            "name": "tech",
+            "hidden": true
+          },
+          "title": "aws",
+          "description": "The auth method",
+          "type": "string"
+        },
+        "type": {
+          "_escapeUI": {
+            "label": "Type",
+            "inputType": "select",
+            "name": "type"
+          },
+          "description": "The type of AWS Authentication used",
+          "type": "string",
+          "enum": [
+            "SRP",
+            "Password Authentication",
+            "AWS Signature",
+            "Refresh Token"
+          ]
+        },
+        "region": {
+          "_escapeUI": {
+            "name": "region",
+            "label": "Region",
+            "inputType": "text",
+            "placeholder": "eu-west-3"
+          },
+          "description": "The AWS Region where the application exists",
+          "type": "string"
+        },
+        "location": {
+          "_escapeUI": {
+            "name": "Location",
+            "label": "Key location",
+            "inputType": "select"
+          },
+          "description": "The location where the token will be added",
+          "type": "string",
+          "enum": [
+            "headers",
+            "url"
+          ]
+        },
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "type": {
+                  "const": "SRP"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "client_id": {
+                  "_escapeUI": {
+                    "name": "client_id",
+                    "label": "Client ID",
+                    "inputType": "text"
+                  },
+                  "description": "The client ID in AWS",
+                  "type": "string"
+                },
+                "pool_id": {
+                  "_escapeUI": {
+                    "name": "pool_id",
+                    "label": "Pool ID",
+                    "inputType": "text",
+                    "placeholder": "eu-west-3_xxxxxxxxx"
+                  },
+                  "description": "The ID of the pool of the clients",
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "client_id",
+                "pool_id"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "type": {
+                  "const": "Password Authentication"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "client_id": {
+                  "_escapeUI": {
+                    "name": "client_id",
+                    "label": "Client ID",
+                    "inputType": "text"
+                  },
+                  "description": "The client ID in AWS",
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "client_id"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "type": {
+                  "const": "AWS Signature"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "client_id": {
+                  "_escapeUI": {
+                    "name": "client_id",
+                    "label": "Client ID",
+                    "inputType": "text"
+                  },
+                  "description": "The client ID in AWS",
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "client_id"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "type": {
+                  "const": "Refresh Token"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "service_name": {
+                  "_escapeUI": {
+                    "name": "service_name",
+                    "label": "Service Name",
+                    "inputType": "text",
+                    "placeholder": "ec2"
+                  },
+                  "description": "The name of the service used in AWS",
+                  "type": "string"
+                },
+                "method": {
+                  "_escapeUI": {
+                    "name": "method",
+                    "label": "Method",
+                    "inputType": "select"
+                  },
+                  "description": "The method used to send the authentication request",
+                  "type": "string",
+                  "enum": [
+                    "GET",
+                    "POST"
+                  ]
+                },
+                "hash_algorithim": {
+                  "_escapeUI": {
+                    "name": "hash_algorithim",
+                    "label": "Hash Algorithim",
+                    "inputType": "select"
+                  },
+                  "description": "The hashing algorithim used in generating the signature",
+                  "type": "string",
+                  "enum": [
+                    "sha-256",
+                    "sha-1"
+                  ]
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "service_name",
+                "method",
+                "hash_algorithim"
+              ]
+            }
+          }
+        ],
+        "options": {
+          "description": "Optional Parameters for the AWS Authentication",
+          "type": "object",
+          "_escapeUI": {
+            "label": "Optional Parameters"
+          },
+          "properties": {
+            "client_secret": {
+              "_escapeUI": {
+                "name": "client_secret",
+                "label": "Client Secret",
+                "inputType": "text"
+              },
+              "description": "The client secret. This parameter is used when the type is SRP or Password Authentication",
+              "type": "string"
+            },
+            "header_name": {
+              "_escapeUI": {
+                "name": "headerName",
+                "label": "Header name",
+                "inputType": "text",
+                "value": "Authorization"
+              },
+              "description": "The name of the header",
+              "type": "string"
+            },
+            "header_key": {
+              "_escapeUI": {
+                "name": "headerKey",
+                "label": "Header key",
+                "inputType": "text",
+                "value": "Bearer"
+              },
+              "description": "The key of the header",
+              "type": "string"
+            },
+            "headers": {
+              "_escapeUI": {
+                "label": "Headers",
+                "inputType": "list"
+              },
+              "type": "object",
+              "description": "The user headers for manual authentication",
+              "additionalProperties": {
+                "type": "string",
+                "description": "A value that will be inserted in the user auth request's headers"
+              },
+              "patternProperties": {
+                "^.*$": {
+                  "description": "The header key",
+                  "type": "string",
+                  "patterns": "."
+                }
+              }
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "userSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "description": "The credentials for a user in AWS authentication",
+      "required": [
+        "auth",
+        "username",
+        "password"
+      ],
+      "properties": {
+        "auth": {
+          "_escapeUI": {
+            "label": "Tech Method",
+            "inputType": "text",
+            "name": "tech",
+            "hidden": true
+          },
+          "description": "The choosen auth method",
+          "type": "string"
+        },
+        "username": {
+          "_escapeUI": {
+            "name": "username",
+            "label": "Username",
+            "inputType": "text"
+          },
+          "description": "The username or the access key used as tester",
+          "type": "string"
+        },
+        "password": {
+          "_escapeUI": {
+            "name": "password",
+            "label": "Password",
+            "inputType": "text"
+          },
+          "description": "The password or secret key used as tester (This is not supplied in refresh token type)",
+          "type": "string"
+        },
+        "refresh_token": {
+          "_escapeUI": {
+            "name": "refresh_token",
+            "label": "Refresh Token",
+            "inputType": "text"
+          },
+          "description": "The refresh token used as tester (This is only supplied in case of refresh token type)",
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "rest": {
+    "_escapeUI": {
+      "label": "REST"
+    },
+    "authSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "required": [
+        "tech",
+        "url",
+        "method"
+      ],
+      "description": "The auth configuration schema for GraphQL authentication",
+      "properties": {
+        "tech": {
+          "_escapeUI": {
+            "label": "Tech",
+            "inputType": "text",
+            "name": "tech",
+            "hidden": true
+          },
+          "title": "rest",
+          "description": "The auth method",
+          "type": "string"
+        },
+        "url": {
+          "_escapeUI": {
+            "label": "Auth url",
+            "inputType": "text",
+            "name": "url",
+            "placeholder": "https://www.example.com/auth"
+          },
+          "description": "The URL to the authentication gateway",
+          "type": "string",
+          "format": "uri"
+        },
+        "method": {
+          "_escapeUI": {
+            "name": "method",
+            "label": "Method",
+            "inputType": "select"
+          },
+          "description": "The method used to send the authentication request",
+          "type": "string",
+          "enum": [
+            "GET",
+            "POST"
+          ]
+        },
+        "options": {
+          "description": "Headers options configuration",
+          "type": "object",
+          "_escapeUI": {
+            "label": "Headers options configuration"
+          },
+          "properties": {
+            "token_name": {
+              "_escapeUI": {
+                "name": "tokenName",
+                "label": "Token name",
+                "inputType": "text",
+                "value": "token"
+              },
+              "description": "The name of the key that returns the token",
+              "type": "string"
+            },
+            "refresh_url": {
+              "_escapeUI": {
+                "name": "refreshUrl",
+                "label": "Refresh url",
+                "inputType": "text",
+                "value": "token"
+              },
+              "description": "The url to witch the refresh token is sent",
+              "type": "string"
+            },
+            "refresh_token_name": {
+              "_escapeUI": {
+                "name": "refreshTokenName",
+                "label": "Refresh Token Name",
+                "inputType": "text",
+                "value": "token"
+              },
+              "description": "The name of the refresh token in the response",
+              "type": "string"
+            },
+            "header_name": {
+              "_escapeUI": {
+                "name": "headerName",
+                "label": "Header name",
+                "inputType": "text",
+                "value": "Authorization"
+              },
+              "description": "The name of the header. The value of this field it by default Authorization",
+              "type": "string"
+            },
+            "header_key": {
+              "_escapeUI": {
+                "name": "headerKey",
+                "label": "Header key",
+                "inputType": "text",
+                "value": "Bearer"
+              },
+              "description": "The key of the header. The value of this field by default is Bearer",
+              "type": "string"
+            },
+            "cookie_auth": {
+              "_escapeUI": {
+                "name": "cookieAuth",
+                "label": "Cookie Authentication",
+                "inputType": "checkbox"
+              },
+              "description": "A boolean determines if the authentication is done through cookie or no",
+              "type": "boolean"
+            },
+            "headers": {
+              "_escapeUI": {
+                "label": "Headers",
+                "inputType": "list"
+              },
+              "type": "object",
+              "description": "The user headers for manual authentication",
+              "additionalProperties": {
+                "type": "string",
+                "description": "A value that will be inserted in the user auth request's headers"
+              },
+              "patternProperties": {
+                "^.*$": {
+                  "description": "The header key",
+                  "type": "string",
+                  "patterns": "."
+                }
+              }
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "userSchema": {
+      "type": "object",
+      "description": "The user configuration schema for REST authentication",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "auth": {
+          "_escapeUI": {
+            "label": "Tech Method",
+            "inputType": "text",
+            "name": "tech",
+            "hidden": true
+          },
+          "description": "The choosen auth method",
+          "type": "string"
+        }
+      },
+      "additionalProperties": {
+        "type": "string",
+        "description": "A value that will be inserted in the user's auth payload",
+        "_escapeUI": {
+          "inputType": "editorList"
+        }
+      },
+      "required": [
+        "auth"
+      ]
+    }
+  },
+  "graphql": {
+    "_escapeUI": {
+      "label": "GraphQL"
+    },
+    "authSchema": {
+      "type": "object",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "required": [
+        "tech",
+        "url",
+        "mutation_name",
+        "mutation_field",
+        "method"
+      ],
+      "description": "The auth configuration schema for GraphQL authentication",
+      "properties": {
+        "tech": {
+          "_escapeUI": {
+            "label": "Tech",
+            "inputType": "text",
+            "name": "tech",
+            "hidden": true
+          },
+          "title": "graphql",
+          "description": "The auth method",
+          "type": "string"
+        },
+        "url": {
+          "_escapeUI": {
+            "label": "Auth url",
+            "inputType": "text",
+            "name": "url"
+          },
+          "description": "The URL to the authentication gateway",
+          "type": "string",
+          "format": "uri"
+        },
+        "mutation_name": {
+          "_escapeUI": {
+            "name": "mutationName",
+            "inputType": "text",
+            "label": "Mutation name",
+            "placeholder": "login"
+          },
+          "description": "The name of the mutation used to authenticate",
+          "type": "string"
+        },
+        "mutation_field": {
+          "_escapeUI": {
+            "name": "mutationField",
+            "inputType": "text",
+            "label": "Mutation Field",
+            "value": "token"
+          },
+          "description": "The name of the mutation field that you want to return (usually the field of the token)",
+          "type": "string"
+        },
+        "method": {
+          "_escapeUI": {
+            "name": "method",
+            "label": "Method",
+            "inputType": "select"
+          },
+          "description": "The method used to send the authentication request",
+          "type": "string",
+          "enum": [
+            "GET",
+            "POST"
+          ]
+        },
+        "options": {
+          "_escapeUI": {
+            "label": "Headers options"
+          },
+          "description": "Headers options configuration",
+          "type": "object",
+          "properties": {
+            "refresh_mutation_name": {
+              "_escapeUI": {
+                "name": "refreshMutationName",
+                "label": "Refresh Mutation Name",
+                "inputType": "text"
+              },
+              "description": "The name of the mutation used in order to refresh the access token",
+              "type": "string"
+            },
+            "refresh_field": {
+              "_escapeUI": {
+                "name": "refreshField",
+                "label": "Refresh Field",
+                "inputType": "checkbox"
+              },
+              "description": "A boolean that determines if the mutation used to refresh the access token has a field or returns a scalar. True if there is a field and false when there is a scalar",
+              "type": "boolean"
+            },
+            "refresh_field_name": {
+              "_escapeUI": {
+                "name": "refreshFieldName",
+                "label": "Refresh Field Name",
+                "inputType": "text"
+              },
+              "description": "The name of the field that returns the refresh token. The same field is used to fetch the refresh token during authentication and reauthentication",
+              "type": "string"
+            },
+            "header_name": {
+              "_escapeUI": {
+                "name": "headerName",
+                "label": "Header name",
+                "inputType": "text",
+                "value": "Authorization"
+              },
+              "description": "The name of the header",
+              "type": "string"
+            },
+            "operation": {
+              "_escapeUI": {
+                "name": "operation",
+                "label": "Operation",
+                "inputType": "select"
+              },
+              "description": "The name of the operation of the graphql query being sent. The default value is mutation",
+              "type": "string",
+              "enum": [
+                "query",
+                "mutation",
+                "subscription"
+              ]
+            },
+            "header_key": {
+              "_escapeUI": {
+                "name": "headerKey",
+                "label": "Header key",
+                "inputType": "text",
+                "value": "Bearer"
+              },
+              "description": "The key of the header",
+              "type": "string"
+            },
+            "cookie_auth": {
+              "_escapeUI": {
+                "name": "cookieAuth",
+                "label": "Cookie Authentication",
+                "inputType": "boolean"
+              },
+              "description": "A boolean that determines if the authentication is done through cookie or no",
+              "type": "boolean"
+            },
+            "headers": {
+              "_escapeUI": {
+                "label": "Headers",
+                "inputType": "list"
+              },
+              "type": "object",
+              "description": "The user headers for manual authentication.",
+              "additionalProperties": true
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "userSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "description": "The user configuration schema for GraphQL authentication",
+      "properties": {
+        "auth": {
+          "_escapeUI": {
+            "label": "Tech Method",
+            "inputType": "text",
+            "name": "tech",
+            "hidden": true
+          },
+          "description": "The choosen auth method",
+          "type": "string"
+        }
+      },
+      "additionalProperties": {
+        "description": "A value that will be inserted in the user's auth payload",
+        "_escapeUI": {
+          "inputType": "editorList"
+        }
+      },
+      "required": [
+        "auth"
+      ]
+    }
+  },
+  "manual": {
+    "_escapeUI": {
+      "label": "Manual"
+    },
+    "authSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "required": [
+        "tech"
+      ],
+      "properties": {
+        "tech": {
+          "_escapeUI": {
+            "label": "Tech",
+            "inputType": "text",
+            "name": "tech",
+            "hidden": true
+          },
+          "title": "manual",
+          "description": "The auth method",
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "userSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "description": "The users configuration schema for manual authentication",
+      "required": [
+        "auth",
+        "headers"
+      ],
+      "properties": {
+        "headers": {
+          "_escapeUI": {
+            "label": "Headers",
+            "inputType": "list"
+          },
+          "type": "object",
+          "description": "The user headers for manual authentication",
+          "additionalProperties": {
+            "type": "string",
+            "description": "A value that will be inserted in the user auth request's headers"
+          },
+          "patternProperties": {
+            "^.*$": {
+              "description": "The header key",
+              "type": "string",
+              "patterns": "."
+            }
+          }
+        },
+        "auth": {
+          "_escapeUI": {
+            "label": "Tech Method",
+            "inputType": "text",
+            "name": "tech",
+            "hidden": true
+          },
+          "description": "The choosen auth method",
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "basic": {
+    "_escapeUI": {
+      "label": "Basic"
+    },
+    "authSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "required": [
+        "tech"
+      ],
+      "properties": {
+        "tech": {
+          "_escapeUI": {
+            "label": "Tech",
+            "inputType": "text",
+            "name": "tech",
+            "hidden": true
+          },
+          "title": "basic",
+          "description": "The auth method",
+          "type": "string"
+        },
+        "options": {
+          "_escapeUI": {
+            "label": "Headers options"
+          },
+          "description": "Headers options configuration",
+          "type": "object",
+          "properties": {
+            "headers": {
+              "_escapeUI": {
+                "label": "Headers",
+                "inputType": "list"
+              },
+              "type": "object",
+              "description": "The user headers for manual authentication",
+              "additionalProperties": {
+                "type": "string",
+                "description": "A value that will be inserted in the user auth request's headers"
+              },
+              "patternProperties": {
+                "^.*$": {
+                  "description": "The header key",
+                  "type": "string",
+                  "patterns": "."
+                }
+              }
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "userSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "description": "The credentials for a user in Basic authentication",
+      "required": [
+        "auth",
+        "username",
+        "password"
+      ],
+      "properties": {
+        "auth": {
+          "_escapeUI": {
+            "label": "Tech Method",
+            "inputType": "text",
+            "name": "tech",
+            "hidden": true
+          },
+          "description": "The choosen auth method",
+          "type": "string"
+        },
+        "username": {
+          "_escapeUI": {
+            "name": "username",
+            "label": "Username",
+            "inputType": "text"
+          },
+          "description": "The username for a user tester",
+          "type": "string"
+        },
+        "password": {
+          "_escapeUI": {
+            "name": "password",
+            "label": "Password",
+            "inputType": "text"
+          },
+          "description": "The password for a tester user",
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "api_key": {
+    "_escapeUI": {
+      "label": "API"
+    },
+    "authSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "required": [
+        "tech",
+        "location",
+        "header_name"
+      ],
+      "properties": {
+        "tech": {
+          "_escapeUI": {
+            "label": "Tech",
+            "inputType": "text",
+            "name": "tech",
+            "hidden": true
+          },
+          "title": "api_key",
+          "description": "The auth method",
+          "type": "string"
+        },
+        "location": {
+          "_escapeUI": {
+            "name": "Location",
+            "label": "Key location",
+            "inputType": "select"
+          },
+          "description": "The location where the token will be added",
+          "type": "string",
+          "enum": [
+            "headers",
+            "url"
+          ]
+        },
+        "header_name": {
+          "_escapeUI": {
+            "name": "headerName",
+            "label": "Header name",
+            "inputType": "text",
+            "value": "Authorization"
+          },
+          "description": "The name of the header of the Api Key",
+          "type": "string"
+        },
+        "options": {
+          "_escapeUI": {
+            "label": "Headers options"
+          },
+          "description": "Optional Parameters of the API Authentication",
+          "type": "object",
+          "properties": {
+            "header_prefix": {
+              "_escapeUI": {
+                "name": "header_prefix",
+                "label": "Header Prefix",
+                "inputType": "text",
+                "placeholder": "bearer"
+              },
+              "description": "The prefix of the header of The Api Key",
+              "type": "string"
+            },
+            "headers": {
+              "_escapeUI": {
+                "label": "Headers",
+                "inputType": "list"
+              },
+              "type": "object",
+              "description": "The user headers for manual authentication",
+              "additionalProperties": {
+                "type": "string",
+                "description": "A value that will be inserted in the user auth request's headers"
+              },
+              "patternProperties": {
+                "^.*$": {
+                  "description": "The header key",
+                  "type": "string",
+                  "patterns": "."
+                }
+              }
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "userSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "required": [
+        "api_key",
+        "auth"
+      ],
+      "properties": {
+        "api_key": {
+          "_escapeUI": {
+            "name": "apiKey",
+            "label": "Api key",
+            "inputType": "text"
+          },
+          "description": "The Api Key",
+          "type": "string"
+        },
+        "auth": {
+          "_escapeUI": {
+            "label": "Tech Method",
+            "inputType": "text",
+            "name": "tech",
+            "hidden": true
+          },
+          "description": "The choosen auth method",
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "noauth": {
+    "_escapeUI": {
+      "label": "No authentification"
+    },
+    "authSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "required": [
+        "tech"
+      ],
+      "properties": {
+        "tech": {
+          "_escapeUI": {
+            "label": "Tech",
+            "inputType": "text",
+            "name": "tech",
+            "hidden": true
+          },
+          "title": "noauth",
+          "description": "The auth method",
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "userSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "required": [
+        "auth"
+      ],
+      "description": "User by default when there is no authentification, the key of the user should be no_auth.",
+      "properties": {
+        "auth": {
+          "_escapeUI": {
+            "label": "Tech Method",
+            "inputType": "text",
+            "name": "tech",
+            "hidden": true
+          },
+          "description": "The choosen auth method",
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "oauth": {
+    "_escapeUI": {
+      "label": "OAuth"
+    },
+    "authSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "required": [
+        "tech",
+        "grant_type",
+        "client_id",
+        "client_secret",
+        "token_endpoint",
+        "auth_location",
+        "scope",
+        "header_prefix",
+        "location"
+      ],
+      "description": "The auth configuration schema for OAuth Authentication",
+      "properties": {
+        "tech": {
+          "_escapeUI": {
+            "label": "Tech",
+            "inputType": "text",
+            "name": "tech",
+            "hidden": true
+          },
+          "title": "rest",
+          "description": "The auth method",
+          "type": "string"
+        },
+        "grant_type": {
+          "_escapeUI": {
+            "label": "Grant Type",
+            "inputType": "select",
+            "name": "type"
+          },
+          "description": "The type of OAuth Authentication used",
+          "type": "string",
+          "enum": [
+            "refresh_token"
+          ]
+        },
+        "client_id": {
+          "_escapeUI": {
+            "label": "Client ID",
+            "inputType": "text",
+            "name": "client_id"
+          },
+          "description": "The ID of the Client",
+          "type": "string"
+        },
+        "client_secret": {
+          "_escapeUI": {
+            "label": "Client Secret",
+            "inputType": "text",
+            "name": "client_secret"
+          },
+          "description": "The Secret of the Client",
+          "type": "string"
+        },
+        "token_endpoint": {
+          "_escapeUI": {
+            "label": "Token Endpoint",
+            "inputType": "text",
+            "name": "token_endpoint"
+          },
+          "description": "The Token Endpoint",
+          "type": "string",
+          "format": "uri"
+        },
+        "auth_location": {
+          "_escapeUI": {
+            "label": "Auth Location",
+            "inputType": "text",
+            "name": "auth_location"
+          },
+          "description": "The location where the token will be added during the authentication step (in the middle of OAuth flow)",
+          "type": "enum",
+          "enum": [
+            "basic",
+            "body"
+          ]
+        },
+        "header_prefix": {
+          "_escapeUI": {
+            "label": "Header Prefix",
+            "inputType": "text",
+            "name": "header_prefix"
+          },
+          "description": "The prefix of the header of the token",
+          "type": "string",
+          "default": "Bearer"
+        },
+        "location": {
+          "_escapeUI": {
+            "label": "Location",
+            "inputType": "text",
+            "name": "location"
+          },
+          "description": "The location where the token will be added",
+          "type": "enum",
+          "enum": [
+            "header",
+            "url"
+          ]
+        },
+        "scope": {
+          "_escapeUI": {
+            "label": "Scope",
+            "inputType": "text",
+            "name": "scope"
+          },
+          "description": "The scope of the token",
+          "type": "string"
+        },
+        "options": {
+          "description": "Headers options configuration",
+          "type": "object",
+          "_escapeUI": {
+            "label": "Headers options configuration"
+          },
+          "properties": {
+            "headers": {
+              "_escapeUI": {
+                "label": "Headers",
+                "inputType": "list"
+              },
+              "type": "object",
+              "description": "The user headers for manual authentication",
+              "additionalProperties": {
+                "type": "string",
+                "description": "A value that will be inserted in the user auth request's headers"
+              },
+              "patternProperties": {
+                "^.*$": {
+                  "description": "The header key",
+                  "type": "string",
+                  "patterns": "."
+                }
+              }
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "userSchema": {
+      "type": "object",
+      "description": "The user configuration schema for OAuth authentication",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "auth": {
+          "_escapeUI": {
+            "label": "Tech Method",
+            "inputType": "text",
+            "name": "tech",
+            "hidden": true
+          },
+          "description": "The choosen auth method",
+          "type": "string"
+        },
+        "refresh_token": {
+          "_escapeUI": {
+            "name": "refresh_token",
+            "label": "Refresh Token",
+            "inputType": "text"
+          },
+          "description": "The Refresh Token",
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "auth"
+      ]
+    }
+  }
+}

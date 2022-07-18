@@ -57,6 +57,7 @@ types-requests = "^2.27.20"
 unify = "^0.5"
 vulture = "^2.3"
 yapf = "^0.31.0"
+Jinja2 = "^3.1.2"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
