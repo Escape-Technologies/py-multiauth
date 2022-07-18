@@ -237,7 +237,7 @@ def generate_auth_docs() -> None:
 
     auth_documentation = template.render(auth_schema=auth_schemas, optional=has_optional, json_schema=jsonschemas)
 
-    with open('docs/authentication.md', 'w+', encoding='utf-8') as f:
+    with open('docs/index.md', 'w+', encoding='utf-8') as f:
         f.write(auth_documentation)
 
 
