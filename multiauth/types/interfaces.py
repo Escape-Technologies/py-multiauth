@@ -40,7 +40,7 @@ class IMultiAuth:
 
     _manager: Any
     _headers: dict[str, dict]
-    _schemas: dict
+    _auths: dict
 
     @property
     def headers(self) -> dict[str, dict]:
