@@ -97,6 +97,8 @@ class MultiAuth(IMultiAuth):
     def serialize_users(auths: dict, users: dict) -> dict[str, User]:
         """Serialize raw user to valid config format."""
 
+        users = deepcopy(users)
+
         for user, user_info in users.items():
 
             schema = auths[user_info['auth']]
