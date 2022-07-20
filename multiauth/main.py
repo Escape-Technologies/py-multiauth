@@ -6,7 +6,7 @@ from copy import deepcopy
 from importlib import resources
 from typing import Any
 
-import jsonschema
+import jsonschema  # type: ignore[import]
 from jsonschema import ValidationError
 
 from multiauth import static
@@ -75,7 +75,7 @@ class MultiAuth(IMultiAuth):
                 raise ValueError(f'\'{auth["tech"]}\' is not a valid auth tech')
             auth_tech_link[auth_name] = auth['tech']
             try:
-                jsonschema.validate(auth, auths[auth['tech']]['authSchema'])
+                jsonschema.validate(auth, json_schema[auth['tech']]['authSchema'])
             except ValidationError as e:
                 raise InvalidConfigurationError(message=e.message, path=f'$.auth.{auth_name}' + str(e.json_path)[2:]) from e
 
