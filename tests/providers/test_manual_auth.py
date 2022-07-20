@@ -4,12 +4,12 @@
 
 import pytest
 
-from multiauth import MultiAuth, User
+from multiauth import MultiAuth
 from multiauth.providers.manual import manual_authenticator
 
 
 @pytest.fixture
-def auth_schema() -> dict:
+def auth() -> dict:
     """Return a fixture of schemas."""
 
     return {
@@ -20,39 +20,37 @@ def auth_schema() -> dict:
 
 
 @pytest.fixture
-def user_config_credentials() -> dict[str, User]:
+def user_config_credentials() -> dict:
     """Return a fixture of users."""
 
     return {
-        'user_lambda': User({
-            'auth_schema': 'manual_headers',
-            'credentials': {
-                'headers': {
-                    'Authorization': 'Bearer 12345'
-                }
+        'user_lambda': {
+            'auth': 'manual_headers',
+            'headers': {
+                'Authorization': 'Bearer 12345'
             },
-        }),
+        }
     }
 
 
 @pytest.fixture
-def user_config_headers() -> dict[str, User]:
+def user_config_headers() -> dict:
     """Return a fixture of users."""
 
     return {
-        'user_lambda': User({
-            'auth_schema': 'manual_headers',
+        'user_lambda': {
+            'auth': 'manual_headers',
             'headers': {
                 'Authorization': 'Bearer 12345'
             }
-        }),
+        },
     }
 
 
-def test_manual_authentication_credentials(user_config_credentials: dict[str, User], auth_schema: dict) -> None:
+def test_manual_authentication_credentials(user_config_credentials: dict, auth: dict) -> None:
     """Test manual authentication."""
 
-    instance = MultiAuth(auth_schema, user_config_credentials)
+    instance = MultiAuth(auth, user_config_credentials)
     instance.authenticate_users()
 
     assert instance.headers['user_lambda']['Authorization'] == 'Bearer 12345'
@@ -61,10 +59,10 @@ def test_manual_authentication_credentials(user_config_credentials: dict[str, Us
     assert headers['Authorization'] == 'Bearer 12345'
 
 
-def test_manual_authentication_headers(user_config_headers: dict[str, User], auth_schema: dict) -> None:
+def test_manual_authentication_headers(user_config_headers: dict, auth: dict) -> None:
     """Test manual authentication."""
 
-    instance = MultiAuth(auth_schema, user_config_headers)
+    instance = MultiAuth(auth, user_config_headers)
     instance.authenticate_users()
 
     assert instance.headers['user_lambda']['Authorization'] == 'Bearer 12345'
@@ -73,17 +71,17 @@ def test_manual_authentication_headers(user_config_headers: dict[str, User], aut
     assert headers['Authorization'] == 'Bearer 12345'
 
 
-def test_manual_handler_credentials(user_config_credentials: dict[str, User]) -> None:
+def test_manual_handler_credentials(user_config_credentials: dict, auth: dict) -> None:
     """Test manual handler."""
 
-    auth_response = manual_authenticator(user_config_credentials['user_lambda'])
+    auth_response = manual_authenticator(MultiAuth.serialize_users(auth, user_config_credentials)['user_lambda'])
 
     assert auth_response['headers']['Authorization'] == 'Bearer 12345'
 
 
-def test_manual_handler_headers(user_config_headers: dict[str, User]) -> None:
+def test_manual_handler_headers(user_config_headers: dict, auth: dict) -> None:
     """Test manual handler."""
 
-    auth_response = manual_authenticator(user_config_headers['user_lambda'])
+    auth_response = manual_authenticator(MultiAuth.serialize_users(auth, user_config_headers)['user_lambda'])
 
     assert auth_response['headers']['Authorization'] == 'Bearer 12345'
