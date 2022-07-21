@@ -18,11 +18,7 @@ def manual_authenticator(user: User) -> AuthResponse:
         'tech': AuthTech.MANUAL,
     })
 
-    print('#' * 80)
-    print(user)
-
     headers = user.headers
-
     if not headers:
         if not user.credentials:
             raise AuthenticationError('Configuration file error. Missing credentials')
