@@ -201,58 +201,34 @@ def curl_to_escaperc(curl: str) -> Optional[RCFile]:
             if 'basic' in header_value.lower():
                 logger.info('Type of authetication detected: Basic')
                 return _basic_fill(parsed_content.headers, header_value)
+            # Here we assume it's manual headers.
+            if parsed_content.data is None:
+                logger.info('Type of authetication detected: Manual Headers')
+                return _manual_fill(parsed_content.headers)
 
-    # Then we check if its REST or GraphQL authentication: check if the data that we have is graphql data
-    query: dict = {}
-    rcfile = RCFile({'auth': {}, 'users': {}})
+    if parsed_content.data is None:
+        return None
 
+    query: dict | None = None
     try:
-        if parsed_content.data is not None:
-            query = json.loads(parsed_content.data)
+        query = json.loads(parsed_content.data)
     except Exception:
-        logger.debug('The `data` attribute of the cURL is not JSONable')
+        # If we reached this else then the request sent is not being sent as application/json and is most probably sent as application/x-www-form-urlencoded
+        try:
+            json_data = urlencoded_to_json(parsed_content.data)
+            if json_data is not None:
+                query = json.loads(json_data)
+        except Exception:
+            logger.debug('The `data` attribute of the cURL is not JSONable')
 
-    if query:
+    if query is not None:
         if query.get('query') is not None:
             logger.info('Type of authetication detected: GraphQL')
             graphql_tree = graphql.parse(query['query']).to_dict()
-            if query.get('variables') is not None:
-                rcfile = _graphql_fill(graphql_tree, parsed_content.url, parsed_content.method, parsed_content.headers, query['variables'])
-            else:
-                rcfile = _graphql_fill(graphql_tree, parsed_content.url, parsed_content.method, parsed_content.headers)
+            return _graphql_fill(graphql_tree, parsed_content.url, parsed_content.method, parsed_content.headers, query.get('variables'))
 
-        else:
-            logger.info('Type of authetication detected: REST')
-            rcfile = _rest_fill(query, parsed_content.url, parsed_content.method, parsed_content.headers)
+        logger.info('Type of authetication detected: REST')
+        return _rest_fill(query, parsed_content.url, parsed_content.method, parsed_content.headers)
 
-    else:
-        # If we reached this else then the request sent is not being sent as application/json and is being sent as something else
-        # Most probably it is an application/x-www-form-urlencoded format
-        # Convert this format to json
-        json_data = urlencoded_to_json(parsed_content.data)
-
-        new_query: dict = {}
-        try:
-            if json_data is not None:
-                new_query = json.loads(json_data)
-        except Exception:
-            logger.debug('The `data` attribute of the cURL is not JSONable so it is not sent as application/x-www-form-urlencoded')
-
-        if new_query:
-            if new_query.get('query') is not None:
-                logger.info('Type of authetication detected: GraphQL')
-                graphql_tree = graphql.parse(new_query['query']).to_dict()
-                if new_query.get('variables') is not None:
-                    rcfile = _graphql_fill(graphql_tree, parsed_content.url, parsed_content.method, parsed_content.headers, new_query['variables'])
-                else:
-                    rcfile = _graphql_fill(graphql_tree, parsed_content.url, parsed_content.method, parsed_content.headers)
-
-            else:
-                # Then the authentication type is rest
-                logger.info('Type of authetication detected: REST')
-                rcfile = _rest_fill(new_query, parsed_content.url, parsed_content.method, parsed_content.headers)
-
-        else:
-            return None
-
-    return rcfile
+    logger.info('We could not determine any authentication method from the cURL.')
+    return None
