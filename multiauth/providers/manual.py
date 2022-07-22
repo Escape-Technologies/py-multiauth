@@ -1,6 +1,6 @@
 """Implementation of the Manual authentication schema."""
 
-from typing import Any, Dict, cast
+from typing import Any, Dict, List, Tuple, Union, cast
 
 from multiauth.entities.errors import AuthenticationError
 from multiauth.entities.main import AuthResponse, AuthTech
@@ -33,8 +33,8 @@ def manual_authenticator(user: User) -> AuthResponse:
     return auth_response
 
 
-def serialize_headers_to_manual(headers: dict[str, str] | list[str] | str) -> tuple[dict, dict]:
-    """Serialize raw headers in "manual" auth format."""
+def serialize_headers(headers: Union[Dict[str, str], List[str], str]) -> Tuple[dict, dict]:
+    """Serialize raw headers into `manual` auth format."""
 
     headers_dict: dict[str, str] = {}
 
@@ -42,7 +42,6 @@ def serialize_headers_to_manual(headers: dict[str, str] | list[str] | str) -> tu
         headers = [headers]
 
     if isinstance(headers, list):
-
         for header in headers:
             header_split = header.split(':')
             header_name = header_split[0].strip()
@@ -53,7 +52,6 @@ def serialize_headers_to_manual(headers: dict[str, str] | list[str] | str) -> tu
         headers_dict = headers
 
     auth_name = 'manual_headers'
-
     auths: dict = {
         auth_name: {
             'tech': AuthTech.MANUAL,
