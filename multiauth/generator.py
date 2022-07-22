@@ -138,18 +138,6 @@ def _rest_fill(rest_document: dict, url: str, method: HTTPMethod, headers: dict[
 def _graphql_fill(graphql_document: dict, url: str, method: HTTPMethod, headers: dict[str, str], variables: dict = None) -> RCFile:
     """This function fills the graphql escaperc file."""
 
-    # The JSON schema for every authentication scheme
-    rcfile: RCFile = {'users': {'user1': {'auth': 'schema1'}}, 'auth': {'schema1': {}}}
-
-    rcfile['auth']['schema1']['tech'] = 'graphql'
-
-    rcfile['auth']['schema1']['url'] = url
-    rcfile['auth']['schema1']['method'] = method
-
-    # Now we need to start finding the information about the mutation
-    mutation_name = graphql_document['definitions'][0]['selection_set']['selections'][0]['name']['value']
-    rcfile['auth']['schema1']['mutation_name'] = mutation_name
-
     # Now we need to get the user information
     credentials: dict = {}
     if variables and graphql_document['definitions'][0]['variable_definitions']:
@@ -169,17 +157,30 @@ def _graphql_fill(graphql_document: dict, url: str, method: HTTPMethod, headers:
                     for input_object_field in argument['value']['fields']:
                         credentials[argument['name']['value']][input_object_field['name']['value']] = input_object_field['value']['value']
 
+    rcfile: RCFile = {
+        'users': {
+            'user1': {
+                'auth': 'schema1'
+            } | credentials,
+        },
+        'auth': {
+            'schema1': {
+                'tech': AuthTech.GRAPHQL.value,
+                'url': url,
+                'method': method,
+                'mutation_name': graphql_document['definitions'][0]['selection_set']['selections'][0]['name']['value'],
+                'options': {
+                    'operation': graphql_document['definitions'][0]['operation']
+                }
+            }
+        },
+    }
+
     # Now regarding the field
-    mutation_fields = graphql_document['definitions'][0]['selection_set']['selections'][0]['selection_set']['selections']
-    for field in mutation_fields:
+    for field in graphql_document['definitions'][0]['selection_set']['selections'][0]['selection_set']['selections']:
         if field['name']['value'].lower() in POTENTIAL_FIELD_NAME:
             rcfile['auth']['schema1']['mutation_field'] = field['name']['value']
             break
-
-    rcfile['users']['user1'].update(credentials)
-
-    rcfile['auth']['schema1']['options'] = {}
-    rcfile['auth']['schema1']['options']['operation'] = graphql_document['definitions'][0]['operation']
 
     if headers:
         rcfile['auth']['schema1']['options']['headers'] = headers
