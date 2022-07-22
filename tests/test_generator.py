@@ -3,7 +3,7 @@
 """Test generator."""
 import pytest
 
-from multiauth.generator import curl_to_escaperc, raw_headers_to_manual
+from multiauth.generator import curl_to_escaperc, manual_fill
 
 from .providers.test_manual_auth import auth, users_one_header, users_two_headers  # noqa
 
@@ -208,20 +208,20 @@ def test_serialize_headers(auth: dict, users_one_header: dict, users_two_headers
     headers_list = ['Authorization: Bearer 12345', 'Content-Type: application/json']
     headers_dict = {'Authorization': 'Bearer 12345', 'Content-Type': 'application/json'}
 
-    auths_str, users_str = raw_headers_to_manual(headers_str)
+    rcfile = manual_fill(headers_str)
 
-    assert auths_str == auth
-    assert users_str == users_one_header
+    assert rcfile['auth'] == auth
+    assert rcfile['users'] == users_one_header
 
-    auths_list, users_list = raw_headers_to_manual(headers_list)
+    rcfile = manual_fill(headers_list)
 
-    assert auths_list == auth
-    assert users_list == users_two_headers
+    assert rcfile['auth'] == auth
+    assert rcfile['users'] == users_two_headers
 
-    auths_dict, users_dict = raw_headers_to_manual(headers_dict)
+    rcfile = manual_fill(headers_dict)
 
-    assert auths_dict == auth
-    assert users_dict == users_two_headers
+    assert rcfile['auth'] == auth
+    assert rcfile['users'] == users_two_headers
 
 
 def test_graphql_curl_with_input_object_and_no_var(
