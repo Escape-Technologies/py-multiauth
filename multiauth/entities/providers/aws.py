@@ -1,9 +1,9 @@
 """Aws provider."""
 
 from enum import Enum, unique
-from typing import TypedDict
+from typing import Dict, Optional, TypedDict
 
-from multiauth.types.http import HTTPMethod, Location
+from multiauth.entities.http import HTTPMethod, Location
 
 
 @unique
@@ -36,12 +36,12 @@ class AuthConfigHawk(TypedDict):
 
     """Authentication Configuration Parameters of the Hawk Method."""
     algorithm: AuthHashalgorithmHawkandAWS
-    user: str | None
-    nonce: str | None
-    ext: str | None
-    app: str | None
-    dig: str | None
-    timestamp: str | None
+    user: Optional[str]
+    nonce: Optional[str]
+    ext: Optional[str]
+    app: Optional[str]
+    dig: Optional[str]
+    timestamp: Optional[str]
 
 
 class AuthConfigAWS(TypedDict):
@@ -49,13 +49,13 @@ class AuthConfigAWS(TypedDict):
     """Authenticaiton Configuration Parameters of the AWS Method."""
     type: AuthAWSType
     region: str
-    client_id: str | None
-    method: HTTPMethod | None
-    service_name: str | None
-    hash_algorithm: AuthHashalgorithmHawkandAWS | None
-    pool_id: str | None
-    client_secret: str | None
+    client_id: Optional[str]
+    method: Optional[HTTPMethod]
+    service_name: Optional[str]
+    hash_algorithm: Optional[AuthHashalgorithmHawkandAWS]
+    pool_id: Optional[str]
+    client_secret: Optional[str]
     location: Location
-    header_name: str | None
-    header_key: str | None
-    headers: dict[str, str] | None
+    header_name: Optional[str]
+    header_key: Optional[str]
+    headers: Optional[Dict[str, str]]

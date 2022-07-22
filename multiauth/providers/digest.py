@@ -3,17 +3,16 @@
 import hashlib
 import os
 import time
-from typing import Callable
+from typing import Callable, Dict, Optional
 from urllib.parse import urlparse
 
 import requests
 
-from multiauth.config import PY_MULTIAUTH_LOGGER as logger
+from multiauth.entities.errors import AuthenticationError
+from multiauth.entities.http import HTTPMethod
+from multiauth.entities.main import AuthConfigDigest, AuthDigestChallenge, AuthHashAlgorithmDigest, AuthResponse, AuthTech
 from multiauth.helpers import hash_calculator
 from multiauth.manager import User
-from multiauth.types.errors import AuthenticationError
-from multiauth.types.http import HTTPMethod
-from multiauth.types.main import AuthConfigDigest, AuthDigestChallenge, AuthHashAlgorithmDigest, AuthResponse, AuthTech
 
 # from escape_cli.common.user import USER_MANAGER
 
@@ -67,7 +66,7 @@ def send_401_request(url: str) -> AuthDigestChallenge:
 
 
 #pylint: disable=[too-many-branches, too-many-statements]
-def digest_config_parser(schema: dict) -> AuthConfigDigest:
+def digest_config_parser(schema: Dict) -> AuthConfigDigest:
     """This function parses the Digest schema and checks if all necessary fields exist."""
 
     auth_config = AuthConfigDigest({
@@ -113,12 +112,12 @@ def digest_config_parser(schema: dict) -> AuthConfigDigest:
         auth_config['algorithm'] = AuthHashAlgorithmDigest(schema['options'].get('algorithm'))
     else:
         if parameters['algorithm'] is None:
-            logger.error('No value for parameters algorithm')
-        else:
-            auth_config['algorithm'] = parameters['algorithm']
+            raise AuthenticationError('No value for parameters algorithm')
+        auth_config['algorithm'] = parameters['algorithm']
 
     if not schema['options'].get('method'):
         raise AuthenticationError('Please provide the used method in the API')
+
     auth_config['method'] = schema['options'].get('method')
 
     auth_config['qop'] = schema['options'].get('qop')
@@ -150,7 +149,7 @@ def digest_config_parser(schema: dict) -> AuthConfigDigest:
     if parameters['domain'] is not None:
         auth_config['domain'] = parameters['domain']
     else:
-        logger.error('No value for parameters domain')
+        raise AuthenticationError('No value for parameters domain')
 
     auth_config['headers'] = schema['options'].get('headers')
 
@@ -160,7 +159,7 @@ def digest_config_parser(schema: dict) -> AuthConfigDigest:
 def digest_auth_attach(
     user: User,
     auth_config: AuthConfigDigest,
-    method: HTTPMethod | None,
+    method: Optional[HTTPMethod],
 ) -> AuthResponse:
     """This function attaches the user credentials to the schema and generates the proper authentication response."""
 
@@ -232,8 +231,8 @@ def digest_auth_attach(
 
 def digest_authenticator(
     user: User,
-    schema: dict,
-    method: HTTPMethod | None,
+    schema: Dict,
+    method: Optional[HTTPMethod],
 ) -> AuthResponse:
     """This function is a wrapper function that implements the Digest authentication schema.
 

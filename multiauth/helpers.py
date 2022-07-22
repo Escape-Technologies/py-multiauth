@@ -9,14 +9,14 @@ import json
 import re
 import sys
 from json.decoder import JSONDecodeError
-from typing import Any, Match, cast
+from typing import Any, Dict, Match, Optional, Tuple, Union, cast
 
 import jwt
 import requests
 
-from multiauth.types.errors import AuthenticationError
-from multiauth.types.main import AuthHashAlgorithmDigest, AuthResponse, AuthTech, JWTToken, Token
-from multiauth.types.providers.oauth import AuthOAuthlocation
+from multiauth.entities.errors import AuthenticationError
+from multiauth.entities.main import AuthHashAlgorithmDigest, AuthResponse, AuthTech, JWTToken, Token
+from multiauth.entities.providers.oauth import AuthOAuthlocation
 from multiauth.utils import dict_nested_get
 
 try:
@@ -32,9 +32,9 @@ except ImportError as error:
 def extract_token(
     response: requests.Response,
     tech: AuthTech,
-    headers: dict[str, str],
-    refresh_token_name: str | None = None,
-) -> tuple[AuthResponse, str | None]:
+    headers: Dict[str, str],
+    refresh_token_name: Optional[str] = None,
+) -> Tuple[AuthResponse, Optional[str]]:
     """This function takes the response and tries to extract the tokens.
 
     This function is mainly a helper function to the REST and the GraphQL authenctication schema. The goal of the function is to generate the authentication
@@ -60,7 +60,7 @@ def extract_token(
     except JSONDecodeError as e:
         raise AuthenticationError(f'{type(e).__name__}: Response returned by authentication server is invalid: {e}') from e
 
-    headers_to_add: dict = {}
+    headers_to_add: Dict = {}
 
     if headers is not None:
         for header_name, header_arg in headers.items():
@@ -87,7 +87,10 @@ def extract_token(
     return AuthResponse(tech=tech, headers=headers_to_add), None
 
 
-def hash_calculator(hash_type: AuthHashAlgorithmDigest, input_data: str | bytes) -> str:
+def hash_calculator(
+    hash_type: AuthHashAlgorithmDigest,
+    input_data: Union[str, bytes],
+) -> str:
     """This function determines the appropriate hashing function and returns the hashing of the input."""
 
     if hash_type in (AuthHashAlgorithmDigest.MD5, AuthHashAlgorithmDigest.MD5_SESS):
@@ -120,7 +123,11 @@ def token_endpoint_auth_method(auth_location: AuthOAuthlocation) -> str:
     return ''
 
 
-def get_secret_hash(username: str, client_id: str, client_secret: str) -> str:
+def get_secret_hash(
+    username: str,
+    client_id: str,
+    client_secret: str,
+) -> str:
     """This function calculates the secret hash used in the AWS cognito authentication in case the client secret is provided."""
 
     message = bytearray(username + client_id, 'utf-8')
@@ -129,7 +136,10 @@ def get_secret_hash(username: str, client_id: str, client_secret: str) -> str:
 
 
 #pylint: disable=too-few-public-methods
-def authentication_portal(url: str, callback_url: str) -> tuple[int, str]:
+def authentication_portal(
+    url: str,
+    callback_url: str,
+) -> Tuple[int, str]:
     """This function will open up a browser for the user to enter his credentials during OAuth."""
 
     if not PYQT5_ERROR:
@@ -216,8 +226,8 @@ def jwt_token_analyzer(token: Token) -> JWTToken:
     token_header: str = seperated_token[0]
     token_payload: str = seperated_token[1]
 
-    header: dict = json.loads(base64.urlsafe_b64decode(token_header + '=' * (-len(token_header) % 4)))
-    payload: dict = json.loads(base64.urlsafe_b64decode(token_payload + '=' * (-len(token_payload) % 4)))
+    header: Dict = json.loads(base64.urlsafe_b64decode(token_header + '=' * (-len(token_header) % 4)))
+    payload: Dict = json.loads(base64.urlsafe_b64decode(token_payload + '=' * (-len(token_payload) % 4)))
 
     return JWTToken({
         'sig': header['alg'],
@@ -247,18 +257,18 @@ def jwt_token_analyzer(token: Token) -> JWTToken:
 #     token_payload: str = seperated_token[1]
 #     token_signature: str = seperated_token[2]
 
-#     def _decode(string: Token) -> dict:
+#     def _decode(string: Token) -> Dict:
 #         return json.loads(base64.urlsafe_b64decode(string + '=' * (-len(string) % 4)))
 
-#     def _encode(string: dict) -> Token:
+#     def _encode(string: Dict) -> Token:
 #         return base64.urlsafe_b64encode(json.dumps(string, separators=(',', ':')).encode()).decode('UTF-8').strip('=')
 
-#     def _check_none_alg(token_header: str, token_payload: str) -> list[Token]:
+#     def _check_none_alg(token_header: str, token_payload: str) -> List[Token]:
 #         """This function creates tokens with None signature."""
 
-#         algorithms: list[str] = ['none', 'None', 'NONE', 'nOnE']
-#         token_header_decoded: dict = _decode(token_header)
-#         result: list[str] = []
+#         algorithms: List[str] = ['none', 'None', 'NONE', 'nOnE']
+#         token_header_decoded: Dict = _decode(token_header)
+#         result: List[str] = []
 
 #         for algorithm in algorithms:
 #             try:
@@ -278,10 +288,10 @@ def jwt_token_analyzer(token: Token) -> JWTToken:
 
 #         return token_header + '.' + token_payload + '.'
 
-#     def _check_hs_signature(token_header: str, token_payload: str) -> list[Token]:
+#     def _check_hs_signature(token_header: str, token_payload: str) -> List[Token]:
 #         """This function checks if it is possible to use a token with simply an hash signature."""
 
-#         result: list[str] = []
+#         result: List[str] = []
 
 #         # For sha512
 #         new_header = _decode(deepcopy(token_header))
@@ -312,7 +322,7 @@ def jwt_token_analyzer(token: Token) -> JWTToken:
 #     def _check_rsa_embed(token_header: str, token_payload: str) -> Token:
 #         """Check in case the signature that RSA based."""
 
-#         def _get_rsa_key_pair() -> tuple[Any, Any]:
+#         def _get_rsa_key_pair() -> Tuple[Any, Any]:
 #             """Generate RSA keys."""
 
 #             # generate private/public key pair

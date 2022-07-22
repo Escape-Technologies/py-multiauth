@@ -1,20 +1,20 @@
 """Implementation of the Rest authentication schema."""
 
-from typing import cast
+from typing import Dict, Optional, cast
 
 import jwt
 import requests
 
+from multiauth.entities.errors import AuthenticationError
+from multiauth.entities.main import AuthResponse, AuthTech
+from multiauth.entities.providers.rest import AuthConfigRest
 from multiauth.helpers import extract_token
 from multiauth.manager import User
-from multiauth.types.errors import AuthenticationError
-from multiauth.types.main import AuthResponse, AuthTech
-from multiauth.types.providers.rest import AuthConfigRest
 
 # from escape_cli.common.user import USER_MANAGER
 
 
-def rest_config_parser(schema: dict) -> AuthConfigRest:
+def rest_config_parser(schema: Dict) -> AuthConfigRest:
     """This function parses the Rest schema and checks if all the necessary fields exist."""
 
     auth_config = AuthConfigRest({
@@ -54,7 +54,10 @@ def rest_config_parser(schema: dict) -> AuthConfigRest:
 
 
 #pylint: disable=too-many-branches
-def rest_auth_attach(user: User, auth_config: AuthConfigRest) -> AuthResponse:
+def rest_auth_attach(
+    user: User,
+    auth_config: AuthConfigRest,
+) -> AuthResponse:
     """This function attaches the user credentials to the schema and generates the proper authentication response."""
 
     # First we have to take the credentials from the currently working user
@@ -76,7 +79,7 @@ def rest_auth_attach(user: User, auth_config: AuthConfigRest) -> AuthResponse:
 
     # Prepare the header in order to fetch the token
     # We are creating a header for the token because the helper function '_extract_token' works like that
-    headers: dict[str, str] = {}
+    headers: Dict[str, str] = {}
 
     # Now we want to append the authentication headers
     # There are two parts
@@ -119,7 +122,7 @@ def rest_auth_attach(user: User, auth_config: AuthConfigRest) -> AuthResponse:
     token = auth_response['headers'][next(iter(headers))].split(' ')[1]
 
     # Add the token and the expiry time to the user manager in order to be accessed by other parts of the program
-    expiry_time: float | None = None
+    expiry_time: Optional[float] = None
     try:
         expiry_time = jwt.decode(token, options={
             'verify_signature': False,
@@ -135,7 +138,10 @@ def rest_auth_attach(user: User, auth_config: AuthConfigRest) -> AuthResponse:
     return auth_response
 
 
-def rest_authenticator(user: User, schema: dict) -> AuthResponse:
+def rest_authenticator(
+    user: User,
+    schema: Dict,
+) -> AuthResponse:
     """This funciton is a wrapper function that implements the Rest authentication schema.
 
     It takes the credentials of the user and authenticates them on the authentication URL. After authenticating, it fetches the token and adds the token to the
@@ -146,7 +152,11 @@ def rest_authenticator(user: User, schema: dict) -> AuthResponse:
     return rest_auth_attach(user, auth_config)
 
 
-def rest_reauthenticator(user: User, schema: dict, refresh_token: str) -> AuthResponse:
+def rest_reauthenticator(
+    user: User,
+    schema: Dict,
+    refresh_token: str,
+) -> AuthResponse:
     """This funciton is a wrapper function that implements the Rest reauthentication schema.
 
     It takes the user information, the schema information and the refresh token and attempts reauthenticating the user using the refresh token
@@ -159,7 +169,7 @@ def rest_reauthenticator(user: User, schema: dict, refresh_token: str) -> AuthRe
     # First we have to create a payload
     if auth_config['refresh_token_name'] is None or auth_config['refresh_url'] is None:
         raise AuthenticationError('Refresh Token found, please provide the refresh token name and the refresh URL')
-    payload: dict = {auth_config['refresh_token_name']: refresh_token}
+    payload: Dict = {auth_config['refresh_token_name']: refresh_token}
 
     # Now we have to send the payload
     response = requests.request(auth_config['method'], auth_config['refresh_url'], json=payload)
@@ -176,7 +186,7 @@ def rest_reauthenticator(user: User, schema: dict, refresh_token: str) -> AuthRe
 
     # Prepare the header in order to fetch the token
     # We are creating a header for the token because the helper function '_extract_token' works like that
-    headers: dict[str, str] = {}
+    headers: Dict[str, str] = {}
 
     # Now we want to append the authentication headers
     # There are two parts
@@ -219,7 +229,7 @@ def rest_reauthenticator(user: User, schema: dict, refresh_token: str) -> AuthRe
     token = auth_response['headers'][next(iter(headers))].split(' ')[1]
 
     # Add the token and the expiry time to the user manager in order to be accessed by other parts of the program
-    expiry_time: float | None = None
+    expiry_time: Optional[float] = None
     try:
         expiry_time = jwt.decode(token, options={
             'verify_signature': False,
