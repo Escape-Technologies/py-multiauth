@@ -7,7 +7,7 @@ from typing import Dict
 import pytest
 
 from multiauth import MultiAuth
-from multiauth.providers.manual import manual_authenticator
+from multiauth.providers.manual import manual_authenticator, serialize_headers
 
 
 @pytest.fixture
@@ -22,11 +22,11 @@ def auth() -> Dict:
 
 
 @pytest.fixture
-def user_config_credentials() -> Dict:
+def users_one_header() -> Dict:
     """Return a fixture of users."""
 
     return {
-        'user_lambda': {
+        'manual_user': {
             'auth': 'manual_headers',
             'headers': {
                 'Authorization': 'Bearer 12345'
@@ -36,54 +36,88 @@ def user_config_credentials() -> Dict:
 
 
 @pytest.fixture
-def user_config_headers() -> Dict:
+def users_two_headers() -> Dict:
     """Return a fixture of users."""
 
     return {
-        'user_lambda': {
+        'manual_user': {
             'auth': 'manual_headers',
             'headers': {
-                'Authorization': 'Bearer 12345'
+                'Authorization': 'Bearer 12345',
+                'Content-Type': 'application/json'
             }
         },
     }
 
 
-def test_manual_authentication_credentials(user_config_credentials: Dict, auth: Dict) -> None:
+def test_manual_authentication_headers(
+    users_one_header: Dict,
+    auth: Dict,
+) -> None:
     """Test manual authentication."""
 
-    instance = MultiAuth(auth, user_config_credentials)
+    instance = MultiAuth(auth, users_one_header)
     instance.authenticate_users()
 
-    assert instance.headers['user_lambda']['Authorization'] == 'Bearer 12345'
+    assert instance.headers['manual_user']['Authorization'] == 'Bearer 12345'
 
-    headers, _ = instance.authenticate('user_lambda')
+    headers, _ = instance.authenticate('manual_user')
+
+    assert len(headers) == 1
     assert headers['Authorization'] == 'Bearer 12345'
 
 
-def test_manual_authentication_headers(user_config_headers: Dict, auth: Dict) -> None:
+def test_manual_authentication_credentials(
+    users_two_headers: Dict,
+    auth: Dict,
+) -> None:
     """Test manual authentication."""
 
-    instance = MultiAuth(auth, user_config_headers)
+    instance = MultiAuth(auth, users_two_headers)
     instance.authenticate_users()
 
-    assert instance.headers['user_lambda']['Authorization'] == 'Bearer 12345'
+    assert instance.headers['manual_user']['Authorization'] == 'Bearer 12345'
 
-    headers, _ = instance.authenticate('user_lambda')
+    headers, _ = instance.authenticate('manual_user')
+
+    assert len(headers) == 2
     assert headers['Authorization'] == 'Bearer 12345'
+    assert headers['Content-Type'] == 'application/json'
 
 
-def test_manual_handler_credentials(user_config_credentials: Dict, auth: Dict) -> None:
+def test_manual_handler_headers(
+    users_one_header: Dict,
+    auth: Dict,
+) -> None:
     """Test manual handler."""
 
-    auth_response = manual_authenticator(MultiAuth.serialize_users(auth, user_config_credentials)['user_lambda'])
+    auth_response = manual_authenticator(MultiAuth.serialize_users(auth, users_one_header)['manual_user'])
 
     assert auth_response['headers']['Authorization'] == 'Bearer 12345'
 
 
-def test_manual_handler_headers(user_config_headers: Dict, auth: Dict) -> None:
-    """Test manual handler."""
+def test_serialize_headers(
+    auth: Dict,
+    users_one_header: Dict,
+    users_two_headers: Dict,
+) -> None:
+    """Test serialize_headers."""
 
-    auth_response = manual_authenticator(MultiAuth.serialize_users(auth, user_config_headers)['user_lambda'])
+    headers_str = 'Authorization: Bearer 12345'
+    headers_list = ['Authorization: Bearer 12345', 'Content-Type: application/json']
+    headers_dict = {'Authorization': 'Bearer 12345', 'Content-Type': 'application/json'}
 
-    assert auth_response['headers']['Authorization'] == 'Bearer 12345'
+    auths_str, users_str = serialize_headers(headers_str)
+
+    assert auths_str == auth
+    assert users_str == users_one_header
+
+    auths_list, users_list = serialize_headers(headers_list)
+
+    assert auths_list == auth
+    assert users_list == users_two_headers
+
+    auths_dict, users_dict = serialize_headers(headers_dict)
+
+    assert auths_dict == auth
+    assert users_dict == users_two_headers
