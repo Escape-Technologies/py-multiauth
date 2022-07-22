@@ -4,22 +4,25 @@ import datetime
 import hashlib
 import hmac
 from copy import deepcopy
-from typing import Any, cast
+from typing import Any, Dict, cast
 from urllib.parse import urlparse
 
 import boto3
 import jwt
 from pycognito.aws_srp import AWSSRP  # type: ignore[import]
 
+from multiauth.entities.errors import AuthenticationError
+from multiauth.entities.http import HTTPMethod, Location
+from multiauth.entities.main import AuthAWSType, AuthResponse, AuthTech
+from multiauth.entities.providers.aws import AuthConfigAWS, AuthHashalgorithmHawkandAWS
 from multiauth.helpers import get_secret_hash
 from multiauth.manager import User
-from multiauth.types.errors import AuthenticationError
-from multiauth.types.http import HTTPMethod, Location
-from multiauth.types.main import AuthAWSType, AuthResponse, AuthTech
-from multiauth.types.providers.aws import AuthConfigAWS, AuthHashalgorithmHawkandAWS
 
 
-def aws_check_type(user: User, schema: dict) -> AuthAWSType:
+def aws_check_type(
+    user: User,
+    schema: Dict,
+) -> AuthAWSType:
     """A function that returns the type of the AWS Authentication."""
 
     auth_config = aws_config_parser(user, schema)
@@ -27,7 +30,10 @@ def aws_check_type(user: User, schema: dict) -> AuthAWSType:
     return auth_config['type']
 
 
-def aws_config_parser(user: User, schema: dict) -> AuthConfigAWS:
+def aws_config_parser(
+    user: User,
+    schema: Dict,
+) -> AuthConfigAWS:
     """This function parses the Digest schema and checks if all necessary fields exist."""
 
     auth_config = AuthConfigAWS({
@@ -90,7 +96,10 @@ def aws_config_parser(user: User, schema: dict) -> AuthConfigAWS:
     return auth_config
 
 
-def aws_user_password_handler(user: User, auth_config: AuthConfigAWS) -> dict:
+def aws_user_password_handler(
+    user: User,
+    auth_config: AuthConfigAWS,
+) -> Dict:
     """This function is the handler for the USER_PASSWORD_AUTH authentication flow."""
 
     # First we have to fetch the user credentials from the user
@@ -100,7 +109,7 @@ def aws_user_password_handler(user: User, auth_config: AuthConfigAWS) -> dict:
     client = boto3.client('cognito-idp', region_name=auth_config['region'])
 
     # Now we have to create the parameters
-    parameters: dict[str, str] = {
+    parameters: Dict[str, str] = {
         'USERNAME': username,
         'PASSWORD': password,
     }
@@ -119,7 +128,10 @@ def aws_user_password_handler(user: User, auth_config: AuthConfigAWS) -> dict:
     return response
 
 
-def aws_user_srp_handler(user: User, auth_config: AuthConfigAWS) -> dict:
+def aws_user_srp_handler(
+    user: User,
+    auth_config: AuthConfigAWS,
+) -> Dict:
     """This function is the handler for the USER_SRP_AUTH authentication flow."""
 
     # First we have to fetch the user credentials from the user
@@ -141,11 +153,14 @@ def aws_user_srp_handler(user: User, auth_config: AuthConfigAWS) -> dict:
     return connection.authenticate_user()
 
 
-def aws_auth_attach(user: User, auth_config: AuthConfigAWS) -> AuthResponse:
+def aws_auth_attach(
+    user: User,
+    auth_config: AuthConfigAWS,
+) -> AuthResponse:
     """This function attaches the user credentials to the schema and generates the proper authentication response."""
 
-    aws_response: dict = {}
-    headers: dict[str, str] = {}
+    aws_response: Dict = {}
+    headers: Dict[str, str] = {}
 
     # First we need to check which authentication flow is used
     if auth_config['type'] == AuthAWSType.USER_PASSWORD_AUTH:
@@ -158,7 +173,7 @@ def aws_auth_attach(user: User, auth_config: AuthConfigAWS) -> AuthResponse:
         if not user.credentials.get('refresh_token'):
             raise AuthenticationError('Please provide the user with refresh token')
         refresh_token = user.credentials['refresh_token']
-        return aws_reauthenticator(user, cast(dict, auth_config), refresh_token, parse=False)
+        return aws_reauthenticator(user, cast(Dict, auth_config), refresh_token, parse=False)
     else:
         return AuthResponse({'tech': AuthTech.AWS, 'headers': {}})
 
@@ -208,7 +223,10 @@ def aws_auth_attach(user: User, auth_config: AuthConfigAWS) -> AuthResponse:
     return auth_response
 
 
-def aws_authenticator(user: User, schema: dict) -> AuthResponse:
+def aws_authenticator(
+    user: User,
+    schema: Dict,
+) -> AuthResponse:
     """This function is a wrapper function that implements the AWS authentication schema.
 
     The AWS authentication is based on creating a signature based on the access key and the secret key to the API. After creating this signature, the signature
@@ -219,7 +237,12 @@ def aws_authenticator(user: User, schema: dict) -> AuthResponse:
     return aws_auth_attach(user, auth_config)
 
 
-def aws_reauthenticator(user: User, schema: dict, refresh_token: str, parse: bool = True) -> AuthResponse:
+def aws_reauthenticator(
+    user: User,
+    schema: Dict,
+    refresh_token: str,
+    parse: bool = True,
+) -> AuthResponse:
     """This function is a function that implements the AWS Authentication reauthentication.
 
     It takes schema and user as input, and it starts tth reauthentication process using the refreash token
@@ -238,7 +261,7 @@ def aws_reauthenticator(user: User, schema: dict, refresh_token: str, parse: boo
     client = boto3.client('cognito-idp', region_name=auth_config['region'])
 
     # Now we have to create the parameters
-    parameters: dict[str, str] = {
+    parameters: Dict[str, str] = {
         'REFRESH_TOKEN': refresh_token,
     }
 
@@ -275,7 +298,7 @@ def aws_reauthenticator(user: User, schema: dict, refresh_token: str, parse: boo
     user.refresh_token = new_refresh_token
 
     # Now we to have prepare the header
-    headers: dict[str, str] = {}
+    headers: Dict[str, str] = {}
 
     if not auth_config['header_name'] is not None:
         headers['Authorization'] = ''
@@ -309,8 +332,8 @@ def aws_reauthenticator(user: User, schema: dict, refresh_token: str, parse: boo
 #pylint: disable=line-too-long, too-many-locals
 def aws_signature(
     user: User,
-    schema: dict,
-    headers: dict[str, str],
+    schema: Dict,
+    headers: Dict[str, str],
     method: HTTPMethod,
     payload: Any,
     url: str,
@@ -358,7 +381,7 @@ def aws_signature(
     path = parsed_url.path
 
     # Add optional header
-    _headers: dict[str, str] = deepcopy(headers)
+    _headers: Dict[str, str] = deepcopy(headers)
     if auth_config['headers'] is not None:
         for name, value in auth_config['headers'].items():
             # Resolving duplicate keys

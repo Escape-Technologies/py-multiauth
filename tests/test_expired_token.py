@@ -4,8 +4,8 @@
 
 import pytest
 
+from multiauth.entities.errors import ExpiredTokenError
 from multiauth.manager import User
-from multiauth.types.errors import ExpiredTokenError
 
 
 @pytest.fixture

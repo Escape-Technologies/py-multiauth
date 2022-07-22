@@ -1,20 +1,22 @@
 """Parse a response to extract auth credentials."""
 
+from typing import Dict, Optional
+
+from multiauth.entities.http import HTTPMethod
+from multiauth.entities.main import AuthResponse, AuthTech
 from multiauth.manager import User
 from multiauth.providers import apikey_authenticator, aws_authenticator, aws_reauthenticator, basic_authenticator, digest_authenticator, graphql_authenticator
 from multiauth.providers import manual_authenticator, oauth_authenticator, oauth_reauthenticator, rest_authenticator
 from multiauth.providers.graphql import graphql_reauthenticator
 from multiauth.providers.rest import rest_reauthenticator
-from multiauth.types.http import HTTPMethod
-from multiauth.types.main import AuthResponse, AuthTech
 
 
 # pylint: disable=no-else-return, too-many-return-statements
 def auth_handler(
-    schemas: dict,
+    schemas: Dict,
     user: User,
-    method: HTTPMethod | None = None,
-) -> AuthResponse | None:
+    method: Optional[HTTPMethod] = None,
+) -> Optional[AuthResponse]:
     """Handles the authentication and returns the authentication response.
 
     This function takes the current working user as input and checks the schema that the user needs. After getting the schema, it executes the appropriate
@@ -25,7 +27,7 @@ def auth_handler(
     schema = schemas[user.auth_schema]
 
     authentication: AuthTech = user.auth_tech
-    response: AuthResponse | None = None
+    response: Optional[AuthResponse] = None
     if authentication == AuthTech.APIKEY:
         response = apikey_authenticator(user, schema)
 
@@ -62,10 +64,10 @@ def auth_handler(
 
 
 def reauth_handler(
-    schemas: dict,
+    schemas: Dict,
     user: User,
     refresh_token: str,
-) -> AuthResponse | None:
+) -> Optional[AuthResponse]:
     """Handles the reauthentication and returns the new authentication response.
 
     This function takes the current working user as input and checks the schema that the user needs. After getting the schema, it executes the appropriate

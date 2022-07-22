@@ -1,9 +1,9 @@
 """Oauth provider."""
 
 from enum import Enum, unique
-from typing import TypedDict
+from typing import Dict, Optional, TypedDict
 
-from multiauth.types.http import Location
+from multiauth.entities.http import Location
 
 
 @unique
@@ -36,22 +36,22 @@ class AuthOAuthResponse(TypedDict):
 
     """The format of the OAuth access token response according to the official documentation."""
     access_token: str
-    expires_in: float | None
-    refresh_token: str | None
+    expires_in: Optional[float]
+    refresh_token: Optional[str]
 
 
 class AuthConfigOAuth(TypedDict):
 
     """Authentication Configuration Parameters of the OAuth Method."""
     grant_type: AuthOAuthGrantType
-    authentication_endpoint: str | None
-    token_endpoint: str | None
-    callback_url: str | None
+    authentication_endpoint: Optional[str]
+    token_endpoint: Optional[str]
+    callback_url: Optional[str]
     scope: str
     header_prefix: str
     auth_location: AuthOAuthlocation
     location: Location
-    state: str | None
-    # challenge_method: AuthHashAlgorithmOAuth | None
-    code_verifier: str | None
-    headers: dict[str, str] | None
+    state: Optional[str]
+    # challenge_method: Optional[AuthHashAlgorithmOAuth]
+    code_verifier: Optional[str]
+    headers: Optional[Dict[str, str]]

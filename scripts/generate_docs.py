@@ -2,7 +2,7 @@
 
 import json
 from copy import deepcopy
-from typing import Any, cast, TypedDict
+from typing import List, Dict, Any, cast, TypedDict, Optional
 from importlib import resources
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape
@@ -20,18 +20,18 @@ class AuthProperty(TypedDict):
     optional: bool
     type: str
     description: str
-    value: str | None
-    enum: list[str] | None
+    value: Optional[str]
+    enum: Optional[List[str]]
 
 
 AuthName = str
 ParameterName = str
-AuthParameter = dict[ParameterName, AuthProperty]
-AuthSchema = dict[AuthName, list[dict[AuthName, AuthParameter]]]
-SubSchema = dict[AuthName, AuthParameter]
+AuthParameter = Dict[ParameterName, AuthProperty]
+AuthSchema = Dict[AuthName, List[Dict[AuthName, AuthParameter]]]
+SubSchema = Dict[AuthName, AuthParameter]
 
 
-def get_example(schema: dict) -> Any:
+def get_example(schema: Dict) -> Any:
     """From the schema of a parameter find an example."""
 
     if 'enum' in schema:
@@ -40,7 +40,7 @@ def get_example(schema: dict) -> Any:
         return '**value**'
     if schema['type'] == 'object':
         example = {}
-        if 'additionalProperties' in schema and isinstance(schema['additionalProperties'], dict):
+        if 'additionalProperties' in schema and isinstance(schema['additionalProperties'], Dict):
             example['**value**'] = get_example(schema['additionalProperties'])
         for field_name, field in schema['properties'].items():
             example[field_name] = get_example(field)
@@ -66,13 +66,13 @@ def generate_auth_docs() -> None:
     auth_schemas: AuthSchema = {}
 
     # A list which shows which authentication techniques have an optional parameter
-    has_optional: list[bool] = [False for _ in json_schema]
+    has_optional: List[bool] = [False for _ in json_schema]
 
     # The JSON schema for every authentication scheme
-    jsonschema: dict = {'users': {'user1': {'auth': 'schema1'}}, 'auth': {'schema1': {}}}
+    jsonschema: Dict = {'users': {'user1': {'auth': 'schema1'}}, 'auth': {'schema1': {}}}
 
     # All the JSON schemas
-    jsonschemas: list[dict[str, str]] = []
+    jsonschemas: List[Dict[str, str]] = []
 
     # A counter to fill the lists
     count = 0
@@ -167,7 +167,7 @@ def generate_auth_docs() -> None:
                 if auth_property.get('title') is not None:
                     auth_schemas[auth_name][0][auth_name][name]['value'] = auth_property['title']
 
-        the_temp: dict = {}
+        the_temp: Dict = {}
         for schema_name, schema_properties in sub_schema.items():
             original_schema = deepcopy(auth_schemas[auth_name][0][auth_name])
             for schema_property_name, schema_property_value in schema_properties.items():
@@ -205,7 +205,7 @@ def generate_auth_docs() -> None:
             _json_schema['users'][user_name]['**password**'] = '**1234**'
 
         # Now we will build the auth part of the schema
-        temp: dict = {}
+        temp: Dict = {}
 
         if has_optional[count]:
             _json_schema['auth']['schema1']['options'] = {}
@@ -226,7 +226,7 @@ def generate_auth_docs() -> None:
                             _new_json_schema['auth']['schema1']['options'][name] = {'**name**': '**value**'}
                         else:
                             _new_json_schema['auth']['schema1']['options'][name] = '**' + auth_property['type'] + '**'
-                # This is simply to rearange the dict (althought there is no order) so that options is at the end
+                # This is simply to rearange the Dict (althought there is no order) so that options is at the end
                 if _new_json_schema['auth']['schema1'].get('options') is not None:
                     _temp = deepcopy(_new_json_schema['auth']['schema1']['options'])
                     del _new_json_schema['auth']['schema1']['options']

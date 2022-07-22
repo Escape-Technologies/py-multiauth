@@ -1,14 +1,14 @@
 """Implementation of the API Key authentication schema."""
 
-from typing import cast
+from typing import Dict, cast
 
+from multiauth.entities.errors import AuthenticationError
+from multiauth.entities.http import Location
+from multiauth.entities.main import AuthConfigApiKey, AuthResponse, AuthTech
 from multiauth.manager import User
-from multiauth.types.errors import AuthenticationError
-from multiauth.types.http import Location
-from multiauth.types.main import AuthConfigApiKey, AuthResponse, AuthTech
 
 
-def apikey_config_parser(schema: dict) -> AuthConfigApiKey:
+def apikey_config_parser(schema: Dict) -> AuthConfigApiKey:
     """This function parses the API Key schema and checks if all necessary fields exist."""
 
     auth_config = AuthConfigApiKey({
@@ -33,7 +33,10 @@ def apikey_config_parser(schema: dict) -> AuthConfigApiKey:
     return auth_config
 
 
-def apikey_auth_attach(user: User, auth_config: AuthConfigApiKey) -> AuthResponse:
+def apikey_auth_attach(
+    user: User,
+    auth_config: AuthConfigApiKey,
+) -> AuthResponse:
     """This function attaches the user credentials to the schema and generates the proper authentication response."""
 
     auth_response = AuthResponse({
@@ -76,7 +79,10 @@ def apikey_auth_attach(user: User, auth_config: AuthConfigApiKey) -> AuthRespons
     return auth_response
 
 
-def apikey_authenticator(user: User, schema: dict) -> AuthResponse:
+def apikey_authenticator(
+    user: User,
+    schema: Dict,
+) -> AuthResponse:
     """This funciton is a wrapper function that implements the API Key authentication schema.
 
     It simply takes the API key from the user and addes the api key either to the header of the HTTP request or as a parameter of the URL

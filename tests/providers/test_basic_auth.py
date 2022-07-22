@@ -2,17 +2,19 @@
 
 """This is a test to check if the Basic authentication is working."""
 
+from typing import Dict
+
 import pytest
 import requests
 from pytest_mock import MockerFixture
 
+from multiauth.entities.main import AuthTech
 from multiauth.manager import User
 from multiauth.providers.basic import basic_authenticator
-from multiauth.types.main import AuthTech
 
 
 @pytest.fixture
-def auth_schema() -> dict:
+def auth_schema() -> Dict:
     """Test auth schema."""
 
     return {'tech': 'basic'}
@@ -38,7 +40,7 @@ def user_config() -> User:
     })
 
 
-def test_basic_authentication(mocker: MockerFixture, user_config: User, auth_schema: dict) -> None:
+def test_basic_authentication(mocker: MockerFixture, user_config: User, auth_schema: Dict) -> None:
     """Function that makes the test on the basic authentication."""
 
     auth_response = basic_authenticator(user_config, auth_schema)
