@@ -61,7 +61,7 @@ def _manual_fill(headers: dict[str, str] | list[str] | str) -> RCFile:
     rcfile: RCFile = {
         'auth': {
             auth_name: {
-                'tech': AuthTech.MANUAL,
+                'tech': AuthTech.MANUAL.value,
             }
         },
         'users': {
@@ -93,7 +93,9 @@ def _basic_fill(headers: dict[str, str], authorization_header: str) -> RCFile:
             }
         },
         'auth': {
-            'auth_basic': AuthTech.BASIC
+            'auth_basic': {
+                'tech': AuthTech.BASIC.value
+            }
         },
     }
 
@@ -116,18 +118,19 @@ def _rest_fill(rest_document: dict, url: str, method: HTTPMethod, headers: dict[
         'users': {
             'user1': {
                 'auth': 'schema1'
-            }
+            } | rest_document,
         },
         'auth': {
-            'schema1': {}
+            'schema1': {
+                'tech': AuthTech.REST.value,
+                'url': url,
+                'method': method,
+                'options': {
+                    'headers': headers,
+                }
+            }
         },
     }
-
-    rcfile['users']['user1'].update(rest_document)
-    rcfile['auth']['schema1']['tech'] = 'rest'
-    rcfile['auth']['schema1']['url'] = url
-    rcfile['auth']['schema1']['method'] = method
-    rcfile['auth']['schema1']['options'] = {'headers': headers}
 
     return rcfile
 
