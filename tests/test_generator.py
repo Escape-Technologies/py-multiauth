@@ -3,7 +3,7 @@
 """Test generator."""
 import pytest
 
-from multiauth.generator import curl_to_escaperc, manual_fill
+from multiauth.generator import _manual_fill, curl_to_escaperc
 
 from .providers.test_manual_auth import auth, users_one_header, users_two_headers  # noqa
 
@@ -208,17 +208,17 @@ def test_serialize_headers(auth: dict, users_one_header: dict, users_two_headers
     headers_list = ['Authorization: Bearer 12345', 'Content-Type: application/json']
     headers_dict = {'Authorization': 'Bearer 12345', 'Content-Type': 'application/json'}
 
-    rcfile = manual_fill(headers_str)
+    rcfile = _manual_fill(headers_str)
 
     assert rcfile['auth'] == auth
     assert rcfile['users'] == users_one_header
 
-    rcfile = manual_fill(headers_list)
+    rcfile = _manual_fill(headers_list)
 
     assert rcfile['auth'] == auth
     assert rcfile['users'] == users_two_headers
 
-    rcfile = manual_fill(headers_dict)
+    rcfile = _manual_fill(headers_dict)
 
     assert rcfile['auth'] == auth
     assert rcfile['users'] == users_two_headers

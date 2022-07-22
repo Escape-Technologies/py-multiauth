@@ -51,7 +51,7 @@ def deserialize_headers(headers: dict[str, str] | list[str] | str) -> dict[str, 
     return headers
 
 
-def manual_fill(headers: dict[str, str] | list[str] | str) -> RCFile:
+def _manual_fill(headers: dict[str, str] | list[str] | str) -> RCFile:
     """Serialize raw headers in "manual" auth format."""
 
     headers_dict = deserialize_headers(headers)
@@ -75,7 +75,7 @@ def manual_fill(headers: dict[str, str] | list[str] | str) -> RCFile:
     return rcfile
 
 
-def basic_fill(headers: dict[str, str], authorization_header: str) -> RCFile:
+def _basic_fill(headers: dict[str, str], authorization_header: str) -> RCFile:
     """Convert basic headers to curl."""
 
     # Then the type of authentification is basic
@@ -108,7 +108,7 @@ def basic_fill(headers: dict[str, str], authorization_header: str) -> RCFile:
     return rcfile
 
 
-def rest_fill(rest_document: dict, url: str, method: HTTPMethod, headers: dict[str, str]) -> RCFile:
+def _rest_fill(rest_document: dict, url: str, method: HTTPMethod, headers: dict[str, str]) -> RCFile:
     """This function fills the rest file."""
 
     # The JSON schema for every authentication scheme
@@ -132,7 +132,7 @@ def rest_fill(rest_document: dict, url: str, method: HTTPMethod, headers: dict[s
     return rcfile
 
 
-def graphql_fill(graphql_document: dict, url: str, method: HTTPMethod, headers: dict[str, str], variables: dict = None) -> RCFile:
+def _graphql_fill(graphql_document: dict, url: str, method: HTTPMethod, headers: dict[str, str], variables: dict = None) -> RCFile:
     """This function fills the graphql escaperc file."""
 
     # The JSON schema for every authentication scheme
@@ -196,7 +196,7 @@ def curl_to_escaperc(curl: str) -> Optional[RCFile]:
         if 'authorization' in header_key.lower():
             if 'basic' in header_value.lower():
                 logger.info('Type of authetication detected: Basic')
-                return basic_fill(parsed_content.headers, header_value)
+                return _basic_fill(parsed_content.headers, header_value)
 
     # Then we check if its REST or GraphQL authentication: check if the data that we have is graphql data
     query: dict = {}
@@ -213,13 +213,13 @@ def curl_to_escaperc(curl: str) -> Optional[RCFile]:
             logger.info('Type of authetication detected: GraphQL')
             graphql_tree = graphql.parse(query['query']).to_dict()
             if query.get('variables') is not None:
-                rcfile = graphql_fill(graphql_tree, parsed_content.url, parsed_content.method, parsed_content.headers, query['variables'])
+                rcfile = _graphql_fill(graphql_tree, parsed_content.url, parsed_content.method, parsed_content.headers, query['variables'])
             else:
-                rcfile = graphql_fill(graphql_tree, parsed_content.url, parsed_content.method, parsed_content.headers)
+                rcfile = _graphql_fill(graphql_tree, parsed_content.url, parsed_content.method, parsed_content.headers)
 
         else:
             logger.info('Type of authetication detected: REST')
-            rcfile = rest_fill(query, parsed_content.url, parsed_content.method, parsed_content.headers)
+            rcfile = _rest_fill(query, parsed_content.url, parsed_content.method, parsed_content.headers)
 
     else:
         # If we reached this else then the request sent is not being sent as application/json and is being sent as something else
@@ -239,14 +239,14 @@ def curl_to_escaperc(curl: str) -> Optional[RCFile]:
                 logger.info('Type of authetication detected: GraphQL')
                 graphql_tree = graphql.parse(new_query['query']).to_dict()
                 if new_query.get('variables') is not None:
-                    rcfile = graphql_fill(graphql_tree, parsed_content.url, parsed_content.method, parsed_content.headers, new_query['variables'])
+                    rcfile = _graphql_fill(graphql_tree, parsed_content.url, parsed_content.method, parsed_content.headers, new_query['variables'])
                 else:
-                    rcfile = graphql_fill(graphql_tree, parsed_content.url, parsed_content.method, parsed_content.headers)
+                    rcfile = _graphql_fill(graphql_tree, parsed_content.url, parsed_content.method, parsed_content.headers)
 
             else:
                 # Then the authentication type is rest
                 logger.info('Type of authetication detected: REST')
-                rcfile = rest_fill(new_query, parsed_content.url, parsed_content.method, parsed_content.headers)
+                rcfile = _rest_fill(new_query, parsed_content.url, parsed_content.method, parsed_content.headers)
 
         else:
             return None
