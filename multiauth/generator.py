@@ -206,29 +206,26 @@ def curl_to_escaperc(curl: str) -> Optional[RCFile]:
                 logger.info('Type of authetication detected: Manual Headers')
                 return _manual_fill(parsed_content.headers)
 
-    if parsed_content.data is None:
-        return None
-
-    query: dict | None = None
-    try:
-        query = json.loads(parsed_content.data)
-    except Exception:
-        # If we reached this else then the request sent is not being sent as application/json and is most probably sent as application/x-www-form-urlencoded
+    if parsed_content.data is not None:
+        query: dict | None = None
         try:
-            json_data = urlencoded_to_json(parsed_content.data)
-            if json_data is not None:
-                query = json.loads(json_data)
+            query = json.loads(parsed_content.data)
         except Exception:
-            logger.debug('The `data` attribute of the cURL is not JSONable')
+            try:  # the request sent is not sent as application/json, let's try application/x-www-form-urlencoded
+                json_data = urlencoded_to_json(parsed_content.data)
+                if json_data is not None:
+                    query = json.loads(json_data)
+            except Exception:
+                logger.debug('The `data` attribute of the cURL is not JSONable')
 
-    if query is not None:
-        if query.get('query') is not None:
-            logger.info('Type of authetication detected: GraphQL')
-            graphql_tree = graphql.parse(query['query']).to_dict()
-            return _graphql_fill(graphql_tree, parsed_content.url, parsed_content.method, parsed_content.headers, query.get('variables'))
+        if query is not None:
+            if query.get('query') is not None:
+                logger.info('Type of authetication detected: GraphQL')
+                graphql_tree = graphql.parse(query['query']).to_dict()
+                return _graphql_fill(graphql_tree, parsed_content.url, parsed_content.method, parsed_content.headers, query.get('variables'))
 
-        logger.info('Type of authetication detected: REST')
-        return _rest_fill(query, parsed_content.url, parsed_content.method, parsed_content.headers)
+            logger.info('Type of authetication detected: REST')
+            return _rest_fill(query, parsed_content.url, parsed_content.method, parsed_content.headers)
 
     logger.info('We could not determine any authentication method from the cURL.')
     return None
