@@ -1,12 +1,16 @@
 """Implementation of the API Key authentication schema."""
 
 import base64
+from typing import Dict
 
+from multiauth.entities.main import AuthResponse, AuthTech
 from multiauth.manager import User
-from multiauth.types.main import AuthResponse, AuthTech
 
 
-def basic_authenticator(user: User, schema: dict) -> AuthResponse:
+def basic_authenticator(
+    user: User,
+    schema: Dict,
+) -> AuthResponse:
     """This function implement the `Basic Authentication` Schema.
 
     It simply takes the username and password from the current working user, appends the password to the username, and base64 encode them. Finally it adds them

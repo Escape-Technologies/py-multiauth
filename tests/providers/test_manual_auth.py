@@ -2,6 +2,8 @@
 
 """Basic example of what a developper would do to start a flow."""
 
+from typing import Dict
+
 import pytest
 
 from multiauth import MultiAuth
@@ -9,7 +11,7 @@ from multiauth.providers.manual import manual_authenticator
 
 
 @pytest.fixture
-def auth() -> dict:
+def auth() -> Dict:
     """Return a fixture of schemas."""
 
     return {
@@ -20,7 +22,7 @@ def auth() -> dict:
 
 
 @pytest.fixture
-def users_one_header() -> dict:
+def users_one_header() -> Dict:
     """Return a fixture of users."""
 
     return {
@@ -34,7 +36,7 @@ def users_one_header() -> dict:
 
 
 @pytest.fixture
-def users_two_headers() -> dict:
+def users_two_headers() -> Dict:
     """Return a fixture of users."""
 
     return {
@@ -48,7 +50,10 @@ def users_two_headers() -> dict:
     }
 
 
-def test_manual_authentication_headers(users_one_header: dict, auth: dict) -> None:
+def test_manual_authentication_headers(
+    users_one_header: Dict,
+    auth: Dict,
+) -> None:
     """Test manual authentication."""
 
     instance = MultiAuth(auth, users_one_header)
@@ -62,7 +67,10 @@ def test_manual_authentication_headers(users_one_header: dict, auth: dict) -> No
     assert headers['Authorization'] == 'Bearer 12345'
 
 
-def test_manual_authentication_credentials(users_two_headers: dict, auth: dict) -> None:
+def test_manual_authentication_credentials(
+    users_two_headers: Dict,
+    auth: Dict,
+) -> None:
     """Test manual authentication."""
 
     instance = MultiAuth(auth, users_two_headers)
@@ -77,7 +85,10 @@ def test_manual_authentication_credentials(users_two_headers: dict, auth: dict) 
     assert headers['Content-Type'] == 'application/json'
 
 
-def test_manual_handler_headers(users_one_header: dict, auth: dict) -> None:
+def test_manual_handler_headers(
+    users_one_header: Dict,
+    auth: Dict,
+) -> None:
     """Test manual handler."""
 
     auth_response = manual_authenticator(MultiAuth.serialize_users(auth, users_one_header)['manual_user'])

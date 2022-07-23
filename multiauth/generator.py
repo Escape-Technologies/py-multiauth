@@ -7,12 +7,13 @@ from urllib.parse import parse_qs
 
 import graphql
 
-from multiauth.config import PY_MULTIAUTH_LOGGER as logger
-from multiauth.types.http import HTTPMethod
-from multiauth.types.main import AuthTech, RCFile
-from multiauth.utils import uncurl
+from multiauth.entities.http import HTTPMethod
+from multiauth.entities.main import AuthTech, RCFile
+from multiauth.utils import setup_logger, uncurl
 
 POTENTIAL_FIELD_NAME = ['token']
+
+LOGGER = setup_logger()
 
 
 def urlencoded_to_json(data: str | None) -> str | None:
@@ -199,11 +200,11 @@ def curl_to_escaperc(curl: str) -> Optional[RCFile]:
     for header_key, header_value in parsed_content.headers.items():
         if 'authorization' in header_key.lower():
             if 'basic' in header_value.lower():
-                logger.info('Type of authetication detected: Basic')
+                LOGGER.info('Type of authetication detected: Basic')
                 return _basic_fill(parsed_content.headers, header_value)
             # Here we assume it's manual headers.
             if parsed_content.data is None:
-                logger.info('Type of authetication detected: Manual Headers')
+                LOGGER.info('Type of authetication detected: Manual Headers')
                 return _manual_fill(parsed_content.headers)
 
     if parsed_content.data is not None:
@@ -216,16 +217,16 @@ def curl_to_escaperc(curl: str) -> Optional[RCFile]:
                 if json_data is not None:
                     query = json.loads(json_data)
             except Exception:
-                logger.debug('The `data` attribute of the cURL is not JSONable')
+                LOGGER.debug('The `data` attribute of the cURL is not JSONable')
 
         if query is not None:
             if query.get('query') is not None:
-                logger.info('Type of authetication detected: GraphQL')
+                LOGGER.info('Type of authetication detected: GraphQL')
                 graphql_tree = graphql.parse(query['query']).to_dict()
                 return _graphql_fill(graphql_tree, parsed_content.url, parsed_content.method, parsed_content.headers, query.get('variables'))
 
-            logger.info('Type of authetication detected: REST')
+            LOGGER.info('Type of authetication detected: REST')
             return _rest_fill(query, parsed_content.url, parsed_content.method, parsed_content.headers)
 
-    logger.info('We could not determine any authentication method from the cURL.')
+    LOGGER.info('We could not determine any authentication method from the cURL.')
     return None

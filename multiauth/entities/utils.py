@@ -2,7 +2,7 @@
 
 from typing import NamedTuple
 
-from multiauth.types.http import HTTPMethod
+from multiauth.entities.http import HTTPMethod
 
 
 class Credentials(NamedTuple):

@@ -1,11 +1,11 @@
 """Custom types of authentication module."""
 
 from enum import Enum, unique
-from typing import Any, TypedDict
+from typing import Any, Dict, Optional, TypedDict, Union
 
-from multiauth.types.http import HTTPMethod, Location
-from multiauth.types.providers.aws import AuthAWSType
-from multiauth.types.providers.oauth import AuthOAuthGrantType
+from multiauth.entities.http import HTTPMethod, Location
+from multiauth.entities.providers.aws import AuthAWSType
+from multiauth.entities.providers.oauth import AuthOAuthGrantType
 
 
 @unique
@@ -41,12 +41,12 @@ class AuthTech(str, Enum):
 class AuthDigestChallenge(TypedDict):
 
     """The format of the challenge in a digest authentication schema as specified by the RFC 2617."""
-    realm: str | None
-    domain: str | None
-    nonce: str | None
-    opaque: str | None
-    algorithm: AuthHashAlgorithmDigest | None
-    qop_options: str | None
+    realm: Optional[str]
+    domain: Optional[str]
+    nonce: Optional[str]
+    opaque: Optional[str]
+    algorithm: Optional[AuthHashAlgorithmDigest]
+    qop_options: Optional[str]
 
 
 class AuthConfigApiKey(TypedDict):
@@ -54,8 +54,8 @@ class AuthConfigApiKey(TypedDict):
     """Authentication Configuration Parameters of the Api Key Method."""
     location: Location
     header_name: str
-    header_prefix: str | None
-    headers: dict[str, str] | None
+    header_prefix: Optional[str]
+    headers: Optional[Dict[str, str]]
 
 
 class AuthConfigDigest(TypedDict):
@@ -67,18 +67,18 @@ class AuthConfigDigest(TypedDict):
     algorithm: AuthHashAlgorithmDigest
     domain: str
     method: HTTPMethod
-    qop: str | None
-    nonce_count: str | None
-    client_nonce: str | None
-    opaque: str | None
-    headers: dict[str, str] | None
+    qop: Optional[str]
+    nonce_count: Optional[str]
+    client_nonce: Optional[str]
+    opaque: Optional[str]
+    headers: Optional[Dict[str, str]]
 
 
 class AuthResponse(TypedDict):
 
     """The Processed Authentication Configuration."""
     tech: AuthTech
-    headers: dict[str, str]
+    headers: Dict[str, str]
 
 
 Token = str
@@ -93,36 +93,30 @@ class RCFile(TypedDict):
 
 class JWTToken(TypedDict):
 
-    """This class finds all the registered claims in the JWT token payload."""
+    """This class finds all the registered claims in the JWT token payload.
 
-    # Signature algorithm
+    Attributes:
+        sig: Signature algorthm used in the JWT token.
+        iss: Issuer of the JWT token.
+        sub: Subject of the JWT token.
+        aud: Audience of the JWT token -> intended for.
+        exp: Expiration time of the JWT token.
+        nbf: Identifies the time before which the JWT token is not yet valid.
+        iat: Issued at time of the JWT token.
+        jti: JWT token identifier.
+        other: Other claims in the JWT token.
+    """
+
     sig: str
-
-    # Identifies who isssued the JWT token
-    iss: str | None
-
-    # Identifies who the token is refered to
-    sub: str | None
-
-    # Identitfies who the token is intended for
-    aud: str | None
-
-    # Expiration Time
-    exp: str | None
-
-    # Identifies the time before which the JWT token must not be accepted
-    nbf: str | None
-
-    # Issued Time
-    iat: str | None
-
-    # JWT ID
-    jti: str | None
-
-    # Custom Names
-    other: dict[Any, Any]
+    iss: Optional[str]
+    sub: Optional[str]
+    aud: Optional[str]
+    exp: Optional[str]
+    nbf: Optional[str]
+    iat: Optional[str]
+    jti: Optional[str]
+    other: Dict[Any, Any]
 
 
 # Helper Entities
-
-AuthType = AuthAWSType | AuthOAuthGrantType
+AuthType = Union[AuthAWSType, AuthOAuthGrantType]
