@@ -11,17 +11,17 @@ from .providers.test_manual_auth import auth, users_one_header, users_two_header
 @pytest.fixture
 def graphql_curl_with_input_object_and_no_var() -> str:
     """Test auth schema."""
-    return r"""curl --location --request POST 'https://apismxu6skxg-backend.functions.fnc.fr-par.scw.cloud/graphql' \
+    return r"""curl --location --request POST 'https://qhgslipjmw.com/graphql' \
 --header 'Content-Type: application/json' \
---data-raw '{"query":"mutation {\r\n    login(userLoginInput: {email: \"karim.rustom@escape.tech\", password: \"frenchfries\"}){\r\n        token\r\n    }\r\n}","variables":{}}'"""
+--data-raw '{"query":"mutation {\r\n    login(userLoginInput: {email: \"LoZhylgLX8@Nuz0bhEKMY.com\", password: \"8ua36eYKlN\"}){\r\n        token\r\n    }\r\n}","variables":{}}'"""
 
 
 @pytest.fixture
 def graphql_curl_with_input_object_and_var() -> str:
     """Test auth schema."""
-    return r"""curl --location --request POST 'https://apismxu6skxg-backend.functions.fnc.fr-par.scw.cloud/graphql' \
+    return r"""curl --location --request POST 'https://qhgslipjmw.com/graphql' \
 --header 'Content-Type: application/json' \
---data-raw '{"query":"mutation ($Login: UserLoginInput!){\r\n    login(userLoginInput: $Login){\r\n        token\r\n    }\r\n}","variables":{"Login":{"email":"karim.rustom@escape.tech","password":"frenchfries"}}}'"""
+--data-raw '{"query":"mutation ($Login: UserLoginInput!){\r\n    login(userLoginInput: $Login){\r\n        token\r\n    }\r\n}","variables":{"Login":{"email":"LoZhylgLX8@Nuz0bhEKMY.com","password":"8ua36eYKlN"}}}'"""
 
 
 @pytest.fixture
@@ -29,16 +29,16 @@ def graphql_curl_with_normal_graphql_query() -> str:
     """Test auth schema."""
     return r"""curl --location --request POST 'https://www.terrang.fr/graphql' \
 --header 'Content-Type: application/json' \
---data-raw '{"query":"mutation {\r\n    authenticateUser(username: \"jw.anon.5172@gmail.com\", password: \"Wj7UxfFTyzgPVM\"){\r\n        success\r\n    }\r\n}","variables":{"Login":{"email":"karim.rustom@escape.tech","password":"frenchfries"}}}'"""
+--data-raw '{"query":"mutation {\r\n    authenticateUser(username: \"ohtmjdkyhx@oergasjvhp.com\", password: \"Wj7UxfFTyzgPVM\"){\r\n        success\r\n    }\r\n}","variables":{"Login":{"email":"LoZhylgLX8@Nuz0bhEKMY.com","password":"8ua36eYKlN"}}}'"""
 
 
 @pytest.fixture
 def rest_curl() -> str:
     """Test auth schema."""
-    return r"""curl --location --request POST 'https://auth.console.fauna.com/login' \
+    return r"""curl --location --request POST 'https://auth.ghqmcblmjc.com/login' \
 --header 'Content-Type: application/json' \
 --data-raw '{
-    "email":"jw.anon.5172@gmail.com",
+    "email":"ohtmjdkyhx@oergasjvhp.com",
     "password":"Wj7UxfFTyzgPVM@"
 }'"""
 
@@ -46,16 +46,16 @@ def rest_curl() -> str:
 @pytest.fixture
 def rest_curl_not_json() -> str:
     """Test auth schema."""
-    return r"""curl --location --request POST 'https://auth.console.fauna.com/login' \
+    return r"""curl --location --request POST 'https://auth.ghqmcblmjc.com/login' \
 --header 'Content-Type: application/x-www-form-urlencoded' \
---data-urlencode 'email=jw.anon.5172@gmail.com' \
+--data-urlencode 'email=ohtmjdkyhx@oergasjvhp.com' \
 --data-urlencode 'password=Wj7UxfFTyzgPVM@'"""
 
 
 @pytest.fixture
 def curl_no_data() -> str:
     """Test auth schema."""
-    return r"""curl --location --request POST 'https://auth.console.fauna.com/login' \
+    return r"""curl --location --request POST 'https://auth.ghqmcblmjc.com/login' \
 --header 'Content-Type: application/x-www-form-urlencoded'"""
 
 
@@ -67,15 +67,15 @@ def graphql_curl_with_input_object_and_no_var_response() -> dict:
             'user1': {
                 'auth': 'schema1',
                 'userLoginInput': {
-                    'email': 'karim.rustom@escape.tech',
-                    'password': 'frenchfries'
+                    'email': 'LoZhylgLX8@Nuz0bhEKMY.com',
+                    'password': '8ua36eYKlN'
                 }
             }
         },
         'auth': {
             'schema1': {
                 'tech': 'graphql',
-                'url': 'https://apismxu6skxg-backend.functions.fnc.fr-par.scw.cloud/graphql',
+                'url': 'https://qhgslipjmw.com/graphql',
                 'method': 'POST',
                 'mutation_name': 'login',
                 'mutation_field': 'token',
@@ -98,15 +98,15 @@ def graphql_curl_with_input_object_and_var_response() -> dict:
             'user1': {
                 'auth': 'schema1',
                 'Login': {
-                    'email': 'karim.rustom@escape.tech',
-                    'password': 'frenchfries'
+                    'email': 'LoZhylgLX8@Nuz0bhEKMY.com',
+                    'password': '8ua36eYKlN'
                 }
             }
         },
         'auth': {
             'schema1': {
                 'tech': 'graphql',
-                'url': 'https://apismxu6skxg-backend.functions.fnc.fr-par.scw.cloud/graphql',
+                'url': 'https://qhgslipjmw.com/graphql',
                 'method': 'POST',
                 'mutation_name': 'login',
                 'mutation_field': 'token',
@@ -128,7 +128,7 @@ def graphql_curl_with_normal_graphql_query_response() -> dict:
         'users': {
             'user1': {
                 'auth': 'schema1',
-                'username': 'jw.anon.5172@gmail.com',
+                'username': 'ohtmjdkyhx@oergasjvhp.com',
                 'password': 'Wj7UxfFTyzgPVM'
             }
         },
@@ -156,14 +156,14 @@ def rest_curl_response() -> dict:
         'users': {
             'user1': {
                 'auth': 'schema1',
-                'email': 'jw.anon.5172@gmail.com',
+                'email': 'ohtmjdkyhx@oergasjvhp.com',
                 'password': 'Wj7UxfFTyzgPVM@'
             }
         },
         'auth': {
             'schema1': {
                 'tech': 'rest',
-                'url': 'https://auth.console.fauna.com/login',
+                'url': 'https://auth.ghqmcblmjc.com/login',
                 'method': 'POST',
                 'options': {
                     'headers': {
@@ -182,14 +182,14 @@ def rest_curl_not_json_response() -> dict:
         'users': {
             'user1': {
                 'auth': 'schema1',
-                'email': 'jw.anon.5172@gmail.com',
+                'email': 'ohtmjdkyhx@oergasjvhp.com',
                 'password': 'Wj7UxfFTyzgPVM@'
             }
         },
         'auth': {
             'schema1': {
                 'tech': 'rest',
-                'url': 'https://auth.console.fauna.com/login',
+                'url': 'https://auth.ghqmcblmjc.com/login',
                 'method': 'POST',
                 'options': {
                     'headers': {
