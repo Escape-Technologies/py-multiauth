@@ -100,7 +100,7 @@ def uncurl(curl: str) -> ParsedCurlContent:
     parser.add_argument('-k', '--insecure', action='store_true')
 
     # First we need to prepare the curl for parsing
-    result_curl: list[str] = shlex.split(curl.replace('\\\n', ''))
+    result_curl: List[str] = shlex.split(curl.replace('\\\n', ''))
 
     # Now we have to parse the curl command
     parsed_args, _ = parser.parse_known_args(result_curl)
@@ -117,7 +117,7 @@ def uncurl(curl: str) -> ParsedCurlContent:
             method = 'GET'
 
     # Now we have to extract the headers
-    headers: dict[str, str] = {}
+    headers: Dict[str, str] = {}
     for header in parsed_args.header:
         header_key, header_value = header.split(':', 1)
         headers[header_key] = header_value.strip()
@@ -129,7 +129,7 @@ def uncurl(curl: str) -> ParsedCurlContent:
         headers['Referer'] = parsed_args.user_agent
 
     datas: list = parsed_args.data
-    final_data: str | None = None
+    final_data: Optional[str] = None
     if len(datas) != 0:
         final_data = datas[0]
     if len(datas) != 1:
@@ -147,7 +147,7 @@ def uncurl(curl: str) -> ParsedCurlContent:
         url = parsed_args.url
 
     # Add auth
-    credentials: Credentials | None = None
+    credentials: Optional[Credentials] = None
     if parsed_args.user:
         user_name, password = parsed_args.user.split(':', 1)
         credentials = Credentials(user_name, password)

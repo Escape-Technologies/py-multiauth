@@ -1,10 +1,10 @@
 """Graphql provider."""
 
-from typing import Dict, Literal, Optional, TypedDict
+from typing import Dict, Literal, Optional, TypeAlias, TypedDict
 
 from multiauth.entities.http import HTTPMethod
 
-Operation = Literal['query', 'mutation', 'subscription']
+Operation: TypeAlias = Literal['query', 'mutation', 'subscription']
 
 
 class AuthConfigGraphQl(TypedDict):

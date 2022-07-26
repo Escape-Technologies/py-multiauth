@@ -87,8 +87,8 @@ Token = str
 class RCFile(TypedDict):
 
     """RC File."""
-    auth: dict
-    users: dict
+    auth: Dict
+    users: Dict
 
 
 class JWTToken(TypedDict):

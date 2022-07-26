@@ -34,7 +34,7 @@ class User(IUser):
                 continue
 
             serialized_token = jwt_token_analyzer(token)
-            if serialized_token.get('exp') and float(serialized_token['exp']) < time.time():  # type: ignore[arg-type]
+            if serialized_token.get('exp') and float(serialized_token['exp']) < time.time():
                 raise ExpiredTokenError('Token expired.')
 
     def reset(self) -> None:

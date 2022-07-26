@@ -2,7 +2,7 @@
 
 import base64
 import json
-from typing import Optional, cast
+from typing import Dict, List, Optional, Union, cast
 from urllib.parse import parse_qs
 
 import graphql
@@ -16,7 +16,7 @@ POTENTIAL_FIELD_NAME = ['token']
 LOGGER = setup_logger()
 
 
-def urlencoded_to_json(data: str | None) -> str | None:
+def urlencoded_to_json(data: Optional[str]) -> Optional[str]:
     """This function transforms data in application/x-www-form-urlencoded to json data."""
 
     if data is None:
@@ -33,10 +33,10 @@ def urlencoded_to_json(data: str | None) -> str | None:
     return json.dumps(json_data)
 
 
-def deserialize_headers(headers: dict[str, str] | list[str] | str) -> dict[str, str]:
+def deserialize_headers(headers: Union[Dict[str, str], List[str], str]) -> Dict[str, str]:
     """Convert headers to standard format."""
 
-    res: dict[str, str] = {}
+    res: Dict[str, str] = {}
 
     if isinstance(headers, str):
         headers = [headers]
@@ -52,7 +52,7 @@ def deserialize_headers(headers: dict[str, str] | list[str] | str) -> dict[str, 
     return headers
 
 
-def _manual_fill(headers: dict[str, str] | list[str] | str) -> RCFile:
+def _manual_fill(headers: Union[Dict[str, str], List[str], str]) -> RCFile:
     """Serialize raw headers in "manual" auth format."""
 
     headers_dict = deserialize_headers(headers)
@@ -76,7 +76,10 @@ def _manual_fill(headers: dict[str, str] | list[str] | str) -> RCFile:
     return rcfile
 
 
-def _basic_fill(headers: dict[str, str], authorization_header: str) -> RCFile:
+def _basic_fill(
+    headers: Dict[str, str],
+    authorization_header: str,
+) -> RCFile:
     """Convert basic headers to curl."""
 
     # Then the type of authentification is basic
@@ -111,7 +114,12 @@ def _basic_fill(headers: dict[str, str], authorization_header: str) -> RCFile:
     return rcfile
 
 
-def _rest_fill(rest_document: dict, url: str, method: HTTPMethod, headers: dict[str, str]) -> RCFile:
+def _rest_fill(
+    rest_document: dict,
+    url: str,
+    method: HTTPMethod,
+    headers: Dict[str, str],
+) -> RCFile:
     """This function fills the rest file."""
 
     # The JSON schema for every authentication scheme
@@ -136,7 +144,13 @@ def _rest_fill(rest_document: dict, url: str, method: HTTPMethod, headers: dict[
     return rcfile
 
 
-def _graphql_fill(graphql_document: dict, url: str, method: HTTPMethod, headers: dict[str, str], variables: dict = None) -> RCFile:
+def _graphql_fill(
+    graphql_document: Dict,
+    url: str,
+    method: HTTPMethod,
+    headers: Dict[str, str],
+    variables: Dict = None,
+) -> RCFile:
     """This function fills the graphql escaperc file."""
 
     # Now we need to get the user information
@@ -208,7 +222,7 @@ def curl_to_escaperc(curl: str) -> Optional[RCFile]:
                 return _manual_fill(parsed_content.headers)
 
     if parsed_content.data is not None:
-        query: dict | None = None
+        query: Optional[Dict] = None
         try:
             query = json.loads(parsed_content.data)
         except Exception:
