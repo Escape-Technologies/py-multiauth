@@ -7,7 +7,7 @@ from typing import Dict
 import pytest
 
 from multiauth import MultiAuth
-from multiauth.providers.manual import manual_authenticator, serialize_headers
+from multiauth.providers.manual import manual_authenticator
 
 
 @pytest.fixture
@@ -94,30 +94,3 @@ def test_manual_handler_headers(
     auth_response = manual_authenticator(MultiAuth.serialize_users(auth, users_one_header)['manual_user'])
 
     assert auth_response['headers']['Authorization'] == 'Bearer 12345'
-
-
-def test_serialize_headers(
-    auth: Dict,
-    users_one_header: Dict,
-    users_two_headers: Dict,
-) -> None:
-    """Test serialize_headers."""
-
-    headers_str = 'Authorization: Bearer 12345'
-    headers_list = ['Authorization: Bearer 12345', 'Content-Type: application/json']
-    headers_dict = {'Authorization': 'Bearer 12345', 'Content-Type': 'application/json'}
-
-    auths_str, users_str = serialize_headers(headers_str)
-
-    assert auths_str == auth
-    assert users_str == users_one_header
-
-    auths_list, users_list = serialize_headers(headers_list)
-
-    assert auths_list == auth
-    assert users_list == users_two_headers
-
-    auths_dict, users_dict = serialize_headers(headers_dict)
-
-    assert auths_dict == auth
-    assert users_dict == users_two_headers

@@ -1,7 +1,7 @@
 """User manager."""
 
 import time
-from typing import Any, Dict, Optional, Tuple
+from typing import Any, Dict, Optional, Tuple, cast
 
 from multiauth.entities.errors import AuthenticationError, ExpiredTokenError
 from multiauth.entities.interfaces import IUser
@@ -34,8 +34,10 @@ class User(IUser):
                 continue
 
             serialized_token = jwt_token_analyzer(token)
-            if serialized_token.get('exp') and float(serialized_token['exp']) < time.time():  # type: ignore[arg-type]
-                raise ExpiredTokenError('Token expired.')
+            if serialized_token.get('exp'):
+                self.expires_in = float(cast(str, serialized_token['exp'])) - time.time()
+                if self.expires_in < 0:
+                    raise ExpiredTokenError('Token expired.')
 
     def reset(self) -> None:
         """Reset user."""

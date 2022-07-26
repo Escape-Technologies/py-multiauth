@@ -84,6 +84,13 @@ class AuthResponse(TypedDict):
 Token = str
 
 
+class RCFile(TypedDict):
+
+    """RC File."""
+    auth: Dict
+    users: Dict
+
+
 class JWTToken(TypedDict):
 
     """This class finds all the registered claims in the JWT token payload.
