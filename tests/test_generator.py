@@ -1,6 +1,9 @@
 #pylint: disable=redefined-outer-name, unused-import, line-too-long, invalid-name
 
 """Test generator."""
+
+from typing import Dict
+
 import pytest
 
 from multiauth.generator import _manual_fill, curl_to_escaperc
@@ -60,7 +63,7 @@ def curl_no_data() -> str:
 
 
 @pytest.fixture
-def graphql_curl_with_input_object_and_no_var_response() -> dict:
+def graphql_curl_with_input_object_and_no_var_response() -> Dict:
     """Curl Response."""
     return {
         'users': {
@@ -91,7 +94,7 @@ def graphql_curl_with_input_object_and_no_var_response() -> dict:
 
 
 @pytest.fixture
-def graphql_curl_with_input_object_and_var_response() -> dict:
+def graphql_curl_with_input_object_and_var_response() -> Dict:
     """Curl Response."""
     return {
         'users': {
@@ -122,7 +125,7 @@ def graphql_curl_with_input_object_and_var_response() -> dict:
 
 
 @pytest.fixture
-def graphql_curl_with_normal_graphql_query_response() -> dict:
+def graphql_curl_with_normal_graphql_query_response() -> Dict:
     """Curl Response."""
     return {
         'users': {
@@ -150,7 +153,7 @@ def graphql_curl_with_normal_graphql_query_response() -> dict:
 
 
 @pytest.fixture
-def rest_curl_response() -> dict:
+def rest_curl_response() -> Dict:
     """Curl Response."""
     return {
         'users': {
@@ -176,7 +179,7 @@ def rest_curl_response() -> dict:
 
 
 @pytest.fixture
-def rest_curl_not_json_response() -> dict:
+def rest_curl_not_json_response() -> Dict:
     """Curl Response."""
     return {
         'users': {
@@ -201,7 +204,11 @@ def rest_curl_not_json_response() -> dict:
     }
 
 
-def test_serialize_headers(auth: dict, users_one_header: dict, users_two_headers: dict) -> None:
+def test_serialize_headers(
+    auth: Dict,
+    users_one_header: Dict,
+    users_two_headers: Dict,
+) -> None:
     """Test serialize_headers."""
 
     headers_str = 'Authorization: Bearer 12345'
@@ -225,32 +232,45 @@ def test_serialize_headers(auth: dict, users_one_header: dict, users_two_headers
 
 
 def test_graphql_curl_with_input_object_and_no_var(
-    graphql_curl_with_input_object_and_no_var: str, graphql_curl_with_input_object_and_no_var_response: dict
+    graphql_curl_with_input_object_and_no_var: str,
+    graphql_curl_with_input_object_and_no_var_response: Dict,
 ) -> None:
     """Function that tests if the curl to escaperc works."""
 
     assert curl_to_escaperc(graphql_curl_with_input_object_and_no_var) == graphql_curl_with_input_object_and_no_var_response
 
 
-def test_graphql_curl_with_input_object_and_var(graphql_curl_with_input_object_and_var: str, graphql_curl_with_input_object_and_var_response: dict) -> None:
+def test_graphql_curl_with_input_object_and_var(
+    graphql_curl_with_input_object_and_var: str,
+    graphql_curl_with_input_object_and_var_response: Dict,
+) -> None:
     """Function that tests if the curl to escaperc works."""
 
     assert curl_to_escaperc(graphql_curl_with_input_object_and_var) == graphql_curl_with_input_object_and_var_response
 
 
-def test_graphql_curl_with_normal_graphql_query(graphql_curl_with_normal_graphql_query: str, graphql_curl_with_normal_graphql_query_response: dict) -> None:
+def test_graphql_curl_with_normal_graphql_query(
+    graphql_curl_with_normal_graphql_query: str,
+    graphql_curl_with_normal_graphql_query_response: Dict,
+) -> None:
     """Function that tests if the curl to escaperc works."""
 
     assert curl_to_escaperc(graphql_curl_with_normal_graphql_query) == graphql_curl_with_normal_graphql_query_response
 
 
-def test_rest_curl(rest_curl: str, rest_curl_response: dict) -> None:
+def test_rest_curl(
+    rest_curl: str,
+    rest_curl_response: Dict,
+) -> None:
     """Function that tests if the curl to escaperc works."""
 
     assert curl_to_escaperc(rest_curl) == rest_curl_response
 
 
-def test_rest_curl_not_json(rest_curl_not_json: str, rest_curl_not_json_response: dict) -> None:
+def test_rest_curl_not_json(
+    rest_curl_not_json: str,
+    rest_curl_not_json_response: Dict,
+) -> None:
     """Function that tests if the curl to escaperc works."""
 
     assert curl_to_escaperc(rest_curl_not_json) == rest_curl_not_json_response

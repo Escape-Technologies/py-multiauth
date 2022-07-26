@@ -173,7 +173,7 @@ class MultiAuth(IMultiAuth):
 
         # In case we provided custom headers, we need to merge them with the ones we got from auth_handler
         if user_info.headers:
-            self._headers[username] |= user_info.headers
+            self._headers[username].update(user_info.headers)
 
         return self._headers[username], username
 
@@ -231,6 +231,6 @@ class MultiAuth(IMultiAuth):
 
         headers = headers or {}
         if not no_auth:
-            headers |= self._headers.get(username, {})
+            headers.update(self._headers.get(username, {}))
 
         return headers, None if no_auth else username

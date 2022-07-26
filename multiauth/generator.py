@@ -23,7 +23,7 @@ def urlencoded_to_json(data: Optional[str]) -> Optional[str]:
         return None
 
     new_form = parse_qs(data)
-    json_data: dict = {}
+    json_data: Dict = {}
     for name, value in new_form.items():
         if len(value) == 1:
             json_data[name] = value[0]
@@ -103,7 +103,7 @@ def _basic_fill(
         },
     })
 
-    optional_headers: dict = {}
+    optional_headers: Dict = {}
     for key, value in headers.items():
         if 'authorization' not in key.lower():
             optional_headers[key] = value
@@ -115,7 +115,7 @@ def _basic_fill(
 
 
 def _rest_fill(
-    rest_document: dict,
+    rest_document: Dict,
     url: str,
     method: HTTPMethod,
     headers: Dict[str, str],
@@ -126,8 +126,9 @@ def _rest_fill(
     rcfile = RCFile({
         'users': {
             'user1': {
-                'auth': 'schema1'
-            } | rest_document,
+                'auth': 'schema1',
+                **rest_document
+            }
         },
         'auth': {
             'schema1': {
@@ -154,7 +155,7 @@ def _graphql_fill(
     """This function fills the graphql escaperc file."""
 
     # Now we need to get the user information
-    credentials: dict = {}
+    credentials: Dict = {}
     if variables and graphql_document['definitions'][0]['variable_definitions']:
         for variable in graphql_document['definitions'][0]['variable_definitions']:
             variable_name = variable['variable']['name']['value']
@@ -175,8 +176,9 @@ def _graphql_fill(
     rcfile = RCFile({
         'users': {
             'user1': {
-                'auth': 'schema1'
-            } | credentials,
+                'auth': 'schema1',
+                **credentials,
+            },
         },
         'auth': {
             'schema1': {
