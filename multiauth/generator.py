@@ -59,7 +59,7 @@ def _manual_fill(headers: Union[Dict[str, str], List[str], str]) -> RCFile:
 
     auth_name: str = 'manual_headers'
 
-    rcfile: RCFile = {
+    rcfile = RCFile({
         'auth': {
             auth_name: {
                 'tech': AuthTech.MANUAL.value,
@@ -71,7 +71,7 @@ def _manual_fill(headers: Union[Dict[str, str], List[str], str]) -> RCFile:
                 'auth': auth_name
             }
         },
-    }
+    })
 
     return rcfile
 
@@ -88,7 +88,7 @@ def _basic_fill(
     username, password = decoded_value.split(':', 1)
 
     # The JSON schema for every authentication scheme
-    rcfile: RCFile = {
+    rcfile = RCFile({
         'users': {
             'user_basic': {
                 'auth': 'auth_basic',
@@ -101,7 +101,7 @@ def _basic_fill(
                 'tech': AuthTech.BASIC.value
             }
         },
-    }
+    })
 
     optional_headers: dict = {}
     for key, value in headers.items():
@@ -123,7 +123,7 @@ def _rest_fill(
     """This function fills the rest file."""
 
     # The JSON schema for every authentication scheme
-    rcfile: RCFile = {
+    rcfile = RCFile({
         'users': {
             'user1': {
                 'auth': 'schema1'
@@ -139,7 +139,7 @@ def _rest_fill(
                 }
             }
         },
-    }
+    })
 
     return rcfile
 
@@ -172,7 +172,7 @@ def _graphql_fill(
                     for input_object_field in argument['value']['fields']:
                         credentials[argument['name']['value']][input_object_field['name']['value']] = input_object_field['value']['value']
 
-    rcfile: RCFile = {
+    rcfile = RCFile({
         'users': {
             'user1': {
                 'auth': 'schema1'
@@ -189,7 +189,7 @@ def _graphql_fill(
                 }
             }
         },
-    }
+    })
 
     # Now regarding the field
     for field in graphql_document['definitions'][0]['selection_set']['selections'][0]['selection_set']['selections']:
