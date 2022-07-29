@@ -621,6 +621,221 @@
 
 
 
+## Digest
+
+### Parameters
+
+---
+
+
+
+
+
+
+- Tech (`tech`): The auth method.
+
+
+
+
+
+
+
+
+
+
+
+- Auth url (`url`): The URL to the authentication gateway.
+
+
+
+
+
+
+
+
+
+
+
+- Method (`method`): The method used to send the authentication request. The values that this parameter can take are:
+
+
+    - `GET`
+
+
+    - `POST`
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+### Optional
+
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+- Realm (`realm`): This is a string specified by the server in the WWW-Authenticate header of the 401 response. It should contain at least the name of the host performing the authentication and might additionally indicate the collwction of users who might have access..
+
+
+
+
+
+
+
+- Nonce (`nonce`): The nonce is a unique string specified by the server in the WWW-Authenticate header of the 401 response. It is used to prevent replay attacks and is used to prevent request forgery attacks..
+
+
+
+
+
+
+
+- Algorithm (`algorithm`): This parameter indicates the type of algorithm used to produce the digest..
+
+
+
+
+
+
+
+- QOP (`qop`): Inidcates the quality of protection. The value of this field should be one of the values found in the qop directive of the WWW-Authenticate header of the 401 response. If the server does not support the qop directive or if the qop directive is not included in the 401 response, this field is not present..
+
+
+
+
+
+
+
+- Nonce Count (`nonce_count`): This value indicates the number of times the client has reused the nonce value. The server uses this value to detect and prevent replay attacks. This value must be specified in the qop directive, and if the qop directive is not specified, this value is not provided..
+
+
+
+
+
+
+
+- Client Nonce (`client_nonce`): An opaque quoted value provided by the client and used by the server to avoid chosen plaintext attacks. This value must be specified in the qop directive, and if the qop directive is not specified, this value is not provided..
+
+
+
+
+
+
+
+- Opaque (`opaque`): This is a string of data specified by the server in the WWW-Authenticate header of the 401 response. It is recommended that this string be base64 or hex encoded..
+
+
+
+
+
+
+
+- Headers (`headers`): The user headers for manual authentication.
+
+
+
+
+
+### Template
+
+---
+
+
+
+
+#### Digest
+
+```
+{
+    "users": {
+        "user1": {
+            "auth": "schema1",
+            "username": "**string**",
+            "password": "**string**"
+        }
+    },
+    "auth": {
+        "schema1": {
+            "tech": "digest",
+            "url": "**string**",
+            "method": "**string**",
+            "options": {
+                "realm": "**string**",
+                "nonce": "**string**",
+                "algorithm": "**string**",
+                "qop": "**string**",
+                "nonce_count": "**string**",
+                "client_nonce": "**string**",
+                "opaque": "**string**",
+                "headers": {
+                    "**name**": "**value**"
+                }
+            }
+        }
+    }
+}
+```
+
+
+
+
+
+
+
 ## GraphQL
 
 ### Parameters
@@ -1234,6 +1449,16 @@
     - `refresh_token`
 
 
+    - `auth_code`
+
+
+    - `client_cred`
+
+
+    - `implicit`
+
+
+    - `password_cred`
 
 
 
@@ -1245,43 +1470,9 @@
 
 
 
-- Client ID (`client_id`): The ID of the Client.
 
 
-
-
-
-
-
-
-
-
-
-- Client Secret (`client_secret`): The Secret of the Client.
-
-
-
-
-
-
-
-
-
-
-
-- Token Endpoint (`token_endpoint`): The Token Endpoint.
-
-
-
-
-
-
-
-
-
-
-
-- Auth Location (`auth_location`): The location where the token will be added during the authentication step (in the middle of OAuth flow). The values that this parameter can take are:
+- Auth Location (`auth_location`): The location where the token will be added during the authentication step (in the middle of OAuth flow).. The values that this parameter can take are:
 
 
     - `basic`
@@ -1313,7 +1504,7 @@
 
 
 
-- Location (`location`): The location where the token will be added. The values that this parameter can take are:
+- Location (`location`): The location where the token will be added.. The values that this parameter can take are:
 
 
     - `header`
@@ -1338,6 +1529,50 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+- Authentication Endpoint (`authentication_endpoint`): The endpoint for the authorization server. This is used to get the authorization code..
+
+
+
+
+
+
+
+
+
+
+
+- Token Endpoint (`token_endpoint`): The endpoint for authentication server. This is used to exchange the authorization code for an access token..
+
+
+
+
+
+
+
+
+
+
+
+- Callback URL (`callback_url`): This is the callback URL that the authorization server will redirect to after the user has authorized the client..
 
 
 
@@ -1381,11 +1616,15 @@
 
 
 
+- State (`state`): A value that is used to prevent cross-site request forgery.
 
 
 
 
 
+
+
+- Code Verifier (`code_verifier`): The code verifier of the token.
 
 
 
@@ -1399,6 +1638,18 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 ### Template
 
 ---
@@ -1406,28 +1657,38 @@
 
 
 
-#### OAuth
+
+
+
+
+
+
+#### OAuth (grant_type : auth_code)
 
 ```
 {
     "users": {
         "user1": {
             "auth": "schema1",
+            "client_id": "**string**",
+            "client_secret": "**string**",
             "refresh_token": "**string**"
         }
     },
     "auth": {
         "schema1": {
-            "tech": "rest",
-            "grant_type": "**string**",
-            "client_id": "**string**",
-            "client_secret": "**string**",
-            "token_endpoint": "**string**",
+            "tech": "oauth",
+            "grant_type": "auth_code",
             "auth_location": "**enum**",
             "header_prefix": "**string**",
             "location": "**enum**",
             "scope": "**string**",
+            "authentication_endpoint": "**string**",
+            "token_endpoint": "**string**",
+            "callback_url": "**string**",
             "options": {
+                "state": "**string**",
+                "code_verifier": "**string**",
                 "headers": {
                     "**name**": "**value**"
                 }
@@ -1436,6 +1697,126 @@
     }
 }
 ```
+
+
+
+
+
+
+
+#### OAuth (grant_type : implicit)
+
+```
+{
+    "users": {
+        "user1": {
+            "auth": "schema1",
+            "client_id": "**string**",
+            "client_secret": "**string**",
+            "refresh_token": "**string**"
+        }
+    },
+    "auth": {
+        "schema1": {
+            "tech": "oauth",
+            "grant_type": "implicit",
+            "auth_location": "**enum**",
+            "header_prefix": "**string**",
+            "location": "**enum**",
+            "scope": "**string**",
+            "authentication_endpoint": "**string**",
+            "callback_url": "**string**",
+            "options": {
+                "state": "**string**",
+                "code_verifier": "**string**",
+                "headers": {
+                    "**name**": "**value**"
+                }
+            }
+        }
+    }
+}
+```
+
+
+
+
+
+
+
+#### OAuth (grant_type : client_cred)
+
+```
+{
+    "users": {
+        "user1": {
+            "auth": "schema1",
+            "client_id": "**string**",
+            "client_secret": "**string**",
+            "refresh_token": "**string**"
+        }
+    },
+    "auth": {
+        "schema1": {
+            "tech": "oauth",
+            "grant_type": "client_cred",
+            "auth_location": "**enum**",
+            "header_prefix": "**string**",
+            "location": "**enum**",
+            "scope": "**string**",
+            "token_endpoint": "**string**",
+            "options": {
+                "state": "**string**",
+                "code_verifier": "**string**",
+                "headers": {
+                    "**name**": "**value**"
+                }
+            }
+        }
+    }
+}
+```
+
+
+
+
+
+
+
+#### OAuth (grant_type : password_cred)
+
+```
+{
+    "users": {
+        "user1": {
+            "auth": "schema1",
+            "client_id": "**string**",
+            "client_secret": "**string**",
+            "refresh_token": "**string**"
+        }
+    },
+    "auth": {
+        "schema1": {
+            "tech": "oauth",
+            "grant_type": "password_cred",
+            "auth_location": "**enum**",
+            "header_prefix": "**string**",
+            "location": "**enum**",
+            "scope": "**string**",
+            "token_endpoint": "**string**",
+            "options": {
+                "state": "**string**",
+                "code_verifier": "**string**",
+                "headers": {
+                    "**name**": "**value**"
+                }
+            }
+        }
+    }
+}
+```
+
+
 
 
 

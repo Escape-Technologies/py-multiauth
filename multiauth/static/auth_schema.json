@@ -1263,6 +1263,7 @@
                     "name": "authentication_endpoint"
                   },
                   "description": "The endpoint for the authorization server. This is used to get the authorization code.",
+                  "type": "string",
                   "format": "uri"
                 },
                 "token_endpoint": {
@@ -1305,6 +1306,7 @@
                     "name": "authentication_endpoint"
                   },
                   "description": "The endpoint for the authorization server. This is used to get the authorization code.",
+                  "type": "string",
                   "format": "uri"
                 },
                 "callback_url": {
@@ -1477,173 +1479,33 @@
           "description": "The choosen auth method",
           "type": "string"
         },
-        "allof": [
-          {
-            "if": {
-              "authSchema": {
-                "properties": {
-                  "grant_type": {
-                    "const": "password_cred"
-                  }
-                }
-              }
-            },
-            "then": {
-              "properties": {
-                "client_id": {
-                  "_escapeUI": {
-                    "label": "Client ID",
-                    "inputType": "text",
-                    "name": "client_id"
-                  },
-                  "description": "The ID of the client in the OAuth application",
-                  "type": "string"
-                },
-                "client_secret": {
-                  "_escapeUI": {
-                    "label": "Client Secret",
-                    "inputType": "text",
-                    "name": "client_secret"
-                  },
-                  "description": "The Secret of the client in the OAuth appliaction",
-                  "type": "string"
-                },
-                "username": {
-                  "_escapeUI": {
-                    "label": "Username",
-                    "inputType": "text",
-                    "name": "username"
-                  },
-                  "description": "The username of the user",
-                  "type": "string"
-                },
-                "password": {
-                  "_escapeUI": {
-                    "label": "Password",
-                    "inputType": "text",
-                    "name": "password"
-                  },
-                  "description": "The password of the user",
-                  "type": "string"
-                }
-              }
-            }
+        "client_id": {
+          "_escapeUI": {
+            "label": "Client ID",
+            "inputType": "text",
+            "name": "client_id"
           },
-          {
-            "if": {
-              "authSchema": {
-                "properties": {
-                  "grant_type": {
-                    "const": "refresh_token"
-                  }
-                }
-              }
-            },
-            "then": {
-              "properties": {
-                "refresh_token": {
-                  "_escapeUI": {
-                    "name": "refresh_token",
-                    "label": "Refresh Token",
-                    "inputType": "text"
-                  },
-                  "description": "The refresh token used as tester (This is only supplied in case of refresh token type)",
-                  "type": "string"
-                }
-              }
-            }
+          "description": "The ID of the client in the OAuth application",
+          "type": "string"
+        },
+        "client_secret": {
+          "_escapeUI": {
+            "label": "Client Secret",
+            "inputType": "text",
+            "name": "client_secret"
           },
-          {
-            "if": {
-              "authSchema": {
-                "properties": {
-                  "grant_type": {
-                    "const": "auth_code"
-                  }
-                }
-              }
-            },
-            "then": {
-              "properties": {
-                "client_id": {
-                  "_escapeUI": {
-                    "label": "Client ID",
-                    "inputType": "text",
-                    "name": "client_id"
-                  },
-                  "description": "The ID of the client in the OAuth application",
-                  "type": "string"
-                },
-                "client_secret": {
-                  "_escapeUI": {
-                    "label": "Client Secret",
-                    "inputType": "text",
-                    "name": "client_secret"
-                  },
-                  "description": "The Secret of the client in the OAuth appliaction",
-                  "type": "string"
-                }
-              }
-            }
+          "description": "The Secret of the client in the OAuth appliaction",
+          "type": "string"
+        },
+        "refresh_token": {
+          "_escapeUI": {
+            "name": "refresh_token",
+            "label": "Refresh Token",
+            "inputType": "text"
           },
-          {
-            "if": {
-              "authSchema": {
-                "properties": {
-                  "grant_type": {
-                    "const": "client_cred"
-                  }
-                }
-              }
-            },
-            "then": {
-              "properties": {
-                "client_id": {
-                  "_escapeUI": {
-                    "label": "Client ID",
-                    "inputType": "text",
-                    "name": "client_id"
-                  },
-                  "description": "The ID of the client in the OAuth application",
-                  "type": "string"
-                },
-                "client_secret": {
-                  "_escapeUI": {
-                    "label": "Client Secret",
-                    "inputType": "text",
-                    "name": "client_secret"
-                  },
-                  "description": "The Secret of the client in the OAuth appliaction",
-                  "type": "string"
-                }
-              }
-            }
-          },
-          {
-            "if": {
-              "authSchema": {
-                "properties": {
-                  "grant_type": {
-                    "const": "implicit"
-                  }
-                }
-              }
-            },
-            "then": {
-              "properties": {
-                "client_id": {
-                  "_escapeUI": {
-                    "label": "Client ID",
-                    "inputType": "text",
-                    "name": "client_id"
-                  },
-                  "description": "The ID of the client in the OAuth application",
-                  "type": "string"
-                }
-              }
-            }
-          }
-        ]
+          "description": "The refresh token used as tester (This is only supplied in case of refresh token type)",
+          "type": "string"
+        }
       },
       "additionalProperties": false,
       "required": [
