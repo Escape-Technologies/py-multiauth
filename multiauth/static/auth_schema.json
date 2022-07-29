@@ -489,6 +489,199 @@
       ]
     }
   },
+  "digest": {
+    "_escapeUI": {
+      "label": "Digest"
+    },
+    "authSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "required": [
+        "url",
+        "method"
+      ],
+      "description": "The auth configuration schema of Digest authentication",
+      "properties": {
+        "tech": {
+          "_escapeUI": {
+            "label": "Tech",
+            "inputType": "text",
+            "name": "tech",
+            "hidden": true
+          },
+          "title": "digest",
+          "description": "The auth method",
+          "type": "string"
+        },
+        "url": {
+          "_escapeUI": {
+            "label": "Auth url",
+            "inputType": "text",
+            "name": "url",
+            "placeholder": "https://www.example.com/auth"
+          },
+          "description": "The URL to the authentication gateway",
+          "type": "string",
+          "format": "uri"
+        },
+        "method": {
+          "_escapeUI": {
+            "name": "method",
+            "label": "Method",
+            "inputType": "select"
+          },
+          "description": "The method used to send the authentication request",
+          "type": "string",
+          "enum": [
+            "GET",
+            "POST"
+          ]
+        },
+        "options": {
+          "description": "Optional Configurations for this authentication method",
+          "type": "object",
+          "_escapeUI": {
+            "label": "Optional Configurations for this authentication method"
+          },
+          "properties": {
+            "realm": {
+              "_escapeUI": {
+                "name": "realm",
+                "label": "Realm",
+                "inputType": "text"
+              },
+              "description": "This is a string specified by the server in the WWW-Authenticate header of the 401 response. It should contain at least the name of the host performing the authentication and might additionally indicate the collwction of users who might have access.",
+              "type": "string"
+            },
+            "nonce": {
+              "_escapeUI": {
+                "name": "nonce",
+                "label": "Nonce",
+                "inputType": "text"
+              },
+              "description": "The nonce is a unique string specified by the server in the WWW-Authenticate header of the 401 response. It is used to prevent replay attacks and is used to prevent request forgery attacks.",
+              "type": "string"
+            },
+            "algorithm": {
+              "_escapeUI": {
+                "name": "algorithm",
+                "label": "Algorithm",
+                "inputType": "select"
+              },
+              "description": "This parameter indicates the type of algorithm used to produce the digest.",
+              "type": "string",
+              "enum": [
+                "MD5",
+                "MD5-sess",
+                "SHA-256",
+                "SHA-256-sess",
+                "SHA-512-256",
+                "SHA-512-256-sess"
+              ]
+            },
+            "qop": {
+              "_escapeUI": {
+                "name": "qop",
+                "label": "QOP",
+                "inputType": "text"
+              },
+              "description": "Inidcates the quality of protection. The value of this field should be one of the values found in the qop directive of the WWW-Authenticate header of the 401 response. If the server does not support the qop directive or if the qop directive is not included in the 401 response, this field is not present.",
+              "type": "string"
+            },
+            "nonce_count": {
+              "_escapeUI": {
+                "name": "nonceCount",
+                "label": "Nonce Count",
+                "inputType": "text"
+              },
+              "description": "This value indicates the number of times the client has reused the nonce value. The server uses this value to detect and prevent replay attacks. This value must be specified in the qop directive, and if the qop directive is not specified, this value is not provided.",
+              "type": "string"
+            },
+            "client_nonce": {
+              "_escapeUI": {
+                "name": "clientNonce",
+                "label": "Client Nonce",
+                "inputType": "text"
+              },
+              "description": "An opaque quoted value provided by the client and used by the server to avoid chosen plaintext attacks. This value must be specified in the qop directive, and if the qop directive is not specified, this value is not provided.",
+              "type": "string"
+            },
+            "opaque": {
+              "_escapeUI": {
+                "name": "opaque",
+                "label": "Opaque",
+                "inputType": "text"
+              },
+              "description": "This is a string of data specified by the server in the WWW-Authenticate header of the 401 response. It is recommended that this string be base64 or hex encoded.",
+              "type": "string"
+            },
+            "headers": {
+              "_escapeUI": {
+                "label": "Headers",
+                "inputType": "list"
+              },
+              "type": "object",
+              "description": "The user headers for manual authentication",
+              "additionalProperties": {
+                "type": "string",
+                "description": "A value that will be inserted in the user auth request's headers"
+              },
+              "patternProperties": {
+                "^.*$": {
+                  "description": "The header key",
+                  "type": "string",
+                  "patterns": "."
+                }
+              }
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "userSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "description": "The credentials for a user in Digest authentication",
+      "required": [
+        "auth",
+        "username",
+        "password"
+      ],
+      "properties": {
+        "auth": {
+          "_escapeUI": {
+            "label": "Tech Method",
+            "inputType": "text",
+            "name": "tech",
+            "hidden": true
+          },
+          "description": "The choosen auth method",
+          "type": "string"
+        },
+        "username": {
+          "_escapeUI": {
+            "name": "username",
+            "label": "Username",
+            "inputType": "text"
+          },
+          "description": "The username for a user tester",
+          "type": "string"
+        },
+        "password": {
+          "_escapeUI": {
+            "name": "password",
+            "label": "Password",
+            "inputType": "text"
+          },
+          "description": "The password for a tester user",
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
   "graphql": {
     "_escapeUI": {
       "label": "GraphQL"
@@ -1018,9 +1211,6 @@
       "required": [
         "tech",
         "grant_type",
-        "client_id",
-        "client_secret",
-        "token_endpoint",
         "auth_location",
         "scope",
         "header_prefix",
@@ -1035,7 +1225,7 @@
             "name": "tech",
             "hidden": true
           },
-          "title": "rest",
+          "title": "oauth",
           "description": "The auth method",
           "type": "string"
         },
@@ -1048,44 +1238,142 @@
           "description": "The type of OAuth Authentication used",
           "type": "string",
           "enum": [
-            "refresh_token"
+            "refresh_token",
+            "auth_code",
+            "client_cred",
+            "implicit",
+            "password_cred"
           ]
         },
-        "client_id": {
-          "_escapeUI": {
-            "label": "Client ID",
-            "inputType": "text",
-            "name": "client_id"
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "grant_type": {
+                  "const": "auth_code"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "authentication_endpoint": {
+                  "_escapeUI": {
+                    "label": "Authentication Endpoint",
+                    "inputType": "text",
+                    "name": "authentication_endpoint"
+                  },
+                  "description": "The endpoint for the authorization server. This is used to get the authorization code.",
+                  "format": "uri"
+                },
+                "token_endpoint": {
+                  "_escapeUI": {
+                    "label": "Token Endpoint",
+                    "inputType": "text",
+                    "name": "token_endpoint"
+                  },
+                  "description": "The endpoint for authentication server. This is used to exchange the authorization code for an access token.",
+                  "type": "string",
+                  "format": "uri"
+                },
+                "callback_url": {
+                  "_escapeUI": {
+                    "label": "Callback URL",
+                    "inputType": "text",
+                    "name": "callback_url"
+                  },
+                  "description": "This is the callback URL that the authorization server will redirect to after the user has authorized the client.",
+                  "type": "string",
+                  "format": "uri"
+                }
+              }
+            }
           },
-          "description": "The ID of the Client",
-          "type": "string"
-        },
-        "client_secret": {
-          "_escapeUI": {
-            "label": "Client Secret",
-            "inputType": "text",
-            "name": "client_secret"
+          {
+            "if": {
+              "properties": {
+                "grant_type": {
+                  "const": "implicit"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "authentication_endpoint": {
+                  "_escapeUI": {
+                    "label": "Authentication Endpoint",
+                    "inputType": "text",
+                    "name": "authentication_endpoint"
+                  },
+                  "description": "The endpoint for the authorization server. This is used to get the authorization code.",
+                  "format": "uri"
+                },
+                "callback_url": {
+                  "_escapeUI": {
+                    "label": "Callback URL",
+                    "inputType": "text",
+                    "name": "callback_url"
+                  },
+                  "description": "This is the callback URL that the authorization server will redirect to after the user has authorized the client.",
+                  "type": "string",
+                  "format": "uri"
+                }
+              }
+            }
           },
-          "description": "The Secret of the Client",
-          "type": "string"
-        },
-        "token_endpoint": {
-          "_escapeUI": {
-            "label": "Token Endpoint",
-            "inputType": "text",
-            "name": "token_endpoint"
+          {
+            "if": {
+              "properties": {
+                "grant_type": {
+                  "const": "client_cred"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "token_endpoint": {
+                  "_escapeUI": {
+                    "label": "Token Endpoint",
+                    "inputType": "text",
+                    "name": "token_endpoint"
+                  },
+                  "description": "The endpoint for authentication server. This is used to exchange the authorization code for an access token.",
+                  "type": "string",
+                  "format": "uri"
+                }
+              }
+            }
           },
-          "description": "The Token Endpoint",
-          "type": "string",
-          "format": "uri"
-        },
+          {
+            "if": {
+              "properties": {
+                "grant_type": {
+                  "const": "password_cred"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "token_endpoint": {
+                  "_escapeUI": {
+                    "label": "Token Endpoint",
+                    "inputType": "text",
+                    "name": "token_endpoint"
+                  },
+                  "description": "The endpoint for authentication server. This is used to exchange the authorization code for an access token.",
+                  "type": "string",
+                  "format": "uri"
+                }
+              }
+            }
+          }
+        ],
         "auth_location": {
           "_escapeUI": {
             "label": "Auth Location",
             "inputType": "text",
             "name": "auth_location"
           },
-          "description": "The location where the token will be added during the authentication step (in the middle of OAuth flow)",
+          "description": "The location where the token will be added during the authentication step (in the middle of OAuth flow).",
           "type": "enum",
           "enum": [
             "basic",
@@ -1108,7 +1396,7 @@
             "inputType": "text",
             "name": "location"
           },
-          "description": "The location where the token will be added",
+          "description": "The location where the token will be added.",
           "type": "enum",
           "enum": [
             "header",
@@ -1131,6 +1419,24 @@
             "label": "Headers options configuration"
           },
           "properties": {
+            "state": {
+              "_escapeUI": {
+                "label": "State",
+                "inputType": "text",
+                "name": "state"
+              },
+              "description": "A value that is used to prevent cross-site request forgery",
+              "type": "string"
+            },
+            "code_verifier": {
+              "_escapeUI": {
+                "label": "Code Verifier",
+                "inputType": "text",
+                "name": "code_verifier"
+              },
+              "description": "The code verifier of the token",
+              "type": "string"
+            },
             "headers": {
               "_escapeUI": {
                 "label": "Headers",
@@ -1171,15 +1477,173 @@
           "description": "The choosen auth method",
           "type": "string"
         },
-        "refresh_token": {
-          "_escapeUI": {
-            "name": "refresh_token",
-            "label": "Refresh Token",
-            "inputType": "text"
+        "allof": [
+          {
+            "if": {
+              "authSchema": {
+                "properties": {
+                  "grant_type": {
+                    "const": "password_cred"
+                  }
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "client_id": {
+                  "_escapeUI": {
+                    "label": "Client ID",
+                    "inputType": "text",
+                    "name": "client_id"
+                  },
+                  "description": "The ID of the client in the OAuth application",
+                  "type": "string"
+                },
+                "client_secret": {
+                  "_escapeUI": {
+                    "label": "Client Secret",
+                    "inputType": "text",
+                    "name": "client_secret"
+                  },
+                  "description": "The Secret of the client in the OAuth appliaction",
+                  "type": "string"
+                },
+                "username": {
+                  "_escapeUI": {
+                    "label": "Username",
+                    "inputType": "text",
+                    "name": "username"
+                  },
+                  "description": "The username of the user",
+                  "type": "string"
+                },
+                "password": {
+                  "_escapeUI": {
+                    "label": "Password",
+                    "inputType": "text",
+                    "name": "password"
+                  },
+                  "description": "The password of the user",
+                  "type": "string"
+                }
+              }
+            }
           },
-          "description": "The Refresh Token",
-          "type": "string"
-        }
+          {
+            "if": {
+              "authSchema": {
+                "properties": {
+                  "grant_type": {
+                    "const": "refresh_token"
+                  }
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "refresh_token": {
+                  "_escapeUI": {
+                    "name": "refresh_token",
+                    "label": "Refresh Token",
+                    "inputType": "text"
+                  },
+                  "description": "The refresh token used as tester (This is only supplied in case of refresh token type)",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "authSchema": {
+                "properties": {
+                  "grant_type": {
+                    "const": "auth_code"
+                  }
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "client_id": {
+                  "_escapeUI": {
+                    "label": "Client ID",
+                    "inputType": "text",
+                    "name": "client_id"
+                  },
+                  "description": "The ID of the client in the OAuth application",
+                  "type": "string"
+                },
+                "client_secret": {
+                  "_escapeUI": {
+                    "label": "Client Secret",
+                    "inputType": "text",
+                    "name": "client_secret"
+                  },
+                  "description": "The Secret of the client in the OAuth appliaction",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "authSchema": {
+                "properties": {
+                  "grant_type": {
+                    "const": "client_cred"
+                  }
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "client_id": {
+                  "_escapeUI": {
+                    "label": "Client ID",
+                    "inputType": "text",
+                    "name": "client_id"
+                  },
+                  "description": "The ID of the client in the OAuth application",
+                  "type": "string"
+                },
+                "client_secret": {
+                  "_escapeUI": {
+                    "label": "Client Secret",
+                    "inputType": "text",
+                    "name": "client_secret"
+                  },
+                  "description": "The Secret of the client in the OAuth appliaction",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "authSchema": {
+                "properties": {
+                  "grant_type": {
+                    "const": "implicit"
+                  }
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "client_id": {
+                  "_escapeUI": {
+                    "label": "Client ID",
+                    "inputType": "text",
+                    "name": "client_id"
+                  },
+                  "description": "The ID of the client in the OAuth application",
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ]
       },
       "additionalProperties": false,
       "required": [
