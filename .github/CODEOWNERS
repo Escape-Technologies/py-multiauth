@@ -12,4 +12,6 @@
 # This should make it easy to add new rules without breaking existing ones.
 
 # Global rule:
-*           @iCarossio @karimhreda @c3b5aw
+*           @c3b5aw
+
+multiauth/  @iCarossio @karimhreda
