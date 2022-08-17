@@ -39,7 +39,8 @@ def basic_authenticator(
         return auth_response
 
     # Append the optional headers to the header
-    if headers := schema['options'].get('headers'):
+    headers = schema['options'].get('headers')
+    if headers:
         for name, value in headers.items():
 
             # Resolving duplicate keys

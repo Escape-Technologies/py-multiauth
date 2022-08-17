@@ -20,7 +20,9 @@ def install_logger(logger: logging.Logger) -> None:
     """Install logger."""
 
     handler = logging.StreamHandler()
-    handler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s %(name)s - %(message)s'))
+
+    formatter = os.getenv('LOG_FMT') or '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    handler.setFormatter(logging.Formatter(formatter))
 
     logger.addHandler(handler)
     logger.setLevel(logging.DEBUG if os.getenv('DEBUG') else logging.INFO)
