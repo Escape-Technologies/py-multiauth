@@ -2,6 +2,7 @@
 
 import json
 import logging
+import os
 import time
 from copy import deepcopy
 from importlib import resources
@@ -21,19 +22,53 @@ from multiauth.providers.aws import aws_signature
 from multiauth.utils import setup_logger
 
 
+def load_authrc(
+    logger: logging.Logger,
+    authrc_file: Optional[str] = None,
+) -> Tuple[Dict, Dict]:
+    """Load authrc file."""
+
+    filepath = authrc_file or os.getenv('AUTHRC')
+    if not filepath:
+        if os.path.exists('.authrc'):
+            filepath = '.authrc'
+        elif os.path.exists(os.path.expanduser('~/.multiauth/.authrc')):
+            filepath = os.path.expanduser('~/.multiauth/.authrc')
+
+    if not filepath:
+        raise InvalidConfigurationError('authrc file not found', path='$')
+
+    logger.info(f'loading authrc file: {filepath}')
+
+    with open(filepath, 'r', encoding='utf-8') as f:
+        authrc = json.load(f)
+
+    if not 'auth' in authrc:
+        raise InvalidConfigurationError('auth section not found', path='$.auth')
+
+    if not 'users' in authrc:
+        raise InvalidConfigurationError('users section not found', path='$.users')
+
+    return authrc['auth'], authrc['users']
+
+
 class MultiAuth(IMultiAuth):
 
     """Multiauth manager."""
 
     def __init__(
         self,
-        auths: Dict,
-        users: Dict,
+        auths: Optional[Dict] = None,
+        users: Optional[Dict] = None,
+        authrc_file: Optional[str] = None,
         logger: Optional[logging.Logger] = None,
     ) -> None:
         """Initialize the Auth manager."""
 
         self._logger = logger or setup_logger()
+
+        if auths is None or users is None:
+            auths, users = load_authrc(self._logger, authrc_file)
 
         self.validate(auths, users)
 
@@ -43,7 +78,7 @@ class MultiAuth(IMultiAuth):
 
     @property
     def headers(self) -> Dict[str, Dict]:
-        """Fetch all headers of the internal manager."""
+        """Fetch all user's headers."""
 
         return self._headers
 
