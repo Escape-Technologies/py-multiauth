@@ -13,7 +13,7 @@
         },
         {
             "name": "isort",
-            "command": "isort -m 9 --line-length 159 multiauth tests"
+            "command": "isort -m 9 --line-length 160 multiauth tests"
         },
         {
             "name": "unify",
@@ -37,7 +37,7 @@
         },
         {
             "name": "pytest",
-            "command": "pytest tests"
+            "command": "pytest tests/unit/"
         }
     ]
 }
