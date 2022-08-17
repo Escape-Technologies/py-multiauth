@@ -1,8 +1,14 @@
 """Graphql provider."""
 
-from typing import Dict, Literal, Optional, TypeAlias, TypedDict
+import sys
+from typing import Dict, Literal, Optional, TypeAlias
 
 from multiauth.entities.http import HTTPMethod
+
+if sys.version_info >= (3, 8):
+    from typing import TypedDict  # pylint: disable=no-name-in-module
+else:
+    from typing_extensions import TypedDict
 
 Operation: TypeAlias = Literal['query', 'mutation', 'subscription']
 
