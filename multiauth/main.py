@@ -44,10 +44,10 @@ def load_authrc(
         authrc = json.load(f)
 
     if not 'auth' in authrc:
-        raise InvalidConfigurationError('auth section not found', path='$')
+        raise InvalidConfigurationError('auth section not found', path='$.auth')
 
     if not 'users' in authrc['auth']:
-        raise InvalidConfigurationError('users section not found', path='$')
+        raise InvalidConfigurationError('users section not found', path='$.users')
 
     return authrc['auth'], authrc['users']
 
