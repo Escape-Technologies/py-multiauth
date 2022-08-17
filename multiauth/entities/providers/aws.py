@@ -1,9 +1,15 @@
 """Aws provider."""
 
+import sys
 from enum import Enum, unique
-from typing import Dict, Optional, TypedDict
+from typing import Dict, Optional
 
 from multiauth.entities.http import HTTPMethod, Location
+
+if sys.version_info >= (3, 8):
+    from typing import TypedDict  # pylint: disable=no-name-in-module
+else:
+    from typing_extensions import TypedDict
 
 
 @unique
