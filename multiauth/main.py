@@ -46,7 +46,7 @@ def load_authrc(
     if not 'auth' in authrc:
         raise InvalidConfigurationError('auth section not found', path='$.auth')
 
-    if not 'users' in authrc['auth']:
+    if not 'users' in authrc:
         raise InvalidConfigurationError('users section not found', path='$.users')
 
     return authrc['auth'], authrc['users']

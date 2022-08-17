@@ -1,0 +1,23 @@
+{
+  "auth": {
+    "schema1": {
+      "tech": "graphql",
+      "url": "http://example.com/graphql",
+      "mutation_name": "authentification",
+      "mutation_field": "token",
+      "method": "POST"
+    }
+  },
+  "users": {
+    "user1": {
+      "auth": "schema1",
+      "username": "user1",
+      "password": "pwd1"
+    },
+    "user2": {
+      "auth": "schema1",
+      "username": "user2",
+      "password": "pwd2"
+    }
+  }
+}
