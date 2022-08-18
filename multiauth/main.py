@@ -229,11 +229,12 @@ class MultiAuth(IMultiAuth):
     def reauthenticate(
         self,
         username: str,
-        headers: Optional[Dict[str, str]] = None,
+        additional_headers: Optional[Dict[str, str]] = None,
         no_auth: bool = False,
     ) -> Tuple[Dict[str, str], Optional[str]]:
         """Reauthentication of the user in case of token expiry."""
 
+        headers = additional_headers or {}
         user_info = self._manager.users[username]
         expiry_time = user_info.expires_in
         refresh_token = user_info.refresh_token
@@ -264,7 +265,6 @@ class MultiAuth(IMultiAuth):
                 self._headers[username] = auth_response['headers']
                 self._logger.info('Reauthentication Successful')
 
-        headers = headers or {}
         if not no_auth:
             headers.update(self._headers.get(username, {}))
 
