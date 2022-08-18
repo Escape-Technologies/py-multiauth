@@ -27,11 +27,11 @@ ctx_store: ContextVar['MultiAuth'] = ContextVar('multiauth_instance')
 
 def load_authrc(
     logger: logging.Logger,
-    authrc_file: Optional[str] = None,
+    authrc: Optional[str] = None,
 ) -> Tuple[Dict, Dict]:
     """Load authrc file."""
 
-    filepath = authrc_file or os.getenv('AUTHRC')
+    filepath = authrc or os.getenv('AUTHRC')
     if not filepath:
         if os.path.exists('.authrc'):
             filepath = '.authrc'
@@ -44,15 +44,15 @@ def load_authrc(
     logger.info(f'loading authrc file: {filepath}')
 
     with open(filepath, 'r', encoding='utf-8') as f:
-        authrc = json.load(f)
+        data = json.load(f)
 
-    if not 'auth' in authrc:
+    if not 'auth' in data:
         raise InvalidConfigurationError('auth section not found', path='$.auth')
 
-    if not 'users' in authrc:
+    if not 'users' in data:
         raise InvalidConfigurationError('users section not found', path='$.users')
 
-    return authrc['auth'], authrc['users']
+    return data['auth'], data['users']
 
 
 class MultiAuth(IMultiAuth):
@@ -63,7 +63,7 @@ class MultiAuth(IMultiAuth):
         cls,
         auths: Optional[Dict] = None,
         users: Optional[Dict] = None,
-        authrc_file: Optional[str] = None,
+        authrc: Optional[str] = None,
         logger: Optional[logging.Logger] = None,  # pylint: disable=unused-argument
     ) -> 'MultiAuth':
         """Create a new instance of the Auth manager."""
@@ -74,7 +74,7 @@ class MultiAuth(IMultiAuth):
             instance = None
 
         if instance is not None:
-            if instance.auths == auths and instance._manager.users == users and instance._authrc_file == authrc_file:
+            if instance.auths == auths and instance._manager.users == users and instance._authrc == authrc:
                 return instance
 
         instance = super().__new__(cls)
@@ -85,16 +85,16 @@ class MultiAuth(IMultiAuth):
         self,
         auths: Optional[Dict] = None,
         users: Optional[Dict] = None,
-        authrc_file: Optional[str] = None,
+        authrc: Optional[str] = None,
         logger: Optional[logging.Logger] = None,
     ) -> None:
         """Initialize the Auth manager."""
 
         self._logger = logger or setup_logger()
-        self._authrc_file = authrc_file
+        self._authrc = authrc
 
         if auths is None or users is None:
-            auths, users = load_authrc(self._logger, authrc_file)
+            auths, users = load_authrc(self._logger, authrc)
 
         self.validate(auths, users)
 

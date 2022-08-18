@@ -49,7 +49,7 @@ class IUser(ABC):
 class IMultiAuth(ABC):
 
     _logger: logging.Logger
-    _authrc_file: Optional[str]
+    _authrc: Optional[str]
 
     _manager: Any
     _headers: Dict[str, Dict]
