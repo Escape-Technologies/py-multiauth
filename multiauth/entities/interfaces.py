@@ -48,14 +48,21 @@ class IUser(ABC):
 
 class IMultiAuth(ABC):
 
+    _logger: logging.Logger
+    _authrc: Optional[str]
+
     _manager: Any
     _headers: Dict[str, Dict]
     _auths: Dict
-    _logger: logging.Logger
 
     @property
     @abstractmethod
     def headers(self) -> Dict[str, Dict]:
+        ...
+
+    @property
+    @abstractmethod
+    def auths(self) -> Dict:
         ...
 
     @property
