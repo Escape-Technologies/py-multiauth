@@ -9,10 +9,6 @@
 pip install py-multiauth
 ```
 
-```python
-from multiauth import ...
-```
-
 ## Supported methods
 
 |Name     |Authenticate|Refresh|Extra    |
@@ -26,6 +22,43 @@ from multiauth import ...
 |`HAWK`   |✓           |       |         |
 |`MANUAL` |✓           |       |         |
 |`OAUTH`  |✓           |✓      |         |
+
+## Usage
+
+### Loading a configuration file
+
+Currently, we support 4 way of loading a configuration file.
+
+```python
+
+# Using constructor argument
+Multiauth(authrc_file='path.json')
+
+# Using environment variable
+os.environ['AUTHRC'] = 'path.json'
+
+# Using autodection
+os.paths.exists('.authrc')?
+
+# Using autodection from user home directory
+os.path.exists(os.path.expanduser('~/.multiauth/.authrc'))?
+```
+
+### Managing authentication flow
+
+**From 1.7.0, Multiauth supports context singleton.
+From that, you can instanciate MultiAuth and re-use the same class in another package as far it is sharing the same context.**
+
+```python
+auth = Multiauth(auths=.., users=.., authrc=.., logger=..)
+
+# Sending the requests to get the correct headers
+auth.authenticate_users()
+
+# Getting the header before sending a HTTP request
+auth_headers = auth.reauthenticate(username=.., additional_headers=.., no_auth=..)
+r = requests.get('https://example.com', headers=auth_headers[0])
+```
 
 ## Contributing
 

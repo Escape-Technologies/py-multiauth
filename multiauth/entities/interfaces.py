@@ -83,7 +83,7 @@ class IMultiAuth(ABC):
     def reauthenticate(
         self,
         username: str,
-        headers: Optional[Dict[str, str]] = None,
+        additional_headers: Optional[Dict[str, str]] = None,
         no_auth: bool = False,
     ) -> Tuple[Dict[str, str], Optional[str]]:
         ...
