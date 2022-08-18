@@ -4,6 +4,7 @@ import json
 import logging
 import os
 import time
+from contextvars import ContextVar
 from copy import deepcopy
 from importlib import resources
 from typing import Any, Dict, Optional, Tuple
@@ -20,6 +21,8 @@ from multiauth.handlers import auth_handler, reauth_handler
 from multiauth.manager import User, UserManager
 from multiauth.providers.aws import aws_signature
 from multiauth.utils import setup_logger
+
+ctx_store: ContextVar['MultiAuth'] = ContextVar('multiauth_instance')
 
 
 def load_authrc(
@@ -56,6 +59,28 @@ class MultiAuth(IMultiAuth):
 
     """Multiauth manager."""
 
+    def __new__(
+        cls,
+        auths: Optional[Dict] = None,
+        users: Optional[Dict] = None,
+        authrc_file: Optional[str] = None,
+        logger: Optional[logging.Logger] = None,  # pylint: disable=unused-argument
+    ) -> 'MultiAuth':
+        """Create a new instance of the Auth manager."""
+
+        try:
+            instance = ctx_store.get()
+        except LookupError:
+            instance = None
+
+        if instance is not None:
+            if instance._auths == auths and instance._manager.users == users and instance._authrc_file == authrc_file:
+                return instance
+
+        instance = super().__new__(cls)
+        ctx_store.set(instance)
+        return instance
+
     def __init__(
         self,
         auths: Optional[Dict] = None,
@@ -66,6 +91,7 @@ class MultiAuth(IMultiAuth):
         """Initialize the Auth manager."""
 
         self._logger = logger or setup_logger()
+        self._authrc_file = authrc_file
 
         if auths is None or users is None:
             auths, users = load_authrc(self._logger, authrc_file)
