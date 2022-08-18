@@ -62,6 +62,11 @@ class IMultiAuth(ABC):
 
     @property
     @abstractmethod
+    def auths(self) -> Dict:
+        ...
+
+    @property
+    @abstractmethod
     def users(self) -> Dict:
         ...
 

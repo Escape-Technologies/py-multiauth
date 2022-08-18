@@ -74,7 +74,7 @@ class MultiAuth(IMultiAuth):
             instance = None
 
         if instance is not None:
-            if instance._auths == auths and instance._manager.users == users and instance._authrc_file == authrc_file:
+            if instance.auths == auths and instance._manager.users == users and instance._authrc_file == authrc_file:
                 return instance
 
         instance = super().__new__(cls)
@@ -107,6 +107,12 @@ class MultiAuth(IMultiAuth):
         """Fetch all user's headers."""
 
         return self._headers
+
+    @property
+    def auths(self) -> Dict[str, User]:
+        """Fetch all auths methods."""
+
+        return self._auths
 
     @property
     def users(self) -> Dict[str, User]:
