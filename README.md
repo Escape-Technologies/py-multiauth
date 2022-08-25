@@ -46,11 +46,11 @@ os.path.exists(os.path.expanduser('~/.multiauth/.authrc'))?
 
 ### Managing authentication flow
 
-**From 1.7.0, Multiauth supports context singleton.
+**MultiAuth supports context singleton.
 From that, you can instanciate MultiAuth and re-use the same class in another package as far it is sharing the same context.**
 
 ```python
-auth = Multiauth(auths=.., users=.., authrc=.., logger=..)
+auth = MultiAuth(auths=.., users=.., authrc=.., logger=..)
 
 # Sending the requests to get the correct headers
 auth.authenticate_users()
