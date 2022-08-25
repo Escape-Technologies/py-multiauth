@@ -32,7 +32,7 @@ Currently, we support 4 way of loading a configuration file.
 ```python
 
 # Using constructor argument
-Multiauth(authrc_file='path.json')
+MultiAuth(authrc_file='path.json')
 
 # Using environment variable
 os.environ['AUTHRC'] = 'path.json'
