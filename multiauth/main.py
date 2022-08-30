@@ -264,7 +264,17 @@ class MultiAuth(IMultiAuth):
         additional_headers: Optional[Dict[str, str]] = None,
         no_auth: bool = False,
     ) -> Tuple[Dict[str, str], Optional[str]]:
-        """Reauthentication of the user in case of token expiry."""
+        """Reauthentication of the user in case of token expiry.
+
+        Args:
+            username: The username of the user to reauthenticate.
+            additional_headers: Additional headers to add to the returned headers.
+            no_auth: If True, do not authenticate the user.
+
+        Returns:
+            - The headers
+            - The username of the user, if authenticated.
+        """
 
         headers = additional_headers or {}
         user_info = self._manager.users[username]
