@@ -149,7 +149,6 @@ def graphql_auth_attach(
     else:
         data = {'query': graphql_query['graphql_query'], 'variables': graphql_query['graphql_variables']}
 
-    print(data)
     # Now we need to send the request
     response = requests.request(auth_config['method'], auth_config['url'], json=data)
 
