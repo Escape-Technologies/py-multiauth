@@ -1,4 +1,4 @@
-# pylint: disable=redefined-outer-name, no-self-use
+# pylint: disable=redefined-outer-name
 
 """This is a test to check if the Basic authentication is working."""
 
@@ -52,6 +52,7 @@ def test_basic_authentication(mocker: MockerFixture, user_config: User, auth_sch
     response = requests.get(
         'http://example.com',
         headers=auth_response['headers'],
+        timeout=5,
     )
 
     assert response.text == '{"authenticated":true}'

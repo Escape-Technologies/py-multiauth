@@ -150,7 +150,7 @@ def graphql_auth_attach(
         data = {'query': graphql_query['graphql_query'], 'variables': graphql_query['graphql_variables']}
 
     # Now we need to send the request
-    response = requests.request(auth_config['method'], auth_config['url'], json=data)
+    response = requests.request(auth_config['method'], auth_config['url'], json=data, timeout=5)
 
     # If there is a cookie that is fetched, added it to the auth response header
     cookie_header = response.cookies.get_dict()  # type: ignore[no-untyped-call]
@@ -269,7 +269,7 @@ def graphql_reauthenticator(
         data = {'query': graphql_query['graphql_query'], 'variables': graphql_query['graphql_variables']}
 
     # Now we need to send the request
-    response = requests.request(auth_config['method'], auth_config['url'], json=data)
+    response = requests.request(auth_config['method'], auth_config['url'], json=data, timeout=5)
 
     # If there is a cookie that is fetched, added it to the auth response header
     cookie_header = response.cookies.get_dict()  # type: ignore[no-untyped-call]
