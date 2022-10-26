@@ -30,7 +30,7 @@ def send_401_request(url: str) -> AuthDigestChallenge:
     })
 
     # Send an empty get request to get the parameters necessary for the authentication
-    response = requests.get(url)
+    response = requests.get(url, timeout=5)
 
     # We need to parse the response
     if response.headers.get('WWW-Authenticate'):

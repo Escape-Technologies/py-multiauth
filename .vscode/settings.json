@@ -38,11 +38,13 @@
         "**/.DS_Store": true,
         "**/Thumbs.db": true,
         "**/.venv": true,
-        "**/.github": true,
-        "**/.vscode": true,
-        ".*": true,
         "*.json": true,
         "LICENSE": true,
         "*.js": true,
+        ".*_cache": true,
+        ".coverage": true,
+        "node_modules/": true,
+        "dist/": true,
+        "poetry.lock": true,
     }
   }

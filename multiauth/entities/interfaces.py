@@ -27,7 +27,7 @@ class IUser(ABC):
 
     @abstractmethod
     def reset(self) -> None:
-        ...
+        pass
 
     @abstractmethod
     def set_token(
@@ -35,15 +35,15 @@ class IUser(ABC):
         token: Optional[Token],
         expires_in: Optional[float],
     ) -> None:
-        ...
+        pass
 
     @abstractmethod
     def get_credentials(self) -> Tuple[str, str]:
-        ...
+        pass
 
     @abstractmethod
     def to_dict(self) -> Dict[str, Any]:
-        ...
+        pass
 
 
 class IMultiAuth(ABC):
@@ -58,22 +58,22 @@ class IMultiAuth(ABC):
     @property
     @abstractmethod
     def headers(self) -> Dict[str, Dict]:
-        ...
+        pass
 
     @property
     @abstractmethod
     def auths(self) -> Dict:
-        ...
+        pass
 
     @property
     @abstractmethod
     def users(self) -> Dict:
-        ...
+        pass
 
     @property
     @abstractmethod
     def schemas(self) -> Dict:
-        ...
+        pass
 
     @abstractmethod
     def sign(
@@ -84,7 +84,7 @@ class IMultiAuth(ABC):
         headers: Dict[str, str],
         formatted_payload: Any,
     ) -> Dict[str, str]:
-        ...
+        pass
 
     @abstractmethod
     def reauthenticate(
@@ -93,15 +93,15 @@ class IMultiAuth(ABC):
         additional_headers: Optional[Dict[str, str]] = None,
         no_auth: bool = False,
     ) -> Tuple[Dict[str, str], Optional[str]]:
-        ...
+        pass
 
     @abstractmethod
     def authenticate(
         self,
         username: str,
     ) -> Tuple[Dict[str, str], str]:
-        ...
+        pass
 
     @abstractmethod
     def authenticate_users(self) -> Dict[str, Optional[Token]]:
-        ...
+        pass
