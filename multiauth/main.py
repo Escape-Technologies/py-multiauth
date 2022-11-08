@@ -134,8 +134,9 @@ class MultiAuth(IMultiAuth):
         """Validate the auth schema and users with json schema."""
 
         # Load the json schema from static
-        with resources.open_text(static, 'auth_schema.json') as f:
-            json_schema = json.load(f)
+        target = resources.files(static) / 'auth_schema.json'
+        with target.open('r', encoding='utf-8') as f:
+            auth_schema = json.load(f)
 
         auth_tech_link: Dict[str, str] = {}
         s_users = ', '.join(auth_tech_link.keys())
@@ -145,11 +146,11 @@ class MultiAuth(IMultiAuth):
                 raise InvalidConfigurationError(message='auth is None or is not a Dict', path=f'$.auth.{auth_name}')
             if 'tech' not in auth:
                 raise InvalidConfigurationError(message='\'tech\' is a required property', path=f'$.auth.{auth_name}')
-            if auth['tech'] not in json_schema:
+            if auth['tech'] not in auth_schema:
                 raise ValueError(f'\'{auth["tech"]}\' is not a valid auth tech')
             auth_tech_link[auth_name] = auth['tech']
             try:
-                jsonschema.validate(auth, json_schema[auth['tech']]['authSchema'])
+                jsonschema.validate(auth, auth_schema[auth['tech']]['authSchema'])
             except ValidationError as e:
                 raise InvalidConfigurationError(message=e.message, path=f'$.auth.{auth_name}' + str(e.json_path)[2:]) from e
 
@@ -163,7 +164,7 @@ class MultiAuth(IMultiAuth):
                     message=f'The authentication references user \'{user["auth"]}\' but the only users defined are: {s_users}', path=f'$.users.{username}.auth'
                 )
             try:
-                jsonschema.validate(user, json_schema[auth_tech_link[user['auth']]]['userSchema'])
+                jsonschema.validate(user, auth_schema[auth_tech_link[user['auth']]]['userSchema'])
             except ValidationError as e:
                 raise InvalidConfigurationError(message=e.message, path=f'$.users.{username}' + e.json_path[2:]) from e
 
