@@ -59,8 +59,7 @@ def generate_auth_docs() -> None:
     template = env.get_template('docs_auth_template.md')
 
     # Load the json schema from static
-    target = resources.files(static) / 'auth_schema.json'
-    with target.open('r', encoding='utf-8') as f:
+    with resources.open_text(static, 'auth_schema.json') as f:
         json_schema = json.load(f)
 
     # The schema layout
