@@ -3,16 +3,16 @@
 
 class AuthenticationError(Exception):
 
-    """Specific error class raised when the authentication fails."""
+    """Authentication error."""
 
-    message = 'authentication error'
+    message = 'Your authentication failed.'
 
 
 class ExpiredTokenError(Exception):
 
-    """Specific error classed raised when the token is expired."""
+    """Token expired error."""
 
-    message = 'token is expired'
+    message = 'Your token has expired.'
 
 
 class InvalidConfigurationError(Exception):
