@@ -12,9 +12,6 @@ license = "MIT"
 packages = [
     { include = "multiauth" }
 ]
-include = [
-    "LICENSE",
-]
 readme = "README.md"
 "homepage" = "https://escape.tech/"
 "repository" = "https://github.com/Escape-Technologies/py-multiauth"
