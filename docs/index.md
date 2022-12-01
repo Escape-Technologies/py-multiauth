@@ -215,7 +215,7 @@
 
 
 
-- Header key (`header_key`): The key of the header (defautl: `Bearer`).
+- Header prefix (`header_prefix`): The key of the header (defautl: `Bearer`).
 
 
 
@@ -285,7 +285,7 @@
             "options": {
                 "client_secret": "**string**",
                 "header_name": "**string**",
-                "header_key": "**string**",
+                "header_prefix": "**string**",
                 "headers": {
                     "**name**": "**value**"
                 }
@@ -323,7 +323,7 @@
             "options": {
                 "client_secret": "**string**",
                 "header_name": "**string**",
-                "header_key": "**string**",
+                "header_prefix": "**string**",
                 "headers": {
                     "**name**": "**value**"
                 }
@@ -361,7 +361,7 @@
             "options": {
                 "client_secret": "**string**",
                 "header_name": "**string**",
-                "header_key": "**string**",
+                "header_prefix": "**string**",
                 "headers": {
                     "**name**": "**value**"
                 }
@@ -401,7 +401,7 @@
             "options": {
                 "client_secret": "**string**",
                 "header_name": "**string**",
-                "header_key": "**string**",
+                "header_prefix": "**string**",
                 "headers": {
                     "**name**": "**value**"
                 }
@@ -554,7 +554,7 @@
 
 
 
-- Header key (`header_key`): The key of the header (default: `Bearer`).
+- Header prefix (`header_prefix`): The key of the header (default: `Bearer`).
 
 
 
@@ -604,7 +604,7 @@
                 "refresh_url": "**string**",
                 "refresh_token_name": "**string**",
                 "header_name": "**string**",
-                "header_key": "**string**",
+                "header_prefix": "**string**",
                 "cookie_auth": "**boolean**",
                 "headers": {
                     "**name**": "**value**"
@@ -1015,7 +1015,7 @@
 
 
 
-- Header key (`header_key`): The key of the header (defautl: `Bearer`).
+- Header prefix (`header_prefix`): The key of the header (defautl: `Bearer`).
 
 
 
@@ -1068,7 +1068,7 @@
                 "refresh_field_name": "**string**",
                 "header_name": "**string**",
                 "operation": "**string**",
-                "header_key": "**string**",
+                "header_prefix": "**string**",
                 "cookie_auth": "**boolean**",
                 "headers": {
                     "**name**": "**value**"

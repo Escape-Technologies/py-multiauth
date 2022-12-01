@@ -25,7 +25,7 @@ def rest_config_parser(schema: Dict) -> AuthConfigRest:
         'refresh_url': None,
         'refresh_token_name': None,
         'header_name': None,
-        'header_key': None,
+        'header_prefix': None,
         'headers': None,
     })
 
@@ -47,7 +47,7 @@ def rest_config_parser(schema: Dict) -> AuthConfigRest:
         auth_config['refresh_token_name'] = schema['options'].get('refresh_token_name')
         auth_config['token_name'] = schema['options'].get('token_name')
         auth_config['header_name'] = schema['options'].get('header_name')
-        auth_config['header_key'] = schema['options'].get('header_key')
+        auth_config['header_prefix'] = schema['options'].get('header_prefix')
         auth_config['headers'] = schema['options'].get('headers')
 
     return auth_config
@@ -67,6 +67,9 @@ def rest_auth_attach(
 
     # Now we need to send the request
     response = requests.request(auth_config['method'], auth_config['url'], json=credentials, timeout=5)
+
+    print(response.request.__dict__)
+
     # If there is a cookie that is fetched, added it to the auth response header
     cookie_header = response.cookies.get_dict()  # type: ignore[no-untyped-call]
     if cookie_header:
@@ -92,8 +95,8 @@ def rest_auth_attach(
         else:
             headers[auth_config['header_name']] = ''
 
-        if auth_config['header_key'] is not None:
-            headers[next(iter(headers))] += auth_config['header_key'] + ' ' + '{{' + token_name + '}}'
+        if auth_config['header_prefix'] is not None:
+            headers[next(iter(headers))] += auth_config['header_prefix'] + ' ' + '{{' + token_name + '}}'
         else:
             headers[next(iter(headers))] += 'Bearer {{' + token_name + '}}'
 
@@ -199,8 +202,8 @@ def rest_reauthenticator(
         else:
             headers[auth_config['header_name']] = ''
 
-        if auth_config['header_key'] is not None:
-            headers[next(iter(headers))] += auth_config['header_key'] + ' ' + '{{' + token_name + '}}'
+        if auth_config['header_prefix'] is not None:
+            headers[next(iter(headers))] += auth_config['header_prefix'] + ' ' + '{{' + token_name + '}}'
         else:
             headers[next(iter(headers))] += 'Bearer {{' + token_name + '}}'
 

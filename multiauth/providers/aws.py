@@ -47,7 +47,7 @@ def aws_config_parser(
         'client_secret': None,
         'location': Location.HEADERS,
         'header_name': None,
-        'header_key': None,
+        'header_prefix': None,
         'headers': None,
     })
 
@@ -90,7 +90,7 @@ def aws_config_parser(
     if 'options' in schema:
         auth_config['client_secret'] = schema['options'].get('client_secret')
         auth_config['header_name'] = schema['options'].get('header_name')
-        auth_config['header_key'] = schema['options'].get('header_key')
+        auth_config['header_prefix'] = schema['options'].get('header_prefix')
         auth_config['headers'] = schema['options'].get('headers')
 
     return auth_config
@@ -187,8 +187,8 @@ def aws_auth_attach(
     else:
         headers['Authorization'] = ''
 
-    if auth_config['header_key'] is not None:
-        headers[next(iter(headers))] += auth_config['header_key'] + ' ' + access_token
+    if auth_config['header_prefix'] is not None:
+        headers[next(iter(headers))] += auth_config['header_prefix'] + ' ' + access_token
     else:
         headers[next(iter(headers))] += 'Bearer ' + access_token
 
@@ -305,8 +305,8 @@ def aws_reauthenticator(
     else:
         headers[auth_config['header_name']] = ''
 
-    if auth_config['header_key'] is not None:
-        headers[next(iter(headers))] += auth_config['header_key'] + ' ' + access_token
+    if auth_config['header_prefix'] is not None:
+        headers[next(iter(headers))] += auth_config['header_prefix'] + ' ' + access_token
     else:
         headers[next(iter(headers))] += 'Bearer ' + access_token
 

@@ -235,10 +235,10 @@
               "description": "The name of the header (default: `Authorization`)",
               "type": "string"
             },
-            "header_key": {
+            "header_prefix": {
               "_escapeUI": {
                 "name": "headerKey",
-                "label": "Header key",
+                "label": "Header prefix",
                 "inputType": "text",
                 "value": "Bearer"
               },
@@ -258,7 +258,7 @@
               },
               "patternProperties": {
                 "^.*$": {
-                  "description": "The header key",
+                  "description": "The header prefix",
                   "type": "string",
                   "patterns": "."
                 }
@@ -417,10 +417,10 @@
               "description": "The name of the header (default: `Authorization`)",
               "type": "string"
             },
-            "header_key": {
+            "header_prefix": {
               "_escapeUI": {
                 "name": "headerKey",
-                "label": "Header key",
+                "label": "Header prefix",
                 "inputType": "text",
                 "value": "Bearer"
               },
@@ -449,7 +449,7 @@
               },
               "patternProperties": {
                 "^.*$": {
-                  "description": "The header key",
+                  "description": "The header prefix",
                   "type": "string",
                   "patterns": "."
                 }
@@ -627,7 +627,7 @@
               },
               "patternProperties": {
                 "^.*$": {
-                  "description": "The header key",
+                  "description": "The header prefix",
                   "type": "string",
                   "patterns": "."
                 }
@@ -809,10 +809,10 @@
                 "subscription"
               ]
             },
-            "header_key": {
+            "header_prefix": {
               "_escapeUI": {
                 "name": "headerKey",
-                "label": "Header key",
+                "label": "Header prefix",
                 "inputType": "text",
                 "value": "Bearer"
               },
@@ -917,7 +917,7 @@
           },
           "patternProperties": {
             "^.*$": {
-              "description": "The header key",
+              "description": "The header prefix",
               "type": "string",
               "patterns": "."
             }
@@ -979,7 +979,7 @@
               },
               "patternProperties": {
                 "^.*$": {
-                  "description": "The header key",
+                  "description": "The header prefix",
                   "type": "string",
                   "patterns": "."
                 }
@@ -1110,7 +1110,7 @@
               },
               "patternProperties": {
                 "^.*$": {
-                  "description": "The header key",
+                  "description": "The header prefix",
                   "type": "string",
                   "patterns": "."
                 }
@@ -1451,7 +1451,7 @@
               },
               "patternProperties": {
                 "^.*$": {
-                  "description": "The header key",
+                  "description": "The header prefix",
                   "type": "string",
                   "patterns": "."
                 }

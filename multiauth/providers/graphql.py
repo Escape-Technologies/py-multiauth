@@ -99,7 +99,7 @@ def graphql_config_parser(schema: Dict) -> AuthConfigGraphQl:
         'refresh_field_name': None,
         'refresh_field': True,
         'header_name': None,
-        'header_key': None,
+        'header_prefix': None,
         'headers': None,
     })
 
@@ -125,7 +125,7 @@ def graphql_config_parser(schema: Dict) -> AuthConfigGraphQl:
         auth_config['operation'] = schema['options'].get('operation', 'mutation')
         auth_config['cookie_auth'] = schema['options'].get('cookie_auth', False)
         auth_config['header_name'] = schema['options'].get('header_name')
-        auth_config['header_key'] = schema['options'].get('header_key')
+        auth_config['header_prefix'] = schema['options'].get('header_prefix')
         auth_config['headers'] = schema['options'].get('headers')
 
     return auth_config
@@ -177,8 +177,8 @@ def graphql_auth_attach(
         else:
             headers[auth_config['header_name']] = ''
 
-        if auth_config['header_key'] is not None:
-            headers[next(iter(headers))] += auth_config['header_key'] + ' ' + '{{' + auth_config['mutation_field'] + '}}'
+        if auth_config['header_prefix'] is not None:
+            headers[next(iter(headers))] += auth_config['header_prefix'] + ' ' + '{{' + auth_config['mutation_field'] + '}}'
         else:
             headers[next(iter(headers))] += 'Bearer {{' + auth_config['mutation_field'] + '}}'
 
@@ -296,8 +296,8 @@ def graphql_reauthenticator(
         else:
             headers[auth_config['header_name']] = ''
 
-        if auth_config['header_key'] is not None:
-            headers[next(iter(headers))] += auth_config['header_key'] + ' ' + '{{' + auth_config['mutation_field'] + '}}'
+        if auth_config['header_prefix'] is not None:
+            headers[next(iter(headers))] += auth_config['header_prefix'] + ' ' + '{{' + auth_config['mutation_field'] + '}}'
         else:
             headers[next(iter(headers))] += 'Bearer {{' + auth_config['mutation_field'] + '}}'
 

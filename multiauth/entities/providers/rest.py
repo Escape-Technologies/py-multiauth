@@ -21,5 +21,5 @@ class AuthConfigRest(TypedDict):
     refresh_token_name: Optional[str]
     token_name: Optional[str]
     header_name: Optional[str]
-    header_key: Optional[str]
+    header_prefix: Optional[str]
     headers: Optional[Dict[str, str]]
