@@ -207,7 +207,7 @@
 
 
 
-- Header name (`header_name`): The name of the header.
+- Header name (`header_name`): The name of the header (default: `Authorization`).
 
 
 
@@ -215,7 +215,7 @@
 
 
 
-- Header key (`header_key`): The key of the header.
+- Header key (`header_key`): The key of the header (defautl: `Bearer`).
 
 
 
@@ -546,7 +546,7 @@
 
 
 
-- Header name (`header_name`): The name of the header. The value of this field it by default Authorization.
+- Header name (`header_name`): The name of the header (default: `Authorization`).
 
 
 
@@ -554,7 +554,7 @@
 
 
 
-- Header key (`header_key`): The key of the header. The value of this field by default is Bearer.
+- Header key (`header_key`): The key of the header (default: `Bearer`).
 
 
 
@@ -999,7 +999,7 @@
 
 
 
-- Header name (`header_name`): The name of the header.
+- Header name (`header_name`): The name of the header (default: `Authorization`).
 
 
 
@@ -1015,7 +1015,7 @@
 
 
 
-- Header key (`header_key`): The key of the header.
+- Header key (`header_key`): The key of the header (defautl: `Bearer`).
 
 
 
@@ -1270,7 +1270,7 @@
 
 
 
-- Header name (`header_name`): The name of the header of the Api Key.
+- Header name (`header_name`): The name of the header (default: `x-api-key`).
 
 
 

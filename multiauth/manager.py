@@ -210,8 +210,8 @@ class User(IUser):
             except AuthenticationError:
                 pass
 
-    def get_credentials(self) -> Tuple[str, str]:
-        """Get credentials."""
+    def get_credentials_pair(self) -> Tuple[str, str]:
+        """Get credentials (RFC AWS & Basic)."""
 
         if not self.credentials:
             raise AuthenticationError('Missing credentials.')

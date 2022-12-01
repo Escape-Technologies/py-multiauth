@@ -232,7 +232,7 @@
                 "inputType": "text",
                 "value": "Authorization"
               },
-              "description": "The name of the header",
+              "description": "The name of the header (default: `Authorization`)",
               "type": "string"
             },
             "header_key": {
@@ -242,7 +242,7 @@
                 "inputType": "text",
                 "value": "Bearer"
               },
-              "description": "The key of the header",
+              "description": "The key of the header (defautl: `Bearer`)",
               "type": "string"
             },
             "headers": {
@@ -414,7 +414,7 @@
                 "inputType": "text",
                 "value": "Authorization"
               },
-              "description": "The name of the header. The value of this field it by default Authorization",
+              "description": "The name of the header (default: `Authorization`)",
               "type": "string"
             },
             "header_key": {
@@ -424,7 +424,7 @@
                 "inputType": "text",
                 "value": "Bearer"
               },
-              "description": "The key of the header. The value of this field by default is Bearer",
+              "description": "The key of the header (default: `Bearer`)",
               "type": "string"
             },
             "cookie_auth": {
@@ -478,8 +478,7 @@
         }
       },
       "additionalProperties": {
-        "type": "string",
-        "description": "A value that will be inserted in the user's auth payload",
+        "description": "A payload that will be inserted in the user's auth request",
         "_escapeUI": {
           "inputType": "editorList"
         }
@@ -793,7 +792,7 @@
                 "inputType": "text",
                 "value": "Authorization"
               },
-              "description": "The name of the header",
+              "description": "The name of the header (default: `Authorization`)",
               "type": "string"
             },
             "operation": {
@@ -817,7 +816,7 @@
                 "inputType": "text",
                 "value": "Bearer"
               },
-              "description": "The key of the header",
+              "description": "The key of the header (defautl: `Bearer`)",
               "type": "string"
             },
             "cookie_auth": {
@@ -861,7 +860,7 @@
         }
       },
       "additionalProperties": {
-        "description": "A value that will be inserted in the user's auth payload",
+        "description": "A payload that will be inserted in the user's auth request",
         "_escapeUI": {
           "inputType": "editorList"
         }
@@ -1078,7 +1077,7 @@
             "inputType": "text",
             "value": "Authorization"
           },
-          "description": "The name of the header of the Api Key",
+          "description": "The name of the header (default: `x-api-key`)",
           "type": "string"
         },
         "options": {

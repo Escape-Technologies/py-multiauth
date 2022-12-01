@@ -38,7 +38,7 @@ class IUser(ABC):
         pass
 
     @abstractmethod
-    def get_credentials(self) -> Tuple[str, str]:
+    def get_credentials_pair(self) -> Tuple[str, str]:
         pass
 
     @abstractmethod

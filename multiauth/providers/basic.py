@@ -23,7 +23,7 @@ def basic_authenticator(
     })
 
     # Take the username and password from the user in the configuration file
-    username, password = user.get_credentials()
+    username, password = user.get_credentials_pair()
 
     value = username + ':' + password
     # Encode base64 the value

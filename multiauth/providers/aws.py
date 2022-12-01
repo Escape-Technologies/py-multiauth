@@ -103,7 +103,7 @@ def aws_user_password_handler(
     """This function is the handler for the USER_PASSWORD_AUTH authentication flow."""
 
     # First we have to fetch the user credentials from the user
-    username, password = user.get_credentials()
+    username, password = user.get_credentials_pair()
 
     # Now we have to initiate the client
     client = boto3.client('cognito-idp', region_name=auth_config['region'])
@@ -135,7 +135,7 @@ def aws_user_srp_handler(
     """This function is the handler for the USER_SRP_AUTH authentication flow."""
 
     # First we have to fetch the user credentials from the user
-    username, password = user.get_credentials()
+    username, password = user.get_credentials_pair()
 
     # Now we have to initiate the client
     client = boto3.client('cognito-idp', region_name=auth_config['region'])

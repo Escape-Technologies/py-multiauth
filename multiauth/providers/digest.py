@@ -172,7 +172,7 @@ def digest_auth_attach(
     kd: Callable[[str, str], str] = lambda secret, data: hash_calculator(auth_config['algorithm'], f'{secret}:{data}')
 
     # First take user credentials
-    username, password = user.get_credentials()
+    username, password = user.get_credentials_pair()
 
     # Now we have to start calculating the response to the challenge
     a1 = f'{username}:{auth_config["realm"]}:{password}'
