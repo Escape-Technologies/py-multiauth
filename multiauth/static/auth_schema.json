@@ -242,7 +242,7 @@
                 "inputType": "text",
                 "value": "Bearer"
               },
-              "description": "The key of the header (defautl: `Bearer`)",
+              "description": "The prefix of the header (defautl: `Bearer`)",
               "type": "string"
             },
             "headers": {
@@ -424,7 +424,7 @@
                 "inputType": "text",
                 "value": "Bearer"
               },
-              "description": "The key of the header (default: `Bearer`)",
+              "description": "The prefix of the header (default: `Bearer`)",
               "type": "string"
             },
             "cookie_auth": {
@@ -816,7 +816,7 @@
                 "inputType": "text",
                 "value": "Bearer"
               },
-              "description": "The key of the header (defautl: `Bearer`)",
+              "description": "The prefix of the header (defautl: `Bearer`)",
               "type": "string"
             },
             "cookie_auth": {

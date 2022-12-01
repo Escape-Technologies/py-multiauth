@@ -215,7 +215,7 @@
 
 
 
-- Header prefix (`header_prefix`): The key of the header (defautl: `Bearer`).
+- Header prefix (`header_prefix`): The prefix of the header (defautl: `Bearer`).
 
 
 
@@ -554,7 +554,7 @@
 
 
 
-- Header prefix (`header_prefix`): The key of the header (default: `Bearer`).
+- Header prefix (`header_prefix`): The prefix of the header (default: `Bearer`).
 
 
 
@@ -1015,7 +1015,7 @@
 
 
 
-- Header prefix (`header_prefix`): The key of the header (defautl: `Bearer`).
+- Header prefix (`header_prefix`): The prefix of the header (defautl: `Bearer`).
 
 
 
