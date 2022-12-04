@@ -5,7 +5,6 @@ description = "Python package to interact with multiple authentication services"
 authors = ["Escape Technologies SAS <ping@escape.tech>"]
 maintainers = [
     "Antoine Carossio <antoine@escape.tech>",
-    "Karim Reda <karim.reda@escape.tech>",
     "Swan <swan@escape.tech>"
 ]
 license = "MIT"
@@ -18,6 +17,9 @@ readme = "README.md"
 
 [tool.poetry.urls]
 "Bug Tracker" = "https://github.com/Escape-Technologies/py-multiauth/issues"
+
+[tool.poetry.scripts]
+graphinder = 'multiauth:cli'
 
 [tool.coverage.run]
 omit = [
@@ -55,6 +57,7 @@ pytest-mock = "^3.10.0"
 setuptools = "^65.6.3"
 types-boto3 = "^1.0.2"
 types-requests = "^2.28.11.5"
+types-setuptools = "^65.6.0.1"
 unify = "^0.5"
 vulture = "^2.6"
 yapf = "^0.32.0"
