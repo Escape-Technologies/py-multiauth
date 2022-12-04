@@ -3,13 +3,13 @@
 import hashlib
 import os
 import time
+from http import HTTPMethod
 from typing import Callable, Dict, Optional
 from urllib.parse import urlparse
 
 import requests
 
 from multiauth.entities.errors import AuthenticationError
-from multiauth.entities.http import HTTPMethod
 from multiauth.entities.main import AuthConfigDigest, AuthDigestChallenge, AuthHashAlgorithmDigest, AuthResponse, AuthTech
 from multiauth.helpers import hash_calculator
 from multiauth.manager import User
@@ -177,9 +177,9 @@ def digest_auth_attach(
     # Now we have to start calculating the response to the challenge
     a1 = f'{username}:{auth_config["realm"]}:{password}'
     if method:
-        a2 = f'{method}:{auth_config["domain"]}'
+        a2 = f'{method.value}:{auth_config["domain"]}'
     else:
-        a2 = f'{auth_config["method"]}:{auth_config["domain"]}'
+        a2 = f'{auth_config["method"].value}:{auth_config["domain"]}'
 
     ha1 = hash_calculator(auth_config['algorithm'], a1)
     ha2 = hash_calculator(auth_config['algorithm'], a2)

@@ -2,9 +2,10 @@
 
 import sys
 from enum import Enum, unique
+from http import HTTPMethod
 from typing import Dict, Optional
 
-from multiauth.entities.http import HTTPMethod, Location
+from multiauth.entities.http import Location
 
 if sys.version_info >= (3, 8):
     from typing import TypedDict  # pylint: disable=no-name-in-module

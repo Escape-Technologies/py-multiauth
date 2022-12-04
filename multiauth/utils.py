@@ -4,12 +4,12 @@ import argparse
 import logging
 import os
 import shlex
+from http import HTTPMethod
 from typing import Dict, List, Mapping, Optional, TypeVar, Union
 from urllib.parse import urlparse
 
 from pydash import py_
 
-from multiauth.entities.http import HTTPMethod
 from multiauth.entities.utils import Credentials, ParsedCurlContent
 
 Default = TypeVar('Default')
@@ -109,14 +109,16 @@ def uncurl(curl: str) -> ParsedCurlContent:
 
     # Now we have to analyze what we have
     # First find out what type of method are we using
-    method: HTTPMethod = 'GET'
+    method = HTTPMethod.GET
     if parsed_args.request:
-        method = parsed_args.request.upper()
+        method = HTTPMethod[parsed_args.request.upper()]
     else:
         if parsed_args.data:
-            method = 'POST'
+            method = HTTPMethod.POST
         else:
-            method = 'GET'
+            method = HTTPMethod.GET
+
+    print(type(method))
 
     # Now we have to extract the headers
     headers: Dict[str, str] = {}

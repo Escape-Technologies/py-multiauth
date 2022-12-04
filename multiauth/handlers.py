@@ -1,8 +1,8 @@
 """Parse a response to extract auth credentials."""
 
+from http import HTTPMethod
 from typing import Dict, Optional
 
-from multiauth.entities.http import HTTPMethod
 from multiauth.entities.main import AuthResponse, AuthTech
 from multiauth.manager import User
 from multiauth.providers import apikey_authenticator, aws_authenticator, aws_reauthenticator, basic_authenticator, digest_authenticator, graphql_authenticator

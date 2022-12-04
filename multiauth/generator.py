@@ -2,12 +2,12 @@
 
 import base64
 import json
+from http import HTTPMethod
 from typing import Dict, List, Optional, Union, cast
 from urllib.parse import parse_qs
 
 import graphql
 
-from multiauth.entities.http import HTTPMethod
 from multiauth.entities.main import AuthTech, RCFile
 from multiauth.utils import setup_logger, uncurl
 
@@ -134,7 +134,7 @@ def _rest_fill(
             'schema1': {
                 'tech': AuthTech.REST.value,
                 'url': url,
-                'method': method,
+                'method': method.value,
                 'options': {
                     'headers': headers,
                 }
@@ -184,7 +184,7 @@ def _graphql_fill(
             'schema1': {
                 'tech': AuthTech.GRAPHQL.value,
                 'url': url,
-                'method': method,
+                'method': method.value,
                 'mutation_name': graphql_document['definitions'][0]['selection_set']['selections'][0]['name']['value'],
                 'options': {
                     'operation': graphql_document['definitions'][0]['operation']

@@ -6,6 +6,7 @@ import os
 import time
 from contextvars import ContextVar
 from copy import deepcopy
+from http import HTTPMethod
 from importlib import resources
 from typing import Any, Dict, Optional, Tuple
 
@@ -14,7 +15,6 @@ from jsonschema import ValidationError
 
 from multiauth import static
 from multiauth.entities.errors import InvalidConfigurationError
-from multiauth.entities.http import HTTPMethod
 from multiauth.entities.interfaces import IMultiAuth
 from multiauth.entities.main import AuthTech, Token
 from multiauth.handlers import auth_handler, reauth_handler

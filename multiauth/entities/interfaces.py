@@ -4,9 +4,9 @@
 
 import logging
 from abc import ABC, abstractmethod
+from http import HTTPMethod
 from typing import Any, Dict, Optional, Tuple
 
-from multiauth.entities.http import HTTPMethod
 from multiauth.entities.main import AuthTech, AuthType, JWTToken, Token
 
 

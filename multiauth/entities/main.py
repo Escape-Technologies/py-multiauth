@@ -2,9 +2,10 @@
 
 import sys
 from enum import Enum, unique
+from http import HTTPMethod
 from typing import Any, Dict, Optional, Union
 
-from multiauth.entities.http import HTTPMethod, Location
+from multiauth.entities.http import Location
 from multiauth.entities.providers.aws import AuthAWSType
 from multiauth.entities.providers.oauth import AuthOAuthGrantType
 

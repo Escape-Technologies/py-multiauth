@@ -1,8 +1,7 @@
 """Custom data used in utils."""
 
+from http import HTTPMethod
 from typing import Dict, NamedTuple, Optional
-
-from multiauth.entities.http import HTTPMethod
 
 
 class Credentials(NamedTuple):

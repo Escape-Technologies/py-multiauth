@@ -4,6 +4,7 @@ import datetime
 import hashlib
 import hmac
 from copy import deepcopy
+from http import HTTPMethod
 from typing import Any, Dict, cast
 from urllib.parse import urlparse
 
@@ -12,7 +13,7 @@ import jwt
 from pycognito.aws_srp import AWSSRP  # type: ignore[import]
 
 from multiauth.entities.errors import AuthenticationError
-from multiauth.entities.http import HTTPMethod, Location
+from multiauth.entities.http import Location
 from multiauth.entities.main import AuthAWSType, AuthResponse, AuthTech
 from multiauth.entities.providers.aws import AuthConfigAWS, AuthHashalgorithmHawkandAWS
 from multiauth.helpers import get_secret_hash
@@ -404,10 +405,10 @@ def aws_signature(
     payload_hash = hashlib.sha256(payload.encode('utf-8')).hexdigest()
 
     # Now we have to create the cannonical URL
-    if method == 'POST':
-        canonical_request = method + '\n' + path + '\n' + '\n' + canonical_header + '\n' + signed_header + '\n' + payload_hash + '\n'
+    if method == HTTPMethod.POST:
+        canonical_request = method.value + '\n' + path + '\n' + '\n' + canonical_header + '\n' + signed_header + '\n' + payload_hash + '\n'
     else:
-        canonical_request = method + '\n' + path + '\n' + payload + '\n' + canonical_header + '\n' + signed_header + '\n' + '\n'
+        canonical_request = method.value + '\n' + path + '\n' + payload + '\n' + canonical_header + '\n' + signed_header + '\n' + '\n'
 
     # Now we have to create the strings to sign
     algorithm = 'AWS4-HMAC-SHA256'

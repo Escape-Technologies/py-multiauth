@@ -1,9 +1,8 @@
 """Graphql provider."""
 
 import sys
+from http import HTTPMethod
 from typing import Dict, Optional
-
-from multiauth.entities.http import HTTPMethod
 
 if sys.version_info >= (3, 8):
     from typing import Literal, TypedDict  # pylint: disable=no-name-in-module
