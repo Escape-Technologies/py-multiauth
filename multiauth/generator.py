@@ -150,9 +150,11 @@ def _graphql_fill(
     url: str,
     method: HTTPMethod,
     headers: Dict[str, str],
-    variables: Dict = None,
+    variables: Optional[Dict] = None,
 ) -> RCFile:
     """This function fills the graphql escaperc file."""
+
+    variables = variables or {}
 
     # Now we need to get the user information
     credentials: Dict = {}

@@ -79,7 +79,7 @@ def dict_find_path(
 def dict_nested_get(
     dictionary: Mapping[str, Value],
     key: str,
-    default_return: Default = None,
+    default_return: Optional[Default] = None,
 ) -> Union[Default, Value]:
     """Search for a certain key inside a dict and returns its value (no matter the depth)"""
     return py_.get(dictionary, dict_find_path(dictionary, key, ''), default_return)
