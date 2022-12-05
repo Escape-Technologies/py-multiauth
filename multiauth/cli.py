@@ -54,7 +54,7 @@ __________          _____        .__   __  .__   _____          __  .__
             logger.info('No configuration file provided.')
 
         try:
-            auth = MultiAuth(args.file)
+            auth = MultiAuth(authrc=args.file)
             for user in auth.users:
                 auth.authenticate(user)
 
