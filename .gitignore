@@ -90,7 +90,6 @@ setup.py
 *.spec
 snap
 coverage.xml
-*.lock
 
 # Logs
 logs
