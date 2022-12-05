@@ -33,10 +33,12 @@ def load_authrc(
 
     filepath = authrc or os.getenv('AUTHRC')
     if not filepath:
-        if os.path.exists('.authrc'):
-            filepath = '.authrc'
-        elif os.path.exists(os.path.expanduser('~/.multiauth/.authrc')):
-            filepath = os.path.expanduser('~/.multiauth/.authrc')
+        for path in ['.authrc', '.authrc.json']:
+            if os.path.exists(path):
+                filepath = path
+                break
+    elif os.path.exists(os.path.expanduser('~/.multiauth/.authrc')):
+        filepath = os.path.expanduser('~/.multiauth/.authrc')
 
     if not filepath:
         raise InvalidConfigurationError('authrc file not found', path='$')
