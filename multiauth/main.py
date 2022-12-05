@@ -6,12 +6,10 @@ import os
 import time
 from contextvars import ContextVar
 from copy import deepcopy
-from datetime import date
 from importlib import resources
 from typing import Any, Dict, Optional, Tuple
 
 import jsonschema  # type: ignore[import]
-import pkg_resources
 from jsonschema import ValidationError
 
 from multiauth import static
@@ -24,7 +22,6 @@ from multiauth.manager import User, UserManager
 from multiauth.providers.aws import aws_signature
 from multiauth.utils import setup_logger
 
-__version__ = pkg_resources.get_distribution('py-multiauth').version
 ctx_store: ContextVar['MultiAuth'] = ContextVar('multiauth_instance')
 
 
@@ -314,28 +311,3 @@ class MultiAuth(IMultiAuth):
             headers.update(self._headers.get(username, {}))
 
         return headers, None if no_auth else username
-
-
-# pylint: disable=trailing-whitespace
-def cli() -> None:
-    """Entry point of the CLI program."""
-
-    print(
-        r"""
-__________          _____        .__   __  .__   _____          __  .__     
-\______   \___.__. /     \  __ __|  |_/  |_|__| /  _  \  __ ___/  |_|  |__  
- |     ___<   |  |/  \ /  \|  |  \  |\   __\  |/  /_\  \|  |  \   __\  |  \ 
- |    |    \___  /    Y    \  |  /  |_|  | |  /    |    \  |  /|  | |   Y  \
- |____|    / ____\____|__  /____/|____/__| |__\____|__  /____/ |__| |___|  /
-           \/            \/                           \/                 \/                              
-    """
-    )
-
-    print('    Maintainer   https://escape.tech')
-    print('    Blog         https://blog.escape.tech')
-    print('    Contribute   https://github.com/Escape-Technologies/py-multiauth')
-    print('')
-    print(f'   (c) 2021 - { date.today().year } Escape Technologies - Version: {__version__}')
-    print('\n' * 2)
-
-    MultiAuth()

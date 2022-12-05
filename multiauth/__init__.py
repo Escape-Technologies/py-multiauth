@@ -1,4 +1,5 @@
 """Package publisher."""
 
-from multiauth.main import MultiAuth, cli  # noqa
+from multiauth.cli import cli  # noqa
+from multiauth.main import MultiAuth  # noqa
 from multiauth.manager import User  # noqa
