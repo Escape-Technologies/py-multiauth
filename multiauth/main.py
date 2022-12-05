@@ -24,7 +24,7 @@ from multiauth.manager import User, UserManager
 from multiauth.providers.aws import aws_signature
 from multiauth.utils import setup_logger
 
-__version__ = pkg_resources.get_distribution(__package__ or __name__).version
+__version__ = pkg_resources.get_distribution('py-multiauth').version
 ctx_store: ContextVar['MultiAuth'] = ContextVar('multiauth_instance')
 
 

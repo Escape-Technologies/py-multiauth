@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "py-multiauth"
-version = "1.9.1"
+version = "1.10.0"
 description = "Python package to interact with multiple authentication services"
 authors = ["Escape Technologies SAS <ping@escape.tech>"]
 maintainers = [
@@ -29,6 +29,9 @@ omit = [
 
 [tool.pytest.ini_options]
 asyncio_mode = 'strict'
+
+[tool.mypy]
+files = ["multiauth", "tests"]
 
 [tool.poetry.dependencies]
 Authlib = "^1.1.0"

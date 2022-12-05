@@ -50,5 +50,5 @@ ignore-imports=yes
 
 [MESSAGES CONTROL]
 
-disable=logging-format-interpolation, logging-fstring-interpolation, broad-except, fixme
+disable=logging-format-interpolation, logging-fstring-interpolation, broad-except, fixme, unrecognized-option
 extension-pkg-whitelist=lxml
