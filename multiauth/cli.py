@@ -27,7 +27,7 @@ __________          _____        .__   __  .__   _____          __  .__
     )
 
     print('    Maintainer   https://escape.tech')
-    print('    Blog         https://blog.escape.tech')
+    print('    Blog         https://escape.tech/blog')
     print('    Contribute   https://github.com/Escape-Technologies/py-multiauth')
     print('')
     print(f'   (c) 2021 - { date.today().year } Escape Technologies - Version: {__version__}')
