@@ -20,7 +20,7 @@ class AuthConfigGraphQl(TypedDict):
     mutation_name: str
     cookie_auth: bool
     method: HTTPMethod
-    mutation_field: str
+    token_name: str
     operation: Operation
     refresh_mutation_name: Optional[str]
     refresh_field_name: Optional[str]

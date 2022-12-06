@@ -692,7 +692,7 @@
         "tech",
         "url",
         "mutation_name",
-        "mutation_field",
+        "token_name",
         "method"
       ],
       "description": "The auth configuration schema for GraphQL authentication",
@@ -728,14 +728,14 @@
           "description": "The name of the mutation used to authenticate",
           "type": "string"
         },
-        "mutation_field": {
+        "token_name": {
           "_escapeUI": {
-            "name": "mutationField",
+            "name": "tokenName",
             "inputType": "text",
-            "label": "Mutation Field",
+            "label": "Token Name",
             "value": "token"
           },
-          "description": "The name of the mutation field that you want to return (usually the field of the token)",
+          "description": "The name of the token that you want to return (usually the field of the token)",
           "type": "string"
         },
         "method": {

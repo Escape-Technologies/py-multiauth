@@ -43,6 +43,7 @@ def extract_token(
 
     def _find_token(token: Any, response: Any) -> Any:
         """This function finds the value of the token."""
+
         result = response
 
         if len(token) > 0:
@@ -69,19 +70,25 @@ def extract_token(
                 #regex to find the name of the token inside {{token_name}}
                 token_name = cast(Match, re.search('{{(.*)}}', header_arg)).group(1)
 
-                #retrived token from the response
-                res_token = _find_token(token_name.split('.'), response_dict)
+                # Retrived token from the response or attempt to fetch the token from the response headers
+                tokens = token_name.split('.')
+                res_token = _find_token(tokens, response_dict) or \
+                    _find_token(tokens, response.headers)
 
                 try:
                     assert res_token is not None
                 except AssertionError as e:
                     raise AuthenticationError(f'{type(e).__name__}: The Authentication token wasn\'t fetched properly.') from e
+
                 header_arg = header_arg.replace('{{' + token_name + '}}', res_token)
             headers_to_add[header_name] = header_arg
 
     # Here we are going to retrieve the refresh token from the response
     if refresh_token_name is not None:
-        refresh_token: str = _find_token(refresh_token_name.split('.'), response_dict)
+        tokens = token_name.split('.')
+        refresh_token = _find_token(tokens, response_dict) or \
+            _find_token(tokens, response.headers)
+
         return AuthResponse(tech=tech, headers=headers_to_add), refresh_token
 
     return AuthResponse(tech=tech, headers=headers_to_add), None

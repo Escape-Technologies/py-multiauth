@@ -198,7 +198,7 @@ def _graphql_fill(
     # Now regarding the field
     for field in graphql_document['definitions'][0]['selection_set']['selections'][0]['selection_set']['selections']:
         if field['name']['value'].lower() in POTENTIAL_FIELD_NAME:
-            rcfile['auth']['schema1']['mutation_field'] = field['name']['value']
+            rcfile['auth']['schema1']['token_name'] = field['name']['value']
             break
 
     if headers:

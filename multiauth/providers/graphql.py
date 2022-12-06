@@ -62,7 +62,7 @@ def generate_authentication_mutation(
                     graphql_query = 'mutation {' + auth_config['refresh_mutation_name'] + arguments + '\n'
         else:
             graphql_query = 'mutation {' + auth_config['mutation_name'] + arguments + '{ \n'
-        graphql_query += auth_config['mutation_field'] + '\n'
+        graphql_query += auth_config['token_name'] + '\n'
         if auth_config['refresh_field_name'] is not None:
             graphql_query += auth_config['refresh_field_name'] + '\n'
         if auth_config['headers'] is not None:
@@ -93,7 +93,7 @@ def graphql_config_parser(schema: Dict) -> AuthConfigGraphQl:
         'mutation_name': 'str',
         'method': 'POST',
         'cookie_auth': False,
-        'mutation_field': '',
+        'token_name': '',
         'operation': 'mutation',
         'refresh_mutation_name': None,
         'refresh_field_name': None,
@@ -107,14 +107,14 @@ def graphql_config_parser(schema: Dict) -> AuthConfigGraphQl:
         raise AuthenticationError('Please provide with the authentication URL')
     if not schema.get('mutation_name'):
         raise AuthenticationError('Please provide the mutation name for the authentication')
-    if not schema.get('mutation_field'):
-        raise AuthenticationError('Please provide the mutation field in the authentication response')
+    if not schema.get('token_name'):
+        raise AuthenticationError('Please provide the token name in the authentication response')
     if not schema.get('method'):
         raise AuthenticationError('Please the HTTP method used for the authentication process')
 
     auth_config['url'] = schema['url']
     auth_config['mutation_name'] = schema['mutation_name']
-    auth_config['mutation_field'] = schema['mutation_field']
+    auth_config['token_name'] = schema['token_name']
     auth_config['method'] = schema['method']
 
     # Options
@@ -178,9 +178,9 @@ def graphql_auth_attach(
             headers[auth_config['header_name']] = ''
 
         if auth_config['header_prefix'] is not None:
-            headers[next(iter(headers))] += auth_config['header_prefix'] + ' ' + '{{' + auth_config['mutation_field'] + '}}'
+            headers[next(iter(headers))] += auth_config['header_prefix'] + ' ' + '{{' + auth_config['token_name'] + '}}'
         else:
-            headers[next(iter(headers))] += 'Bearer {{' + auth_config['mutation_field'] + '}}'
+            headers[next(iter(headers))] += 'Bearer {{' + auth_config['token_name'] + '}}'
 
     # Append the optional headers to the header
     if auth_config['headers'] is not None:
@@ -297,9 +297,9 @@ def graphql_reauthenticator(
             headers[auth_config['header_name']] = ''
 
         if auth_config['header_prefix'] is not None:
-            headers[next(iter(headers))] += auth_config['header_prefix'] + ' ' + '{{' + auth_config['mutation_field'] + '}}'
+            headers[next(iter(headers))] += auth_config['header_prefix'] + ' ' + '{{' + auth_config['token_name'] + '}}'
         else:
-            headers[next(iter(headers))] += 'Bearer {{' + auth_config['mutation_field'] + '}}'
+            headers[next(iter(headers))] += 'Bearer {{' + auth_config['token_name'] + '}}'
 
     # Append the optional headers to the header
     if auth_config['headers'] is not None:

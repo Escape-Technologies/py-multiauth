@@ -81,7 +81,7 @@ def graphql_curl_with_input_object_and_no_var_response() -> Dict:
                 'url': 'https://qhgslipjmw.com/graphql',
                 'method': 'POST',
                 'mutation_name': 'login',
-                'mutation_field': 'token',
+                'token_name': 'token',
                 'options': {
                     'operation': 'mutation',
                     'headers': {
@@ -112,7 +112,7 @@ def graphql_curl_with_input_object_and_var_response() -> Dict:
                 'url': 'https://qhgslipjmw.com/graphql',
                 'method': 'POST',
                 'mutation_name': 'login',
-                'mutation_field': 'token',
+                'token_name': 'token',
                 'options': {
                     'operation': 'mutation',
                     'headers': {

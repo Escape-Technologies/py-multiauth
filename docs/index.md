@@ -883,7 +883,7 @@
 
 
 
-- Mutation Field (`mutation_field`): The name of the mutation field that you want to return (usually the field of the token).
+- Token Name (`token_name`): The name of the token that you want to return (usually the field of the token).
 
 
 
@@ -1060,7 +1060,7 @@
             "tech": "graphql",
             "url": "**string**",
             "mutation_name": "**string**",
-            "mutation_field": "**string**",
+            "token_name": "**string**",
             "method": "**string**",
             "options": {
                 "refresh_mutation_name": "**string**",

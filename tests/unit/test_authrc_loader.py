@@ -24,7 +24,7 @@ class TestAuthrcLoader:
                 'tech': 'graphql',
                 'url': 'http://example.com/graphql',
                 'mutation_name': 'authentification',
-                'mutation_field': 'token',
+                'token_name': 'token',
                 'method': 'POST'
             }
         }
@@ -52,7 +52,7 @@ class TestAuthrcLoader:
                 'tech': 'graphql',
                 'url': 'http://example.com/graphql',
                 'mutation_name': 'authentification',
-                'mutation_field': 'token',
+                'token_name': 'token',
                 'method': 'POST'
             }
         }
