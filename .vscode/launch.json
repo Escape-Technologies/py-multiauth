@@ -1,0 +1,15 @@
+{
+    "version": "0.3.0",
+    "configurations": [
+        {
+            "name": "Validate",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "module": "multiauth",
+            "args": ["validate"],
+            "console": "integratedTerminal",
+            "justMyCode": true
+        }
+    ]
+}
