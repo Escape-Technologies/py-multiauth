@@ -131,7 +131,7 @@ def graphql_config_parser(schema: Dict) -> AuthConfigGraphQL:
     return auth_config
 
 
-#pylint: disable=too-many-branches
+#pylint: disable=too-many-branches, too-many-statements
 def graphql_auth_attach(
     user: User,
     auth_config: AuthConfigGraphQL,
@@ -189,7 +189,6 @@ def graphql_auth_attach(
             # Resolving duplicate keys
             if name in headers:
                 headers[name] += ', ' + value
-
             else:
                 headers[name] = value
 
@@ -202,13 +201,35 @@ def graphql_auth_attach(
                 'headers': headers,
             })
 
+    token: Optional[str] = None
+    auth_response: AuthResponse
+
+    # Fetching token from the header is priorized
+    # ToDo: Add support of optional headers (Previously inserted in `headers`)
     if auth_config['header_token_name'] is not None:
-        headers[auth_config['header_token_name']] = '{{' + auth_config['header_token_name'] + '}}'
+        token_key = auth_config['header_token_name']
+        token = response.headers.get(token_key)
+        if token:
+            if auth_config['header_prefix']:
+                token_key = auth_config['header_prefix'] + ' ' + token
 
-    # Now fetch the token and create the Authentication Response
-    auth_response, refresh_token = extract_token(response, AuthTech.REST, headers, auth_config['refresh_field_name'])
+            auth_response = AuthResponse({
+                'tech': AuthTech.REST,
+                'headers': {
+                    token_key: token,
+                },
+            })
 
-    token = auth_response['headers'][next(iter(headers))].split(' ')[1]
+    if not token:
+        # Now fetch the token and create the Authentication Response
+        auth_response, refresh_token = extract_token(
+            response,
+            AuthTech.REST,
+            headers,
+            auth_config['refresh_field_name'],
+        )
+
+        token = auth_response['headers'][next(iter(headers))].split(' ')[1]
 
     # If the token is not a JWT token, don't add expiry time (No way of knowing if the token is expired or no)
     try:
