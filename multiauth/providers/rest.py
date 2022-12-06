@@ -68,8 +68,6 @@ def rest_auth_attach(
     # Now we need to send the request
     response = requests.request(auth_config['method'], auth_config['url'], json=credentials, timeout=5)
 
-    print(response.request.__dict__)
-
     # If there is a cookie that is fetched, added it to the auth response header
     cookie_header = response.cookies.get_dict()  # type: ignore[no-untyped-call]
     if cookie_header:
