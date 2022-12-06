@@ -13,7 +13,7 @@ else:
 Operation = Literal['query', 'mutation', 'subscription']
 
 
-class AuthConfigGraphQl(TypedDict):
+class AuthConfigGraphQL(TypedDict):
 
     """Authentication Configuration Parameters of the GraphQL Method."""
     url: str
@@ -22,6 +22,7 @@ class AuthConfigGraphQl(TypedDict):
     method: HTTPMethod
     mutation_field: str
     operation: Operation
+    header_token_name: Optional[str]
     refresh_mutation_name: Optional[str]
     refresh_field_name: Optional[str]
     refresh_field: bool

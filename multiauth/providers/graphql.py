@@ -8,7 +8,7 @@ import requests
 
 from multiauth.entities.errors import AuthenticationError
 from multiauth.entities.main import AuthResponse, AuthTech
-from multiauth.entities.providers.graphql import AuthConfigGraphQl
+from multiauth.entities.providers.graphql import AuthConfigGraphQL
 from multiauth.helpers import extract_token
 from multiauth.manager import User
 
@@ -32,7 +32,7 @@ def format_arguments(credentials: Dict) -> str:
 
 def generate_authentication_mutation(
     user: User,
-    auth_config: AuthConfigGraphQl,
+    auth_config: AuthConfigGraphQL,
     credentials: Optional[Dict[str, Any]] = None,
     refresh: bool = False,
     refresh_field: bool = True,
@@ -85,16 +85,17 @@ def generate_authentication_mutation(
         raise KeyError(f'The key {error} is missing in the graphql auth config') from error
 
 
-def graphql_config_parser(schema: Dict) -> AuthConfigGraphQl:
+def graphql_config_parser(schema: Dict) -> AuthConfigGraphQL:
     """This function parses the GraphQL schema and checks if all necessary fields exist."""
 
-    auth_config = AuthConfigGraphQl({
+    auth_config = AuthConfigGraphQL({
         'url': '',
         'mutation_name': 'str',
+        'mutation_field': '',
         'method': 'POST',
         'cookie_auth': False,
-        'mutation_field': '',
         'operation': 'mutation',
+        'header_token_name': None,
         'refresh_mutation_name': None,
         'refresh_field_name': None,
         'refresh_field': True,
@@ -109,13 +110,10 @@ def graphql_config_parser(schema: Dict) -> AuthConfigGraphQl:
         raise AuthenticationError('Please provide the mutation name for the authentication')
     if not schema.get('mutation_field'):
         raise AuthenticationError('Please provide the mutation field in the authentication response')
-    if not schema.get('method'):
-        raise AuthenticationError('Please the HTTP method used for the authentication process')
 
     auth_config['url'] = schema['url']
     auth_config['mutation_name'] = schema['mutation_name']
     auth_config['mutation_field'] = schema['mutation_field']
-    auth_config['method'] = schema['method']
 
     # Options
     if 'options' in schema:
@@ -127,6 +125,8 @@ def graphql_config_parser(schema: Dict) -> AuthConfigGraphQl:
         auth_config['header_name'] = schema['options'].get('header_name')
         auth_config['header_prefix'] = schema['options'].get('header_prefix')
         auth_config['headers'] = schema['options'].get('headers')
+        auth_config['method'] = schema['options'].get('method', 'POST')
+        auth_config['header_token_name'] = schema['options'].get('header_token_name')
 
     return auth_config
 
@@ -134,7 +134,7 @@ def graphql_config_parser(schema: Dict) -> AuthConfigGraphQl:
 #pylint: disable=too-many-branches
 def graphql_auth_attach(
     user: User,
-    auth_config: AuthConfigGraphQl,
+    auth_config: AuthConfigGraphQL,
 ) -> AuthResponse:
     """This function attaches the user credentials to the schema and generates the proper authentication response."""
 
@@ -201,6 +201,9 @@ def graphql_auth_attach(
                 'tech': AuthTech.GRAPHQL,
                 'headers': headers,
             })
+
+    if auth_config['header_token_name'] is not None:
+        headers[auth_config['header_token_name']] = '{{' + auth_config['header_token_name'] + '}}'
 
     # Now fetch the token and create the Authentication Response
     auth_response, refresh_token = extract_token(response, AuthTech.REST, headers, auth_config['refresh_field_name'])

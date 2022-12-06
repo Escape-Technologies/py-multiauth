@@ -38,7 +38,6 @@
         "**/.DS_Store": true,
         "**/Thumbs.db": true,
         "**/.venv": true,
-        "*.json": true,
         "LICENSE": true,
         "*.js": true,
         ".*_cache": true,
