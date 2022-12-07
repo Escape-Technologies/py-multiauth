@@ -945,6 +945,10 @@
 
 
 
+
+
+
+
 ### Optional
 
 ---
@@ -992,6 +996,14 @@
 
 
 - Refresh Field Name (`refresh_field_name`): The name of the field that returns the refresh token. The same field is used to fetch the refresh token during authentication and reauthentication.
+
+
+
+
+
+
+
+- Header token name (`header_token_name`): The name of the header to fetch the token from.
 
 
 
@@ -1066,6 +1078,7 @@
                 "refresh_mutation_name": "**string**",
                 "refresh_field": "**boolean**",
                 "refresh_field_name": "**string**",
+                "header_token_name": "**string**",
                 "header_name": "**string**",
                 "operation": "**string**",
                 "header_prefix": "**string**",

@@ -785,6 +785,15 @@
               "description": "The name of the field that returns the refresh token. The same field is used to fetch the refresh token during authentication and reauthentication",
               "type": "string"
             },
+            "header_token_name": {
+              "_escapeUI": {
+                "name": "headerTokenName",
+                "label": "Header token name",
+                "inputType": "text"
+              },
+              "type": "string",
+              "description": "The name of the header to fetch the token from"
+            },
             "header_name": {
               "_escapeUI": {
                 "name": "headerName",

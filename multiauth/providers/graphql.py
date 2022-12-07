@@ -8,7 +8,7 @@ import requests
 
 from multiauth.entities.errors import AuthenticationError
 from multiauth.entities.main import AuthResponse, AuthTech
-from multiauth.entities.providers.graphql import AuthConfigGraphQl
+from multiauth.entities.providers.graphql import AuthConfigGraphQL
 from multiauth.helpers import extract_token
 from multiauth.manager import User
 
@@ -32,7 +32,7 @@ def format_arguments(credentials: Dict) -> str:
 
 def generate_authentication_mutation(
     user: User,
-    auth_config: AuthConfigGraphQl,
+    auth_config: AuthConfigGraphQL,
     credentials: Optional[Dict[str, Any]] = None,
     refresh: bool = False,
     refresh_field: bool = True,
@@ -85,16 +85,17 @@ def generate_authentication_mutation(
         raise KeyError(f'The key {error} is missing in the graphql auth config') from error
 
 
-def graphql_config_parser(schema: Dict) -> AuthConfigGraphQl:
+def graphql_config_parser(schema: Dict) -> AuthConfigGraphQL:
     """This function parses the GraphQL schema and checks if all necessary fields exist."""
 
-    auth_config = AuthConfigGraphQl({
+    auth_config = AuthConfigGraphQL({
         'url': '',
         'mutation_name': 'str',
+        'mutation_field': '',
         'method': 'POST',
         'cookie_auth': False,
-        'mutation_field': '',
         'operation': 'mutation',
+        'header_token_name': None,
         'refresh_mutation_name': None,
         'refresh_field_name': None,
         'refresh_field': True,
@@ -109,13 +110,10 @@ def graphql_config_parser(schema: Dict) -> AuthConfigGraphQl:
         raise AuthenticationError('Please provide the mutation name for the authentication')
     if not schema.get('mutation_field'):
         raise AuthenticationError('Please provide the mutation field in the authentication response')
-    if not schema.get('method'):
-        raise AuthenticationError('Please the HTTP method used for the authentication process')
 
     auth_config['url'] = schema['url']
     auth_config['mutation_name'] = schema['mutation_name']
     auth_config['mutation_field'] = schema['mutation_field']
-    auth_config['method'] = schema['method']
 
     # Options
     if 'options' in schema:
@@ -127,14 +125,16 @@ def graphql_config_parser(schema: Dict) -> AuthConfigGraphQl:
         auth_config['header_name'] = schema['options'].get('header_name')
         auth_config['header_prefix'] = schema['options'].get('header_prefix')
         auth_config['headers'] = schema['options'].get('headers')
+        auth_config['method'] = schema['options'].get('method', 'POST')
+        auth_config['header_token_name'] = schema['options'].get('header_token_name')
 
     return auth_config
 
 
-#pylint: disable=too-many-branches
+#pylint: disable=too-many-branches, too-many-statements
 def graphql_auth_attach(
     user: User,
-    auth_config: AuthConfigGraphQl,
+    auth_config: AuthConfigGraphQL,
 ) -> AuthResponse:
     """This function attaches the user credentials to the schema and generates the proper authentication response."""
 
@@ -189,7 +189,6 @@ def graphql_auth_attach(
             # Resolving duplicate keys
             if name in headers:
                 headers[name] += ', ' + value
-
             else:
                 headers[name] = value
 
@@ -202,10 +201,35 @@ def graphql_auth_attach(
                 'headers': headers,
             })
 
-    # Now fetch the token and create the Authentication Response
-    auth_response, refresh_token = extract_token(response, AuthTech.REST, headers, auth_config['refresh_field_name'])
+    token: Optional[str] = None
+    auth_response: AuthResponse
 
-    token = auth_response['headers'][next(iter(headers))].split(' ')[1]
+    # Fetching token from the header is priorized
+    # ToDo: Add support of optional headers (Previously inserted in `headers`)
+    if auth_config['header_token_name'] is not None:
+        token_key = auth_config['header_token_name']
+        token = response.headers.get(token_key)
+        if token:
+            if auth_config['header_prefix']:
+                token_key = auth_config['header_prefix'] + ' ' + token
+
+            auth_response = AuthResponse({
+                'tech': AuthTech.REST,
+                'headers': {
+                    token_key: token,
+                },
+            })
+
+    if not token:
+        # Now fetch the token and create the Authentication Response
+        auth_response, refresh_token = extract_token(
+            response,
+            AuthTech.REST,
+            headers,
+            auth_config['refresh_field_name'],
+        )
+
+        token = auth_response['headers'][next(iter(headers))].split(' ')[1]
 
     # If the token is not a JWT token, don't add expiry time (No way of knowing if the token is expired or no)
     try:

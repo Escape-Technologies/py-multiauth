@@ -60,6 +60,9 @@ __________          _____        .__   __  .__   _____          __  .__
 
             logger.info('Configuration file is valid.')
 
+            for user in auth.users:
+                logger.info(f'User: {user} | Headers: {auth.headers[user]}')
+
         except Exception as e:
             logger.error('Invalid configuration file.')
             raise e
