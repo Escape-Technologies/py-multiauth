@@ -821,7 +821,7 @@ testing = ["pytest", "pytest-benchmark"]
 
 [[package]]
 name = "poetryup"
-version = "0.12.5"
+version = "0.12.7"
 description = "Update dependencies and bump their version in the pyproject.toml file"
 category = "dev"
 optional = false
@@ -1316,7 +1316,7 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.7,<4.0"
-content-hash = "af6412939845bccb3e2d090c038059fee5248f769143b1693aaf5abccfae5ab8"
+content-hash = "6ff7bad4a94d8a80ff6c24e6c4c919954c844d28b315c512c4f0c096de693261"
 
 [metadata.files]
 astroid = [
@@ -1691,8 +1691,8 @@ pluggy = [
     {file = "pluggy-1.0.0.tar.gz", hash = "sha256:4224373bacce55f955a878bf9cfa763c1e360858e330072059e10bad68531159"},
 ]
 poetryup = [
-    {file = "poetryup-0.12.5-py3-none-any.whl", hash = "sha256:9ce84895acb665e3711e9ede8d06f7f18c6ac013e9387079ed0fefdfd29cd525"},
-    {file = "poetryup-0.12.5.tar.gz", hash = "sha256:fcf601d29200b2c7724e504deccebbb6ec005bf49711a880199fe22219968483"},
+    {file = "poetryup-0.12.7-py3-none-any.whl", hash = "sha256:8d428505c3a5ace59451f2c901876dcf6e5589e50d807fc30f41003c4dfea37b"},
+    {file = "poetryup-0.12.7.tar.gz", hash = "sha256:7903089e1c241ac04a1d199b0aef78bb1194f3f510c0781aa4cf5e961eff59d2"},
 ]
 pyasn1 = [
     {file = "pyasn1-0.4.8-py2.py3-none-any.whl", hash = "sha256:39c7e2ec30515947ff4e87fb6f456dfc6e84857d34be479c9d4a4ba4bf46aa5d"},
