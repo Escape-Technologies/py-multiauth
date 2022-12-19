@@ -44,7 +44,7 @@ jsonschema = "^4.17.3"
 
 [tool.poetry.dev-dependencies]
 autoflake = "^2.0.0"
-docformatter = "^1.5.0"
+docformatter = "^1.5.1"
 isort = "^5.10.1"
 mypy = "^0.991"
 poetryup = "^0.12.5"
