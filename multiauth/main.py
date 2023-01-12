@@ -123,7 +123,7 @@ class MultiAuth(IMultiAuth):
             if 'tech' not in auth:
                 raise InvalidConfigurationError(message='\'tech\' is a required property', path=f'$.auth.{auth_name}')
             if auth['tech'] not in json_schema:
-                raise ValueError(f'\'{auth["tech"]}\' is not a valid auth tech')
+                raise InvalidConfigurationError(message=f'\'{auth["tech"]}\' is not a valid auth tech', path=f'$.auth.{auth_name}.tech')
             auth_tech_link[auth_name] = auth['tech']
             try:
                 jsonschema.validate(auth, json_schema[auth['tech']]['authSchema'])
