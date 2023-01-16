@@ -1811,14 +1811,14 @@ types-awscrt = "*"
 
 [[package]]
 name = "types-setuptools"
-version = "65.7.0.0"
+version = "65.7.0.1"
 description = "Typing stubs for setuptools"
 category = "dev"
 optional = false
 python-versions = "*"
 files = [
-    {file = "types-setuptools-65.7.0.0.tar.gz", hash = "sha256:0bb78efb7d91baaa7da3fe15dfac0461380ae23ce596708b87bdf368c50fbff7"},
-    {file = "types_setuptools-65.7.0.0-py3-none-any.whl", hash = "sha256:8d20beda264fe2962599aa087373c9b897e7c99d9fe591772d817e872e0fe4eb"},
+    {file = "types-setuptools-65.7.0.1.tar.gz", hash = "sha256:fe89f2d15caee7015708bed8fb68ff578b4d96f9a64b6e2010dad42bb9cc82a6"},
+    {file = "types_setuptools-65.7.0.1-py3-none-any.whl", hash = "sha256:667597f0773464f0259524d349d37503bffefc9d0d3fae621e4493d2fd7b1602"},
 ]
 
 [package.dependencies]
