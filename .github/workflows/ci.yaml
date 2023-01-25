@@ -33,7 +33,6 @@ jobs:
           source .venv/bin/activate
           isort -m 9 --line-length 159 $MODULE_NAME tests --check-only
           pylint --load-plugins pylint_quotes $MODULE_NAME tests
-          docformatter --wrap-summaries 160 --wrap-descriptions 160 -cr $MODULE_NAME tests
           yapf -rd $MODULE_NAME tests
           mypy -V
           mypy $MODULE_NAME tests

@@ -47,7 +47,6 @@ class IUser(ABC):
 
 
 class IMultiAuth(ABC):
-
     _logger: logging.Logger
     _authrc: Optional[str]
 

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "py-multiauth"
-version = "1.11.1"
+version = "1.11.2"
 description = "Python package to interact with multiple authentication services"
 authors = ["Escape Technologies SAS <ping@escape.tech>"]
 maintainers = [
