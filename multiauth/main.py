@@ -9,7 +9,6 @@ from importlib import resources
 from typing import Any, Dict, Optional, Tuple
 
 import jsonschema  # type: ignore[import]
-from jsonschema import ValidationError
 
 from multiauth import static
 from multiauth.entities.errors import InvalidConfigurationError
@@ -127,7 +126,7 @@ class MultiAuth(IMultiAuth):
             auth_tech_link[auth_name] = auth['tech']
             try:
                 jsonschema.validate(auth, json_schema[auth['tech']]['authSchema'])
-            except ValidationError as e:
+            except (jsonschema.ValidationError, jsonschema.SchemaError) as e:
                 raise InvalidConfigurationError(message=e.message, path=f'$.auth.{auth_name}' + str(e.json_path)[2:]) from e
 
         for username, user in users.items():
@@ -141,7 +140,7 @@ class MultiAuth(IMultiAuth):
                 )
             try:
                 jsonschema.validate(user, json_schema[auth_tech_link[user['auth']]]['userSchema'])
-            except ValidationError as e:
+            except (jsonschema.ValidationError, jsonschema.SchemaError) as e:
                 raise InvalidConfigurationError(message=e.message, path=f'$.users.{username}' + e.json_path[2:]) from e
 
     @staticmethod

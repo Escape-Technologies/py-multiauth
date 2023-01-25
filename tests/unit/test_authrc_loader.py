@@ -9,7 +9,6 @@ from multiauth.main import load_authrc
 
 
 class TestAuthrcLoader:
-
     logger: logging.Logger
 
     def setup(self) -> None:
