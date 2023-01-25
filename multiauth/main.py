@@ -110,7 +110,7 @@ class MultiAuth(IMultiAuth):
         """Validate the auth schema and users with json schema."""
 
         # Load the json schema from static
-        with resources.files(static).joinpath('auth_schema.json').open() as f:
+        with resources.open_text(static, 'auth_schema.json') as f:
             json_schema = json.load(f)
 
         auth_tech_link: Dict[str, str] = {}
