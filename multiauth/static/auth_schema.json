@@ -1226,9 +1226,6 @@
           "type": "string",
           "format": "uri"
         },
-        "bla": {
-          "type": "string"
-        },
         "options": {
           "description": "Headers options configuration",
           "type": "object",
