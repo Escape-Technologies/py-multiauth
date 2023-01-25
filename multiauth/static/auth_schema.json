@@ -1384,7 +1384,7 @@
             "name": "auth_location"
           },
           "description": "The location where the token will be added during the authentication step (in the middle of OAuth flow).",
-          "type": "enum",
+          "type": "string",
           "enum": [
             "basic",
             "body"
@@ -1407,7 +1407,7 @@
             "name": "location"
           },
           "description": "The location where the token will be added.",
-          "type": "enum",
+          "type": "string",
           "enum": [
             "header",
             "url"

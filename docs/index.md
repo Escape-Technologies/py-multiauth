@@ -1692,9 +1692,9 @@
         "schema1": {
             "tech": "oauth",
             "grant_type": "auth_code",
-            "auth_location": "**enum**",
+            "auth_location": "**string**",
             "header_prefix": "**string**",
-            "location": "**enum**",
+            "location": "**string**",
             "scope": "**string**",
             "authentication_endpoint": "**string**",
             "token_endpoint": "**string**",
@@ -1733,9 +1733,9 @@
         "schema1": {
             "tech": "oauth",
             "grant_type": "implicit",
-            "auth_location": "**enum**",
+            "auth_location": "**string**",
             "header_prefix": "**string**",
-            "location": "**enum**",
+            "location": "**string**",
             "scope": "**string**",
             "authentication_endpoint": "**string**",
             "callback_url": "**string**",
@@ -1773,9 +1773,9 @@
         "schema1": {
             "tech": "oauth",
             "grant_type": "client_cred",
-            "auth_location": "**enum**",
+            "auth_location": "**string**",
             "header_prefix": "**string**",
-            "location": "**enum**",
+            "location": "**string**",
             "scope": "**string**",
             "token_endpoint": "**string**",
             "options": {
@@ -1812,9 +1812,9 @@
         "schema1": {
             "tech": "oauth",
             "grant_type": "password_cred",
-            "auth_location": "**enum**",
+            "auth_location": "**string**",
             "header_prefix": "**string**",
-            "location": "**enum**",
+            "location": "**string**",
             "scope": "**string**",
             "token_endpoint": "**string**",
             "options": {
