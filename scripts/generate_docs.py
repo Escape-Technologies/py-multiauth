@@ -85,6 +85,30 @@ def generate_auth_docs() -> None:
 
         auth_name = cast(AuthName, auth_schema['_escapeUI']['label'])
         auth_schemas.setdefault(auth_name, [{auth_name: {}}])
+
+        if "oneOf" in auth_schema["authSchema"]:
+            # here we are in the oauth case
+            # we want to create a subschema for each possible values of the grant_type
+            # and store in the whitelist{grant_type: required_fields}
+            whitelist = {}
+            for todo in auth_schema["authSchema"]["oneOf"]:
+                property_name = next(iter(todo['properties'].keys()))
+                property_value = todo['properties'][property_name]['const']
+                schema_name = auth_name + ' (' + property_name + ' : ' + property_value + ')'
+                sub_schema.setdefault(schema_name, {})
+                whitelist[schema_name] = todo['required']
+                sub_schema[schema_name].setdefault(
+                    property_name,
+                    AuthProperty({
+                        'name': property_name,
+                        'optional': False,
+                        'type': 'string',
+                        'description': '',
+                        'value': property_value,
+                        'enum': '',
+                    })
+                )
+
         for name, auth_property in auth_schema['authSchema']['properties'].items():
             if name == 'options':
                 has_optional[count] = True
@@ -170,6 +194,9 @@ def generate_auth_docs() -> None:
         the_temp: Dict = {}
         for schema_name, schema_properties in sub_schema.items():
             original_schema = deepcopy(auth_schemas[auth_name][0][auth_name])
+            if "oneOf" in auth_schema["authSchema"]:
+                # handle oneOf to only write the required properties
+                original_schema = {k: v for k, v in original_schema.items() if k in whitelist[schema_name]}
             for schema_property_name, schema_property_value in schema_properties.items():
                 if schema_property_name in original_schema:
                     original_schema[schema_property_name] = schema_property_value

@@ -6,12 +6,7 @@
     "authSchema": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "type": "object",
-      "required": [
-        "tech",
-        "type",
-        "region",
-        "location"
-      ],
+      "required": ["tech", "type", "region", "location"],
       "description": "The auth configuration schema for AWS authentication",
       "properties": {
         "tech": {
@@ -58,10 +53,7 @@
           },
           "description": "The location where the token will be added",
           "type": "string",
-          "enum": [
-            "headers",
-            "url"
-          ]
+          "enum": ["headers", "url"]
         },
         "allOf": [
           {
@@ -95,10 +87,7 @@
                 }
               },
               "additionalProperties": false,
-              "required": [
-                "client_id",
-                "pool_id"
-              ]
+              "required": ["client_id", "pool_id"]
             }
           },
           {
@@ -122,9 +111,7 @@
                 }
               },
               "additionalProperties": false,
-              "required": [
-                "client_id"
-              ]
+              "required": ["client_id"]
             }
           },
           {
@@ -148,9 +135,7 @@
                 }
               },
               "additionalProperties": false,
-              "required": [
-                "client_id"
-              ]
+              "required": ["client_id"]
             }
           },
           {
@@ -181,10 +166,7 @@
                   },
                   "description": "The method used to send the authentication request",
                   "type": "string",
-                  "enum": [
-                    "GET",
-                    "POST"
-                  ]
+                  "enum": ["GET", "POST"]
                 },
                 "hash_algorithim": {
                   "_escapeUI": {
@@ -194,18 +176,11 @@
                   },
                   "description": "The hashing algorithim used in generating the signature",
                   "type": "string",
-                  "enum": [
-                    "sha-256",
-                    "sha-1"
-                  ]
+                  "enum": ["sha-256", "sha-1"]
                 }
               },
               "additionalProperties": false,
-              "required": [
-                "service_name",
-                "method",
-                "hash_algorithim"
-              ]
+              "required": ["service_name", "method", "hash_algorithim"]
             }
           }
         ],
@@ -274,11 +249,7 @@
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "type": "object",
       "description": "The credentials for a user in AWS authentication",
-      "required": [
-        "auth",
-        "username",
-        "password"
-      ],
+      "required": ["auth", "username", "password"],
       "properties": {
         "auth": {
           "_escapeUI": {
@@ -328,11 +299,7 @@
     "authSchema": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "type": "object",
-      "required": [
-        "tech",
-        "url",
-        "method"
-      ],
+      "required": ["tech", "url", "method"],
       "description": "The auth configuration schema for GraphQL authentication",
       "properties": {
         "tech": {
@@ -365,10 +332,7 @@
           },
           "description": "The method used to send the authentication request",
           "type": "string",
-          "enum": [
-            "GET",
-            "POST"
-          ]
+          "enum": ["GET", "POST"]
         },
         "options": {
           "description": "Headers options configuration",
@@ -483,9 +447,7 @@
           "inputType": "editorList"
         }
       },
-      "required": [
-        "auth"
-      ]
+      "required": ["auth"]
     }
   },
   "digest": {
@@ -495,10 +457,7 @@
     "authSchema": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "type": "object",
-      "required": [
-        "url",
-        "method"
-      ],
+      "required": ["url", "method"],
       "description": "The auth configuration schema of Digest authentication",
       "properties": {
         "tech": {
@@ -531,10 +490,7 @@
           },
           "description": "The method used to send the authentication request",
           "type": "string",
-          "enum": [
-            "GET",
-            "POST"
-          ]
+          "enum": ["GET", "POST"]
         },
         "options": {
           "description": "Optional Configurations for this authentication method",
@@ -643,11 +599,7 @@
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "type": "object",
       "description": "The credentials for a user in Digest authentication",
-      "required": [
-        "auth",
-        "username",
-        "password"
-      ],
+      "required": ["auth", "username", "password"],
       "properties": {
         "auth": {
           "_escapeUI": {
@@ -688,13 +640,7 @@
     "authSchema": {
       "type": "object",
       "$schema": "https://json-schema.org/draft/2020-12/schema",
-      "required": [
-        "tech",
-        "url",
-        "mutation_name",
-        "mutation_field",
-        "method"
-      ],
+      "required": ["tech", "url", "mutation_name", "mutation_field", "method"],
       "description": "The auth configuration schema for GraphQL authentication",
       "properties": {
         "tech": {
@@ -746,10 +692,7 @@
           },
           "description": "The method used to send the authentication request",
           "type": "string",
-          "enum": [
-            "GET",
-            "POST"
-          ]
+          "enum": ["GET", "POST"]
         },
         "options": {
           "_escapeUI": {
@@ -812,11 +755,7 @@
               },
               "description": "The name of the operation of the graphql query being sent. The default value is mutation",
               "type": "string",
-              "enum": [
-                "query",
-                "mutation",
-                "subscription"
-              ]
+              "enum": ["query", "mutation", "subscription"]
             },
             "header_prefix": {
               "_escapeUI": {
@@ -874,9 +813,7 @@
           "inputType": "editorList"
         }
       },
-      "required": [
-        "auth"
-      ]
+      "required": ["auth"]
     }
   },
   "manual": {
@@ -886,9 +823,7 @@
     "authSchema": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "type": "object",
-      "required": [
-        "tech"
-      ],
+      "required": ["tech"],
       "properties": {
         "tech": {
           "_escapeUI": {
@@ -908,10 +843,7 @@
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "type": "object",
       "description": "The users configuration schema for manual authentication",
-      "required": [
-        "auth",
-        "headers"
-      ],
+      "required": ["auth", "headers"],
       "properties": {
         "headers": {
           "_escapeUI": {
@@ -953,9 +885,7 @@
     "authSchema": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "type": "object",
-      "required": [
-        "tech"
-      ],
+      "required": ["tech"],
       "properties": {
         "tech": {
           "_escapeUI": {
@@ -1004,11 +934,7 @@
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "type": "object",
       "description": "The credentials for a user in Basic authentication",
-      "required": [
-        "auth",
-        "username",
-        "password"
-      ],
+      "required": ["auth", "username", "password"],
       "properties": {
         "auth": {
           "_escapeUI": {
@@ -1049,11 +975,7 @@
     "authSchema": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "type": "object",
-      "required": [
-        "tech",
-        "location",
-        "header_name"
-      ],
+      "required": ["tech", "location", "header_name"],
       "properties": {
         "tech": {
           "_escapeUI": {
@@ -1074,10 +996,7 @@
           },
           "description": "The location where the token will be added",
           "type": "string",
-          "enum": [
-            "headers",
-            "url"
-          ]
+          "enum": ["headers", "url"]
         },
         "header_name": {
           "_escapeUI": {
@@ -1134,10 +1053,7 @@
     "userSchema": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "type": "object",
-      "required": [
-        "api_key",
-        "auth"
-      ],
+      "required": ["api_key", "auth"],
       "properties": {
         "api_key": {
           "_escapeUI": {
@@ -1169,9 +1085,7 @@
     "authSchema": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "type": "object",
-      "required": [
-        "tech"
-      ],
+      "required": ["tech"],
       "properties": {
         "tech": {
           "_escapeUI": {
@@ -1190,9 +1104,7 @@
     "userSchema": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "type": "object",
-      "required": [
-        "auth"
-      ],
+      "required": ["auth"],
       "description": "User by default when there is no authentification, the key of the user should be no_auth.",
       "properties": {
         "auth": {
@@ -1216,14 +1128,6 @@
     "authSchema": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "type": "object",
-      "required": [
-        "tech",
-        "grant_type",
-        "auth_location",
-        "scope",
-        "header_prefix",
-        "location"
-      ],
       "description": "The auth configuration schema for OAuth Authentication",
       "properties": {
         "tech": {
@@ -1253,130 +1157,6 @@
             "password_cred"
           ]
         },
-        "allOf": [
-          {
-            "if": {
-              "properties": {
-                "grant_type": {
-                  "const": "auth_code"
-                }
-              }
-            },
-            "then": {
-              "properties": {
-                "authentication_endpoint": {
-                  "_escapeUI": {
-                    "label": "Authentication Endpoint",
-                    "inputType": "text",
-                    "name": "authentication_endpoint"
-                  },
-                  "description": "The endpoint for the authorization server. This is used to get the authorization code.",
-                  "type": "string",
-                  "format": "uri"
-                },
-                "token_endpoint": {
-                  "_escapeUI": {
-                    "label": "Token Endpoint",
-                    "inputType": "text",
-                    "name": "token_endpoint"
-                  },
-                  "description": "The endpoint for authentication server. This is used to exchange the authorization code for an access token.",
-                  "type": "string",
-                  "format": "uri"
-                },
-                "callback_url": {
-                  "_escapeUI": {
-                    "label": "Callback URL",
-                    "inputType": "text",
-                    "name": "callback_url"
-                  },
-                  "description": "This is the callback URL that the authorization server will redirect to after the user has authorized the client.",
-                  "type": "string",
-                  "format": "uri"
-                }
-              }
-            }
-          },
-          {
-            "if": {
-              "properties": {
-                "grant_type": {
-                  "const": "implicit"
-                }
-              }
-            },
-            "then": {
-              "properties": {
-                "authentication_endpoint": {
-                  "_escapeUI": {
-                    "label": "Authentication Endpoint",
-                    "inputType": "text",
-                    "name": "authentication_endpoint"
-                  },
-                  "description": "The endpoint for the authorization server. This is used to get the authorization code.",
-                  "type": "string",
-                  "format": "uri"
-                },
-                "callback_url": {
-                  "_escapeUI": {
-                    "label": "Callback URL",
-                    "inputType": "text",
-                    "name": "callback_url"
-                  },
-                  "description": "This is the callback URL that the authorization server will redirect to after the user has authorized the client.",
-                  "type": "string",
-                  "format": "uri"
-                }
-              }
-            }
-          },
-          {
-            "if": {
-              "properties": {
-                "grant_type": {
-                  "const": "client_cred"
-                }
-              }
-            },
-            "then": {
-              "properties": {
-                "token_endpoint": {
-                  "_escapeUI": {
-                    "label": "Token Endpoint",
-                    "inputType": "text",
-                    "name": "token_endpoint"
-                  },
-                  "description": "The endpoint for authentication server. This is used to exchange the authorization code for an access token.",
-                  "type": "string",
-                  "format": "uri"
-                }
-              }
-            }
-          },
-          {
-            "if": {
-              "properties": {
-                "grant_type": {
-                  "const": "password_cred"
-                }
-              }
-            },
-            "then": {
-              "properties": {
-                "token_endpoint": {
-                  "_escapeUI": {
-                    "label": "Token Endpoint",
-                    "inputType": "text",
-                    "name": "token_endpoint"
-                  },
-                  "description": "The endpoint for authentication server. This is used to exchange the authorization code for an access token.",
-                  "type": "string",
-                  "format": "uri"
-                }
-              }
-            }
-          }
-        ],
         "auth_location": {
           "_escapeUI": {
             "label": "Auth Location",
@@ -1385,10 +1165,7 @@
           },
           "description": "The location where the token will be added during the authentication step (in the middle of OAuth flow).",
           "type": "string",
-          "enum": [
-            "basic",
-            "body"
-          ]
+          "enum": ["basic", "body"]
         },
         "header_prefix": {
           "_escapeUI": {
@@ -1408,10 +1185,7 @@
           },
           "description": "The location where the token will be added.",
           "type": "string",
-          "enum": [
-            "header",
-            "url"
-          ]
+          "enum": ["headers", "url"]
         },
         "scope": {
           "_escapeUI": {
@@ -1421,6 +1195,36 @@
           },
           "description": "The scope of the token",
           "type": "string"
+        },
+        "authentication_endpoint": {
+          "_escapeUI": {
+            "label": "Token Endpoint",
+            "inputType": "text",
+            "name": "token_endpoint"
+          },
+          "description": "The endpoint for authentication server. This is used to exchange the authorization code for an access token.",
+          "type": "string",
+          "format": "uri"
+        },
+        "token_endpoint": {
+          "_escapeUI": {
+            "label": "Token Endpoint",
+            "inputType": "text",
+            "name": "token_endpoint"
+          },
+          "description": "The endpoint for authentication server. This is used to exchange the authorization code for an access token.",
+          "type": "string",
+          "format": "uri"
+        },
+        "callback_url": {
+          "_escapeUI": {
+            "label": "Callback URL",
+            "inputType": "text",
+            "name": "callback_url"
+          },
+          "description": "This is the callback URL that the authorization server will redirect to after the user has authorized the client.",
+          "type": "string",
+          "format": "uri"
         },
         "options": {
           "description": "Headers options configuration",
@@ -1470,6 +1274,94 @@
           "additionalProperties": false
         }
       },
+      "oneOf": [
+        {
+          "properties": {
+            "grant_type": {
+              "const": "refresh_token"
+            }
+          },
+          "required": [
+            "tech",
+            "grant_type",
+            "auth_location",
+            "scope",
+            "header_prefix",
+            "location",
+            "token_endpoint",
+            "callback_url"
+          ]
+        },
+        {
+          "properties": {
+            "grant_type": {
+              "const": "auth_code"
+            }
+          },
+          "required": [
+            "tech",
+            "grant_type",
+            "auth_location",
+            "scope",
+            "header_prefix",
+            "location",
+            "authentication_endpoint",
+            "token_endpoint",
+            "callback_url"
+          ]
+        },
+        {
+          "properties": {
+            "grant_type": {
+              "const": "client_cred"
+            }
+          },
+          "required": [
+            "tech",
+            "grant_type",
+            "auth_location",
+            "scope",
+            "header_prefix",
+            "location",
+            "authentication_endpoint",
+            "callback_url",
+            "token_endpoint"
+          ]
+        },
+        {
+          "properties": {
+            "grant_type": {
+              "const": "implicit"
+            }
+          },
+          "required": [
+            "tech",
+            "grant_type",
+            "auth_location",
+            "scope",
+            "header_prefix",
+            "location",
+            "authentication_endpoint"
+          ]
+        },
+        {
+          "properties": {
+            "grant_type": {
+              "const": "password_cred"
+            }
+          },
+          "required": [
+            "tech",
+            "grant_type",
+            "auth_location",
+            "scope",
+            "header_prefix",
+            "location",
+            "token_endpoint"
+          ],
+          "maxProperties": 7
+        }
+      ],
       "additionalProperties": false
     },
     "userSchema": {
@@ -1516,9 +1408,7 @@
         }
       },
       "additionalProperties": false,
-      "required": [
-        "auth"
-      ]
+      "required": ["auth"]
     }
   }
 }

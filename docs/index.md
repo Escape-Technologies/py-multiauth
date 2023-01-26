@@ -1520,7 +1520,7 @@
 - Location (`location`): The location where the token will be added.. The values that this parameter can take are:
 
 
-    - `header`
+    - `headers`
 
 
     - `url`
@@ -1549,19 +1549,7 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-- Authentication Endpoint (`authentication_endpoint`): The endpoint for the authorization server. This is used to get the authorization code..
+- Token Endpoint (`authentication_endpoint`): The endpoint for authentication server. This is used to exchange the authorization code for an access token..
 
 
 
@@ -1595,9 +1583,33 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 ### Optional
 
 ---
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1651,24 +1663,46 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 ### Template
 
 ---
 
 
 
+
+
+
+
+
+
+
+#### OAuth (grant_type : refresh_token)
+
+```
+{
+    "users": {
+        "user1": {
+            "auth": "schema1",
+            "client_id": "**string**",
+            "client_secret": "**string**",
+            "refresh_token": "**string**"
+        }
+    },
+    "auth": {
+        "schema1": {
+            "tech": "oauth",
+            "grant_type": "refresh_token",
+            "auth_location": "**string**",
+            "header_prefix": "**string**",
+            "location": "**string**",
+            "scope": "**string**",
+            "token_endpoint": "**string**",
+            "callback_url": "**string**",
+            "options": {}
+        }
+    }
+}
+```
 
 
 
@@ -1699,13 +1733,42 @@
             "authentication_endpoint": "**string**",
             "token_endpoint": "**string**",
             "callback_url": "**string**",
-            "options": {
-                "state": "**string**",
-                "code_verifier": "**string**",
-                "headers": {
-                    "**name**": "**value**"
-                }
-            }
+            "options": {}
+        }
+    }
+}
+```
+
+
+
+
+
+
+
+#### OAuth (grant_type : client_cred)
+
+```
+{
+    "users": {
+        "user1": {
+            "auth": "schema1",
+            "client_id": "**string**",
+            "client_secret": "**string**",
+            "refresh_token": "**string**"
+        }
+    },
+    "auth": {
+        "schema1": {
+            "tech": "oauth",
+            "grant_type": "client_cred",
+            "auth_location": "**string**",
+            "header_prefix": "**string**",
+            "location": "**string**",
+            "scope": "**string**",
+            "authentication_endpoint": "**string**",
+            "token_endpoint": "**string**",
+            "callback_url": "**string**",
+            "options": {}
         }
     }
 }
@@ -1738,53 +1801,7 @@
             "location": "**string**",
             "scope": "**string**",
             "authentication_endpoint": "**string**",
-            "callback_url": "**string**",
-            "options": {
-                "state": "**string**",
-                "code_verifier": "**string**",
-                "headers": {
-                    "**name**": "**value**"
-                }
-            }
-        }
-    }
-}
-```
-
-
-
-
-
-
-
-#### OAuth (grant_type : client_cred)
-
-```
-{
-    "users": {
-        "user1": {
-            "auth": "schema1",
-            "client_id": "**string**",
-            "client_secret": "**string**",
-            "refresh_token": "**string**"
-        }
-    },
-    "auth": {
-        "schema1": {
-            "tech": "oauth",
-            "grant_type": "client_cred",
-            "auth_location": "**string**",
-            "header_prefix": "**string**",
-            "location": "**string**",
-            "scope": "**string**",
-            "token_endpoint": "**string**",
-            "options": {
-                "state": "**string**",
-                "code_verifier": "**string**",
-                "headers": {
-                    "**name**": "**value**"
-                }
-            }
+            "options": {}
         }
     }
 }
@@ -1817,13 +1834,7 @@
             "location": "**string**",
             "scope": "**string**",
             "token_endpoint": "**string**",
-            "options": {
-                "state": "**string**",
-                "code_verifier": "**string**",
-                "headers": {
-                    "**name**": "**value**"
-                }
-            }
+            "options": {}
         }
     }
 }
