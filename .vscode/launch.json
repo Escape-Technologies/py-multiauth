@@ -2,12 +2,22 @@
     "version": "0.3.0",
     "configurations": [
         {
+            "name": "Generate docs",
+            "type": "python",
+            "request": "launch",
+            "program": "scripts/generate_docs.py",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
             "name": "Validate",
             "type": "python",
             "request": "launch",
             "cwd": "${workspaceFolder}",
             "module": "multiauth",
-            "args": ["validate"],
+            "args": [
+                "validate"
+            ],
             "console": "integratedTerminal",
             "justMyCode": true
         }
