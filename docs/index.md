@@ -1698,7 +1698,13 @@
             "scope": "**string**",
             "token_endpoint": "**string**",
             "callback_url": "**string**",
-            "options": {}
+            "options": {
+                "state": "**string**",
+                "code_verifier": "**string**",
+                "headers": {
+                    "**name**": "**value**"
+                }
+            }
         }
     }
 }
@@ -1733,7 +1739,13 @@
             "authentication_endpoint": "**string**",
             "token_endpoint": "**string**",
             "callback_url": "**string**",
-            "options": {}
+            "options": {
+                "state": "**string**",
+                "code_verifier": "**string**",
+                "headers": {
+                    "**name**": "**value**"
+                }
+            }
         }
     }
 }
@@ -1768,7 +1780,13 @@
             "authentication_endpoint": "**string**",
             "token_endpoint": "**string**",
             "callback_url": "**string**",
-            "options": {}
+            "options": {
+                "state": "**string**",
+                "code_verifier": "**string**",
+                "headers": {
+                    "**name**": "**value**"
+                }
+            }
         }
     }
 }
@@ -1801,7 +1819,13 @@
             "location": "**string**",
             "scope": "**string**",
             "authentication_endpoint": "**string**",
-            "options": {}
+            "options": {
+                "state": "**string**",
+                "code_verifier": "**string**",
+                "headers": {
+                    "**name**": "**value**"
+                }
+            }
         }
     }
 }
@@ -1834,7 +1858,13 @@
             "location": "**string**",
             "scope": "**string**",
             "token_endpoint": "**string**",
-            "options": {}
+            "options": {
+                "state": "**string**",
+                "code_verifier": "**string**",
+                "headers": {
+                    "**name**": "**value**"
+                }
+            }
         }
     }
 }

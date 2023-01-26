@@ -196,7 +196,7 @@ def generate_auth_docs() -> None:
             original_schema = deepcopy(auth_schemas[auth_name][0][auth_name])
             if "oneOf" in auth_schema["authSchema"]:
                 # handle oneOf to only write the required properties
-                original_schema = {k: v for k, v in original_schema.items() if k in whitelist[schema_name]}
+                original_schema = {k: v for k, v in original_schema.items() if k in whitelist[schema_name] or v.get("optional")}
             for schema_property_name, schema_property_value in schema_properties.items():
                 if schema_property_name in original_schema:
                     original_schema[schema_property_name] = schema_property_value
