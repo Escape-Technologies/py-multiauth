@@ -1290,9 +1290,7 @@
             "location",
             "token_endpoint",
             "callback_url"
-          ],
-          "minProperties": 8,
-          "maxProperties": 8
+          ]
         },
         {
           "properties": {
@@ -1310,9 +1308,7 @@
             "authentication_endpoint",
             "token_endpoint",
             "callback_url"
-          ],
-          "minProperties": 9,
-          "maxProperties": 9
+          ]
         },
         {
           "properties": {
@@ -1330,9 +1326,7 @@
             "authentication_endpoint",
             "callback_url",
             "token_endpoint"
-          ],
-          "minProperties": 9,
-          "maxProperties": 9
+          ]
         },
         {
           "properties": {
@@ -1348,9 +1342,7 @@
             "header_prefix",
             "location",
             "authentication_endpoint"
-          ],
-          "minProperties": 7,
-          "maxProperties": 7
+          ]
         },
         {
           "properties": {
@@ -1367,7 +1359,6 @@
             "location",
             "token_endpoint"
           ],
-          "minProperties": 7,
           "maxProperties": 7
         }
       ],

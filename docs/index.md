@@ -1670,7 +1670,13 @@
 
 
 
-#### OAuth
+
+
+
+
+
+
+#### OAuth (grant_type : refresh_token)
 
 ```
 {
@@ -1685,7 +1691,41 @@
     "auth": {
         "schema1": {
             "tech": "oauth",
-            "grant_type": "**string**",
+            "grant_type": "refresh_token",
+            "auth_location": "**string**",
+            "header_prefix": "**string**",
+            "location": "**string**",
+            "scope": "**string**",
+            "token_endpoint": "**string**",
+            "callback_url": "**string**",
+            "options": {}
+        }
+    }
+}
+```
+
+
+
+
+
+
+
+#### OAuth (grant_type : auth_code)
+
+```
+{
+    "users": {
+        "user1": {
+            "auth": "schema1",
+            "client_id": "**string**",
+            "client_secret": "**string**",
+            "refresh_token": "**string**"
+        }
+    },
+    "auth": {
+        "schema1": {
+            "tech": "oauth",
+            "grant_type": "auth_code",
             "auth_location": "**string**",
             "header_prefix": "**string**",
             "location": "**string**",
@@ -1693,17 +1733,114 @@
             "authentication_endpoint": "**string**",
             "token_endpoint": "**string**",
             "callback_url": "**string**",
-            "options": {
-                "state": "**string**",
-                "code_verifier": "**string**",
-                "headers": {
-                    "**name**": "**value**"
-                }
-            }
+            "options": {}
         }
     }
 }
 ```
+
+
+
+
+
+
+
+#### OAuth (grant_type : client_cred)
+
+```
+{
+    "users": {
+        "user1": {
+            "auth": "schema1",
+            "client_id": "**string**",
+            "client_secret": "**string**",
+            "refresh_token": "**string**"
+        }
+    },
+    "auth": {
+        "schema1": {
+            "tech": "oauth",
+            "grant_type": "client_cred",
+            "auth_location": "**string**",
+            "header_prefix": "**string**",
+            "location": "**string**",
+            "scope": "**string**",
+            "authentication_endpoint": "**string**",
+            "token_endpoint": "**string**",
+            "callback_url": "**string**",
+            "options": {}
+        }
+    }
+}
+```
+
+
+
+
+
+
+
+#### OAuth (grant_type : implicit)
+
+```
+{
+    "users": {
+        "user1": {
+            "auth": "schema1",
+            "client_id": "**string**",
+            "client_secret": "**string**",
+            "refresh_token": "**string**"
+        }
+    },
+    "auth": {
+        "schema1": {
+            "tech": "oauth",
+            "grant_type": "implicit",
+            "auth_location": "**string**",
+            "header_prefix": "**string**",
+            "location": "**string**",
+            "scope": "**string**",
+            "authentication_endpoint": "**string**",
+            "options": {}
+        }
+    }
+}
+```
+
+
+
+
+
+
+
+#### OAuth (grant_type : password_cred)
+
+```
+{
+    "users": {
+        "user1": {
+            "auth": "schema1",
+            "client_id": "**string**",
+            "client_secret": "**string**",
+            "refresh_token": "**string**"
+        }
+    },
+    "auth": {
+        "schema1": {
+            "tech": "oauth",
+            "grant_type": "password_cred",
+            "auth_location": "**string**",
+            "header_prefix": "**string**",
+            "location": "**string**",
+            "scope": "**string**",
+            "token_endpoint": "**string**",
+            "options": {}
+        }
+    }
+}
+```
+
+
 
 
 
