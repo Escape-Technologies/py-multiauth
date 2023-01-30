@@ -57,14 +57,14 @@ def load_authrc(
 
 
 def load_headers(headers: Dict[str, str]) -> Tuple[Dict, Dict]:
-    """
-    Creates a valid user and auth schema from the headers.
+    """Creates a valid user and auth schema from the headers.
+
     This is used to be able to pass headers easily.
     """
     if not isinstance(headers, dict):
         raise InvalidConfigurationError('headers must be a dict', path='$.headers')
-    auth = {"default_schema": {"tech": "manual"}}
-    users = {"default_user": {"auth": "default_schema", "headers": headers}}
+    auth = {'default_schema': {'tech': 'manual'}}
+    users = {'default_user': {'auth': 'default_schema', 'headers': headers}}
     return auth, users
 
 
