@@ -74,3 +74,18 @@ class TestAuthrcLoader:
             assert False, 'should raise an error'
         except InvalidConfigurationError as e:
             assert 'authrc file not found' in e.message
+
+    def headers_shorthand(self) -> None:
+        res = load_authrc(self.logger, 'tests/fixtures/.authrc-shorthand-example')
+
+        assert len(res) == 2
+        assert res[0] == {'default_schema': {'tech': 'manual'}}
+        assert res[1] == {
+            'default_user': {
+                'auth': 'default_schema',
+                'headers': {
+                    'header1': 'value1',
+                    'header2': 'value2'
+                },
+            }
+        }
