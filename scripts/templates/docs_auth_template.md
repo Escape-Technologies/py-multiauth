@@ -7,6 +7,7 @@
 ### Parameters
 
 ---
+
 {% for parameter_name, auth_property in auth_parameter[0][auth_name].items() %}
 
 {% if not auth_property["optional"] %}
@@ -15,8 +16,7 @@
 
 - {{ auth_property["name"] }} (`{{ parameter_name }}`): {{auth_property["description"]}}. The values that this parameter can take are:
 
-{% for enum in auth_property["enum"] %}
-    - `{{ enum }}`
+{% for enum in auth_property["enum"] %} - `{{ enum }}`
 
 {% endfor %}
 
@@ -51,6 +51,7 @@
 ### Template
 
 ---
+
 {% if json_schema[loop.index0]|length > 1 %}
 
 {% for name, value in json_schema[loop.index0].items() %}

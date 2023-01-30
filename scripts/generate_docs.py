@@ -259,6 +259,13 @@ def generate_auth_docs() -> None:
                     del _new_json_schema['auth']['schema1']['options']
                     _new_json_schema['auth']['schema1']['options'] = _temp
                 temp[schema_name] = json.dumps(_new_json_schema, indent=4, sort_keys=False)
+
+        # Add the manual shorthand
+        if auth_name == 'Manual':
+            shorthand = {"headers": {'**name**': '**value**'}}
+            temp['Manual (shorthand)'] = json.dumps(shorthand, indent=4, sort_keys=False)
+            temp['Manual (standard)'] = temp['Manual']
+
         jsonschemas.append(temp)
         count += 1
 
