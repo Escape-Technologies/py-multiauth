@@ -44,6 +44,9 @@ def load_authrc(
     with open(filepath, 'r', encoding='utf-8') as f:
         data = json.load(f)
 
+    if 'headers' in data:
+        return load_headers(data['headers'])
+
     if not 'auth' in data:
         raise InvalidConfigurationError('auth section not found', path='$.auth')
 
@@ -51,6 +54,18 @@ def load_authrc(
         raise InvalidConfigurationError('users section not found', path='$.users')
 
     return data['auth'], data['users']
+
+
+def load_headers(headers: Dict[str, str]) -> Tuple[Dict, Dict]:
+    """Creates a valid user and auth schema from the headers.
+
+    This is used to be able to pass headers easily.
+    """
+    if not isinstance(headers, dict):
+        raise InvalidConfigurationError('headers must be a dict', path='$.headers')
+    auth = {'default_schema': {'tech': 'manual'}}
+    users = {'default_user': {'auth': 'default_schema', 'headers': headers}}
+    return auth, users
 
 
 class MultiAuth(IMultiAuth):

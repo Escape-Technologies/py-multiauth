@@ -13,6 +13,7 @@
 
 
 
+
 - Tech (`tech`): The auth method.
 
 
@@ -27,17 +28,13 @@
 
 - Type (`type`): The type of AWS Authentication used. The values that this parameter can take are:
 
+ - `SRP`
 
-    - `SRP`
+ - `Password Authentication`
 
+ - `AWS Signature`
 
-    - `Password Authentication`
-
-
-    - `AWS Signature`
-
-
-    - `Refresh Token`
+ - `Refresh Token`
 
 
 
@@ -65,11 +62,9 @@
 
 - Key location (`location`): The location where the token will be added. The values that this parameter can take are:
 
+ - `headers`
 
-    - `headers`
-
-
-    - `url`
+ - `url`
 
 
 
@@ -137,11 +132,9 @@
 
 - Method (`method`): The method used to send the authentication request. The values that this parameter can take are:
 
+ - `GET`
 
-    - `GET`
-
-
-    - `POST`
+ - `POST`
 
 
 
@@ -157,11 +150,9 @@
 
 - Hash Algorithim (`hash_algorithim`): The hashing algorithim used in generating the signature. The values that this parameter can take are:
 
+ - `sha-256`
 
-    - `sha-256`
-
-
-    - `sha-1`
+ - `sha-1`
 
 
 
@@ -252,6 +243,7 @@
 ### Template
 
 ---
+
 
 
 
@@ -430,6 +422,7 @@
 
 
 
+
 - Tech (`tech`): The auth method.
 
 
@@ -456,11 +449,9 @@
 
 - Method (`method`): The method used to send the authentication request. The values that this parameter can take are:
 
+ - `GET`
 
-    - `GET`
-
-
-    - `POST`
+ - `POST`
 
 
 
@@ -583,6 +574,7 @@
 
 
 
+
 #### REST
 
 ```
@@ -632,6 +624,7 @@
 
 
 
+
 - Tech (`tech`): The auth method.
 
 
@@ -658,11 +651,9 @@
 
 - Method (`method`): The method used to send the authentication request. The values that this parameter can take are:
 
+ - `GET`
 
-    - `GET`
-
-
-    - `POST`
+ - `POST`
 
 
 
@@ -797,6 +788,7 @@
 
 
 
+
 #### Digest
 
 ```
@@ -841,6 +833,7 @@
 ### Parameters
 
 ---
+
 
 
 
@@ -897,11 +890,9 @@
 
 - Method (`method`): The method used to send the authentication request. The values that this parameter can take are:
 
+ - `GET`
 
-    - `GET`
-
-
-    - `POST`
+ - `POST`
 
 
 
@@ -1056,6 +1047,7 @@
 
 
 
+
 #### GraphQL
 
 ```
@@ -1109,6 +1101,7 @@
 
 
 
+
 - Tech (`tech`): The auth method.
 
 
@@ -1132,7 +1125,30 @@
 
 
 
-#### Manual
+
+
+
+
+
+
+
+#### Manual (shorthand)
+
+```
+{
+    "headers": {
+        "**name**": "**value**"
+    }
+}
+```
+
+
+
+
+
+
+
+#### Manual (standard)
 
 ```
 {
@@ -1158,11 +1174,14 @@
 
 
 
+
+
 ## Basic
 
 ### Parameters
 
 ---
+
 
 
 
@@ -1210,6 +1229,7 @@
 
 
 
+
 #### Basic
 
 ```
@@ -1251,6 +1271,7 @@
 
 
 
+
 - Tech (`tech`): The auth method.
 
 
@@ -1265,11 +1286,9 @@
 
 - Key location (`location`): The location where the token will be added. The values that this parameter can take are:
 
+ - `headers`
 
-    - `headers`
-
-
-    - `url`
+ - `url`
 
 
 
@@ -1344,6 +1363,7 @@
 
 
 
+
 #### API
 
 ```
@@ -1387,6 +1407,7 @@
 
 
 
+
 - Tech (`tech`): The auth method.
 
 
@@ -1406,6 +1427,7 @@
 ### Template
 
 ---
+
 
 
 
@@ -1444,6 +1466,7 @@
 
 
 
+
 - Tech (`tech`): The auth method.
 
 
@@ -1458,20 +1481,15 @@
 
 - Grant Type (`grant_type`): The type of OAuth Authentication used. The values that this parameter can take are:
 
+ - `refresh_token`
 
-    - `refresh_token`
+ - `auth_code`
 
+ - `client_cred`
 
-    - `auth_code`
+ - `implicit`
 
-
-    - `client_cred`
-
-
-    - `implicit`
-
-
-    - `password_cred`
+ - `password_cred`
 
 
 
@@ -1487,11 +1505,9 @@
 
 - Auth Location (`auth_location`): The location where the token will be added during the authentication step (in the middle of OAuth flow).. The values that this parameter can take are:
 
+ - `basic`
 
-    - `basic`
-
-
-    - `body`
+ - `body`
 
 
 
@@ -1519,11 +1535,9 @@
 
 - Location (`location`): The location where the token will be added.. The values that this parameter can take are:
 
+ - `headers`
 
-    - `headers`
-
-
-    - `url`
+ - `url`
 
 
 
@@ -1666,6 +1680,7 @@
 ### Template
 
 ---
+
 
 
 
