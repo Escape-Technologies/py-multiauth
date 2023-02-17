@@ -144,7 +144,7 @@ def digest_config_parser(schema: Dict) -> AuthConfigDigest:
             s += time.ctime().encode('utf-8')
             s += os.urandom(8)
 
-            auth_config['client_nonce'] = (hashlib.sha1(s).hexdigest()[:16])
+            auth_config['client_nonce'] = hashlib.sha1(s).hexdigest()[:16]
 
     if parameters['domain'] is not None:
         auth_config['domain'] = parameters['domain']
