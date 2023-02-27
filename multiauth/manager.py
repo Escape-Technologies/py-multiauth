@@ -43,7 +43,7 @@ class User(IUser):
         """Reset user."""
 
         self._auth_schema: Optional[str] = None
-        self._auth_tech: AuthTech = AuthTech.NOAUTH
+        self._auth_tech: AuthTech = AuthTech.PUBLIC
         self._auth_type: Optional[AuthType] = None
         self._credentials: Optional[Dict[str, Any]] = None
         self._expired_token: Optional[Token] = None

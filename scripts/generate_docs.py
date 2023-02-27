@@ -213,7 +213,7 @@ def generate_auth_docs() -> None:
 
         # First we have to build the user part of the schema
         if auth_name == 'No authentification':
-            user_name = 'no_auth'
+            user_name = 'public'
             _json_schema['users'][user_name] = _json_schema['users']['user1']
             del _json_schema['users']['user1']
         else:

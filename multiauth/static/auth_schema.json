@@ -1078,7 +1078,7 @@
       "additionalProperties": false
     }
   },
-  "noauth": {
+  "public": {
     "_escapeUI": {
       "label": "No authentification"
     },
@@ -1094,7 +1094,7 @@
             "name": "tech",
             "hidden": true
           },
-          "title": "noauth",
+          "title": "public",
           "description": "The auth method",
           "type": "string"
         }
@@ -1105,7 +1105,7 @@
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "type": "object",
       "required": ["auth"],
-      "description": "User by default when there is no authentification, the key of the user should be no_auth.",
+      "description": "User by default when there is no authentification, the key of the user should be public.",
       "properties": {
         "auth": {
           "_escapeUI": {

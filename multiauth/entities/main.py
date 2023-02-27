@@ -40,7 +40,7 @@ class AuthTech(str, Enum):
     GRAPHQL = 'graphql'
     HAWK = 'hawk'
     MANUAL = 'manual'
-    NOAUTH = 'noauth'
+    PUBLIC = 'public'
     OAUTH = 'oauth'
 
 

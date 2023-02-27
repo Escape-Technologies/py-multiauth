@@ -176,7 +176,7 @@ class MultiAuth(IMultiAuth):
 
             _user: User = User({
                 'auth_schema': user_info['auth'],
-                'auth_tech': AuthTech.NOAUTH if user_info['auth'] is None else AuthTech(schema['tech']),
+                'auth_tech': AuthTech.PUBLIC if user_info['auth'] is None else AuthTech(schema['tech']),
                 'credentials': _user_credientials,
             })
 
@@ -253,14 +253,14 @@ class MultiAuth(IMultiAuth):
         self,
         username: str,
         additional_headers: Optional[Dict[str, str]] = None,
-        no_auth: bool = False,
+        public: bool = False,
     ) -> Tuple[Dict[str, str], Optional[str]]:
         """Reauthentication of the user in case of token expiry.
 
         Args:
             username: The username of the user to reauthenticate.
             additional_headers: Additional headers to add to the returned headers.
-            no_auth: If True, do not authenticate the user.
+            public: If True, do not authenticate the user.
 
         Returns:
             - The headers
@@ -298,7 +298,7 @@ class MultiAuth(IMultiAuth):
                 self._headers[username] = auth_response['headers']
                 self._logger.info('Reauthentication Successful')
 
-        if not no_auth:
+        if not public:
             headers.update(self._headers.get(username, {}))
 
-        return headers, None if no_auth else username
+        return headers, None if public else username
