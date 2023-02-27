@@ -90,7 +90,7 @@ class IMultiAuth(ABC):
         self,
         username: str,
         additional_headers: Optional[Dict[str, str]] = None,
-        no_auth: bool = False,
+        public: bool = False,
     ) -> Tuple[Dict[str, str], Optional[str]]:
         pass
 

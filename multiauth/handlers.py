@@ -57,7 +57,7 @@ def auth_handler(
     elif authentication == AuthTech.MANUAL:
         response = manual_authenticator(user)
 
-    elif authentication == AuthTech.NOAUTH:
+    elif authentication == AuthTech.PUBLIC:
         response = None
 
     return response

@@ -1437,13 +1437,13 @@
 ```
 {
     "users": {
-        "no_auth": {
+        "public": {
             "auth": "schema1"
         }
     },
     "auth": {
         "schema1": {
-            "tech": "noauth"
+            "tech": "public"
         }
     }
 }

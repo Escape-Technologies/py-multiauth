@@ -56,7 +56,7 @@ auth = MultiAuth(auths=.., users=.., authrc=.., logger=..)
 auth.authenticate_users()
 
 # Getting the header before sending a HTTP request
-auth_headers = auth.reauthenticate(username=.., additional_headers=.., no_auth=..)
+auth_headers = auth.reauthenticate(username=.., additional_headers=.., public=..)
 r = requests.get('https://example.com', headers=auth_headers[0])
 ```
 
