@@ -1551,14 +1551,14 @@ crt = ["botocore[crt] (>=1.20.29,<2.0a.0)"]
 
 [[package]]
 name = "setuptools"
-version = "67.3.2"
+version = "67.6.0"
 description = "Easily download, build, install, upgrade, and uninstall Python packages"
 category = "dev"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "setuptools-67.3.2-py3-none-any.whl", hash = "sha256:bb6d8e508de562768f2027902929f8523932fcd1fb784e6d573d2cafac995a48"},
-    {file = "setuptools-67.3.2.tar.gz", hash = "sha256:95f00380ef2ffa41d9bba85d95b27689d923c93dfbafed4aecd7cf988a25e012"},
+    {file = "setuptools-67.6.0-py3-none-any.whl", hash = "sha256:b78aaa36f6b90a074c1fa651168723acbf45d14cb1196b6f02c0fd07f17623b2"},
+    {file = "setuptools-67.6.0.tar.gz", hash = "sha256:2ee892cd5f29f3373097f5a814697e397cf3ce313616df0af11231e2ad118077"},
 ]
 
 [package.extras]
@@ -1905,4 +1905,4 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8,<4.0"
-content-hash = "3e6cc826be48e4ec70a57de286bb938459592d08f404315dae143f0a423e300e"
+content-hash = "0b012f4378f445c39e92ca8649ba13a9d29eb45049941e67c54bd36a62c96295"
