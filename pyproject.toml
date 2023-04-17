@@ -37,7 +37,7 @@ files = ["multiauth", "tests"]
 Authlib = "^1.2.0"
 graphql-core = "^3.2.3"
 pycognito = "^2022.12.0"
-pydash = "^6.0.0"
+pydash = ">=6,<8"
 PyJWT = "^2.6.0"
 python = ">=3.8,<4.0"
 jsonschema = "^4.17.3"
