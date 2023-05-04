@@ -112,6 +112,9 @@ def graphql_config_parser(schema: Dict) -> AuthConfigGraphQL:
         raise AuthenticationError('Please provide the mutation field in the authentication response')
 
     auth_config['url'] = schema['url']
+    if not auth_config['url'].startswith('http'):
+        auth_config['url'] = 'https://' + auth_config['url']
+
     auth_config['mutation_name'] = schema['mutation_name']
     auth_config['mutation_field'] = schema['mutation_field']
 
