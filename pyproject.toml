@@ -41,6 +41,7 @@ pydash = "^6.0.0"
 PyJWT = "^2.6.0"
 python = ">=3.8,<4.0"
 jsonschema = "^4.17.3"
+urllib3 = "<1.27"
 
 [tool.poetry.dev-dependencies]
 autoflake = "^2.0.1"
