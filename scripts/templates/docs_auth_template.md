@@ -83,3 +83,20 @@
 {% endif %}
 
 {% endfor %}
+
+#### Webdriver Project creation
+
+To create a new webdriver project, you must install [Selenium IDE](https://www.selenium.dev/selenium-ide/).
+
+Once installed, you must create a new project and start recording your login process.
+
+After recording, save your project as a `.json` file (not `.side`).
+
+Use this file as the value of the `project` parameter.
+
+We provide custom commands to make it easier:
+- `wait`: To wait for an action
+  - `target` if you want to wait for an element to appear
+  - `value`: time in second
+- `open`: can be used multiple times
+  - `target`: url
