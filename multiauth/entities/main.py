@@ -42,6 +42,7 @@ class AuthTech(str, Enum):
     MANUAL = 'manual'
     PUBLIC = 'public'
     OAUTH = 'oauth'
+    WEBDRIVER = 'webdriver'
 
 
 class AuthDigestChallenge(TypedDict):

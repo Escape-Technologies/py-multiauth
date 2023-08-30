@@ -8,3 +8,4 @@ from multiauth.providers.graphql import graphql_authenticator  # noqa
 from multiauth.providers.manual import manual_authenticator  # noqa
 from multiauth.providers.oauth import oauth_authenticator, oauth_reauthenticator  # noqa
 from multiauth.providers.rest import rest_authenticator  # noqa
+from multiauth.providers.webdriver import webdriver_authenticator  # noqa
