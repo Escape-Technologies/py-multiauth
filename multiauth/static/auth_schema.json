@@ -1428,7 +1428,7 @@
             "name": "tech",
             "hidden": true
           },
-          "title": "graphql",
+          "title": "webdriver",
           "description": "The auth method",
           "type": "string"
         },

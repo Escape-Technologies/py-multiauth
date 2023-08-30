@@ -2032,7 +2032,7 @@
     },
     "auth": {
         "schema1": {
-            "tech": "graphql",
+            "tech": "webdriver",
             "extract_location": "**string**",
             "extract_regex": "**string**",
             "project": "**object**",
