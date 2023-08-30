@@ -1413,7 +1413,7 @@
   },
   "webdriver": {
     "_escapeUI": {
-      "label": "REST"
+      "label": "Webdriver"
     },
     "authSchema": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",

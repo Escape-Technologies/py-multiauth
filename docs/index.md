@@ -1891,3 +1891,161 @@
 
 
 
+
+
+## Webdriver
+
+### Parameters
+
+---
+
+
+
+
+
+
+
+- Tech (`tech`): The auth method.
+
+
+
+
+
+
+
+
+
+
+
+- Extract Location (`extract_location`): The extract_location of the token. The values that this parameter can take are:
+
+ - `RequestURL`
+
+ - `RequestHeader`
+
+ - `RequestBody`
+
+ - `ResponseHeader`
+
+ - `ResponseBody`
+
+
+
+
+
+
+
+
+
+
+
+
+
+- Extract regex (`extract_regex`): The regex to match the token.
+
+
+
+
+
+
+
+
+
+
+
+- Project (`project`): The project used for the authentication workflow.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+### Optional
+
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+- Output Format (`output_format`): The output format with a placeholder `@token@`..
+
+
+
+
+
+
+
+- Token Lifetime (in seconds) (`token_lifetime`): The duration of the token in seconds.
+
+
+
+
+
+### Template
+
+---
+
+
+
+
+
+#### Webdriver
+
+```
+{
+    "users": {
+        "user1": {
+            "auth": "schema1",
+            "**username**": "**admin**",
+            "**password**": "**1234**"
+        }
+    },
+    "auth": {
+        "schema1": {
+            "tech": "graphql",
+            "extract_location": "**string**",
+            "extract_regex": "**string**",
+            "project": "**object**",
+            "options": {
+                "output_format": "**string**",
+                "token_lifetime": "**string**"
+            }
+        }
+    }
+}
+```
+
+
+
+
+
