@@ -20,10 +20,10 @@ class SeleniumCommandHandler:
     def find_element(self, selector, value) -> WebElement:
         wait = WebDriverWait(self.driver, self.wait_for_seconds)
         return wait.until(EC.presence_of_element_located((selector, value)))
-    
+
     def open(self, command: SeleniumCommand) -> None:
         self.driver.get(command.target)
-        
+
     def set_window_size(self, command: SeleniumCommand) -> None:
         width, height = command.target.split('x')
         self.driver.set_window_size(int(width), int(height))
@@ -112,13 +112,13 @@ class SeleniumCommandHandler:
     def wait(self, command: SeleniumCommand) -> None:
         if command.target:
             cmd, value = command.target.split('=')
-            if cmd == 'request_contains':
-                return self.wait_for_request_contains(value)
+            if cmd == 'request_url_contains':
+                return self.wait_for_request_url_contains(value)
 
         else:
             time.sleep(int(command.value))
 
-    def wait_for_request_contains(self, value: str) -> None:
+    def wait_for_request_url_contains(self, value: str) -> None:
         started_at = time.time()
         while started_at + self.wait_for_seconds > time.time():
             for request in self.driver.requests:

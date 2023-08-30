@@ -1,12 +1,4 @@
 from dataclasses import dataclass
-from enum import StrEnum
-
-class ExtractLocation(StrEnum):
-    REQUEST_URL = 'RequestURL'
-    REQUEST_HEADER = 'RequestHeader'
-    REQUEST_BODY = 'RequestBody'
-    RESPONSE_HEADER = 'ResponseHeader'
-    RESPONSE_BODY = 'ResponseBody'
 
 @dataclass    
 class SeleniumCommand:

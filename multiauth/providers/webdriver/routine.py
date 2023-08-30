@@ -5,7 +5,7 @@ from multiauth.entities.errors import AuthenticationError
 from multiauth.entities.main import AuthResponse, AuthTech, WebdriverConfig
 from multiauth.manager import User
 
-from multiauth.providers.webdriver.core import ExtractLocation, load_selenium_project
+from multiauth.providers.webdriver.core import load_selenium_project
 from multiauth.providers.webdriver.extractors import extract_token
 from multiauth.providers.webdriver.runner import SeleniumTestRunner
 
@@ -14,9 +14,6 @@ logger = logging.getLogger('multiauth.providers.webdriver')
 def webdriver_config_parser(schema: dict) -> WebdriverConfig:
     if not schema.get('extract_location'):
         raise AuthenticationError('Please provide the location to where you want to extract the token')
-
-    if schema.get('extract_location') not in ExtractLocation.__members__.values():
-        raise AuthenticationError(f'Invalid extract location, please choose from {(", ".join(ExtractLocation.__members__.values()))}')
 
     if not schema.get('extract_regex'):
         raise AuthenticationError('Please provide the regex to extract the token')
@@ -28,7 +25,7 @@ def webdriver_config_parser(schema: dict) -> WebdriverConfig:
         raise AuthenticationError('Please provide the tests to run the webdriver tests')
 
     auth_config = WebdriverConfig(
-        extract_location=ExtractLocation(schema['extract_location']),
+        extract_location=schema['extract_location'],
         extract_regex=schema['extract_regex'],
         project=load_selenium_project(schema['project']),
         output_format=schema.get('output_format'),
