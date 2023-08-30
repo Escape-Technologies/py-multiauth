@@ -27,6 +27,11 @@ RUN FIREFOX_SETUP=firefox-setup.tar.bz2 && \
 RUN echo "===> Installing python dependencies..." && \
     pip3 install poetry
 
+ENV APP_HOME /usr/src/app
+WORKDIR /$APP_HOME
+
+COPY . $APP_HOME/
+
 RUN echo "===> Installing project dependencies..." && \
     poetry config virtualenvs.create false && \
     poetry install --no-dev
@@ -34,7 +39,4 @@ RUN echo "===> Installing project dependencies..." && \
 RUN  echo "===> Remove build dependencies..." && \
     apt-get remove -y $BUILD_DEPS && rm -rf /var/lib/apt/lists/*
 
-ENV APP_HOME /usr/src/app
-WORKDIR /$APP_HOME
-
-COPY . $APP_HOME/
+CMD ["poetry", "run", "multiauth"]

@@ -3,10 +3,10 @@ import logging
 import time
 from multiauth.entities.errors import AuthenticationError
 from multiauth.entities.main import AuthResponse, AuthTech, WebdriverConfig
-from multiauth.helpers import extract_token
 from multiauth.manager import User
-from multiauth.providers.webdriver.core import ExtractLocation, load_selenium_project
 
+from multiauth.providers.webdriver.core import ExtractLocation, load_selenium_project
+from multiauth.providers.webdriver.extractors import extract_token
 from multiauth.providers.webdriver.runner import SeleniumTestRunner
 
 logger = logging.getLogger('multiauth.providers.webdriver')

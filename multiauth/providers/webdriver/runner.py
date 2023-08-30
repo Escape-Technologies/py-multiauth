@@ -14,7 +14,7 @@ class SeleniumTestRunner:
 
     def __init__(self) -> None:
         self.driver = None
-        self.logger = logging.getLogger('SeleniumTestRunner')
+        self.logger = logging.getLogger('multiauth.providers.webdriver.seleniumtestrunner')
 
     def __enter__(self) -> Self:
         return self

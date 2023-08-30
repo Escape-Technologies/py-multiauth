@@ -14,7 +14,7 @@ class SeleniumCommandHandler:
 
     def __init__(self, driver: webdriver.Firefox) -> None:
         self.driver = driver
-        self.logger = logging.getLogger('SeleniumCommandHandler')
+        self.logger = logging.getLogger('multiauth.providers.webdriver.seleniumcommandhandler')
         self.wait_for_seconds = 30
 
     def find_element(self, selector, value) -> WebElement:
