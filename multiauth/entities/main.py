@@ -9,7 +9,6 @@ from attr import dataclass
 from multiauth.entities.http import HTTPMethod, Location
 from multiauth.entities.providers.aws import AuthAWSType
 from multiauth.entities.providers.oauth import AuthOAuthGrantType
-from multiauth.providers.webdriver.core import ExtractLocation
 
 if sys.version_info >= (3, 8):
     from typing import TypedDict  # pylint: disable=no-name-in-module
@@ -72,7 +71,7 @@ class WebdriverConfig:
 
     """Authentication Configuration Parameters of the Webdriver Method."""
 
-    extract_location: ExtractLocation
+    extract_location: str
     extract_regex: str
     project: Dict[str, Any]
     output_format: Optional[str]

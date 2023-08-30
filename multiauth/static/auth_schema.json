@@ -300,7 +300,7 @@
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "type": "object",
       "required": ["tech", "url", "method"],
-      "description": "The auth configuration schema for GraphQL authentication",
+      "description": "The auth configuration schema for REST authentication",
       "properties": {
         "tech": {
           "_escapeUI": {
@@ -1408,6 +1408,114 @@
         }
       },
       "additionalProperties": false,
+      "required": ["auth"]
+    }
+  },
+  "webdriver": {
+    "_escapeUI": {
+      "label": "REST"
+    },
+    "authSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "required": ["tech", "extract_location", "extract_regex", "project"],
+      "description": "The auth configuration schema for Webdriver authentication",
+      "properties": {
+        "tech": {
+          "_escapeUI": {
+            "label": "Tech",
+            "inputType": "text",
+            "name": "tech",
+            "hidden": true
+          },
+          "title": "graphql",
+          "description": "The auth method",
+          "type": "string"
+        },
+        "extract_location": {
+          "_escapeUI": {
+            "label": "Extract Location",
+            "inputType": "text",
+            "name": "extract_location",
+            "hidden": true
+          },
+          "description": "The extract_location of the token",
+          "type": "string",
+          "enum": ["RequestURL", "RequestHeader", "RequestBody", "ResponseHeader", "ResponseBody"]
+        },
+        "extract_regex": {
+          "_escapeUI": {
+            "label": "Extract regex",
+            "inputType": "text",
+            "name": "extract_regex"
+          },
+          "description": "The regex to match the token",
+          "type": "string"
+        },
+        "project": {
+          "_escapeUI": {
+            "label": "Project",
+            "inputType": "text",
+            "name": "project"
+          },
+          "description": "The project used for the authentication workflow",
+          "type": "object"
+        },
+        "options": {
+          "description": "Webdriver options configuration",
+          "type": "object",
+          "_escapeUI": {
+            "label": "Webdriver options configuration"
+          },
+          "properties": {
+            "output_format": {
+              "_escapeUI": {
+                "name": "outputFormat",
+                "label": "Output Format",
+                "inputType": "text",
+                "placeholder": "Authorization: Bearer @token@"
+              },
+              "description": "The output format with a placeholder `@token@`.",
+              "type": "string"
+            },
+            "token_lifetime": {
+              "_escapeUI": {
+                "name": "tokenLifetime",
+                "label": "Token Lifetime (in seconds)",
+                "inputType": "text",
+                "placeholder": "3600"
+              },
+              "description": "The duration of the token in seconds",
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "userSchema": {
+      "type": "object",
+      "description": "The user configuration schema for REST authentication",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "auth": {
+          "_escapeUI": {
+            "label": "Tech Method",
+            "inputType": "text",
+            "name": "tech",
+            "hidden": true
+          },
+          "description": "The choosen auth method",
+          "type": "string"
+        }
+      },
+      "additionalProperties": {
+        "description": "A payload that will be inserted in the user's auth request",
+        "_escapeUI": {
+          "inputType": "editorList"
+        }
+      },
       "required": ["auth"]
     }
   }

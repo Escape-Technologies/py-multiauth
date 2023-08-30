@@ -15,8 +15,8 @@ def webdriver_config_parser(schema: dict) -> WebdriverConfig:
     if not schema.get('extract_location'):
         raise AuthenticationError('Please provide the location to where you want to extract the token')
 
-    if schema.get('extract_location') not in ExtractLocation.__members__:
-        raise AuthenticationError(f'Invalid extract location, please choose from {(", ".join(ExtractLocation.__members__.keys()))}')
+    if schema.get('extract_location') not in ExtractLocation.__members__.values():
+        raise AuthenticationError(f'Invalid extract location, please choose from {(", ".join(ExtractLocation.__members__.values()))}')
 
     if not schema.get('extract_regex'):
         raise AuthenticationError('Please provide the regex to extract the token')
@@ -35,7 +35,10 @@ def webdriver_config_parser(schema: dict) -> WebdriverConfig:
         token_lifetime=schema.get('token_lifetime'),
     )
 
-    if not auth_config.output_format:
+    if auth_config.output_format:
+        if '@token@' not in auth_config.output_format:
+            raise AuthenticationError('Please provide the token placeholder in the output format (`@token`).')
+    else:
         auth_config.output_format = 'Authorization: Bearer @token@'
 
     if len(auth_config.project.tests) > 1:
@@ -64,7 +67,7 @@ def webdriver_authenticator(user: User, schema: dict) -> AuthResponse:
     logger.info(f'Formatted header: {header_key}')
 
     if auth_config.token_lifetime:
-        user.expires_in = time.time() + timedelta(minutes=auth_config.token_lifetime).total_seconds()
+        user.expires_in = time.time() + timedelta(seconds=auth_config.token_lifetime).total_seconds()
 
     return AuthResponse(
         tech=AuthTech.WEBDRIVER,
