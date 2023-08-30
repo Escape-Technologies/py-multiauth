@@ -9,6 +9,7 @@ from multiauth.providers import apikey_authenticator, aws_authenticator, aws_rea
 from multiauth.providers import manual_authenticator, oauth_authenticator, oauth_reauthenticator, rest_authenticator
 from multiauth.providers.graphql import graphql_reauthenticator
 from multiauth.providers.rest import rest_reauthenticator
+from multiauth.providers.webdriver.routine import webdriver_authenticator
 
 
 # pylint: disable=no-else-return, too-many-return-statements
@@ -39,6 +40,9 @@ def auth_handler(
 
     elif authentication == AuthTech.REST:
         response = rest_authenticator(user, schema)
+
+    elif authentication == AuthTech.WEBDRIVER:
+        response = webdriver_authenticator(user, schema)
 
     # The method parameter added is due to the fact the digest uses the method when hashing
     # Although GraphQL apps use POST by default, we use GET in some of our test
@@ -89,5 +93,8 @@ def reauth_handler(
 
     elif authentication == AuthTech.GRAPHQL:
         return graphql_reauthenticator(user, schema, refresh_token)
+    
+    elif authentication == AuthTech.WEBDRIVER:
+        return webdriver_authenticator(user, schema)
 
     return None

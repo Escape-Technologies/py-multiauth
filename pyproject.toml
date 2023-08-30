@@ -1,16 +1,14 @@
 [tool.poetry]
 name = "py-multiauth"
-version = "2.0.0-rc.3"
+version = "2.0.0-rc.4"
 description = "Python package to interact with multiple authentication services"
 authors = ["Escape Technologies SAS <ping@escape.tech>"]
 maintainers = [
     "Antoine Carossio <antoine@escape.tech>",
-    "Swan <swan@escape.tech>"
+    "Swan <swan@escape.tech>",
 ]
 license = "MIT"
-packages = [
-    { include = "multiauth" }
-]
+packages = [{ include = "multiauth" }]
 readme = "README.md"
 "homepage" = "https://escape.tech/"
 "repository" = "https://github.com/Escape-Technologies/py-multiauth"
@@ -22,10 +20,7 @@ readme = "README.md"
 multiauth = 'multiauth:cli'
 
 [tool.coverage.run]
-omit = [
-    'tests/*',
-    'examples/*',
-]
+omit = ['tests/*', 'examples/*']
 
 [tool.pytest.ini_options]
 asyncio_mode = 'strict'
@@ -39,9 +34,11 @@ graphql-core = "^3.2.3"
 pycognito = "^2022.12.0"
 pydash = "^7.0.0"
 PyJWT = "^2.6.0"
-python = ">=3.8,<4.0"
+python = "^3.11"
 jsonschema = "^4.17.3"
-urllib3 = "<1.27"
+urllib3 = "<2"
+selenium = "^4.11.2"
+selenium-wire = "^5.1.0"
 
 [tool.poetry.dev-dependencies]
 autoflake = "^2.0.1"
@@ -59,6 +56,7 @@ setuptools = "^67.3.2"
 types-boto3 = "^1.0.2"
 types-requests = "^2.28.11.13"
 types-setuptools = "^67.3.0.1"
+types-selenium = "^3.141.9"
 unify = "^0.5"
 vulture = "^2.7"
 yapf = "^0.32.0"
