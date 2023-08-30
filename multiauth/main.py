@@ -47,10 +47,10 @@ def load_authrc(
     if 'headers' in data:
         return load_headers(data['headers'])
 
-    if not 'auth' in data:
+    if 'auth' not in data:
         raise InvalidConfigurationError('auth section not found', path='$.auth')
 
-    if not 'users' in data:
+    if 'users' not in data:
         raise InvalidConfigurationError('users section not found', path='$.users')
 
     return data['auth'], data['users']
