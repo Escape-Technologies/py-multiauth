@@ -1,4 +1,6 @@
+from datetime import timedelta
 import logging
+import time
 from multiauth.entities.errors import AuthenticationError
 from multiauth.entities.main import AuthResponse, AuthTech, WebdriverConfig
 from multiauth.helpers import extract_token
@@ -60,6 +62,9 @@ def webdriver_authenticator(user: User, schema: dict) -> AuthResponse:
     formatted_token = auth_config.output_format.replace('@token@', token)
     header_key, header_value = formatted_token.split(':')
     logger.info(f'Formatted header: {header_key}')
+
+    if auth_config.token_lifetime:
+        user.expires_in = time.time() + timedelta(minutes=auth_config.token_lifetime).total_seconds()
 
     return AuthResponse(
         tech=AuthTech.WEBDRIVER,
