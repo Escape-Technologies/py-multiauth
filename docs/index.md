@@ -20,19 +20,11 @@
 
 
 
-- Type (`type`): The type of AWS Authentication used. The values that this parameter can take are:
-
- - `SRP`
-
- - `Password Authentication`
-
- - `AWS Signature`
-
- - `Refresh Token`
-
-
-
-
+- Type (`type`): The type of AWS Authentication used. The values that this parameter can take are: 
+  - `SRP` 
+  - `Password Authentication` 
+  - `AWS Signature` 
+  - `Refresh Token`
 
 
 
@@ -44,15 +36,9 @@
 
 
 
-- Key location (`location`): The location where the token will be added. The values that this parameter can take are:
-
- - `headers`
-
- - `url`
-
-
-
-
+- Key location (`location`): The location where the token will be added. The values that this parameter can take are: 
+  - `headers` 
+  - `url`
 
 
 
@@ -84,31 +70,17 @@
 
 
 
-- Method (`method`): The method used to send the authentication request. The values that this parameter can take are:
-
- - `GET`
-
- - `POST`
+- Method (`method`): The method used to send the authentication request. The values that this parameter can take are: 
+  - `GET` 
+  - `POST`
 
 
 
 
 
-
-
-
-
-- Hash Algorithim (`hash_algorithim`): The hashing algorithim used in generating the signature. The values that this parameter can take are:
-
- - `sha-256`
-
- - `sha-1`
-
-
-
-
-
-
+- Hash Algorithim (`hash_algorithim`): The hashing algorithim used in generating the signature. The values that this parameter can take are: 
+  - `sha-256` 
+  - `sha-1`
 
 ### Optional
 
@@ -347,17 +319,9 @@
 
 
 
-- Method (`method`): The method used to send the authentication request. The values that this parameter can take are:
-
- - `GET`
-
- - `POST`
-
-
-
-
-
-
+- Method (`method`): The method used to send the authentication request. The values that this parameter can take are: 
+  - `GET` 
+  - `POST`
 
 
 
@@ -485,17 +449,9 @@
 
 
 
-- Method (`method`): The method used to send the authentication request. The values that this parameter can take are:
-
- - `GET`
-
- - `POST`
-
-
-
-
-
-
+- Method (`method`): The method used to send the authentication request. The values that this parameter can take are: 
+  - `GET` 
+  - `POST`
 
 
 
@@ -642,17 +598,9 @@
 
 
 
-- Method (`method`): The method used to send the authentication request. The values that this parameter can take are:
-
- - `GET`
-
- - `POST`
-
-
-
-
-
-
+- Method (`method`): The method used to send the authentication request. The values that this parameter can take are: 
+  - `GET` 
+  - `POST`
 
 
 
@@ -794,8 +742,6 @@
 
 
 
-
-
 ### Template
 
 ---
@@ -870,8 +816,6 @@
 
 
 
-
-
 ### Optional
 
 ---
@@ -942,23 +886,15 @@
 
 
 
-- Key location (`location`): The location where the token will be added. The values that this parameter can take are:
-
- - `headers`
-
- - `url`
-
-
-
-
+- Key location (`location`): The location where the token will be added. The values that this parameter can take are: 
+  - `headers` 
+  - `url`
 
 
 
 
 
 - Header name (`header_name`): The name of the header (default: `x-api-key`).
-
-
 
 
 
@@ -1044,8 +980,6 @@
 
 
 
-
-
 ### Template
 
 ---
@@ -1095,35 +1029,20 @@
 
 
 
-- Grant Type (`grant_type`): The type of OAuth Authentication used. The values that this parameter can take are:
-
- - `refresh_token`
-
- - `auth_code`
-
- - `client_cred`
-
- - `implicit`
-
- - `password_cred`
+- Grant Type (`grant_type`): The type of OAuth Authentication used. The values that this parameter can take are: 
+  - `refresh_token` 
+  - `auth_code` 
+  - `client_cred` 
+  - `implicit` 
+  - `password_cred`
 
 
 
 
 
-
-
-
-
-- Auth Location (`auth_location`): The location where the token will be added during the authentication step (in the middle of OAuth flow).. The values that this parameter can take are:
-
- - `basic`
-
- - `body`
-
-
-
-
+- Auth Location (`auth_location`): The location where the token will be added during the authentication step (in the middle of OAuth flow).. The values that this parameter can take are: 
+  - `basic` 
+  - `body`
 
 
 
@@ -1135,15 +1054,9 @@
 
 
 
-- Location (`location`): The location where the token will be added.. The values that this parameter can take are:
-
- - `headers`
-
- - `url`
-
-
-
-
+- Location (`location`): The location where the token will be added.. The values that this parameter can take are: 
+  - `headers` 
+  - `url`
 
 
 
@@ -1168,8 +1081,6 @@
 
 
 - Callback URL (`callback_url`): This is the callback URL that the authorization server will redirect to after the user has authorized the client..
-
-
 
 
 
@@ -1449,21 +1360,12 @@
 
 
 
-- Extract Location (`extract_location`): The extract_location of the token. The values that this parameter can take are:
-
- - `RequestURL`
-
- - `RequestHeader`
-
- - `RequestBody`
-
- - `ResponseHeader`
-
- - `ResponseBody`
-
-
-
-
+- Extract Location (`extract_location`): The extract_location of the token. The values that this parameter can take are: 
+  - `RequestURL` 
+  - `RequestHeader` 
+  - `RequestBody` 
+  - `ResponseHeader` 
+  - `ResponseBody`
 
 
 
@@ -1476,8 +1378,6 @@
 
 
 - Project (`project`): The project used for the authentication workflow.
-
-
 
 
 

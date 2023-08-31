@@ -16,9 +16,9 @@
 
 - {{ auth_property["name"] }} (`{{ parameter_name }}`): {{auth_property["description"]}}. The values that this parameter can take are:
 
-{% for enum in auth_property["enum"] %} - `{{ enum }}`
-
-{% endfor %}
+{%- for enum in auth_property["enum"] %} 
+  - `{{ enum }}`
+{%- endfor -%}
 
 {% else %}
 
@@ -28,7 +28,7 @@
 
 {%- endif -%}
 
-{% endfor %}
+{%- endfor -%}
 
 {% if optional[loop.index0] %}
 
