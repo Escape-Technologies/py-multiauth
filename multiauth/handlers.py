@@ -93,7 +93,7 @@ def reauth_handler(
 
     elif authentication == AuthTech.GRAPHQL:
         return graphql_reauthenticator(user, schema, refresh_token)
-    
+
     elif authentication == AuthTech.WEBDRIVER:
         return webdriver_authenticator(user, schema)
 

@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 
-@dataclass    
+
+@dataclass
 class SeleniumCommand:
     id: str
     # comment: str
@@ -9,11 +10,13 @@ class SeleniumCommand:
     targets: list[list[str]]
     value: str
 
+
 @dataclass
 class SeleniumTest:
     id: str
     name: str
     commands: list[SeleniumCommand]
+
 
 @dataclass
 class SeleniumProject:
@@ -22,6 +25,7 @@ class SeleniumProject:
     # name: str
     # url: str
     tests: list[SeleniumTest]
+
 
 def load_selenium_project(data: dict) -> 'SeleniumProject':
     return SeleniumProject(
@@ -41,10 +45,8 @@ def load_selenium_project(data: dict) -> 'SeleniumProject':
                         target=command['target'],
                         targets=command['targets'],
                         value=command['value'],
-                    )
-                    for command in test['commands']
+                    ) for command in test['commands']
                 ]
-            )
-            for test in data['tests']
+            ) for test in data['tests']
         ]
     )

@@ -1,6 +1,7 @@
+import itertools
 import re
 from typing import Any
-import itertools
+
 
 def extract_from_request_url(requests: Any, rx: str) -> str | None:
     for request in requests:
@@ -9,24 +10,22 @@ def extract_from_request_url(requests: Any, rx: str) -> str | None:
 
     return None
 
+
 def extract_from_request_header(requests: Any, rx: str) -> str | None:
-    for header in itertools.chain.from_iterable(
-        request.headers for request in requests
-    ):
+    for header in itertools.chain.from_iterable(request.headers for request in requests):
         if match := re.search(rx, header):
             return match.group(1)
 
     return None
+
 
 def extract_from_response_header(requests: Any, rx: str) -> str | None:
-    for header in itertools.chain.from_iterable(
-        request.response.headers for request in requests
-        if request.response
-    ):
+    for header in itertools.chain.from_iterable(request.response.headers for request in requests if request.response):
         if match := re.search(rx, header):
             return match.group(1)
 
     return None
+
 
 def extract_from_request_body(requests: Any, rx: str) -> str | None:
     for request in requests:
@@ -35,12 +34,14 @@ def extract_from_request_body(requests: Any, rx: str) -> str | None:
 
     return None
 
+
 def extract_from_response_body(requests: Any, rx: str) -> str | None:
     for request in requests:
         if match := re.search(rx, request.response.body):
             return match.group(1)
 
     return None
+
 
 def extract_token(location: str, rx: str, requests: Any) -> str:
     locations = [
@@ -56,7 +57,7 @@ def extract_token(location: str, rx: str, requests: Any) -> str:
 
     if location == locations[0]:
         tk = extract_from_request_url(requests, rx)
-    elif location ==  locations[1]:
+    elif location == locations[1]:
         tk = extract_from_request_header(requests, rx)
     elif location == locations[2]:
         tk = extract_from_request_body(requests, rx)

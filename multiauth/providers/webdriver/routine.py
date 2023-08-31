@@ -1,15 +1,16 @@
-from datetime import timedelta
 import logging
 import time
+from datetime import timedelta
+
 from multiauth.entities.errors import AuthenticationError
 from multiauth.entities.main import AuthResponse, AuthTech, WebdriverConfig
 from multiauth.manager import User
-
 from multiauth.providers.webdriver.core import load_selenium_project
 from multiauth.providers.webdriver.extractors import extract_token
 from multiauth.providers.webdriver.runner import SeleniumTestRunner
 
 logger = logging.getLogger('multiauth.providers.webdriver')
+
 
 def webdriver_config_parser(schema: dict) -> WebdriverConfig:
     if not schema.get('extract_location'):
@@ -42,6 +43,7 @@ def webdriver_config_parser(schema: dict) -> WebdriverConfig:
         logger.warning(f'Found {len(auth_config.project.tests)}, only the first one will be executed')
 
     return auth_config
+
 
 def webdriver_authenticator(user: User, schema: dict) -> AuthResponse:
     auth_config = webdriver_config_parser(schema)

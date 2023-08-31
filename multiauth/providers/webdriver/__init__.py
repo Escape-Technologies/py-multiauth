@@ -1,1 +1,1 @@
-from multiauth.providers.webdriver.routine import webdriver_authenticator # noqa
+from multiauth.providers.webdriver.routine import webdriver_authenticator  # noqa

@@ -1,12 +1,13 @@
-import os
 import logging
+import os
 from typing import Any, Self
 
-from seleniumwire import webdriver # type: ignore[import]
 from selenium.webdriver import firefox
-from multiauth.providers.webdriver.command import SeleniumCommandHandler
+from seleniumwire import webdriver  # type: ignore[import]
 
+from multiauth.providers.webdriver.command import SeleniumCommandHandler
 from multiauth.providers.webdriver.core import SeleniumTest
+
 
 class SeleniumTestRunner:
     driver: webdriver.Firefox | None
@@ -19,8 +20,9 @@ class SeleniumTestRunner:
     def __enter__(self) -> Self:
         return self
 
-    def __exit__(self, 
-        exc_type, 
+    def __exit__(
+        self,
+        exc_type,
         exc_value,
         traceback,
     ) -> None:
@@ -52,13 +54,13 @@ class SeleniumTestRunner:
 
             if command.command not in cmd_mapping:
                 raise ValueError(f'Invalid command `{command.command}`')
-            
+
             try:
                 cmd_mapping[command.command](command)
             except Exception as e:
                 # self.driver.save_screenshot(f'{command.id}.png')
                 raise RuntimeError(f'Failed to execute command `{command.id}`') from e
-        
+
         return self.driver.requests
 
     def setup_driver(self) -> webdriver.Firefox:

@@ -1,12 +1,15 @@
 import logging
 import time
+
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.remote.webelement import WebElement
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
+from seleniumwire import webdriver  # type: ignore[import]
+
 from multiauth.providers.webdriver.core import SeleniumCommand
 from multiauth.providers.webdriver.transformers import target_to_selector_value
-from selenium.webdriver.remote.webelement import WebElement
-from seleniumwire import webdriver # type: ignore[import]
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.action_chains import ActionChains
+
 
 class SeleniumCommandHandler:
     driver: webdriver.Firefox
