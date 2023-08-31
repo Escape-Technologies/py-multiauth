@@ -36,9 +36,9 @@
 
 ---
 
-{% endif %}
+{%- endif -%}
 
-{% for parameter_name, auth_property in auth_parameter[0][auth_name].items() %}
+{%- for parameter_name, auth_property in auth_parameter[0][auth_name].items() %}
 
 {% if auth_property["optional"] %}
 
@@ -46,7 +46,7 @@
 
 {%- endif -%}
 
-{% endfor %}
+{%- endfor %}
 
 ### Template
 
@@ -64,9 +64,9 @@
 {{ value }}
 ```
 
-{% endif %}
+{%- endif -%}
 
-{% endfor %}
+{%- endfor -%}
 
 {% else %}
 
@@ -78,11 +78,11 @@
 {{ value }}
 ```
 
-{% endfor %}
+{%- endfor -%}
 
-{% endif %}
+{%- endif -%}
 
-{% endfor %}
+{%- endfor %}
 
 #### Webdriver Project creation
 

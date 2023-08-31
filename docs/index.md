@@ -96,10 +96,6 @@
 
 
 
-
-
-
-
 - Client Secret (`client_secret`): The client secret. This parameter is used when the type is SRP or Password Authentication.
 
 
@@ -127,8 +123,6 @@
 ### Template
 
 ---
-
-
 
 
 
@@ -173,10 +167,6 @@
 
 
 
-
-
-
-
 #### AWS (type : Password Authentication)
 
 ```
@@ -208,10 +198,6 @@
     }
 }
 ```
-
-
-
-
 
 
 
@@ -249,10 +235,6 @@
 
 
 
-
-
-
-
 #### AWS (type : Refresh Token)
 
 ```
@@ -286,14 +268,6 @@
     }
 }
 ```
-
-
-
-
-
-
-
-
 
 ## REST
 
@@ -340,10 +314,6 @@
 ### Optional
 
 ---
-
-
-
-
 
 
 
@@ -419,12 +389,6 @@
 }
 ```
 
-
-
-
-
-
-
 ## Digest
 
 ### Parameters
@@ -472,10 +436,6 @@
 ### Optional
 
 ---
-
-
-
-
 
 
 
@@ -556,12 +516,6 @@
 }
 ```
 
-
-
-
-
-
-
 ## GraphQL
 
 ### Parameters
@@ -623,10 +577,6 @@
 ### Optional
 
 ---
-
-
-
-
 
 
 
@@ -718,12 +668,6 @@
 }
 ```
 
-
-
-
-
-
-
 ## Manual
 
 ### Parameters
@@ -740,13 +684,9 @@
 
 
 
-
-
 ### Template
 
 ---
-
-
 
 
 
@@ -765,10 +705,6 @@
     }
 }
 ```
-
-
-
-
 
 
 
@@ -792,14 +728,6 @@
 }
 ```
 
-
-
-
-
-
-
-
-
 ## Basic
 
 ### Parameters
@@ -819,10 +747,6 @@
 ### Optional
 
 ---
-
-
-
-
 
 
 
@@ -862,12 +786,6 @@
 }
 ```
 
-
-
-
-
-
-
 ## API
 
 ### Parameters
@@ -903,10 +821,6 @@
 ### Optional
 
 ---
-
-
-
-
 
 
 
@@ -956,12 +870,6 @@
 }
 ```
 
-
-
-
-
-
-
 ## No authentification
 
 ### Parameters
@@ -975,8 +883,6 @@
 
 
 - Tech (`tech`): The auth method.
-
-
 
 
 
@@ -1004,12 +910,6 @@
     }
 }
 ```
-
-
-
-
-
-
 
 ## OAuth
 
@@ -1112,10 +1012,6 @@
 
 
 
-
-
-
-
 - State (`state`): A value that is used to prevent cross-site request forgery.
 
 
@@ -1129,8 +1025,6 @@
 ### Template
 
 ---
-
-
 
 
 
@@ -1176,10 +1070,6 @@
 
 
 
-
-
-
-
 #### OAuth (grant_type : auth_code)
 
 ```
@@ -1214,10 +1104,6 @@
     }
 }
 ```
-
-
-
-
 
 
 
@@ -1258,10 +1144,6 @@
 
 
 
-
-
-
-
 #### OAuth (grant_type : implicit)
 
 ```
@@ -1297,10 +1179,6 @@
 
 
 
-
-
-
-
 #### OAuth (grant_type : password_cred)
 
 ```
@@ -1333,14 +1211,6 @@
     }
 }
 ```
-
-
-
-
-
-
-
-
 
 ## Webdriver
 
@@ -1397,10 +1267,6 @@
 
 
 
-
-
-
-
 - Output Format (`output_format`): The output format with a placeholder `@token@`..
 
 
@@ -1438,12 +1304,6 @@
     }
 }
 ```
-
-
-
-
-
-
 
 #### Webdriver Project creation
 
