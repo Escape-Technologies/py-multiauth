@@ -20,12 +20,6 @@
 
 
 
-
-
-
-
-
-
 - Type (`type`): The type of AWS Authentication used. The values that this parameter can take are:
 
  - `SRP`
@@ -44,17 +38,7 @@
 
 
 
-
-
-
-
 - Region (`region`): The AWS Region where the application exists.
-
-
-
-
-
-
 
 
 
@@ -82,25 +66,7 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 - Client ID (`client_id`): The client ID in AWS.
-
-
-
-
-
-
 
 
 
@@ -112,19 +78,7 @@
 
 
 
-
-
-
-
-
-
 - Service Name (`service_name`): The name of the service used in AWS.
-
-
-
-
-
-
 
 
 
@@ -144,19 +98,11 @@
 
 
 
-
-
-
-
 - Hash Algorithim (`hash_algorithim`): The hashing algorithim used in generating the signature. The values that this parameter can take are:
 
  - `sha-256`
 
  - `sha-1`
-
-
-
-
 
 
 
@@ -182,19 +128,7 @@
 
 
 
-
-
-
-
-
-
-
-
 - Client Secret (`client_secret`): The client secret. This parameter is used when the type is SRP or Password Authentication.
-
-
-
-
 
 
 
@@ -202,33 +136,11 @@
 
 
 
-
-
-
-
 - Header prefix (`header_prefix`): The prefix of the header (defautl: `Bearer`).
 
 
 
-
-
-
-
 - Headers (`headers`): The user headers for manual authentication.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -429,19 +341,7 @@
 
 
 
-
-
-
-
-
-
 - Auth url (`url`): The URL to the authentication gateway.
-
-
-
-
-
-
 
 
 
@@ -452,24 +352,6 @@
  - `GET`
 
  - `POST`
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -507,17 +389,7 @@
 
 
 
-
-
-
-
-
-
 - Token name (`token_name`): The name of the key that returns the token.
-
-
-
-
 
 
 
@@ -525,15 +397,7 @@
 
 
 
-
-
-
-
 - Refresh Token Name (`refresh_token_name`): The name of the refresh token in the response.
-
-
-
-
 
 
 
@@ -541,15 +405,7 @@
 
 
 
-
-
-
-
 - Header prefix (`header_prefix`): The prefix of the header (default: `Bearer`).
-
-
-
-
 
 
 
@@ -557,15 +413,7 @@
 
 
 
-
-
-
-
 - Headers (`headers`): The user headers for manual authentication.
-
-
-
-
 
 ### Template
 
@@ -631,19 +479,7 @@
 
 
 
-
-
-
-
-
-
 - Auth url (`url`): The URL to the authentication gateway.
-
-
-
-
-
-
 
 
 
@@ -654,26 +490,6 @@
  - `GET`
 
  - `POST`
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -713,17 +529,7 @@
 
 
 
-
-
-
-
-
-
 - Realm (`realm`): This is a string specified by the server in the WWW-Authenticate header of the 401 response. It should contain at least the name of the host performing the authentication and might additionally indicate the collwction of users who might have access..
-
-
-
-
 
 
 
@@ -731,15 +537,7 @@
 
 
 
-
-
-
-
 - Algorithm (`algorithm`): This parameter indicates the type of algorithm used to produce the digest..
-
-
-
-
 
 
 
@@ -747,15 +545,7 @@
 
 
 
-
-
-
-
 - Nonce Count (`nonce_count`): This value indicates the number of times the client has reused the nonce value. The server uses this value to detect and prevent replay attacks. This value must be specified in the qop directive, and if the qop directive is not specified, this value is not provided..
-
-
-
-
 
 
 
@@ -763,23 +553,11 @@
 
 
 
-
-
-
-
 - Opaque (`opaque`): This is a string of data specified by the server in the WWW-Authenticate header of the 401 response. It is recommended that this string be base64 or hex encoded..
 
 
 
-
-
-
-
 - Headers (`headers`): The user headers for manual authentication.
-
-
-
-
 
 ### Template
 
@@ -846,19 +624,7 @@
 
 
 
-
-
-
-
-
-
 - Auth url (`url`): The URL to the authentication gateway.
-
-
-
-
-
-
 
 
 
@@ -870,19 +636,7 @@
 
 
 
-
-
-
-
-
-
 - Mutation Field (`mutation_field`): The name of the mutation field that you want to return (usually the field of the token).
-
-
-
-
-
-
 
 
 
@@ -893,28 +647,6 @@
  - `GET`
 
  - `POST`
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -960,21 +692,7 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
 - Refresh Mutation Name (`refresh_mutation_name`): The name of the mutation used in order to refresh the access token.
-
-
-
-
 
 
 
@@ -982,15 +700,7 @@
 
 
 
-
-
-
-
 - Refresh Field Name (`refresh_field_name`): The name of the field that returns the refresh token. The same field is used to fetch the refresh token during authentication and reauthentication.
-
-
-
-
 
 
 
@@ -998,15 +708,7 @@
 
 
 
-
-
-
-
 - Header name (`header_name`): The name of the header (default: `Authorization`).
-
-
-
-
 
 
 
@@ -1014,15 +716,7 @@
 
 
 
-
-
-
-
 - Header prefix (`header_prefix`): The prefix of the header (defautl: `Bearer`).
-
-
-
-
 
 
 
@@ -1030,15 +724,7 @@
 
 
 
-
-
-
-
 - Headers (`headers`): The user headers for manual authentication..
-
-
-
-
 
 ### Template
 
@@ -1103,14 +789,6 @@
 
 
 - Tech (`tech`): The auth method.
-
-
-
-
-
-
-
-
 
 
 
@@ -1194,14 +872,6 @@
 
 
 
-
-
-
-
-
-
-
-
 ### Optional
 
 ---
@@ -1214,13 +884,7 @@
 
 
 
-
-
 - Headers (`headers`): The user headers for manual authentication.
-
-
-
-
 
 ### Template
 
@@ -1278,12 +942,6 @@
 
 
 
-
-
-
-
-
-
 - Key location (`location`): The location where the token will be added. The values that this parameter can take are:
 
  - `headers`
@@ -1298,21 +956,7 @@
 
 
 
-
-
-
-
 - Header name (`header_name`): The name of the header (default: `x-api-key`).
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -1336,25 +980,11 @@
 
 
 
-
-
-
-
-
-
 - Header Prefix (`header_prefix`): The prefix of the header of The Api Key.
 
 
 
-
-
-
-
 - Headers (`headers`): The user headers for manual authentication.
-
-
-
-
 
 ### Template
 
@@ -1416,14 +1046,6 @@
 
 
 
-
-
-
-
-
-
-
-
 ### Template
 
 ---
@@ -1473,12 +1095,6 @@
 
 
 
-
-
-
-
-
-
 - Grant Type (`grant_type`): The type of OAuth Authentication used. The values that this parameter can take are:
 
  - `refresh_token`
@@ -1490,10 +1106,6 @@
  - `implicit`
 
  - `password_cred`
-
-
-
-
 
 
 
@@ -1517,17 +1129,7 @@
 
 
 
-
-
-
-
 - Header Prefix (`header_prefix`): The prefix of the header of the token.
-
-
-
-
-
-
 
 
 
@@ -1547,17 +1149,7 @@
 
 
 
-
-
-
-
 - Scope (`scope`): The scope of the token.
-
-
-
-
-
-
 
 
 
@@ -1569,37 +1161,13 @@
 
 
 
-
-
-
-
-
-
 - Token Endpoint (`token_endpoint`): The endpoint for authentication server. This is used to exchange the authorization code for an access token..
 
 
 
 
 
-
-
-
-
-
-
 - Callback URL (`callback_url`): This is the callback URL that the authorization server will redirect to after the user has authorized the client..
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -1637,29 +1205,7 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 - State (`state`): A value that is used to prevent cross-site request forgery.
-
-
-
-
 
 
 
@@ -1667,15 +1213,7 @@
 
 
 
-
-
-
-
 - Headers (`headers`): The user headers for manual authentication.
-
-
-
-
 
 ### Template
 
@@ -1911,12 +1449,6 @@
 
 
 
-
-
-
-
-
-
 - Extract Location (`extract_location`): The extract_location of the token. The values that this parameter can take are:
 
  - `RequestURL`
@@ -1937,33 +1469,13 @@
 
 
 
-
-
-
-
 - Extract regex (`extract_regex`): The regex to match the token.
 
 
 
 
 
-
-
-
-
-
-
 - Project (`project`): The project used for the authentication workflow.
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -1989,27 +1501,11 @@
 
 
 
-
-
-
-
-
-
-
-
 - Output Format (`output_format`): The output format with a placeholder `@token@`..
 
 
 
-
-
-
-
 - Token Lifetime (in seconds) (`token_lifetime`): The duration of the token in seconds.
-
-
-
-
 
 ### Template
 

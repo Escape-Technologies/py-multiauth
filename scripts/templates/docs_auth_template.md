@@ -24,9 +24,9 @@
 
 - {{ auth_property["name"] }} (`{{ parameter_name }}`): {{auth_property["description"]}}.
 
-{% endif %}
+{%- endif -%}
 
-{% endif %}
+{%- endif -%}
 
 {% endfor %}
 
@@ -44,7 +44,7 @@
 
 - {{ auth_property["name"] }} (`{{ parameter_name }}`): {{auth_property["description"]}}.
 
-{% endif %}
+{%- endif -%}
 
 {% endfor %}
 
