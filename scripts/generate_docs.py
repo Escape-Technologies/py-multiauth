@@ -227,7 +227,7 @@ def generate_auth_docs() -> None:
             else:
                 _json_schema['users'][user_name][name] = '**' + auth_property['type'] + '**'
 
-        if auth_schema['userSchema']['additionalProperties']:
+        if auth_schema['userSchema'].get('additionalProperties'):
             _json_schema['users'][user_name]['**username**'] = '**admin**'
             _json_schema['users'][user_name]['**password**'] = '**1234**'
 

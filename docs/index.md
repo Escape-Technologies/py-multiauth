@@ -1521,9 +1521,7 @@
 {
     "users": {
         "user1": {
-            "auth": "schema1",
-            "**username**": "**admin**",
-            "**password**": "**1234**"
+            "auth": "schema1"
         }
     },
     "auth": {

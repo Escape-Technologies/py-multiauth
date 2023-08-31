@@ -1510,12 +1510,6 @@
           "type": "string"
         }
       },
-      "additionalProperties": {
-        "description": "A payload that will be inserted in the user's auth request",
-        "_escapeUI": {
-          "inputType": "editorList"
-        }
-      },
       "required": ["auth"]
     }
   }
