@@ -62,7 +62,9 @@ def webdriver_authenticator(user: User, schema: dict) -> AuthResponse:
     logger.info('Extracted token')
 
     formatted_token = auth_config.output_format.replace('@token@', token)
-    header_key, header_value = formatted_token.split(':')
+    splitted = formatted_token.split(':')
+    header_key = splitted[0].strip()
+    header_value = ':'.join(splitted[1:]).strip()
     logger.info(f'Formatted header: {header_key}')
 
     if auth_config.token_lifetime:
