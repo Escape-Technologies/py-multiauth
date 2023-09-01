@@ -1,6 +1,9 @@
 import itertools
+import logging
 import re
 from typing import Any
+
+logger = logging.getLogger('multiauth.providers.webdriver.extractors')
 
 
 def extract_from_request_url(requests: Any, rx: str) -> str | None:
@@ -29,7 +32,7 @@ def extract_from_response_header(requests: Any, rx: str) -> str | None:
 
 def extract_from_request_body(requests: Any, rx: str) -> str | None:
     for request in requests:
-        if match := re.search(rx, request.body):
+        if match := re.search(rx, request.body.decode()):
             return match.group(1)
 
     return None
@@ -37,8 +40,13 @@ def extract_from_request_body(requests: Any, rx: str) -> str | None:
 
 def extract_from_response_body(requests: Any, rx: str) -> str | None:
     for request in requests:
-        if match := re.search(rx, request.response.body):
-            return match.group(1)
+        if not request.response:
+            continue
+        try:
+            if match := re.search(rx, request.response.body.decode()):
+                return match.group(1)
+        except Exception as e:
+            logger.debug(f'Skipping {request.url} due to error {e}')
 
     return None
 
