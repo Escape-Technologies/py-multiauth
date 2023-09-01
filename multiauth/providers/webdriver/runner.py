@@ -77,6 +77,13 @@ class SeleniumTestRunner:
             'browser.helperApps.neverAsk.saveToDisk', 'text/csv'
         )
 
+        driver = webdriver.Firefox(options=firefox_options)
+
+        if proxy := os.getenv('ALL_PROXY'):
+            driver.proxy = {
+                'https': proxy,
+            }
+
         self.logger.info('Prepared firefox profile..')
 
-        return webdriver.Firefox(options=firefox_options)
+        return driver
