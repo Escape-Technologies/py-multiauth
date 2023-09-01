@@ -14,11 +14,15 @@ from multiauth.providers.webdriver.transformers import target_to_selector_value
 class SeleniumCommandHandler:
     driver: webdriver.Firefox
     logger: logging.Logger
+    
+    wait_for_seconds: int
+    pooling_interval: float
 
     def __init__(self, driver: webdriver.Firefox) -> None:
         self.driver = driver
         self.logger = logging.getLogger('multiauth.providers.webdriver.seleniumcommandhandler')
         self.wait_for_seconds = 30
+        self.pooling_interval = 0.5
 
     def find_element(self, selector, value) -> WebElement:
         wait = WebDriverWait(self.driver, self.wait_for_seconds)
@@ -127,3 +131,5 @@ class SeleniumCommandHandler:
             for request in self.driver.requests:
                 if value in request.url:
                     return
+
+            time.sleep(self.pooling_interval)
