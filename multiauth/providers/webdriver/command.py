@@ -1,4 +1,5 @@
 import logging
+import re
 import time
 
 from selenium.webdriver.common.action_chains import ActionChains
@@ -14,7 +15,7 @@ from multiauth.providers.webdriver.transformers import target_to_selector_value
 class SeleniumCommandHandler:
     driver: webdriver.Firefox
     logger: logging.Logger
-    
+
     wait_for_seconds: int
     pooling_interval: float
 
@@ -125,11 +126,11 @@ class SeleniumCommandHandler:
         else:
             time.sleep(int(command.value))
 
-    def wait_for_request_url_contains(self, value: str) -> None:
+    def wait_for_request_url_contains(self, regex: str) -> None:
         started_at = time.time()
         while started_at + self.wait_for_seconds > time.time():
             for request in self.driver.requests:
-                if value in request.url:
+                if re.match(regex, request.url):
                     return
 
             time.sleep(self.pooling_interval)
