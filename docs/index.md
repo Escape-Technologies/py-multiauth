@@ -1,8 +1,22 @@
 # 🔐 Authentication
 
 
+- [API Authentication](#API)
+- [AWS Authentication](#AWS)
+- [Basic Authentication](#Basic)
+- [Digest Authentication](#Digest)
+- [GraphQL Authentication](#GraphQL)
+- [Manual Authentication](#Manual)
+- [OAuth Authentication](#OAuth)
+- [Public Authentication](#Public)
+- [REST Authentication](#REST)
+- [Webdriver Authentication](#Webdriver)
 
-## AWS
+
+
+
+
+## <a name="API"></a> API Authentication
 
 ### Parameters
 
@@ -20,22 +34,6 @@
 
 
 
-- Type (`type`): The type of AWS Authentication used. The values that this parameter can take are: 
-  - `SRP` 
-  - `Password Authentication` 
-  - `AWS Signature` 
-  - `Refresh Token`
-
-
-
-
-
-- Region (`region`): The AWS Region where the application exists.
-
-
-
-
-
 - Key location (`location`): The location where the token will be added. The values that this parameter can take are: 
   - `headers` 
   - `url`
@@ -44,43 +42,11 @@
 
 
 
+- Header name (`header_name`): The name of the header (default: `x-api-key`).
 
 
 
 
-
-
-
-
-- Client ID (`client_id`): The client ID in AWS.
-
-
-
-
-
-- Pool ID (`pool_id`): The ID of the pool of the clients.
-
-
-
-
-
-- Service Name (`service_name`): The name of the service used in AWS.
-
-
-
-
-
-- Method (`method`): The method used to send the authentication request. The values that this parameter can take are: 
-  - `GET` 
-  - `POST`
-
-
-
-
-
-- Hash Algorithim (`hash_algorithim`): The hashing algorithim used in generating the signature. The values that this parameter can take are: 
-  - `sha-256` 
-  - `sha-1`
 
 ### Optional
 
@@ -94,31 +60,11 @@
 
 
 
-
-
-- Client Secret (`client_secret`): The client secret. This parameter is used when the type is SRP or Password Authentication.
-
-
-
-- Header name (`header_name`): The name of the header (default: `Authorization`).
-
-
-
-- Header prefix (`header_prefix`): The prefix of the header (defautl: `Bearer`).
+- Header Prefix (`header_prefix`): The prefix of the header of The Api Key.
 
 
 
 - Headers (`headers`): The user headers for manual authentication.
-
-
-
-
-
-
-
-
-
-
 
 ### Template
 
@@ -129,6 +75,42 @@
 
 
 
+
+#### AWS
+
+```
+{
+    "users": {
+        "user1": {
+            "auth": "schema1",
+            "username": "**string**",
+            "password": "**string**",
+            "refresh_token": "**string**"
+        }
+    },
+    "auth": {
+        "schema1": {
+            "tech": "aws",
+            "type": "**string**",
+            "region": "**string**",
+            "location": "**string**",
+            "client_id": "**string**",
+            "pool_id": "**string**",
+            "service_name": "**string**",
+            "method": "**string**",
+            "hash_algorithim": "**string**",
+            "options": {
+                "client_secret": "**string**",
+                "header_name": "**string**",
+                "header_prefix": "**string**",
+                "headers": {
+                    "**name**": "**value**"
+                }
+            }
+        }
+    }
+}
+```
 
 
 
@@ -269,7 +251,7 @@
 }
 ```
 
-## REST
+## <a name="AWS"></a> AWS Authentication
 
 ### Parameters
 
@@ -287,7 +269,51 @@
 
 
 
-- Auth url (`url`): The URL to the authentication gateway.
+- Type (`type`): The type of AWS Authentication used. The values that this parameter can take are: 
+  - `SRP` 
+  - `Password Authentication` 
+  - `AWS Signature` 
+  - `Refresh Token`
+
+
+
+
+
+- Region (`region`): The AWS Region where the application exists.
+
+
+
+
+
+- Key location (`location`): The location where the token will be added. The values that this parameter can take are: 
+  - `headers` 
+  - `url`
+
+
+
+
+
+
+
+
+
+
+
+
+
+- Client ID (`client_id`): The client ID in AWS.
+
+
+
+
+
+- Pool ID (`pool_id`): The ID of the pool of the clients.
+
+
+
+
+
+- Service Name (`service_name`): The name of the service used in AWS.
 
 
 
@@ -301,15 +327,9 @@
 
 
 
-
-
-
-
-
-
-
-
-
+- Hash Algorithim (`hash_algorithim`): The hashing algorithim used in generating the signature. The values that this parameter can take are: 
+  - `sha-256` 
+  - `sha-1`
 
 ### Optional
 
@@ -323,15 +343,9 @@
 
 
 
-- Token name (`token_name`): The name of the key that returns the token.
 
 
-
-- Refresh url (`refresh_url`): The url to witch the refresh token is sent.
-
-
-
-- Refresh Token Name (`refresh_token_name`): The name of the refresh token in the response.
+- Client Secret (`client_secret`): The client secret. This parameter is used when the type is SRP or Password Authentication.
 
 
 
@@ -339,15 +353,21 @@
 
 
 
-- Header prefix (`header_prefix`): The prefix of the header (default: `Bearer`).
-
-
-
-- Cookie Authentication (`cookie_auth`): A boolean determines if the authentication is done through cookie or no.
+- Header prefix (`header_prefix`): The prefix of the header (defautl: `Bearer`).
 
 
 
 - Headers (`headers`): The user headers for manual authentication.
+
+
+
+
+
+
+
+
+
+
 
 ### Template
 
@@ -389,7 +409,74 @@
 }
 ```
 
-## Digest
+## <a name="Basic"></a> Basic Authentication
+
+### Parameters
+
+---
+
+
+
+
+
+
+
+- Tech (`tech`): The auth method.
+
+
+
+### Optional
+
+---
+
+
+
+
+
+- Headers (`headers`): The user headers for manual authentication.
+
+### Template
+
+---
+
+
+
+
+
+#### Digest
+
+```
+{
+    "users": {
+        "user1": {
+            "auth": "schema1",
+            "username": "**string**",
+            "password": "**string**"
+        }
+    },
+    "auth": {
+        "schema1": {
+            "tech": "digest",
+            "url": "**string**",
+            "method": "**string**",
+            "options": {
+                "realm": "**string**",
+                "nonce": "**string**",
+                "algorithm": "**string**",
+                "qop": "**string**",
+                "nonce_count": "**string**",
+                "client_nonce": "**string**",
+                "opaque": "**string**",
+                "headers": {
+                    "**name**": "**value**"
+                }
+            }
+        }
+    }
+}
+```
+
+## <a name="Digest"></a> Digest Authentication
 
 ### Parameters
 
@@ -483,30 +570,33 @@
 
 
 
-#### Digest
+#### GraphQL
 
 ```
 {
     "users": {
         "user1": {
             "auth": "schema1",
-            "username": "**string**",
-            "password": "**string**"
+            "**username**": "**admin**",
+            "**password**": "**1234**"
         }
     },
     "auth": {
         "schema1": {
-            "tech": "digest",
+            "tech": "graphql",
             "url": "**string**",
+            "mutation_name": "**string**",
+            "mutation_field": "**string**",
             "method": "**string**",
             "options": {
-                "realm": "**string**",
-                "nonce": "**string**",
-                "algorithm": "**string**",
-                "qop": "**string**",
-                "nonce_count": "**string**",
-                "client_nonce": "**string**",
-                "opaque": "**string**",
+                "refresh_mutation_name": "**string**",
+                "refresh_field": "**boolean**",
+                "refresh_field_name": "**string**",
+                "header_token_name": "**string**",
+                "header_name": "**string**",
+                "operation": "**string**",
+                "header_prefix": "**string**",
+                "cookie_auth": "**boolean**",
                 "headers": {
                     "**name**": "**value**"
                 }
@@ -516,7 +606,7 @@
 }
 ```
 
-## GraphQL
+## <a name="GraphQL"></a> GraphQL Authentication
 
 ### Parameters
 
@@ -574,10 +664,6 @@
 
 
 
-### Optional
-
----
-
 
 
 
@@ -632,67 +718,27 @@
 
 
 
-#### GraphQL
+
+
+#### Manual
 
 ```
 {
     "users": {
         "user1": {
             "auth": "schema1",
-            "**username**": "**admin**",
-            "**password**": "**1234**"
+            "headers": {
+                "**name**": "**value**"
+            }
         }
     },
     "auth": {
         "schema1": {
-            "tech": "graphql",
-            "url": "**string**",
-            "mutation_name": "**string**",
-            "mutation_field": "**string**",
-            "method": "**string**",
-            "options": {
-                "refresh_mutation_name": "**string**",
-                "refresh_field": "**boolean**",
-                "refresh_field_name": "**string**",
-                "header_token_name": "**string**",
-                "header_name": "**string**",
-                "operation": "**string**",
-                "header_prefix": "**string**",
-                "cookie_auth": "**boolean**",
-                "headers": {
-                    "**name**": "**value**"
-                }
-            }
+            "tech": "manual"
         }
     }
 }
 ```
-
-## Manual
-
-### Parameters
-
----
-
-
-
-
-
-
-
-- Tech (`tech`): The auth method.
-
-
-
-### Template
-
----
-
-
-
-
-
-
 
 
 
@@ -728,7 +774,7 @@
 }
 ```
 
-## Basic
+## <a name="Manual"></a> Manual Authentication
 
 ### Parameters
 
@@ -742,17 +788,11 @@
 
 - Tech (`tech`): The auth method.
 
-
-
 ### Optional
 
 ---
 
 
-
-
-
-- Headers (`headers`): The user headers for manual authentication.
 
 ### Template
 
@@ -786,132 +826,7 @@
 }
 ```
 
-## API
-
-### Parameters
-
----
-
-
-
-
-
-
-
-- Tech (`tech`): The auth method.
-
-
-
-
-
-- Key location (`location`): The location where the token will be added. The values that this parameter can take are: 
-  - `headers` 
-  - `url`
-
-
-
-
-
-- Header name (`header_name`): The name of the header (default: `x-api-key`).
-
-
-
-
-
-### Optional
-
----
-
-
-
-
-
-
-
-
-
-- Header Prefix (`header_prefix`): The prefix of the header of The Api Key.
-
-
-
-- Headers (`headers`): The user headers for manual authentication.
-
-### Template
-
----
-
-
-
-
-
-#### API
-
-```
-{
-    "users": {
-        "user1": {
-            "auth": "schema1",
-            "api_key": "**string**"
-        }
-    },
-    "auth": {
-        "schema1": {
-            "tech": "api_key",
-            "location": "**string**",
-            "header_name": "**string**",
-            "options": {
-                "header_prefix": "**string**",
-                "headers": {
-                    "**name**": "**value**"
-                }
-            }
-        }
-    }
-}
-```
-
-## No authentification
-
-### Parameters
-
----
-
-
-
-
-
-
-
-- Tech (`tech`): The auth method.
-
-
-
-### Template
-
----
-
-
-
-
-
-#### No authentification
-
-```
-{
-    "users": {
-        "public": {
-            "auth": "schema1"
-        }
-    },
-    "auth": {
-        "schema1": {
-            "tech": "public"
-        }
-    }
-}
-```
-
-## OAuth
+## <a name="OAuth"></a> OAuth Authentication
 
 ### Parameters
 
@@ -1030,7 +945,197 @@
 
 
 
+#### API
 
+```
+{
+    "users": {
+        "user1": {
+            "auth": "schema1",
+            "api_key": "**string**"
+        }
+    },
+    "auth": {
+        "schema1": {
+            "tech": "api_key",
+            "location": "**string**",
+            "header_name": "**string**",
+            "options": {
+                "header_prefix": "**string**",
+                "headers": {
+                    "**name**": "**value**"
+                }
+            }
+        }
+    }
+}
+```
+
+## <a name="Public"></a> Public Authentication
+
+### Parameters
+
+---
+
+
+
+
+
+
+
+- Tech (`tech`): The auth method.
+
+
+
+### Template
+
+---
+
+
+
+
+
+#### Public
+
+```
+{
+    "users": {
+        "public": {
+            "auth": "schema1"
+        }
+    },
+    "auth": {
+        "schema1": {
+            "tech": "public"
+        }
+    }
+}
+```
+
+## <a name="REST"></a> REST Authentication
+
+### Parameters
+
+---
+
+
+
+
+
+
+
+- Tech (`tech`): The auth method.
+
+
+
+
+
+- Auth url (`url`): The URL to the authentication gateway.
+
+
+
+
+
+- Method (`method`): The method used to send the authentication request. The values that this parameter can take are: 
+  - `GET` 
+  - `POST`
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+### Optional
+
+---
+
+
+
+
+
+
+
+
+
+- Token name (`token_name`): The name of the key that returns the token.
+
+
+
+- Refresh url (`refresh_url`): The url to witch the refresh token is sent.
+
+
+
+- Refresh Token Name (`refresh_token_name`): The name of the refresh token in the response.
+
+
+
+- Header name (`header_name`): The name of the header (default: `Authorization`).
+
+
+
+- Header prefix (`header_prefix`): The prefix of the header (default: `Bearer`).
+
+
+
+- Cookie Authentication (`cookie_auth`): A boolean determines if the authentication is done through cookie or no.
+
+
+
+- Headers (`headers`): The user headers for manual authentication.
+
+### Template
+
+---
+
+
+
+
+
+
+
+#### OAuth
+
+```
+{
+    "users": {
+        "user1": {
+            "auth": "schema1",
+            "client_id": "**string**",
+            "client_secret": "**string**",
+            "refresh_token": "**string**"
+        }
+    },
+    "auth": {
+        "schema1": {
+            "tech": "oauth",
+            "grant_type": "**string**",
+            "auth_location": "**string**",
+            "header_prefix": "**string**",
+            "location": "**string**",
+            "scope": "**string**",
+            "authentication_endpoint": "**string**",
+            "token_endpoint": "**string**",
+            "callback_url": "**string**",
+            "options": {
+                "state": "**string**",
+                "code_verifier": "**string**",
+                "headers": {
+                    "**name**": "**value**"
+                }
+            }
+        }
+    }
+}
+```
 
 
 
@@ -1212,7 +1317,7 @@
 }
 ```
 
-## Webdriver
+## <a name="Webdriver"></a> Webdriver Authentication
 
 ### Parameters
 

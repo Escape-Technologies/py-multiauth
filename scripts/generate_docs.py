@@ -212,7 +212,7 @@ def generate_auth_docs() -> None:
         _json_schema = deepcopy(jsonschema)
 
         # First we have to build the user part of the schema
-        if auth_name == 'No authentification':
+        if auth_name == 'Public':
             user_name = 'public'
             _json_schema['users'][user_name] = _json_schema['users']['user1']
             del _json_schema['users']['user1']
@@ -269,7 +269,8 @@ def generate_auth_docs() -> None:
         jsonschemas.append(temp)
         count += 1
 
-    auth_documentation = template.render(auth_schema=auth_schemas, optional=has_optional, json_schema=jsonschemas)
+    sorted_auth_schema = {k: auth_schemas[k] for k in sorted(auth_schemas)}
+    auth_documentation = template.render(auth_schema=sorted_auth_schema, optional=has_optional, json_schema=jsonschemas)
 
     with open('docs/index.md', 'w+', encoding='utf-8') as f:
         f.write(auth_documentation)

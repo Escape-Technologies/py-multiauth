@@ -1,8 +1,14 @@
 # 🔐 Authentication
 
 {% for auth_name, auth_parameter in auth_schema.items() %}
+- [{{ auth_name }} Authentication](#{{ auth_name }})
+{%- endfor %}
 
-## {{ auth_name }}
+
+
+{% for auth_name, auth_parameter in auth_schema.items() %}
+
+## <a name="{{ auth_name }}"></a> {{ auth_name }} Authentication
 
 ### Parameters
 
