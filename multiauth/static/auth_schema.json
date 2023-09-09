@@ -1379,11 +1379,10 @@
             "tech",
             "grant_type",
             "auth_location",
-            "scope",
-            "header_prefix",
             "location",
             "token_endpoint",
-            "callback_url"
+            "callback_url",
+            "scope"
           ]
         },
         {
@@ -1396,12 +1395,11 @@
             "tech",
             "grant_type",
             "auth_location",
-            "scope",
-            "header_prefix",
             "location",
             "authentication_endpoint",
             "token_endpoint",
-            "callback_url"
+            "callback_url",
+            "scope"
           ]
         },
         {
@@ -1414,12 +1412,11 @@
             "tech",
             "grant_type",
             "auth_location",
-            "scope",
-            "header_prefix",
             "location",
             "authentication_endpoint",
             "callback_url",
-            "token_endpoint"
+            "token_endpoint",
+            "scope"
           ]
         },
         {
@@ -1432,10 +1429,9 @@
             "tech",
             "grant_type",
             "auth_location",
-            "scope",
-            "header_prefix",
             "location",
-            "authentication_endpoint"
+            "authentication_endpoint",
+            "scope"
           ]
         },
         {
@@ -1448,10 +1444,9 @@
             "tech",
             "grant_type",
             "auth_location",
-            "scope",
-            "header_prefix",
             "location",
-            "token_endpoint"
+            "token_endpoint",
+            "scope"
           ],
           "maxProperties": 7
         }

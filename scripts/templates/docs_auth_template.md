@@ -30,7 +30,7 @@
 
 - {{ auth_property["name"] }} (`{{ parameter_name }}`): {{auth_property["description"]}}.
 
-{%- endif -%}
+{%- endif %}
 
 {%- endif -%}
 
@@ -44,9 +44,9 @@
 
 {%- endif -%}
 
-{%- for parameter_name, auth_property in auth_parameter[0][auth_name].items() %}
+{% for parameter_name, auth_property in auth_parameter[0][auth_name].items() %}
 
-{% if auth_property["optional"] %}
+{%- if auth_property["optional"] %}
 
 - {{ auth_property["name"] }} (`{{ parameter_name }}`): {{auth_property["description"]}}.
 
@@ -100,10 +100,13 @@ After recording, save your project as a `.json` file (not `.side`).
 
 Use this file as the value of the `project` parameter.
 
-We provide custom commands to make it easier:
+##### Custom commands in a webdriver project
+
+We provide a few custom commands to extend the default selenium API.
+
 - `wait`: Wait for an action or a given time
   - `target`: optional: The element to wait for
-    - `request_url_contains=x`: To wait for the url to contain the value
+    - `request_url_contains=**regexexpr**`: To wait for the url to contain the value
   - `value`: Time in second
 - `open`: **Can be used multiple times**
   - `target`: The url to open

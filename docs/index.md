@@ -52,17 +52,7 @@
 
 ---
 
-
-
-
-
-
-
-
-
 - Header Prefix (`header_prefix`): The prefix of the header of The Api Key.
-
-
 
 - Headers (`headers`): The user headers for manual authentication.
 
@@ -335,39 +325,13 @@
 
 ---
 
-
-
-
-
-
-
-
-
-
-
 - Client Secret (`client_secret`): The client secret. This parameter is used when the type is SRP or Password Authentication.
-
-
 
 - Header name (`header_name`): The name of the header (default: `Authorization`).
 
-
-
 - Header prefix (`header_prefix`): The prefix of the header (defautl: `Bearer`).
 
-
-
 - Headers (`headers`): The user headers for manual authentication.
-
-
-
-
-
-
-
-
-
-
 
 ### Template
 
@@ -428,10 +392,6 @@
 ### Optional
 
 ---
-
-
-
-
 
 - Headers (`headers`): The user headers for manual authentication.
 
@@ -524,41 +484,19 @@
 
 ---
 
-
-
-
-
-
-
-
-
 - Realm (`realm`): This is a string specified by the server in the WWW-Authenticate header of the 401 response. It should contain at least the name of the host performing the authentication and might additionally indicate the collwction of users who might have access..
-
-
 
 - Nonce (`nonce`): The nonce is a unique string specified by the server in the WWW-Authenticate header of the 401 response. It is used to prevent replay attacks and is used to prevent request forgery attacks..
 
-
-
 - Algorithm (`algorithm`): This parameter indicates the type of algorithm used to produce the digest..
-
-
 
 - QOP (`qop`): Inidcates the quality of protection. The value of this field should be one of the values found in the qop directive of the WWW-Authenticate header of the 401 response. If the server does not support the qop directive or if the qop directive is not included in the 401 response, this field is not present..
 
-
-
 - Nonce Count (`nonce_count`): This value indicates the number of times the client has reused the nonce value. The server uses this value to detect and prevent replay attacks. This value must be specified in the qop directive, and if the qop directive is not specified, this value is not provided..
-
-
 
 - Client Nonce (`client_nonce`): An opaque quoted value provided by the client and used by the server to avoid chosen plaintext attacks. This value must be specified in the qop directive, and if the qop directive is not specified, this value is not provided..
 
-
-
 - Opaque (`opaque`): This is a string of data specified by the server in the WWW-Authenticate header of the 401 response. It is recommended that this string be base64 or hex encoded..
-
-
 
 - Headers (`headers`): The user headers for manual authentication.
 
@@ -664,49 +602,21 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 - Refresh Mutation Name (`refresh_mutation_name`): The name of the mutation used in order to refresh the access token.
-
-
 
 - Refresh Field (`refresh_field`): A boolean that determines if the mutation used to refresh the access token has a field or returns a scalar. True if there is a field and false when there is a scalar.
 
-
-
 - Refresh Field Name (`refresh_field_name`): The name of the field that returns the refresh token. The same field is used to fetch the refresh token during authentication and reauthentication.
-
-
 
 - Header token name (`header_token_name`): The name of the header to fetch the token from.
 
-
-
 - Header name (`header_name`): The name of the header (default: `Authorization`).
-
-
 
 - Operation (`operation`): The name of the operation of the graphql query being sent. The default value is mutation.
 
-
-
 - Header prefix (`header_prefix`): The prefix of the header (defautl: `Bearer`).
 
-
-
 - Cookie Authentication (`cookie_auth`): A boolean that determines if the authentication is done through cookie or no.
-
-
 
 - Headers (`headers`): The user headers for manual authentication..
 
@@ -791,8 +701,6 @@
 ### Optional
 
 ---
-
-
 
 ### Template
 
@@ -907,33 +815,9 @@
 
 ---
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 - State (`state`): A value that is used to prevent cross-site request forgery.
 
-
-
 - Code Verifier (`code_verifier`): The code verifier of the token.
-
-
 
 - Headers (`headers`): The user headers for manual authentication.
 
@@ -984,8 +868,6 @@
 
 
 - Tech (`tech`): The auth method.
-
-
 
 ### Template
 
@@ -1058,37 +940,17 @@
 
 ---
 
-
-
-
-
-
-
-
-
 - Token name (`token_name`): The name of the key that returns the token.
-
-
 
 - Refresh url (`refresh_url`): The url to witch the refresh token is sent.
 
-
-
 - Refresh Token Name (`refresh_token_name`): The name of the refresh token in the response.
-
-
 
 - Header name (`header_name`): The name of the header (default: `Authorization`).
 
-
-
 - Header prefix (`header_prefix`): The prefix of the header (default: `Bearer`).
 
-
-
 - Cookie Authentication (`cookie_auth`): A boolean determines if the authentication is done through cookie or no.
-
-
 
 - Headers (`headers`): The user headers for manual authentication.
 
@@ -1156,7 +1018,6 @@
             "tech": "oauth",
             "grant_type": "refresh_token",
             "auth_location": "**string**",
-            "header_prefix": "**string**",
             "location": "**string**",
             "scope": "**string**",
             "token_endpoint": "**string**",
@@ -1192,7 +1053,6 @@
             "tech": "oauth",
             "grant_type": "auth_code",
             "auth_location": "**string**",
-            "header_prefix": "**string**",
             "location": "**string**",
             "scope": "**string**",
             "authentication_endpoint": "**string**",
@@ -1229,7 +1089,6 @@
             "tech": "oauth",
             "grant_type": "client_cred",
             "auth_location": "**string**",
-            "header_prefix": "**string**",
             "location": "**string**",
             "scope": "**string**",
             "authentication_endpoint": "**string**",
@@ -1266,7 +1125,6 @@
             "tech": "oauth",
             "grant_type": "implicit",
             "auth_location": "**string**",
-            "header_prefix": "**string**",
             "location": "**string**",
             "scope": "**string**",
             "authentication_endpoint": "**string**",
@@ -1301,7 +1159,6 @@
             "tech": "oauth",
             "grant_type": "password_cred",
             "auth_location": "**string**",
-            "header_prefix": "**string**",
             "location": "**string**",
             "scope": "**string**",
             "token_endpoint": "**string**",
@@ -1362,19 +1219,7 @@
 
 ---
 
-
-
-
-
-
-
-
-
-
-
 - Output Format (`output_format`): The output format with a placeholder `@token@`..
-
-
 
 - Token Lifetime (in seconds) (`token_lifetime`): The duration of the token in seconds.
 
@@ -1420,10 +1265,13 @@ After recording, save your project as a `.json` file (not `.side`).
 
 Use this file as the value of the `project` parameter.
 
-We provide custom commands to make it easier:
+##### Custom commands in a webdriver project
+
+We provide a few custom commands to extend the default selenium API.
+
 - `wait`: Wait for an action or a given time
   - `target`: optional: The element to wait for
-    - `request_url_contains=x`: To wait for the url to contain the value
+    - `request_url_contains=**regexexpr**`: To wait for the url to contain the value
   - `value`: Time in second
 - `open`: **Can be used multiple times**
   - `target`: The url to open

@@ -260,7 +260,7 @@ def oauth_config_parser(schema: Dict) -> AuthConfigOAuth:
         'token_endpoint': None,
         'callback_url': None,
         'scope': '',
-        'header_prefix': '',
+        'header_prefix': 'Bearer',
         'auth_location': AuthOAuthlocation.BODY,
         'location': Location.HEADERS,
         'state': None,
@@ -294,13 +294,11 @@ def oauth_config_parser(schema: Dict) -> AuthConfigOAuth:
         raise AuthenticationError('Please provide the scope for the authentication')
     auth_config['scope'] = schema['scope']
 
-    if not schema.get('header_prefix'):
-        raise AuthenticationError('Please provide the header prefix')
-    auth_config['header_prefix'] = schema['header_prefix']
+    if schema.get('header_prefix'):
+        auth_config['header_prefix'] = schema['header_prefix']
 
-    if not schema.get('auth_location'):
-        raise AuthenticationError('Please provide the authentication location')
-    auth_config['auth_location'] = AuthOAuthlocation(schema.get('auth_location'))
+    if schema.get('auth_location'):
+        auth_config['auth_location'] = AuthOAuthlocation(schema.get('auth_location'))
 
     if not schema.get('location'):
         raise AuthenticationError('Please provide the location')
