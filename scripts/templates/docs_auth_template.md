@@ -14,7 +14,7 @@
 
 ---
 
-{% for parameter_name, auth_property in auth_parameter[0][auth_name].items() %}
+{% for parameter_name, auth_property in auth_parameter[0][auth_name].items() -%}
 
 {% if not auth_property["optional"] %}
 

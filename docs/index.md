@@ -26,11 +26,7 @@
 
 
 
-
-
 - Tech (`tech`): The auth method.
-
-
 
 
 
@@ -40,13 +36,7 @@
 
 
 
-
-
 - Header name (`header_name`): The name of the header (default: `x-api-key`).
-
-
-
-
 
 ### Optional
 
@@ -251,11 +241,7 @@
 
 
 
-
-
 - Tech (`tech`): The auth method.
-
-
 
 
 
@@ -267,11 +253,7 @@
 
 
 
-
-
 - Region (`region`): The AWS Region where the application exists.
-
-
 
 
 
@@ -281,19 +263,7 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
 - Client ID (`client_id`): The client ID in AWS.
-
-
 
 
 
@@ -301,19 +271,13 @@
 
 
 
-
-
 - Service Name (`service_name`): The name of the service used in AWS.
-
-
 
 
 
 - Method (`method`): The method used to send the authentication request. The values that this parameter can take are: 
   - `GET` 
   - `POST`
-
-
 
 
 
@@ -383,11 +347,7 @@
 
 
 
-
-
 - Tech (`tech`): The auth method.
-
-
 
 ### Optional
 
@@ -446,11 +406,7 @@
 
 
 
-
-
 - Tech (`tech`): The auth method.
-
-
 
 
 
@@ -458,27 +414,9 @@
 
 
 
-
-
 - Method (`method`): The method used to send the authentication request. The values that this parameter can take are: 
   - `GET` 
   - `POST`
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 ### Optional
 
@@ -554,11 +492,7 @@
 
 
 
-
-
 - Tech (`tech`): The auth method.
-
-
 
 
 
@@ -566,11 +500,7 @@
 
 
 
-
-
 - Mutation name (`mutation_name`): The name of the mutation used to authenticate.
-
-
 
 
 
@@ -578,29 +508,9 @@
 
 
 
-
-
 - Method (`method`): The method used to send the authentication request. The values that this parameter can take are: 
   - `GET` 
   - `POST`
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 - Refresh Mutation Name (`refresh_mutation_name`): The name of the mutation used in order to refresh the access token.
 
@@ -694,8 +604,6 @@
 
 
 
-
-
 - Tech (`tech`): The auth method.
 
 ### Optional
@@ -744,11 +652,7 @@
 
 
 
-
-
 - Tech (`tech`): The auth method.
-
-
 
 
 
@@ -761,19 +665,13 @@
 
 
 
-
-
 - Auth Location (`auth_location`): The location where the token will be added during the authentication step (in the middle of OAuth flow).. The values that this parameter can take are: 
   - `basic` 
   - `body`
 
 
 
-
-
 - Header Prefix (`header_prefix`): The prefix of the header of the token.
-
-
 
 
 
@@ -783,11 +681,7 @@
 
 
 
-
-
 - Scope (`scope`): The scope of the token.
-
-
 
 
 
@@ -795,21 +689,11 @@
 
 
 
-
-
 - Token Endpoint (`token_endpoint`): The endpoint for authentication server. This is used to exchange the authorization code for an access token..
 
 
 
-
-
 - Callback URL (`callback_url`): This is the callback URL that the authorization server will redirect to after the user has authorized the client..
-
-
-
-
-
-
 
 ### Optional
 
@@ -865,8 +749,6 @@
 
 
 
-
-
 - Tech (`tech`): The auth method.
 
 ### Template
@@ -904,11 +786,7 @@
 
 
 
-
-
 - Tech (`tech`): The auth method.
-
-
 
 
 
@@ -916,25 +794,9 @@
 
 
 
-
-
 - Method (`method`): The method used to send the authentication request. The values that this parameter can take are: 
   - `GET` 
   - `POST`
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 ### Optional
 
@@ -1184,11 +1046,7 @@
 
 
 
-
-
 - Tech (`tech`): The auth method.
-
-
 
 
 
@@ -1201,19 +1059,11 @@
 
 
 
-
-
 - Extract regex (`extract_regex`): The regex to match the token.
 
 
 
-
-
 - Project (`project`): The project used for the authentication workflow.
-
-
-
-
 
 ### Optional
 
