@@ -82,8 +82,8 @@ def auth_code_session(
     if not user.credentials.get('client_secret'):
         raise AuthenticationError('Please provide the user with client secret')
 
-    client_id: str = user.credentials['client_id']
-    client_secret: str = user.credentials['client_secret']
+    client_id = user.credentials['client_id']
+    client_secret = user.credentials['client_secret']
 
     # Create an OAuth session using the Authlib library functions
     client = OAuth2Session(
