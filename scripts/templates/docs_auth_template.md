@@ -104,9 +104,61 @@ Use this file as the value of the `project` parameter.
 
 We provide a few custom commands to extend the default selenium API.
 
-- `wait`: Wait for an action or a given time
-  - `target`: optional: The element to wait for
-    - `request_url_contains=**regexexpr**`: To wait for the url to contain the value
-  - `value`: Time in second
-- `open`: **Can be used multiple times**
-  - `target`: The url to open
+##### Wait
+
+Wait for an action or a given time.
+
+###### Parameters
+
+If you don't specify a `target`, the wait will be for the given time.
+
+`target`: (optional) The element to wait for, can be a `xpath` or a `css selector` or a `regex for the request url`.
+`value`: Maximum time to wait for the event in second
+
+
+###### Examples
+
+```
+"target": "//div[@id='mydiv']"
+"target": "request_url_contains=^https://www.google.com"
+"target": "request_url_contains=google.*"
+```
+
+###### Full example
+
+This example will wait for 30 seconds or until the request url contains `redirect-to`.
+
+```
+{
+    "id": "a34388b1-6277-42e3-a38f-04d536d911f5",
+    "value": "30",
+    "target": "request_url_contains=redirect-to",
+    "command": "wait",
+    "comment": "",
+    "targets": []
+}
+```
+
+##### Open
+
+###### Parameters
+
+Open can be used several times compared to the default selenium API.
+Make sure to use the `open` wisely when your frontend is doing a lot of redirections or subrequests.
+
+`target`: The url to open
+
+###### Full example
+
+The following example will open the url `https://escape.tech`.
+
+```
+{
+    "id": "bb414518-825a-4f70-b9a0-88243ddf4ca6",
+    "value": "",
+    "target": "https://escape.tech",
+    "command": "open",
+    "comment": "",
+    "targets": []
+}
+```

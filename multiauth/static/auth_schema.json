@@ -1577,7 +1577,7 @@
                 "inputType": "text",
                 "placeholder": "Authorization: Bearer @token@"
               },
-              "description": "The output format with a placeholder `@token@`.",
+              "description": "Header output format that will be used to serve subsequent requests\ndefault: `Authorization: Bearer @token@`\n`@token` is containing the previously extracted token",
               "type": "string"
             },
             "token_lifetime": {
@@ -1587,7 +1587,7 @@
                 "inputType": "text",
                 "placeholder": "3600"
               },
-              "description": "The duration of the token in seconds",
+              "description": "Duration of the token in seconds, after which it will be refreshed",
               "type": "string"
             }
           },
