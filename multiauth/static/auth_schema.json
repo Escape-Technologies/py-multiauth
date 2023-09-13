@@ -186,13 +186,13 @@
                     "POST"
                   ]
                 },
-                "hash_algorithim": {
+                "hash_algorithm": {
                   "_escapeUI": {
-                    "name": "hash_algorithim",
-                    "label": "Hash Algorithim",
+                    "name": "hash_algorithm",
+                    "label": "Hash Algorithm",
                     "inputType": "select"
                   },
-                  "description": "The hashing algorithim used in generating the signature",
+                  "description": "The hashing algorithm used in generating the signature",
                   "type": "string",
                   "enum": [
                     "sha-256",
@@ -204,7 +204,7 @@
               "required": [
                 "service_name",
                 "method",
-                "hash_algorithim"
+                "hash_algorithm"
               ]
             }
           }

@@ -78,7 +78,7 @@
             "pool_id": "**string**",
             "service_name": "**string**",
             "method": "**string**",
-            "hash_algorithim": "**string**",
+            "hash_algorithm": "**string**",
             "options": {
                 "client_secret": "**string**",
                 "header_name": "**string**",
@@ -217,7 +217,7 @@
             "location": "**string**",
             "service_name": "**string**",
             "method": "**string**",
-            "hash_algorithim": "**string**",
+            "hash_algorithm": "**string**",
             "options": {
                 "client_secret": "**string**",
                 "header_name": "**string**",
@@ -281,7 +281,7 @@
 
 
 
-- Hash Algorithim (`hash_algorithim`): The hashing algorithim used in generating the signature. The values that this parameter can take are: 
+- Hash Algorithm (`hash_algorithm`): The hashing algorithm used in generating the signature. The values that this parameter can take are: 
   - `sha-256` 
   - `sha-1`
 
