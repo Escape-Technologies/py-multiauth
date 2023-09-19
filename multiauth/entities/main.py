@@ -77,6 +77,7 @@ class WebdriverConfig:
     project: Dict[str, Any]
     output_format: Optional[str]
     token_lifetime: Optional[int]
+    extract_match_index: Optional[int]
 
 
 class AuthConfigDigest(TypedDict):

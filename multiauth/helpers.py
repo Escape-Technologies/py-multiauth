@@ -114,8 +114,8 @@ def hash_calculator(
 
 
 def token_endpoint_auth_method(auth_location: AuthOAuthlocation) -> str:
-    """This function takes the authorization location that is provided in the configuration
-    and determines which token endpoint authentication method should be used by the session."""
+    """This function takes the authorization location that is provided in the configuration and determines which token endpoint authentication method should be
+    used by the session."""
 
     if auth_location == AuthOAuthlocation.BODY:
         return 'client_secret_post'
