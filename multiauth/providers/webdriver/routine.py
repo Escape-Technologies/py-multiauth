@@ -25,12 +25,18 @@ def webdriver_config_parser(schema: dict) -> WebdriverConfig:
     if not schema.get('project').get('tests'):
         raise AuthenticationError('Please provide the tests to run the webdriver tests')
 
+    if 'options' in schema:
+        output_format = schema['options'].get('output_format')
+        token_lifetime = schema['options'].get('token_lifetime')
+        extract_match_index = schema['options'].get('extract_match_index')
+
     auth_config = WebdriverConfig(
         extract_location=schema['extract_location'],
         extract_regex=schema['extract_regex'],
         project=load_selenium_project(schema['project']),
-        output_format=schema.get('output_format'),
-        token_lifetime=schema.get('token_lifetime'),
+        output_format=output_format,
+        token_lifetime=token_lifetime,
+        extract_match_index=extract_match_index,
     )
 
     if auth_config.output_format:
@@ -52,11 +58,14 @@ def webdriver_authenticator(user: User, schema: dict) -> AuthResponse:
     logger.info(f'Executing test: {selenium_test.name}')
 
     with SeleniumTestRunner() as r:
-        requests = r.run(selenium_test)
+        requests: list = r.run(selenium_test)
+
+    logger.info(f'Finished executing Selenium test. Sent `{len(requests)}` requests')
 
     token = extract_token(
         auth_config.extract_location,
         auth_config.extract_regex,
+        auth_config.extract_match_index,
         requests,
     )
     logger.info('Extracted token')

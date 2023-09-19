@@ -82,9 +82,7 @@ class SeleniumCommandHandler:
         for target_pair in command.targets:
             try:
                 selector, value = target_to_selector_value(target_pair)
-                return ActionChains(self.driver).move_to_element(
-                    self.find_element(selector, value)
-                ).perform()
+                return ActionChains(self.driver).move_to_element(self.find_element(selector, value)).perform()
             except Exception as e:
                 logging.info(
                     'Failed to execute mouesOver `%s`.`%s`: %s',
@@ -102,9 +100,7 @@ class SeleniumCommandHandler:
         for target_pair in command.targets:
             try:
                 selector, value = target_to_selector_value(target_pair)
-                return ActionChains(self.driver).move_to_element(
-                    self.find_element(selector,value)
-                ).perform()
+                return ActionChains(self.driver).move_to_element(self.find_element(selector, value)).perform()
             except Exception as e:
                 logging.info(
                     'Failed to execute mouseOut `%s`.`%s`: %s',

@@ -1,5 +1,4 @@
 #pylint: disable=no-name-in-module
-
 """Helper functions for the authentication process."""
 
 import base64
@@ -114,8 +113,8 @@ def hash_calculator(
 
 
 def token_endpoint_auth_method(auth_location: AuthOAuthlocation) -> str:
-    """This function takes the authorization location that is provided in the configuration
-    and determines which token endpoint authentication method should be used by the session."""
+    """This function takes the authorization location that is provided in the configuration and determines which token endpoint authentication method should be
+    used by the session."""
 
     if auth_location == AuthOAuthlocation.BODY:
         return 'client_secret_post'
@@ -148,7 +147,6 @@ def authentication_portal(
         raise ImportError('PyQT5 unavailable. Please install it properly.') from PYQT5_ERROR
 
     class RequestInterceptor(QWebEngineUrlRequestInterceptor):
-
         """This class is used to intercept all the requests sent my the browser."""
         # Creating the Signal to be sent
         found: pyqtSignal = pyqtSignal(int)

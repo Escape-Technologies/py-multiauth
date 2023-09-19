@@ -1050,7 +1050,7 @@
 
 
 
-- Extract Location (`extract_location`): The extract_location of the token. The values that this parameter can take are: 
+- Extract Location (`extract_location`): The location in the requests and responses sequence to extract the token from.. The values that this parameter can take are: 
   - `RequestURL` 
   - `RequestHeader` 
   - `RequestBody` 
@@ -1059,7 +1059,7 @@
 
 
 
-- Extract regex (`extract_regex`): The regex to match the token.
+- Extract regex (`extract_regex`): The regex to match the token inside the `extract_location` (from any tuple request/response if `extract_match_index` is not specified).
 
 
 
@@ -1074,6 +1074,8 @@ default: `Authorization: Bearer @token@`
 `@token` is containing the previously extracted token.
 
 - Token Lifetime (in seconds) (`token_lifetime`): Duration of the token in seconds, after which it will be refreshed.
+
+- Extract Index (`extract_match_index`): If `extract_regex` matched `extract_location` in multiple requests, this sets the index of the match to use. Can be `-1` for the last match..
 
 ### Template
 
@@ -1100,7 +1102,8 @@ default: `Authorization: Bearer @token@`
             "project": "**object**",
             "options": {
                 "output_format": "**string**",
-                "token_lifetime": "**string**"
+                "token_lifetime": "**integer**",
+                "extract_match_index": "**integer**"
             }
         }
     }

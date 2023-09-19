@@ -101,3 +101,6 @@ storage
 node_modules
 package-lock.json
 **/.hooks/*.local.json
+
+# Auth
+.authrc
