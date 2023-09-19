@@ -18,6 +18,7 @@ else:
 
 @unique
 class AuthHashAlgorithmDigest(str, Enum):
+
     """The Available Hashing algorithms for Digest Authentication."""
     MD5 = 'md5'
     MD5_SESS = 'md5-sess'
@@ -30,6 +31,7 @@ class AuthHashAlgorithmDigest(str, Enum):
 # The Authentication Schemas can be found below
 @unique
 class AuthTech(str, Enum):
+
     """Authentication Method Enumeration."""
 
     APIKEY = 'api_key'
@@ -46,6 +48,7 @@ class AuthTech(str, Enum):
 
 
 class AuthDigestChallenge(TypedDict):
+
     """The format of the challenge in a digest authentication schema as specified by the RFC 2617."""
     realm: Optional[str]
     domain: Optional[str]
@@ -56,6 +59,7 @@ class AuthDigestChallenge(TypedDict):
 
 
 class AuthConfigApiKey(TypedDict):
+
     """Authentication Configuration Parameters of the Api Key Method."""
     location: Location
     header_name: str
@@ -65,6 +69,7 @@ class AuthConfigApiKey(TypedDict):
 
 @dataclass
 class WebdriverConfig:
+
     """Authentication Configuration Parameters of the Webdriver Method."""
 
     extract_location: str
@@ -76,6 +81,7 @@ class WebdriverConfig:
 
 
 class AuthConfigDigest(TypedDict):
+
     """Authentication Configuration Parameters of the Digest Method."""
     url: str
     realm: str
@@ -91,6 +97,7 @@ class AuthConfigDigest(TypedDict):
 
 
 class AuthResponse(TypedDict):
+
     """The Processed Authentication Configuration."""
     tech: AuthTech
     headers: Dict[str, str]
@@ -100,12 +107,14 @@ Token = str
 
 
 class RCFile(TypedDict):
+
     """RC File."""
     auth: Dict
     users: Dict
 
 
 class JWTToken(TypedDict):
+
     """This class finds all the registered claims in the JWT token payload.
 
     Attributes:

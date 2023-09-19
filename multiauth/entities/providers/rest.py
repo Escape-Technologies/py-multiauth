@@ -12,6 +12,7 @@ else:
 
 
 class AuthConfigRest(TypedDict):
+
     """Authentication Configuration Parameters of the Rest Method."""
     url: str
     method: HTTPMethod

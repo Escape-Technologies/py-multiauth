@@ -14,6 +14,7 @@ else:
 
 @unique
 class AuthAWSType(str, Enum):
+
     """The authentication flow used in the AWS authentication."""
     USER_SRP_AUTH = 'SRP'
     USER_PASSWORD_AUTH = 'Password Authentication'
@@ -23,6 +24,7 @@ class AuthAWSType(str, Enum):
 
 @unique
 class AuthAWSChallengeResponse(str, Enum):
+
     """The types of challenge responses."""
     NEW_PASSWORD_REQUIRED_CHALLENGE = 'NEW_PASSWORD_REQUIRED'
     PASSWORD_VERIFIER_CHALLENGE = 'PASSWORD_VERIFIER'
@@ -30,12 +32,14 @@ class AuthAWSChallengeResponse(str, Enum):
 
 @unique
 class AuthHashalgorithmHawkandAWS(str, Enum):
+
     """The Available Hashing algorithm for Hawk authentication."""
     SHA_256 = 'sha-256'
     SHA_1 = 'sha-1'
 
 
 class AuthConfigHawk(TypedDict):
+
     """Authentication Configuration Parameters of the Hawk Method."""
     algorithm: AuthHashalgorithmHawkandAWS
     user: Optional[str]
@@ -47,6 +51,7 @@ class AuthConfigHawk(TypedDict):
 
 
 class AuthConfigAWS(TypedDict):
+
     """Authenticaiton Configuration Parameters of the AWS Method."""
     type: AuthAWSType
     region: str

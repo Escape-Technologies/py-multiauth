@@ -1,4 +1,5 @@
 # pylint: disable=missing-docstring, too-few-public-methods
+
 """Abstract representation."""
 
 import logging
@@ -10,6 +11,7 @@ from multiauth.entities.main import AuthTech, AuthType, JWTToken, Token
 
 
 class IUser(ABC):
+
     """The base class for the user entity."""
 
     _auth_schema: Optional[str]

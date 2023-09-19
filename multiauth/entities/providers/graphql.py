@@ -14,6 +14,7 @@ Operation = Literal['query', 'mutation', 'subscription']
 
 
 class AuthConfigGraphQL(TypedDict):
+
     """Authentication Configuration Parameters of the GraphQL Method."""
     url: str
     mutation_name: str

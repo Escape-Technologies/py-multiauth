@@ -1,4 +1,5 @@
 #pylint: disable=no-name-in-module
+
 """Helper functions for the authentication process."""
 
 import base64
@@ -147,6 +148,7 @@ def authentication_portal(
         raise ImportError('PyQT5 unavailable. Please install it properly.') from PYQT5_ERROR
 
     class RequestInterceptor(QWebEngineUrlRequestInterceptor):
+
         """This class is used to intercept all the requests sent my the browser."""
         # Creating the Signal to be sent
         found: pyqtSignal = pyqtSignal(int)

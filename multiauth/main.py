@@ -69,6 +69,7 @@ def load_headers(headers: Dict[str, str]) -> Tuple[Dict, Dict]:
 
 
 class MultiAuth(IMultiAuth):
+
     """Multiauth manager."""
 
     def __init__(

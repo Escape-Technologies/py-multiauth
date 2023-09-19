@@ -11,6 +11,7 @@ from multiauth.helpers import jwt_token_analyzer
 
 # pylint: disable=too-many-instance-attributes
 class User(IUser):
+
     """User entity."""
 
     def __init__(
@@ -238,6 +239,7 @@ class User(IUser):
 
 
 class UserManager:
+
     """User manager."""
 
     _users: Dict[str, User]

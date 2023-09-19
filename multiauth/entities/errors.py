@@ -2,18 +2,21 @@
 
 
 class AuthenticationError(Exception):
+
     """Authentication error."""
 
     message = 'Your authentication failed.'
 
 
 class ExpiredTokenError(Exception):
+
     """Token expired error."""
 
     message = 'Your token has expired.'
 
 
 class InvalidConfigurationError(Exception):
+
     """Generic excpetion raised for escaperc misconfiguration."""
     errno = 2
 
