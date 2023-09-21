@@ -1535,7 +1535,7 @@
             "name": "extract_location",
             "hidden": true
           },
-          "description": "The location in the requests and responses sequence to extract the token from.",
+          "description": "The location in the requests and responses sequence to extract the token from",
           "type": "string",
           "enum": [
             "RequestURL",
@@ -1551,7 +1551,7 @@
             "inputType": "text",
             "name": "extract_regex"
           },
-          "description": "The regex to match the token inside the `extract_location` (from any tuple request/response if `extract_match_index` is not specified)",
+          "description": "The regex to match the token inside the `extract_location` (from any tuple request/response if `extract_match_index` is not specified). Use [Regex101](https://regex101.com/) in `Python` mode to test your regex.",
           "type": "string"
         },
         "project": {
@@ -1577,8 +1577,7 @@
                 "inputType": "text",
                 "placeholder": "Authorization: Bearer @token@"
               },
-              "description": "Header output format that will be used to serve subsequent requests\ndefault: `Authorization: Bearer @token@`\n`@token` is containing the previously extracted token",
-              "type": "string"
+              "description": "Header output format that will be used to serve subsequent requests, where @token` is containing the previously extracted token. By default, `Authorization: Bearer @token@` is used"
             },
             "token_lifetime": {
               "_escapeUI": {
@@ -1597,7 +1596,7 @@
                 "inputType": "text",
                 "placeholder": "0"
               },
-              "description": "If `extract_regex` matched `extract_location` in multiple requests, this sets the index of the match to use. Can be `-1` for the last match.",
+              "description": "If `extract_regex` matched `extract_location` in multiple requests, this sets the index of the match to use. Can be `-1` for the last match",
               "type": "integer"
             }
           },
