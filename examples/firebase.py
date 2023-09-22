@@ -1,5 +1,6 @@
 """Manual flow example."""
 import os
+
 from multiauth import MultiAuth
 
 FIREBASE_API_KEY = os.getenv('FIREBASE_API_KEY')
@@ -15,7 +16,7 @@ schemas = {
             'refresh_url': f'https://securetoken.googleapis.com/v1/token?key={FIREBASE_API_KEY}',
             'refresh_token_name': 'idToken',
             'token_name': 'idToken',
-        }
+        },
     },
     'firebase-anonymous': {
         'tech': 'rest',
@@ -25,20 +26,20 @@ schemas = {
             'refresh_url': f'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key={FIREBASE_API_KEY}',
             'refresh_token_name': 'idToken',
             'token_name': 'idToken',
-        }
-    }
+        },
+    },
 }
 users = {
     'email_provider': {
         'auth': 'firebase-email',
         'returnSecureToken': 'true',
         'email': FIREBASE_USER_EMAIL,
-        'password': FIREBASE_USER_PASSWORD
+        'password': FIREBASE_USER_PASSWORD,
     },
     'anonymous_provider': {
         'auth': 'firebase-anonymous',
         'returnSecureToken': 'true',
-    }
+    },
 }
 
 instance = MultiAuth(schemas, users)
