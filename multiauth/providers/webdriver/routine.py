@@ -2,6 +2,8 @@ import logging
 import time
 from datetime import timedelta
 
+import pkg_resources
+
 from multiauth.entities.errors import AuthenticationError
 from multiauth.entities.main import AuthResponse, AuthTech, WebdriverConfig
 from multiauth.manager import User
@@ -10,6 +12,10 @@ from multiauth.providers.webdriver.extractors import extract_token
 from multiauth.providers.webdriver.runner import SeleniumTestRunner
 
 logger = logging.getLogger('multiauth.providers.webdriver')
+
+
+__version__ = pkg_resources.get_distribution('py-multiauth').version
+
 
 
 def webdriver_config_parser(schema: dict) -> WebdriverConfig:
@@ -52,6 +58,7 @@ def webdriver_authenticator(user: User, schema: dict) -> AuthResponse:
     auth_config = webdriver_config_parser(schema)
 
     selenium_test = auth_config.project.tests[0]
+    logger.info(f'Webdriver authentication using Multiauth {__version__}')
     logger.info(f'Executing test: {selenium_test.name}')
 
     with SeleniumTestRunner() as r:
