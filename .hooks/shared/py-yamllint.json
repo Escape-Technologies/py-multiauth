@@ -1,5 +1,5 @@
 {
   "name": "python: yamllint",
-  "command": "poetry run yamllint packages/remediations/remediations -s",
+  "command": "poetry run yamllint multiauth -s",
   "onlyOn": "**/*.yaml"
 }

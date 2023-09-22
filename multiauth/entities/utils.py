@@ -8,6 +8,7 @@ from multiauth.entities.http import HTTPMethod
 class Credentials(NamedTuple):
 
     """This is the credentials class that are the credentials found in the curl."""
+
     username: str
     password: str
 

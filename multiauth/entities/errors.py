@@ -18,6 +18,7 @@ class ExpiredTokenError(Exception):
 class InvalidConfigurationError(Exception):
 
     """Generic excpetion raised for escaperc misconfiguration."""
+
     errno = 2
 
     message: str

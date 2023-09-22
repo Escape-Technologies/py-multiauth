@@ -5,8 +5,18 @@ from typing import Dict, Optional
 from multiauth.entities.http import HTTPMethod
 from multiauth.entities.main import AuthResponse, AuthTech
 from multiauth.manager import User
-from multiauth.providers import apikey_authenticator, aws_authenticator, aws_reauthenticator, basic_authenticator, digest_authenticator, graphql_authenticator
-from multiauth.providers import manual_authenticator, oauth_authenticator, oauth_reauthenticator, rest_authenticator
+from multiauth.providers import (
+    apikey_authenticator,
+    aws_authenticator,
+    aws_reauthenticator,
+    basic_authenticator,
+    digest_authenticator,
+    graphql_authenticator,
+    manual_authenticator,
+    oauth_authenticator,
+    oauth_reauthenticator,
+    rest_authenticator,
+)
 from multiauth.providers.graphql import graphql_reauthenticator
 from multiauth.providers.rest import rest_reauthenticator
 from multiauth.providers.webdriver.routine import webdriver_authenticator

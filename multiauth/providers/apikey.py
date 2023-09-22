@@ -11,12 +11,14 @@ from multiauth.manager import User
 def apikey_config_parser(schema: Dict) -> AuthConfigApiKey:
     """This function parses the API Key schema and checks if all necessary fields exist."""
 
-    auth_config = AuthConfigApiKey({
-        'location': Location.HEADERS,
-        'header_name': '',
-        'header_prefix': None,
-        'headers': None,
-    })
+    auth_config = AuthConfigApiKey(
+        {
+            'location': Location.HEADERS,
+            'header_name': '',
+            'header_prefix': None,
+            'headers': None,
+        },
+    )
 
     if not schema.get('header_name'):
         raise AuthenticationError('Please provide the key of the API Authentication')
@@ -39,16 +41,18 @@ def apikey_auth_attach(
 ) -> AuthResponse:
     """This function attaches the user credentials to the schema and generates the proper authentication response."""
 
-    auth_response = AuthResponse({
-        'headers': {},
-        'tech': AuthTech.APIKEY,
-    })
+    auth_response = AuthResponse(
+        {
+            'headers': {},
+            'tech': AuthTech.APIKEY,
+        },
+    )
 
     # First take the credentials from the user
     if not user.credentials:
         raise AuthenticationError('Configuration file error. Missing credentials')
     if not user.credentials.get('api_key'):
-        raise AuthenticationError('Failed to fetch user\'s API Key')
+        raise AuthenticationError("Failed to fetch user's API Key")
 
     api_key: str = user.credentials['api_key']
 
@@ -68,7 +72,6 @@ def apikey_auth_attach(
     # Append the optional headers to the header
     if auth_config['headers'] is not None:
         for name, value in auth_config['headers'].items():
-
             # Resolving duplicate keys
             if name in auth_response['headers']:
                 auth_response['headers'][name] += ', ' + value

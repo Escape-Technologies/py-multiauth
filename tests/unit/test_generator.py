@@ -1,4 +1,4 @@
-#pylint: disable=redefined-outer-name, unused-import, line-too-long, invalid-name
+# pylint: disable=redefined-outer-name, unused-import, line-too-long, invalid-name
 
 """Test generator."""
 
@@ -11,7 +11,7 @@ from multiauth.generator import _manual_fill, curl_to_escaperc
 from .providers.test_manual_auth import auth, users_one_header, users_two_headers  # noqa
 
 
-@pytest.fixture
+@pytest.fixture()
 def graphql_curl_with_input_object_and_no_var() -> str:
     """Test auth schema."""
     return r"""curl --location --request POST 'https://qhgslipjmw.com/graphql' \
@@ -19,7 +19,7 @@ def graphql_curl_with_input_object_and_no_var() -> str:
 --data-raw '{"query":"mutation {\r\n    login(userLoginInput: {email: \"LoZhylgLX8@Nuz0bhEKMY.com\", password: \"8ua36eYKlN\"}){\r\n        token\r\n    }\r\n}","variables":{}}'"""
 
 
-@pytest.fixture
+@pytest.fixture()
 def graphql_curl_with_input_object_and_var() -> str:
     """Test auth schema."""
     return r"""curl --location --request POST 'https://qhgslipjmw.com/graphql' \
@@ -27,7 +27,7 @@ def graphql_curl_with_input_object_and_var() -> str:
 --data-raw '{"query":"mutation ($Login: UserLoginInput!){\r\n    login(userLoginInput: $Login){\r\n        token\r\n    }\r\n}","variables":{"Login":{"email":"LoZhylgLX8@Nuz0bhEKMY.com","password":"8ua36eYKlN"}}}'"""
 
 
-@pytest.fixture
+@pytest.fixture()
 def graphql_curl_with_normal_graphql_query() -> str:
     """Test auth schema."""
     return r"""curl --location --request POST 'https://www.terrang.fr/graphql' \
@@ -35,7 +35,7 @@ def graphql_curl_with_normal_graphql_query() -> str:
 --data-raw '{"query":"mutation {\r\n    authenticateUser(username: \"ohtmjdkyhx@oergasjvhp.com\", password: \"Wj7UxfFTyzgPVM\"){\r\n        success\r\n    }\r\n}","variables":{"Login":{"email":"LoZhylgLX8@Nuz0bhEKMY.com","password":"8ua36eYKlN"}}}'"""
 
 
-@pytest.fixture
+@pytest.fixture()
 def rest_curl() -> str:
     """Test auth schema."""
     return r"""curl --location --request POST 'https://auth.ghqmcblmjc.com/login' \
@@ -46,7 +46,7 @@ def rest_curl() -> str:
 }'"""
 
 
-@pytest.fixture
+@pytest.fixture()
 def rest_curl_not_json() -> str:
     """Test auth schema."""
     return r"""curl --location --request POST 'https://auth.ghqmcblmjc.com/login' \
@@ -55,25 +55,22 @@ def rest_curl_not_json() -> str:
 --data-urlencode 'password=Wj7UxfFTyzgPVM@'"""
 
 
-@pytest.fixture
+@pytest.fixture()
 def curl_no_data() -> str:
     """Test auth schema."""
     return r"""curl --location --request POST 'https://auth.ghqmcblmjc.com/login' \
 --header 'Content-Type: application/x-www-form-urlencoded'"""
 
 
-@pytest.fixture
+@pytest.fixture()
 def graphql_curl_with_input_object_and_no_var_response() -> Dict:
     """Curl Response."""
     return {
         'users': {
             'user1': {
                 'auth': 'schema1',
-                'userLoginInput': {
-                    'email': 'LoZhylgLX8@Nuz0bhEKMY.com',
-                    'password': '8ua36eYKlN'
-                }
-            }
+                'userLoginInput': {'email': 'LoZhylgLX8@Nuz0bhEKMY.com', 'password': '8ua36eYKlN'},
+            },
         },
         'auth': {
             'schema1': {
@@ -82,29 +79,18 @@ def graphql_curl_with_input_object_and_no_var_response() -> Dict:
                 'method': 'POST',
                 'mutation_name': 'login',
                 'mutation_field': 'token',
-                'options': {
-                    'operation': 'mutation',
-                    'headers': {
-                        'Content-Type': 'application/json'
-                    }
-                }
-            }
-        }
+                'options': {'operation': 'mutation', 'headers': {'Content-Type': 'application/json'}},
+            },
+        },
     }
 
 
-@pytest.fixture
+@pytest.fixture()
 def graphql_curl_with_input_object_and_var_response() -> Dict:
     """Curl Response."""
     return {
         'users': {
-            'user1': {
-                'auth': 'schema1',
-                'Login': {
-                    'email': 'LoZhylgLX8@Nuz0bhEKMY.com',
-                    'password': '8ua36eYKlN'
-                }
-            }
+            'user1': {'auth': 'schema1', 'Login': {'email': 'LoZhylgLX8@Nuz0bhEKMY.com', 'password': '8ua36eYKlN'}},
         },
         'auth': {
             'schema1': {
@@ -113,94 +99,58 @@ def graphql_curl_with_input_object_and_var_response() -> Dict:
                 'method': 'POST',
                 'mutation_name': 'login',
                 'mutation_field': 'token',
-                'options': {
-                    'operation': 'mutation',
-                    'headers': {
-                        'Content-Type': 'application/json'
-                    }
-                }
-            }
-        }
+                'options': {'operation': 'mutation', 'headers': {'Content-Type': 'application/json'}},
+            },
+        },
     }
 
 
-@pytest.fixture
+@pytest.fixture()
 def graphql_curl_with_normal_graphql_query_response() -> Dict:
     """Curl Response."""
     return {
-        'users': {
-            'user1': {
-                'auth': 'schema1',
-                'username': 'ohtmjdkyhx@oergasjvhp.com',
-                'password': 'Wj7UxfFTyzgPVM'
-            }
-        },
+        'users': {'user1': {'auth': 'schema1', 'username': 'ohtmjdkyhx@oergasjvhp.com', 'password': 'Wj7UxfFTyzgPVM'}},
         'auth': {
             'schema1': {
                 'tech': 'graphql',
                 'url': 'https://www.terrang.fr/graphql',
                 'method': 'POST',
                 'mutation_name': 'authenticateUser',
-                'options': {
-                    'operation': 'mutation',
-                    'headers': {
-                        'Content-Type': 'application/json'
-                    }
-                }
-            }
-        }
+                'options': {'operation': 'mutation', 'headers': {'Content-Type': 'application/json'}},
+            },
+        },
     }
 
 
-@pytest.fixture
+@pytest.fixture()
 def rest_curl_response() -> Dict:
     """Curl Response."""
     return {
-        'users': {
-            'user1': {
-                'auth': 'schema1',
-                'email': 'ohtmjdkyhx@oergasjvhp.com',
-                'password': 'Wj7UxfFTyzgPVM@'
-            }
-        },
+        'users': {'user1': {'auth': 'schema1', 'email': 'ohtmjdkyhx@oergasjvhp.com', 'password': 'Wj7UxfFTyzgPVM@'}},
         'auth': {
             'schema1': {
                 'tech': 'rest',
                 'url': 'https://auth.ghqmcblmjc.com/login',
                 'method': 'POST',
-                'options': {
-                    'headers': {
-                        'Content-Type': 'application/json'
-                    }
-                }
-            }
-        }
+                'options': {'headers': {'Content-Type': 'application/json'}},
+            },
+        },
     }
 
 
-@pytest.fixture
+@pytest.fixture()
 def rest_curl_not_json_response() -> Dict:
     """Curl Response."""
     return {
-        'users': {
-            'user1': {
-                'auth': 'schema1',
-                'email': 'ohtmjdkyhx@oergasjvhp.com',
-                'password': 'Wj7UxfFTyzgPVM@'
-            }
-        },
+        'users': {'user1': {'auth': 'schema1', 'email': 'ohtmjdkyhx@oergasjvhp.com', 'password': 'Wj7UxfFTyzgPVM@'}},
         'auth': {
             'schema1': {
                 'tech': 'rest',
                 'url': 'https://auth.ghqmcblmjc.com/login',
                 'method': 'POST',
-                'options': {
-                    'headers': {
-                        'Content-Type': 'application/x-www-form-urlencoded'
-                    }
-                }
-            }
-        }
+                'options': {'headers': {'Content-Type': 'application/x-www-form-urlencoded'}},
+            },
+        },
     }
 
 
@@ -237,7 +187,10 @@ def test_graphql_curl_with_input_object_and_no_var(
 ) -> None:
     """Function that tests if the curl to escaperc works."""
 
-    assert curl_to_escaperc(graphql_curl_with_input_object_and_no_var) == graphql_curl_with_input_object_and_no_var_response
+    assert (
+        curl_to_escaperc(graphql_curl_with_input_object_and_no_var)
+        == graphql_curl_with_input_object_and_no_var_response
+    )
 
 
 def test_graphql_curl_with_input_object_and_var(

@@ -15,5 +15,6 @@ HTTPMethod = Literal['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'HEAD', 'OPTIONS',
 class Location(str, Enum):
 
     """The location where the auth data is added to."""
+
     HEADERS = 'headers'
     URL = 'url'

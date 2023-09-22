@@ -1,4 +1,4 @@
-#pylint: disable=no-name-in-module
+# pylint: disable=no-name-in-module
 
 """Helper functions for the authentication process."""
 
@@ -24,6 +24,7 @@ try:
     from PyQt5.QtWebEngineCore import QWebEngineUrlRequestInterceptor  # type: ignore[import]
     from PyQt5.QtWebEngineWidgets import QWebEngineView  # type: ignore[import]
     from PyQt5.QtWidgets import QApplication, QDesktopWidget  # type: ignore[import]
+
     PYQT5_ERROR = None
 except ImportError as error:
     PYQT5_ERROR = error
@@ -58,14 +59,15 @@ def extract_token(
     try:
         response_dict = json.loads(response.text)
     except JSONDecodeError as e:
-        raise AuthenticationError(f'{type(e).__name__}: Response returned by authentication server is invalid: {e}') from e
+        raise AuthenticationError(
+            f'{type(e).__name__}: Response returned by authentication server is invalid: {e}',
+        ) from e
 
     headers_to_add: Dict = {}
 
     if headers is not None:
         for header_name, header_arg in headers.items():
             while '{{' in header_arg and '}}' in header_arg:
-
                 # regex to find the name of the token inside {{token_name}}
                 token_name = cast(Match, re.search('{{(.*)}}', header_arg)).group(1)
 
@@ -75,7 +77,9 @@ def extract_token(
                 try:
                     assert res_token is not None
                 except AssertionError as e:
-                    raise AuthenticationError(f'{type(e).__name__}: The Authentication token wasn\'t fetched properly.') from e
+                    raise AuthenticationError(
+                        f"{type(e).__name__}: The Authentication token wasn't fetched properly.",
+                    ) from e
 
                 header_arg = header_arg.replace('{{' + token_name + '}}', res_token)
 
@@ -137,7 +141,7 @@ def get_secret_hash(
     return base64.standard_b64encode(hmac_obj.digest()).decode('utf-8')
 
 
-#pylint: disable=too-few-public-methods
+# pylint: disable=too-few-public-methods
 def authentication_portal(
     url: str,
     callback_url: str,
@@ -150,6 +154,7 @@ def authentication_portal(
     class RequestInterceptor(QWebEngineUrlRequestInterceptor):
 
         """This class is used to intercept all the requests sent my the browser."""
+
         # Creating the Signal to be sent
         found: pyqtSignal = pyqtSignal(int)
 
@@ -231,17 +236,19 @@ def jwt_token_analyzer(token: Token) -> JWTToken:
     header: Dict = json.loads(base64.urlsafe_b64decode(token_header + '=' * (-len(token_header) % 4)))
     payload: Dict = json.loads(base64.urlsafe_b64decode(token_payload + '=' * (-len(token_payload) % 4)))
 
-    return JWTToken({
-        'sig': header['alg'],
-        'iss': payload.pop('iss', None),
-        'sub': payload.pop('sub', None),
-        'aud': payload.pop('aud', None),
-        'exp': payload.pop('exp', None),
-        'nbf': payload.pop('nbf', None),
-        'iat': payload.pop('iat', None),
-        'jti': payload.pop('jti', None),
-        'other': payload
-    })
+    return JWTToken(
+        {
+            'sig': header['alg'],
+            'iss': payload.pop('iss', None),
+            'sub': payload.pop('sub', None),
+            'aud': payload.pop('aud', None),
+            'exp': payload.pop('exp', None),
+            'nbf': payload.pop('nbf', None),
+            'iat': payload.pop('iat', None),
+            'jti': payload.pop('jti', None),
+            'other': payload,
+        },
+    )
 
 
 # def jwt_token_module(token: Token) -> None:

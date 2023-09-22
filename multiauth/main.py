@@ -134,23 +134,33 @@ class MultiAuth(IMultiAuth):
             if auth is None or not isinstance(auth, Dict):
                 raise InvalidConfigurationError(message='auth is None or is not a Dict', path=f'$.auth.{auth_name}')
             if 'tech' not in auth:
-                raise InvalidConfigurationError(message='\'tech\' is a required property', path=f'$.auth.{auth_name}')
+                raise InvalidConfigurationError(message="'tech' is a required property", path=f'$.auth.{auth_name}')
             if auth['tech'] not in json_schema:
-                raise InvalidConfigurationError(message=f'\'{auth["tech"]}\' is not a valid auth tech', path=f'$.auth.{auth_name}.tech')
+                raise InvalidConfigurationError(
+                    message=f'\'{auth["tech"]}\' is not a valid auth tech',
+                    path=f'$.auth.{auth_name}.tech',
+                )
             auth_tech_link[auth_name] = auth['tech']
             try:
                 jsonschema.validate(auth, json_schema[auth['tech']]['authSchema'])
             except (jsonschema.ValidationError, jsonschema.SchemaError) as e:
-                raise InvalidConfigurationError(message=e.message, path=f'$.auth.{auth_name}' + str(e.json_path)[2:]) from e
+                raise InvalidConfigurationError(
+                    message=e.message,
+                    path=f'$.auth.{auth_name}' + str(e.json_path)[2:],
+                ) from e
 
         for username, user in users.items():
             if user is None or not isinstance(user, Dict):
                 raise InvalidConfigurationError(message='user is None or is not a Dict', path=f'$.users.{username}')
             if 'auth' not in user:
-                raise InvalidConfigurationError(message='\'auth\' is a required property inside a user', path=f'$.users.{username}')
+                raise InvalidConfigurationError(
+                    message="'auth' is a required property inside a user",
+                    path=f'$.users.{username}',
+                )
             if user['auth'] not in auth_tech_link:
                 raise InvalidConfigurationError(
-                    message=f'The authentication references user \'{user["auth"]}\' but the only users defined are: {s_users}', path=f'$.users.{username}.auth'
+                    message=f'The authentication references user \'{user["auth"]}\' but the only users defined are: {s_users}',
+                    path=f'$.users.{username}.auth',
                 )
             try:
                 jsonschema.validate(user, json_schema[auth_tech_link[user['auth']]]['userSchema'])
@@ -167,17 +177,18 @@ class MultiAuth(IMultiAuth):
         users = deepcopy(users)
 
         for user, user_info in users.items():
-
             schema = auths[user_info['auth']]
 
             _user_credientials: Dict[str, Any] = deepcopy(user_info)
             del _user_credientials['auth']
 
-            _user: User = User({
-                'auth_schema': user_info['auth'],
-                'auth_tech': AuthTech.PUBLIC if user_info['auth'] is None else AuthTech(schema['tech']),
-                'credentials': _user_credientials,
-            })
+            _user: User = User(
+                {
+                    'auth_schema': user_info['auth'],
+                    'auth_tech': AuthTech.PUBLIC if user_info['auth'] is None else AuthTech(schema['tech']),
+                    'credentials': _user_credientials,
+                },
+            )
 
             users[user] = _user
 

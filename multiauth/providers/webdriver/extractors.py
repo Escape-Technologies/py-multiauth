@@ -7,7 +7,6 @@ logger = logging.getLogger('multiauth.providers.webdriver.extractors')
 
 
 def extract_from_request_url(requests: Any, rx: str) -> list[str]:
-
     res = []
 
     for request in requests:
@@ -18,7 +17,6 @@ def extract_from_request_url(requests: Any, rx: str) -> list[str]:
 
 
 def extract_from_request_header(requests: Any, rx: str) -> list[str]:
-
     res = []
 
     for header in itertools.chain.from_iterable(request.headers for request in requests):
@@ -29,7 +27,6 @@ def extract_from_request_header(requests: Any, rx: str) -> list[str]:
 
 
 def extract_from_response_header(requests: Any, rx: str) -> list[str]:
-
     res = []
     for header in itertools.chain.from_iterable(request.response.headers for request in requests if request.response):
         if match := re.search(rx, header):
@@ -39,7 +36,6 @@ def extract_from_response_header(requests: Any, rx: str) -> list[str]:
 
 
 def extract_from_request_body(requests: Any, rx: str) -> list[str]:
-
     res = []
     for request in requests:
         if match := re.search(rx, request.body.decode()):
@@ -49,7 +45,6 @@ def extract_from_request_body(requests: Any, rx: str) -> list[str]:
 
 
 def extract_from_response_body(requests: Any, rx: str) -> list[str]:
-
     res = []
     for request in requests:
         if not request.response:

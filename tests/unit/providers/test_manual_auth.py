@@ -10,7 +10,7 @@ from multiauth import MultiAuth
 from multiauth.providers.manual import manual_authenticator
 
 
-@pytest.fixture
+@pytest.fixture()
 def auth() -> Dict:
     """Return a fixture of schemas."""
 
@@ -21,31 +21,26 @@ def auth() -> Dict:
     }
 
 
-@pytest.fixture
+@pytest.fixture()
 def users_one_header() -> Dict:
     """Return a fixture of users."""
 
     return {
         'manual_user': {
             'auth': 'manual_headers',
-            'headers': {
-                'Authorization': 'Bearer 12345'
-            },
-        }
+            'headers': {'Authorization': 'Bearer 12345'},
+        },
     }
 
 
-@pytest.fixture
+@pytest.fixture()
 def users_two_headers() -> Dict:
     """Return a fixture of users."""
 
     return {
         'manual_user': {
             'auth': 'manual_headers',
-            'headers': {
-                'Authorization': 'Bearer 12345',
-                'Content-Type': 'application/json'
-            }
+            'headers': {'Authorization': 'Bearer 12345', 'Content-Type': 'application/json'},
         },
     }
 

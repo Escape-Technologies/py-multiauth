@@ -36,20 +36,22 @@ def aws_config_parser(
 ) -> AuthConfigAWS:
     """This function parses the Digest schema and checks if all necessary fields exist."""
 
-    auth_config = AuthConfigAWS({
-        'type': AuthAWSType.USER_PASSWORD_AUTH,
-        'region': '',
-        'client_id': None,
-        'method': None,
-        'service_name': None,
-        'hash_algorithm': None,
-        'pool_id': None,
-        'client_secret': None,
-        'location': Location.HEADERS,
-        'header_name': None,
-        'header_prefix': None,
-        'headers': None,
-    })
+    auth_config = AuthConfigAWS(
+        {
+            'type': AuthAWSType.USER_PASSWORD_AUTH,
+            'region': '',
+            'client_id': None,
+            'method': None,
+            'service_name': None,
+            'hash_algorithm': None,
+            'pool_id': None,
+            'client_secret': None,
+            'location': Location.HEADERS,
+            'header_name': None,
+            'header_prefix': None,
+            'headers': None,
+        },
+    )
 
     # Start by taking the type
     if not schema.get('type'):
@@ -119,13 +121,11 @@ def aws_user_password_handler(
         parameters['SECRET_HASH'] = get_secret_hash(username, client_id, auth_config['client_secret'])
 
     # Now we have to initiate the connection
-    response = client.initiate_auth(
+    return client.initiate_auth(
         ClientId=auth_config['client_id'],
         AuthFlow=auth_config['type'].value,
         AuthParameters=parameters,
     )
-
-    return response
 
 
 def aws_user_srp_handler(
@@ -195,25 +195,29 @@ def aws_auth_attach(
     # Append the optional headers to the header
     if auth_config['headers'] is not None:
         for name, value in auth_config['headers'].items():
-
             # Resolving duplicate keys
             if name in headers:
                 headers[name] += ', ' + value
             else:
                 headers[name] = value
 
-    auth_response: AuthResponse = AuthResponse({
-        'tech': AuthTech.AWS,
-        'headers': headers,
-    })
+    auth_response: AuthResponse = AuthResponse(
+        {
+            'tech': AuthTech.AWS,
+            'headers': headers,
+        },
+    )
 
     # Add the token, the refresh token, and the expiry time to the user manager in order to be accessed by other parts of the program
     # First we have to check if the token is a JWT token (It should be)
     try:
-        expiry_time = jwt.decode(access_token, options={
-            'verify_signature': False,
-            'verify_exp': True,
-        }).get('exp')
+        expiry_time = jwt.decode(
+            access_token,
+            options={
+                'verify_signature': False,
+                'verify_exp': True,
+            },
+        ).get('exp')
     except Exception as e:
         raise AuthenticationError('The received token is not a JWT token') from e
 
@@ -287,10 +291,13 @@ def aws_reauthenticator(
     new_refresh_token: str = response['AuthenticationResult']['RefreshToken']
 
     try:
-        expiry_time = jwt.decode(access_token, options={
-            'verify_signature': False,
-            'verify_exp': True,
-        }).get('exp')
+        expiry_time = jwt.decode(
+            access_token,
+            options={
+                'verify_signature': False,
+                'verify_exp': True,
+            },
+        ).get('exp')
     except Exception as e:
         raise AuthenticationError('The received token is not a JWT token') from e
 
@@ -313,7 +320,6 @@ def aws_reauthenticator(
     # Append the optional headers to the header
     if auth_config['headers'] is not None:
         for name, value in auth_config['headers'].items():
-
             # Resolving duplicate keys
             if name in headers:
                 headers[name] += ', ' + value
@@ -321,15 +327,17 @@ def aws_reauthenticator(
             else:
                 headers[name] = value
 
-    auth_response: AuthResponse = AuthResponse({
-        'tech': AuthTech.AWS,
-        'headers': headers,
-    })
+    auth_response: AuthResponse = AuthResponse(
+        {
+            'tech': AuthTech.AWS,
+            'headers': headers,
+        },
+    )
 
     return auth_response
 
 
-#pylint: disable=line-too-long, too-many-locals
+# pylint: disable=line-too-long, too-many-locals
 def aws_signature(
     user: User,
     schema: Dict,
@@ -363,8 +371,7 @@ def aws_signature(
         key_date = _sign(('AWS4' + key).encode('utf-8'), date_stamp)
         key_region = _sign(key_date, region_name)
         key_service = _sign(key_region, service_name)
-        key_signing = _sign(key_service, 'aws4_request')
-        return key_signing
+        return _sign(key_service, 'aws4_request')
 
     # Now we have to define a couple of variables that will help us in the signing
     time = datetime.datetime.utcnow()
@@ -405,28 +412,55 @@ def aws_signature(
 
     # Now we have to create the cannonical URL
     if method == 'POST':
-        canonical_request = method + '\n' + path + '\n' + '\n' + canonical_header + '\n' + signed_header + '\n' + payload_hash + '\n'
+        canonical_request = (
+            method + '\n' + path + '\n' + '\n' + canonical_header + '\n' + signed_header + '\n' + payload_hash + '\n'
+        )
     else:
-        canonical_request = method + '\n' + path + '\n' + payload + '\n' + canonical_header + '\n' + signed_header + '\n' + '\n'
+        canonical_request = (
+            method + '\n' + path + '\n' + payload + '\n' + canonical_header + '\n' + signed_header + '\n' + '\n'
+        )
 
     # Now we have to create the strings to sign
     algorithm = 'AWS4-HMAC-SHA256'
     region: str = auth_config['region']
     service: str = cast(str, auth_config['service_name'])
     credential_scope = date_stamp + '/' + region + '/' + service + '/' + 'aws4_request'
-    string_to_sign = algorithm + '\n' + amz_date + '\n' + credential_scope + '\n' + hashlib.sha256(canonical_request.encode('utf-8')).hexdigest()
+    string_to_sign = (
+        algorithm
+        + '\n'
+        + amz_date
+        + '\n'
+        + credential_scope
+        + '\n'
+        + hashlib.sha256(canonical_request.encode('utf-8')).hexdigest()
+    )
 
     # Calculate the signature
     signing_key = _get_signature_key(secret_key, date_stamp, region, service)
     signature = hmac.new(signing_key, (string_to_sign).encode('utf-8'), hashlib.sha256).hexdigest()
 
     # Creating the header
-    authorization_header = algorithm + ' ' + 'Credential=' + access_key + '/' + credential_scope + ', ' + 'SignedHeaders=' + signed_header + ', ' + 'Signature=' + signature
+    authorization_header = (
+        algorithm
+        + ' '
+        + 'Credential='
+        + access_key
+        + '/'
+        + credential_scope
+        + ', '
+        + 'SignedHeaders='
+        + signed_header
+        + ', '
+        + 'Signature='
+        + signature
+    )
 
     # Add header
     _headers['Authorization'] = authorization_header
 
-    return AuthResponse({
-        'tech': AuthTech.AWS,
-        'headers': _headers,
-    })
+    return AuthResponse(
+        {
+            'tech': AuthTech.AWS,
+            'headers': _headers,
+        },
+    )

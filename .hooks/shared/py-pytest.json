@@ -1,5 +1,5 @@
 {
   "name": "python: pytest",
-  "command": "make test-python",
+  "command": "pytest tests",
   "onlyOn": "**/*.py"
 }

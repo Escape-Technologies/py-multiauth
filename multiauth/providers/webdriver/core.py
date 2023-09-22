@@ -45,8 +45,10 @@ def load_selenium_project(data: dict) -> 'SeleniumProject':
                         target=command['target'],
                         targets=command['targets'],
                         value=command['value'],
-                    ) for command in test['commands']
-                ]
-            ) for test in data['tests']
-        ]
+                    )
+                    for command in test['commands']
+                ],
+            )
+            for test in data['tests']
+        ],
     )

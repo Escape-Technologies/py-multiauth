@@ -3,14 +3,20 @@
 import hashlib
 import os
 import time
-from typing import Callable, Dict, Optional
+from typing import Dict, Optional
 from urllib.parse import urlparse
 
 import requests
 
 from multiauth.entities.errors import AuthenticationError
 from multiauth.entities.http import HTTPMethod
-from multiauth.entities.main import AuthConfigDigest, AuthDigestChallenge, AuthHashAlgorithmDigest, AuthResponse, AuthTech
+from multiauth.entities.main import (
+    AuthConfigDigest,
+    AuthDigestChallenge,
+    AuthHashAlgorithmDigest,
+    AuthResponse,
+    AuthTech,
+)
 from multiauth.helpers import hash_calculator
 from multiauth.manager import User
 
@@ -20,14 +26,16 @@ from multiauth.manager import User
 def send_401_request(url: str) -> AuthDigestChallenge:
     """Sending a 401 request and parsing it according to RFC 2617."""
 
-    challenge = AuthDigestChallenge({
-        'realm': None,
-        'domain': None,
-        'nonce': None,
-        'opaque': None,
-        'algorithm': None,
-        'qop_options': None,
-    })
+    challenge = AuthDigestChallenge(
+        {
+            'realm': None,
+            'domain': None,
+            'nonce': None,
+            'opaque': None,
+            'algorithm': None,
+            'qop_options': None,
+        },
+    )
 
     # Send an empty get request to get the parameters necessary for the authentication
     response = requests.get(url, timeout=5)
@@ -65,23 +73,25 @@ def send_401_request(url: str) -> AuthDigestChallenge:
     return challenge
 
 
-#pylint: disable=[too-many-branches, too-many-statements]
+# pylint: disable=[too-many-branches, too-many-statements]
 def digest_config_parser(schema: Dict) -> AuthConfigDigest:
     """This function parses the Digest schema and checks if all necessary fields exist."""
 
-    auth_config = AuthConfigDigest({
-        'url': '',
-        'realm': '',
-        'nonce': '',
-        'algorithm': AuthHashAlgorithmDigest.MD5,
-        'domain': '',
-        'method': 'POST',
-        'qop': None,
-        'nonce_count': None,
-        'client_nonce': None,
-        'opaque': None,
-        'headers': None,
-    })
+    auth_config = AuthConfigDigest(
+        {
+            'url': '',
+            'realm': '',
+            'nonce': '',
+            'algorithm': AuthHashAlgorithmDigest.MD5,
+            'domain': '',
+            'method': 'POST',
+            'qop': None,
+            'nonce_count': None,
+            'client_nonce': None,
+            'opaque': None,
+            'headers': None,
+        },
+    )
 
     if not schema.get('url'):
         raise AuthenticationError('Please provide a URL to the web application')
@@ -98,14 +108,18 @@ def digest_config_parser(schema: Dict) -> AuthConfigDigest:
         auth_config['realm'] = schema['options'].get('realm')
     else:
         if parameters['realm'] is None:
-            raise AuthenticationError('Cannot retrieve the value of the realm from the server. Please provide the realm value')
+            raise AuthenticationError(
+                'Cannot retrieve the value of the realm from the server. Please provide the realm value',
+            )
         auth_config['realm'] = parameters['realm']
 
     if schema['options'].get('nonce'):
         auth_config['nonce'] = schema['options'].get('nonce')
     else:
         if parameters['nonce'] is None:
-            raise AuthenticationError('Cannot retrieve the value of the nonce from the server. Please provide the value of the nonce')
+            raise AuthenticationError(
+                'Cannot retrieve the value of the nonce from the server. Please provide the value of the nonce',
+            )
         auth_config['nonce'] = parameters['nonce']
 
     if schema['options'].get('algorithm'):
@@ -137,7 +151,6 @@ def digest_config_parser(schema: Dict) -> AuthConfigDigest:
     auth_config['client_nonce'] = schema['options'].get('client_nonce')
     if not auth_config['client_nonce']:
         if auth_config['qop'] is not None and (auth_config['qop'] == 'auth' or 'auth' in auth_config['qop'].split(',')):
-
             # Taken from the request library for auth
             s = str(auth_config['nonce_count']).encode('utf-8')
             s += auth_config['nonce'].encode('utf-8')
@@ -163,13 +176,16 @@ def digest_auth_attach(
 ) -> AuthResponse:
     """This function attaches the user credentials to the schema and generates the proper authentication response."""
 
-    auth_response = AuthResponse({
-        'headers': {},
-        'tech': AuthTech.DIGEST,
-    })
+    auth_response = AuthResponse(
+        {
+            'headers': {},
+            'tech': AuthTech.DIGEST,
+        },
+    )
 
-    #Response Calculator
-    kd: Callable[[str, str], str] = lambda secret, data: hash_calculator(auth_config['algorithm'], f'{secret}:{data}')
+    # Response Calculator
+    def kd(secret: str, data: str) -> str:
+        return hash_calculator(auth_config['algorithm'], f'{secret}:{data}')
 
     # First take user credentials
     username, password = user.get_credentials_pair()
@@ -184,8 +200,11 @@ def digest_auth_attach(
     ha1 = hash_calculator(auth_config['algorithm'], a1)
     ha2 = hash_calculator(auth_config['algorithm'], a2)
 
-    if auth_config['algorithm'] == AuthHashAlgorithmDigest.MD5_SESS or auth_config['algorithm'] == AuthHashAlgorithmDigest.SHA_256_SESS or auth_config[
-        'algorithm'] == AuthHashAlgorithmDigest.SHA_512_256_SESS:
+    if (
+        auth_config['algorithm'] == AuthHashAlgorithmDigest.MD5_SESS
+        or auth_config['algorithm'] == AuthHashAlgorithmDigest.SHA_256_SESS
+        or auth_config['algorithm'] == AuthHashAlgorithmDigest.SHA_512_256_SESS
+    ):
         ha1 = hash_calculator(auth_config['algorithm'], f'{ha1}:{auth_config["nonce"]}:{auth_config["client_nonce"]}')
 
     response = ''
@@ -216,7 +235,6 @@ def digest_auth_attach(
     # Append the optional headers to the header
     if auth_config['headers'] is not None:
         for name, value in auth_config['headers'].items():
-
             # Resolving duplicate keys
             if name in header:
                 header[name] += ', ' + value

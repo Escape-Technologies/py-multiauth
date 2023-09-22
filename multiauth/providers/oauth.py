@@ -21,16 +21,20 @@ def extract_oauth_token(
     """Extract the token, refresh token, and the expiry time from the OAuth access token response."""
 
     # Initialize the variables
-    auth_response = AuthResponse({
-        'headers': {},
-        'tech': AuthTech.OAUTH,
-    })
+    auth_response = AuthResponse(
+        {
+            'headers': {},
+            'tech': AuthTech.OAUTH,
+        },
+    )
 
-    response = AuthOAuthResponse({
-        'access_token': '',
-        'expires_in': None,
-        'refresh_token': None,
-    })
+    response = AuthOAuthResponse(
+        {
+            'access_token': '',
+            'expires_in': None,
+            'refresh_token': None,
+        },
+    )
 
     if not oauth_response or not isinstance(oauth_response, Dict):
         raise AuthenticationError('Invalid OAuth Response')
@@ -58,7 +62,6 @@ def extract_oauth_token(
     # Append the optional headers to the header
     if auth_config['headers'] is not None:
         for name, value in auth_config['headers'].items():
-
             # Resolving duplicate keys
             if name in auth_response['headers']:
                 auth_response['headers'][name] += ', ' + value
@@ -86,14 +89,12 @@ def auth_code_session(
     client_secret = user.credentials['client_secret']
 
     # Create an OAuth session using the Authlib library functions
-    client = OAuth2Session(
+    return OAuth2Session(
         client_id,
         client_secret,
         token_endpoint_auth_method=token_endpoint_auth_method(auth_config['auth_location']),
         scope=auth_config['scope'],
     )
-
-    return client
 
 
 def auth_code_handler(
@@ -107,7 +108,9 @@ def auth_code_handler(
 
     # Now after we create the client, we have to create the authentication url
     authentication_url, _ = client.create_authorization_url(
-        auth_config['authentication_endpoint'], state=auth_config['state'], code_verifier=auth_config['code_verifier']
+        auth_config['authentication_endpoint'],
+        state=auth_config['state'],
+        code_verifier=auth_config['code_verifier'],
     )
 
     # Now we have to pass the authorization URL and the callback URL to the browser in order to fetch the what is necessary
@@ -136,13 +139,11 @@ def implicit_session(
     client_id: str = user.credentials['client_id']
 
     # Create an OAuth session using the Authlib library functions
-    client = OAuth2Session(
+    return OAuth2Session(
         client_id,
         token_endpoint_auth_method=token_endpoint_auth_method(auth_config['auth_location']),
         scope=auth_config['scope'],
     )
-
-    return client
 
 
 def implicit_handler(
@@ -154,7 +155,10 @@ def implicit_handler(
     # First initiate the OAuth session
     client = implicit_session(user, auth_config)
 
-    authentication_url, _ = client.create_authorization_url(auth_config['authentication_endpoint'], state=auth_config['state'])
+    authentication_url, _ = client.create_authorization_url(
+        auth_config['authentication_endpoint'],
+        state=auth_config['state'],
+    )
 
     # Now we have to pass the authorization URL and the callback URL to the browser in order to fetch the what is necessary
     # The if condition is to simply avoid mypy errors
@@ -184,14 +188,12 @@ def client_cred_session(
     client_secret: str = user.credentials['client_secret']
 
     # Create an OAuth session using the Authlib library functions
-    client = OAuth2Session(
+    return OAuth2Session(
         client_id,
         client_secret,
         token_endpoint_auth_method=token_endpoint_auth_method(auth_config['auth_location']),
         scope=auth_config['scope'],
     )
-
-    return client
 
 
 def client_cred_handler(
@@ -254,20 +256,22 @@ def password_cred_handler(
 def oauth_config_parser(schema: Dict) -> AuthConfigOAuth:
     """This function parses the OAuth schema and checks if all necessary fields exist."""
 
-    auth_config: AuthConfigOAuth = AuthConfigOAuth({
-        'grant_type': AuthOAuthGrantType.AUTH_CODE,
-        'authentication_endpoint': None,
-        'token_endpoint': None,
-        'callback_url': None,
-        'scope': '',
-        'header_prefix': 'Bearer',
-        'auth_location': AuthOAuthlocation.BODY,
-        'location': Location.HEADERS,
-        'state': None,
-        # 'challenge_method': None,
-        'code_verifier': None,
-        'headers': None,
-    })
+    auth_config: AuthConfigOAuth = AuthConfigOAuth(
+        {
+            'grant_type': AuthOAuthGrantType.AUTH_CODE,
+            'authentication_endpoint': None,
+            'token_endpoint': None,
+            'callback_url': None,
+            'scope': '',
+            'header_prefix': 'Bearer',
+            'auth_location': AuthOAuthlocation.BODY,
+            'location': Location.HEADERS,
+            'state': None,
+            # 'challenge_method': None,
+            'code_verifier': None,
+            'headers': None,
+        },
+    )
 
     if not schema.get('grant_type'):
         raise AuthenticationError('Please provide the grant type')

@@ -85,20 +85,39 @@ def dict_nested_get(
     return py_.get(dictionary, dict_find_path(dictionary, key, ''), default_return)
 
 
-#pylint: disable=too-many-branches
+# pylint: disable=too-many-branches
 def uncurl(curl: str) -> ParsedCurlContent:
     """This is a function that takes a curl as an input and analyses it."""
 
     parser = argparse.ArgumentParser()
     parser.add_argument('curl', help='The command curl that is analyzed in the string')
     parser.add_argument('url', help='The URL on which the curl command is working on')
-    parser.add_argument('-H', '--header', action='append', default=[], help='The header that are added to every request')
+    parser.add_argument(
+        '-H',
+        '--header',
+        action='append',
+        default=[],
+        help='The header that are added to every request',
+    )
     parser.add_argument('-X', '--request', help='the HTTP method used')
     parser.add_argument('-u', '--user', default=(), help='Specify the username password in the server authentication')
-    parser.add_argument('-A', '--user-agent', help='This specifies the user agent, if the value if empty than user agent will be removed from the headers')
+    parser.add_argument(
+        '-A',
+        '--user-agent',
+        help='This specifies the user agent, if the value if empty than user agent will be removed from the headers',
+    )
     parser.add_argument('--request-target', help='Gives the path of the target it wants to curl to')
     parser.add_argument('-e', '--referer', help='Gives the referer used in the header')
-    parser.add_argument('-d', '--data', '--data-binary', '--data-raw', '--data-urlencode', action='append', default=[], help='Data sent')
+    parser.add_argument(
+        '-d',
+        '--data',
+        '--data-binary',
+        '--data-raw',
+        '--data-urlencode',
+        action='append',
+        default=[],
+        help='Data sent',
+    )
     parser.add_argument('-k', '--insecure', action='store_true')
 
     # First we need to prepare the curl for parsing

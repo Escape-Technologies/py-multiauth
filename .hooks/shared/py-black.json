@@ -1,5 +1,5 @@
 {
   "name": "python: black",
-  "command": "poetry run black packages sdk services scanner",
+  "command": "poetry run black multiauth tests",
   "onlyOn": "**/*.py"
 }

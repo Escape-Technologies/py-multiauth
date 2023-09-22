@@ -13,10 +13,12 @@ def manual_authenticator(user: User) -> AuthResponse:
     It simply take the headers that are found in the user credentials and puts them in the AuthResponse.
     """
 
-    auth_response = AuthResponse({
-        'headers': {},
-        'tech': AuthTech.MANUAL,
-    })
+    auth_response = AuthResponse(
+        {
+            'headers': {},
+            'tech': AuthTech.MANUAL,
+        },
+    )
 
     headers = user.headers
     if not headers:

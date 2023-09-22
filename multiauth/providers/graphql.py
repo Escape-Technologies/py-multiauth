@@ -88,21 +88,23 @@ def generate_authentication_mutation(
 def graphql_config_parser(schema: Dict) -> AuthConfigGraphQL:
     """This function parses the GraphQL schema and checks if all necessary fields exist."""
 
-    auth_config = AuthConfigGraphQL({
-        'url': '',
-        'mutation_name': 'str',
-        'mutation_field': '',
-        'method': 'POST',
-        'cookie_auth': False,
-        'operation': 'mutation',
-        'header_token_name': None,
-        'refresh_mutation_name': None,
-        'refresh_field_name': None,
-        'refresh_field': True,
-        'header_name': None,
-        'header_prefix': None,
-        'headers': None,
-    })
+    auth_config = AuthConfigGraphQL(
+        {
+            'url': '',
+            'mutation_name': 'str',
+            'mutation_field': '',
+            'method': 'POST',
+            'cookie_auth': False,
+            'operation': 'mutation',
+            'header_token_name': None,
+            'refresh_mutation_name': None,
+            'refresh_field_name': None,
+            'refresh_field': True,
+            'header_name': None,
+            'header_prefix': None,
+            'headers': None,
+        },
+    )
 
     if not schema.get('url'):
         raise AuthenticationError('Please provide with the authentication URL')
@@ -134,7 +136,7 @@ def graphql_config_parser(schema: Dict) -> AuthConfigGraphQL:
     return auth_config
 
 
-#pylint: disable=too-many-branches, too-many-statements
+# pylint: disable=too-many-branches, too-many-statements
 def graphql_auth_attach(
     user: User,
     auth_config: AuthConfigGraphQL,
@@ -181,14 +183,15 @@ def graphql_auth_attach(
             headers[auth_config['header_name']] = ''
 
         if auth_config['header_prefix'] is not None:
-            headers[next(iter(headers))] += auth_config['header_prefix'] + ' ' + '{{' + auth_config['mutation_field'] + '}}'
+            headers[next(iter(headers))] += (
+                auth_config['header_prefix'] + ' ' + '{{' + auth_config['mutation_field'] + '}}'
+            )
         else:
             headers[next(iter(headers))] += 'Bearer {{' + auth_config['mutation_field'] + '}}'
 
     # Append the optional headers to the header
     if auth_config['headers'] is not None:
         for name, value in auth_config['headers'].items():
-
             # Resolving duplicate keys
             if name in headers:
                 headers[name] += ', ' + value
@@ -199,10 +202,12 @@ def graphql_auth_attach(
     if cookie_header:
         headers['cookie'] = cookie_header
         if auth_config['cookie_auth']:
-            return AuthResponse({
-                'tech': AuthTech.GRAPHQL,
-                'headers': headers,
-            })
+            return AuthResponse(
+                {
+                    'tech': AuthTech.GRAPHQL,
+                    'headers': headers,
+                },
+            )
 
     token: Optional[str] = None
     auth_response: AuthResponse
@@ -216,12 +221,14 @@ def graphql_auth_attach(
             if auth_config['header_prefix']:
                 token_key = auth_config['header_prefix'] + ' ' + token
 
-            auth_response = AuthResponse({
-                'tech': AuthTech.REST,
-                'headers': {
-                    token_key: token,
+            auth_response = AuthResponse(
+                {
+                    'tech': AuthTech.REST,
+                    'headers': {
+                        token_key: token,
+                    },
                 },
-            })
+            )
 
     if not token:
         # Now fetch the token and create the Authentication Response
@@ -236,10 +243,13 @@ def graphql_auth_attach(
 
     # If the token is not a JWT token, don't add expiry time (No way of knowing if the token is expired or no)
     try:
-        expiry_time = jwt.decode(token, options={
-            'verify_signature': False,
-            'verify_exp': True,
-        }).get('exp')
+        expiry_time = jwt.decode(
+            token,
+            options={
+                'verify_signature': False,
+                'verify_exp': True,
+            },
+        ).get('exp')
     except Exception:
         return auth_response
 
@@ -285,7 +295,13 @@ def graphql_reauthenticator(
 
     # Now we do the same thing we do in the function above
     # First we have to generate the graphQL query that we need to send
-    graphql_query = generate_authentication_mutation(user, auth_config, credentials, refresh=True, refresh_field=auth_config['refresh_field'])
+    graphql_query = generate_authentication_mutation(
+        user,
+        auth_config,
+        credentials,
+        refresh=True,
+        refresh_field=auth_config['refresh_field'],
+    )
     data: Dict[Any, Any]
 
     # Create the payload
@@ -324,14 +340,15 @@ def graphql_reauthenticator(
             headers[auth_config['header_name']] = ''
 
         if auth_config['header_prefix'] is not None:
-            headers[next(iter(headers))] += auth_config['header_prefix'] + ' ' + '{{' + auth_config['mutation_field'] + '}}'
+            headers[next(iter(headers))] += (
+                auth_config['header_prefix'] + ' ' + '{{' + auth_config['mutation_field'] + '}}'
+            )
         else:
             headers[next(iter(headers))] += 'Bearer {{' + auth_config['mutation_field'] + '}}'
 
     # Append the optional headers to the header
     if auth_config['headers'] is not None:
         for name, value in auth_config['headers'].items():
-
             # Resolving duplicate keys
             if name in headers:
                 headers[name] += ', ' + value
@@ -343,22 +360,32 @@ def graphql_reauthenticator(
     if cookie_header:
         headers['cookie'] = cookie_header
         if auth_config['cookie_auth']:
-            return AuthResponse({
-                'tech': AuthTech.GRAPHQL,
-                'headers': headers,
-            })
+            return AuthResponse(
+                {
+                    'tech': AuthTech.GRAPHQL,
+                    'headers': headers,
+                },
+            )
 
     # Now fetch the token and create the Authentication Response
-    auth_response, refresh_token_result = extract_token(response, AuthTech.REST, headers, auth_config['refresh_field_name'])
+    auth_response, refresh_token_result = extract_token(
+        response,
+        AuthTech.REST,
+        headers,
+        auth_config['refresh_field_name'],
+    )
 
     token = auth_response['headers'][next(iter(headers))].split(' ')[1]
 
     # If the token is not a JWT token, don't add expiry time (No way of knowing if the token is expired or no)
     try:
-        expiry_time = jwt.decode(token, options={
-            'verify_signature': False,
-            'verify_exp': True,
-        }).get('exp')
+        expiry_time = jwt.decode(
+            token,
+            options={
+                'verify_signature': False,
+                'verify_exp': True,
+            },
+        ).get('exp')
     except Exception:
         return auth_response
 

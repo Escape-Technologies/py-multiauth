@@ -17,17 +17,19 @@ from multiauth.manager import User
 def rest_config_parser(schema: Dict) -> AuthConfigRest:
     """This function parses the Rest schema and checks if all the necessary fields exist."""
 
-    auth_config = AuthConfigRest({
-        'url': '',
-        'method': 'POST',
-        'token_name': None,
-        'cookie_auth': False,
-        'refresh_url': None,
-        'refresh_token_name': None,
-        'header_name': None,
-        'header_prefix': None,
-        'headers': None,
-    })
+    auth_config = AuthConfigRest(
+        {
+            'url': '',
+            'method': 'POST',
+            'token_name': None,
+            'cookie_auth': False,
+            'refresh_url': None,
+            'refresh_token_name': None,
+            'header_name': None,
+            'header_prefix': None,
+            'headers': None,
+        },
+    )
 
     if not schema.get('url'):
         raise AuthenticationError('Please provide the authentication URL')
@@ -53,7 +55,7 @@ def rest_config_parser(schema: Dict) -> AuthConfigRest:
     return auth_config
 
 
-#pylint: disable=too-many-branches
+# pylint: disable=too-many-branches
 def rest_auth_attach(
     user: User,
     auth_config: AuthConfigRest,
@@ -101,7 +103,6 @@ def rest_auth_attach(
     # Append the optional headers to the header
     if auth_config['headers'] is not None:
         for name, value in auth_config['headers'].items():
-
             # Resolving duplicate keys
             if name in headers:
                 headers[name] += ', ' + value
@@ -113,10 +114,12 @@ def rest_auth_attach(
     if cookie_header:
         headers['cookie'] = cookie_header
         if auth_config['cookie_auth']:
-            return AuthResponse({
-                'tech': AuthTech.REST,
-                'headers': headers,
-            })
+            return AuthResponse(
+                {
+                    'tech': AuthTech.REST,
+                    'headers': headers,
+                },
+            )
 
     auth_response, refresh_token = extract_token(response, AuthTech.REST, headers, auth_config['refresh_token_name'])
 
@@ -125,10 +128,13 @@ def rest_auth_attach(
     # Add the token and the expiry time to the user manager in order to be accessed by other parts of the program
     expiry_time: Optional[float] = None
     try:
-        expiry_time = jwt.decode(token, options={
-            'verify_signature': False,
-            'verify_exp': True,
-        }).get('exp')
+        expiry_time = jwt.decode(
+            token,
+            options={
+                'verify_signature': False,
+                'verify_exp': True,
+            },
+        ).get('exp')
     except jwt.exceptions.DecodeError:
         pass
     finally:
@@ -208,7 +214,6 @@ def rest_reauthenticator(
     # Append the optional headers to the header
     if auth_config['headers'] is not None:
         for name, value in auth_config['headers'].items():
-
             # Resolving duplicate keys
             if name in headers:
                 headers[name] += ', ' + value
@@ -220,22 +225,32 @@ def rest_reauthenticator(
     if cookie_header:
         headers['cookie'] = cookie_header
         if auth_config['cookie_auth']:
-            return AuthResponse({
-                'tech': AuthTech.REST,
-                'headers': headers,
-            })
+            return AuthResponse(
+                {
+                    'tech': AuthTech.REST,
+                    'headers': headers,
+                },
+            )
 
-    auth_response, refresh_token_result = extract_token(response, AuthTech.REST, headers, auth_config['refresh_token_name'])
+    auth_response, refresh_token_result = extract_token(
+        response,
+        AuthTech.REST,
+        headers,
+        auth_config['refresh_token_name'],
+    )
 
     token = auth_response['headers'][next(iter(headers))].split(' ')[1]
 
     # Add the token and the expiry time to the user manager in order to be accessed by other parts of the program
     expiry_time: Optional[float] = None
     try:
-        expiry_time = jwt.decode(token, options={
-            'verify_signature': False,
-            'verify_exp': True,
-        }).get('exp')
+        expiry_time = jwt.decode(
+            token,
+            options={
+                'verify_signature': False,
+                'verify_exp': True,
+            },
+        ).get('exp')
     except jwt.exceptions.DecodeError:
         pass
     finally:

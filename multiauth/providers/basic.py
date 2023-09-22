@@ -17,10 +17,12 @@ def basic_authenticator(
     to the authentication header in the HTTP request
     """
 
-    auth_response = AuthResponse({
-        'headers': {},
-        'tech': AuthTech.BASIC,
-    })
+    auth_response = AuthResponse(
+        {
+            'headers': {},
+            'tech': AuthTech.BASIC,
+        },
+    )
 
     # Take the username and password from the user in the configuration file
     username, password = user.get_credentials_pair()
@@ -42,7 +44,6 @@ def basic_authenticator(
     headers = schema['options'].get('headers')
     if headers:
         for name, value in headers.items():
-
             # Resolving duplicate keys
             if name in auth_response['headers']:
                 auth_response['headers'][name] += ', ' + value

@@ -1,5 +1,5 @@
 {
   "name": "python: ruff",
-  "command": "poetry run ruff packages sdk services scanner",
+  "command": "poetry run ruff multiauth tests",
   "onlyOn": "**/*.py"
 }

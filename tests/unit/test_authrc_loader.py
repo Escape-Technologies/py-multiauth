@@ -24,20 +24,12 @@ class TestAuthrcLoader:
                 'url': 'http://example.com/graphql',
                 'mutation_name': 'authentification',
                 'mutation_field': 'token',
-                'method': 'POST'
-            }
+                'method': 'POST',
+            },
         }
         assert res[1] == {
-            'user1': {
-                'auth': 'schema1',
-                'username': 'user1',
-                'password': 'pwd1'
-            },
-            'user2': {
-                'auth': 'schema1',
-                'username': 'user2',
-                'password': 'pwd2'
-            }
+            'user1': {'auth': 'schema1', 'username': 'user1', 'password': 'pwd1'},
+            'user2': {'auth': 'schema1', 'username': 'user2', 'password': 'pwd2'},
         }
 
     def test_load_authrc_from_env(self, monkeypatch: MonkeyPatch) -> None:
@@ -52,26 +44,18 @@ class TestAuthrcLoader:
                 'url': 'http://example.com/graphql',
                 'mutation_name': 'authentification',
                 'mutation_field': 'token',
-                'method': 'POST'
-            }
+                'method': 'POST',
+            },
         }
         assert res[1] == {
-            'user1': {
-                'auth': 'schema1',
-                'username': 'user1',
-                'password': 'pwd1'
-            },
-            'user2': {
-                'auth': 'schema1',
-                'username': 'user2',
-                'password': 'pwd2'
-            }
+            'user1': {'auth': 'schema1', 'username': 'user1', 'password': 'pwd1'},
+            'user2': {'auth': 'schema1', 'username': 'user2', 'password': 'pwd2'},
         }
 
     def test_load_empty_authrc(self) -> None:
         try:
             _ = load_authrc(self.logger)
-            assert False, 'should raise an error'
+            raise AssertionError('should raise an error')
         except InvalidConfigurationError as e:
             assert 'authrc file not found' in e.message
 
@@ -83,9 +67,6 @@ class TestAuthrcLoader:
         assert res[1] == {
             'default_user': {
                 'auth': 'default_schema',
-                'headers': {
-                    'header1': 'value1',
-                    'header2': 'value2'
-                },
-            }
+                'headers': {'header1': 'value1', 'header2': 'value2'},
+            },
         }

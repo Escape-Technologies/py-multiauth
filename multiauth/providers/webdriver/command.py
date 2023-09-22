@@ -58,6 +58,7 @@ class SeleniumCommandHandler:
 
         if last_exc:
             raise last_exc
+        return None
 
     def type(self, command: SeleniumCommand) -> None:
         last_exc = None
@@ -76,6 +77,7 @@ class SeleniumCommandHandler:
 
         if last_exc:
             raise last_exc
+        return None
 
     def mouse_over(self, command: SeleniumCommand) -> None:
         last_exc = None
@@ -94,6 +96,7 @@ class SeleniumCommandHandler:
 
         if last_exc:
             raise last_exc
+        return None
 
     def mouse_out(self, command: SeleniumCommand) -> None:
         last_exc = None
@@ -112,15 +115,18 @@ class SeleniumCommandHandler:
 
         if last_exc:
             raise last_exc
+        return None
 
     def wait(self, command: SeleniumCommand) -> None:
         if command.target:
             cmd, value = command.target.split('=')
             if cmd == 'request_url_contains':
                 return self.wait_for_request_url_contains(value)
+            return None
 
         else:
             time.sleep(int(command.value))
+            return None
 
     def wait_for_request_url_contains(self, regex: str) -> None:
         started_at = time.time()

@@ -13,31 +13,30 @@ from multiauth.manager import User
 from multiauth.providers.basic import basic_authenticator
 
 
-@pytest.fixture
+@pytest.fixture()
 def auth_schema() -> Dict:
     """Test auth schema."""
 
     return {'tech': 'basic'}
 
 
-@pytest.fixture
+@pytest.fixture()
 def user_config() -> User:
     """Test user configuration."""
 
-    return User({
-        'auth_schema': 'schema1',
-        'auth_tech': AuthTech.BASIC,
-        'auth_type': None,
-        'credentials': {
-            'username': 'postman',
-            'password': 'password'
+    return User(
+        {
+            'auth_schema': 'schema1',
+            'auth_tech': AuthTech.BASIC,
+            'auth_type': None,
+            'credentials': {'username': 'postman', 'password': 'password'},
+            'token': None,
+            'refresh_token': None,
+            'expires_in': None,
+            'expired_token': None,
+            'token_info': None,
         },
-        'token': None,
-        'refresh_token': None,
-        'expires_in': None,
-        'expired_token': None,
-        'token_info': None,
-    })
+    )
 
 
 def test_basic_authentication(mocker: MockerFixture, user_config: User, auth_schema: Dict) -> None:

@@ -16,6 +16,7 @@ else:
 class AuthOAuthlocation(str, Enum):
 
     """Where the credentials during the OAuth will be sent."""
+
     BASIC = 'basic'
     BODY = 'body'
 
@@ -24,6 +25,7 @@ class AuthOAuthlocation(str, Enum):
 class AuthOAuthGrantType(str, Enum):
 
     """The grant types of the OAuth."""
+
     AUTH_CODE = 'auth_code'
     CLIENT_CRED = 'client_cred'
     IMPLICIT = 'implicit'
@@ -41,6 +43,7 @@ class AuthOAuthGrantType(str, Enum):
 class AuthOAuthResponse(TypedDict):
 
     """The format of the OAuth access token response according to the official documentation."""
+
     access_token: str
     expires_in: Optional[float]
     refresh_token: Optional[str]
@@ -49,6 +52,7 @@ class AuthOAuthResponse(TypedDict):
 class AuthConfigOAuth(TypedDict):
 
     """Authentication Configuration Parameters of the OAuth Method."""
+
     grant_type: AuthOAuthGrantType
     authentication_endpoint: Optional[str]
     token_endpoint: Optional[str]

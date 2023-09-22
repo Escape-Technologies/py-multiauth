@@ -42,7 +42,6 @@ def deserialize_headers(headers: Union[Dict[str, str], List[str], str]) -> Dict[
         headers = [headers]
 
     if isinstance(headers, list):
-
         for header in headers:
             header_split = header.split(':', 1)
             res[header_split[0].strip()] = header_split[1].strip()
@@ -59,21 +58,16 @@ def _manual_fill(headers: Union[Dict[str, str], List[str], str]) -> RCFile:
 
     auth_name: str = 'manual_headers'
 
-    rcfile = RCFile({
-        'auth': {
-            auth_name: {
-                'tech': AuthTech.MANUAL.value,
-            }
+    return RCFile(
+        {
+            'auth': {
+                auth_name: {
+                    'tech': AuthTech.MANUAL.value,
+                },
+            },
+            'users': {'manual_user': {'headers': headers_dict, 'auth': auth_name}},
         },
-        'users': {
-            'manual_user': {
-                'headers': headers_dict,
-                'auth': auth_name
-            }
-        },
-    })
-
-    return rcfile
+    )
 
 
 def _basic_fill(
@@ -88,20 +82,18 @@ def _basic_fill(
     username, password = decoded_value.split(':', 1)
 
     # The JSON schema for every authentication scheme
-    rcfile = RCFile({
-        'users': {
-            'user_basic': {
-                'auth': 'auth_basic',
-                'username': username,
-                'password': password,
-            }
+    rcfile = RCFile(
+        {
+            'users': {
+                'user_basic': {
+                    'auth': 'auth_basic',
+                    'username': username,
+                    'password': password,
+                },
+            },
+            'auth': {'auth_basic': {'tech': AuthTech.BASIC.value}},
         },
-        'auth': {
-            'auth_basic': {
-                'tech': AuthTech.BASIC.value
-            }
-        },
-    })
+    )
 
     optional_headers: Dict = {}
     for key, value in headers.items():
@@ -123,26 +115,21 @@ def _rest_fill(
     """This function fills the rest file."""
 
     # The JSON schema for every authentication scheme
-    rcfile = RCFile({
-        'users': {
-            'user1': {
-                'auth': 'schema1',
-                **rest_document
-            }
+    return RCFile(
+        {
+            'users': {'user1': {'auth': 'schema1', **rest_document}},
+            'auth': {
+                'schema1': {
+                    'tech': AuthTech.REST.value,
+                    'url': url,
+                    'method': method,
+                    'options': {
+                        'headers': headers,
+                    },
+                },
+            },
         },
-        'auth': {
-            'schema1': {
-                'tech': AuthTech.REST.value,
-                'url': url,
-                'method': method,
-                'options': {
-                    'headers': headers,
-                }
-            }
-        },
-    })
-
-    return rcfile
+    )
 
 
 def _graphql_fill(
@@ -173,27 +160,31 @@ def _graphql_fill(
                 else:
                     credentials[argument['name']['value']] = {}
                     for input_object_field in argument['value']['fields']:
-                        credentials[argument['name']['value']][input_object_field['name']['value']] = input_object_field['value']['value']
+                        credentials[argument['name']['value']][
+                            input_object_field['name']['value']
+                        ] = input_object_field['value']['value']
 
-    rcfile = RCFile({
-        'users': {
-            'user1': {
-                'auth': 'schema1',
-                **credentials,
+    rcfile = RCFile(
+        {
+            'users': {
+                'user1': {
+                    'auth': 'schema1',
+                    **credentials,
+                },
+            },
+            'auth': {
+                'schema1': {
+                    'tech': AuthTech.GRAPHQL.value,
+                    'url': url,
+                    'method': method,
+                    'mutation_name': graphql_document['definitions'][0]['selection_set']['selections'][0]['name'][
+                        'value'
+                    ],
+                    'options': {'operation': graphql_document['definitions'][0]['operation']},
+                },
             },
         },
-        'auth': {
-            'schema1': {
-                'tech': AuthTech.GRAPHQL.value,
-                'url': url,
-                'method': method,
-                'mutation_name': graphql_document['definitions'][0]['selection_set']['selections'][0]['name']['value'],
-                'options': {
-                    'operation': graphql_document['definitions'][0]['operation']
-                }
-            }
-        },
-    })
+    )
 
     # Now regarding the field
     for field in graphql_document['definitions'][0]['selection_set']['selections'][0]['selection_set']['selections']:
@@ -207,7 +198,7 @@ def _graphql_fill(
     return rcfile
 
 
-#pylint: disable=too-many-branches, too-many-statements
+# pylint: disable=too-many-branches, too-many-statements
 def curl_to_escaperc(curl: str) -> Optional[RCFile]:
     """This function transforms the curl request to an escaperc file."""
 
@@ -241,7 +232,13 @@ def curl_to_escaperc(curl: str) -> Optional[RCFile]:
             if query.get('query') is not None:
                 LOGGER.info('Type of authetication detected: GraphQL')
                 graphql_tree = graphql.parse(query['query']).to_dict()
-                return _graphql_fill(graphql_tree, parsed_content.url, parsed_content.method, parsed_content.headers, query.get('variables'))
+                return _graphql_fill(
+                    graphql_tree,
+                    parsed_content.url,
+                    parsed_content.method,
+                    parsed_content.headers,
+                    query.get('variables'),
+                )
 
             LOGGER.info('Type of authetication detected: REST')
             return _rest_fill(query, parsed_content.url, parsed_content.method, parsed_content.headers)
