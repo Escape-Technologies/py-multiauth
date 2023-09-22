@@ -10,7 +10,7 @@ def extract_from_request_url(requests: Any, rx: str) -> list[str]:
     res = []
 
     for request in requests:
-        if match := re.search(rx, request.url):
+        if match := re.search(rx, request.url):  # type: ignore[syntax]
             res.append(match.group(1))
 
     return res

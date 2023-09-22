@@ -60,6 +60,29 @@ class SeleniumCommandHandler:
             raise last_exc
         return None
 
+    def select_frame(self, command: SeleniumCommand) -> None:
+        target = command.target
+
+        try:
+            if target.startswith('index='):
+                index = int(target.split('=')[1])
+                self.driver.switch_to.frame(index)
+
+            # Check if target is a name or ID
+            elif '=' not in target:  # Assumes no "=" character in frame names or IDs
+                self.driver.switch_to.frame(target)
+
+            else:
+                raise ValueError(f'Unhandled selector type for selectFrame: {target}')
+        except Exception as e:
+            logging.info(
+                'Failed to execute type `%s`.`%s`: %s',
+                command.id,
+                target,
+                e,
+            )
+            raise e
+
     def type(self, command: SeleniumCommand) -> None:
         last_exc = None
         for target_pair in command.targets:
@@ -124,9 +147,8 @@ class SeleniumCommandHandler:
                 return self.wait_for_request_url_contains(value)
             return None
 
-        else:
-            time.sleep(int(command.value))
-            return None
+        time.sleep(int(command.value))
+        return None
 
     def wait_for_request_url_contains(self, regex: str) -> None:
         started_at = time.time()
