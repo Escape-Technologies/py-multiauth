@@ -1,43 +1,19 @@
 {
-    "type": "python",
-    "venvActivate": "./.venv/bin/activate",
     "steps": [
         {
-            "name": "generate checks docs from yaml",
-            "command": "python3 scripts/generate_docs.py",
-            "onlyOn": "**/static/**"
+            "from": "py-black"
         },
         {
-            "name": "autoflake",
-            "command": "autoflake -ri --remove-unused-variable --ignore-init-module-imports --remove-all-unused-imports multiauth tests"
+            "from": "py-mypy"
         },
         {
-            "name": "isort",
-            "command": "isort -m 9 --line-length 160 multiauth tests"
+            "from": "py-pytest"
         },
         {
-            "name": "unify",
-            "command": "unify -ri multiauth tests"
+            "from": "py-ruff"
         },
         {
-            "name": "docformatter",
-            "command": "docformatter --wrap-summaries 160 --wrap-descriptions 160 -ri multiauth tests"
-        },
-        {
-            "name": "yapf",
-            "command": "yapf -ri multiauth tests"
-        },
-        {
-            "name": "pylint",
-            "command": "pylint --load-plugins pylint_quotes multiauth tests"
-        },
-        {
-            "name": "mypy",
-            "command": "mypy multiauth tests"
-        },
-        {
-            "name": "pytest",
-            "command": "pytest tests/unit/"
+            "from": "py-yamllint"
         }
     ]
 }

@@ -1,49 +1,75 @@
 {
-    "python.languageServer": "Pylance",
-    "python.linting.pylintEnabled": true,
-    "python.linting.enabled": true,
-    "python.linting.pylintPath": "pylint",
-    "python.formatting.provider": "yapf",
-    "editor.formatOnSave": true,
-    "python.defaultInterpreterPath": ".venv/bin/python",
-    "mypy.runUsingActiveInterpreter": true,
-    "emeraldwalk.runonsave": {
-      "commands": [
-        {
-          "match": "\\.py$",
-          "cmd": "cd ${workspaceFolder} && isort -m 9 --line-length 159 multiauth tests"
-        },
-        {
-          "match": "\\.py$",
-          "cmd": "cd ${workspaceFolder} && autoflake --in-place --remove-unused-variables --remove-all-unused-imports multiauth/**/*.py"
-        },
-        {
-          "match": "\\.py$",
-          "cmd": "cd ${workspaceFolder} && docformatter --wrap-summaries 160 --wrap-descriptions 160 -ri multiauth test"
-        },
-        {
-          "match": "\\.py$",
-          "cmd": "cd ${workspaceFolder} && unify -ri multiauth tests"
-        }
-      ]
-    },
-    "python.testing.pytestEnabled": true,
-    "python.testing.pytestPath": "../scripts/pytest-with-cov",
-    "files.exclude": {
-        "**/__pycache__": true,
-        "**/.git": true,
-        "**/.svn": true,
-        "**/.hg": true,
-        "**/CVS": true,
-        "**/.DS_Store": true,
-        "**/Thumbs.db": true,
-        "**/.venv": true,
-        "LICENSE": true,
-        "*.js": true,
-        ".*_cache": true,
-        ".coverage": true,
-        "node_modules/": true,
-        "dist/": true,
-        "poetry.lock": true,
+  "json.schemas": [
+    {
+      "fileMatch": [
+        "/**/.escaperc.json",
+        "/.escaperc.json"
+      ],
+      "url": "./scanner/graphql/graphql_cli/common/config/json_schemas/escaperc.schema.json"
     }
+  ],
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": false
+  },
+  "editor.formatOnSave": true,
+  "eslint.alwaysShowStatus": true,
+  "eslint.format.enable": true,
+  "eslint.lintTask.enable": true,
+  "typescript.preferences.importModuleSpecifierEnding": "js",
+  "typescript.tsdk": "./node_modules/typescript/lib",
+  "files.exclude": {
+    "**/.terraform": true,
+    "**/.venv": true,
+    "**/__pycache__": true,
+    "**/.*_cache": true
+  },
+  // Python settings
+  "mypy.runUsingActiveInterpreter": true,
+  "python.analysis.autoImportCompletions": true,
+  "python.defaultInterpreterPath": "./.venv/bin/python",
+  "python.formatting.provider": "black",
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.black-formatter",
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.fixAll": true,
+      "source.organizeImports": true
+    },
+    "editor.rulers": [
+      80,
+      120
+    ]
+  },
+  "ruff.args": [
+    "--config=pyproject.toml"
+  ],
+  "python.formatting.blackArgs": [
+    "--skip-string-normalization",
+    "--line-length",
+    "120"
+  ],
+  "python.testing.pytestArgs": [
+    "-s"
+  ],
+  "python.analysis.typeCheckingMode": "basic",
+  "python.testing.unittestEnabled": false,
+  "python.testing.pytestEnabled": true,
+  "python.linting.ignorePatterns": [
+    "**/site-packages/**/*.py",
+    ".vscode/*.py",
+    ".venv/**",
+    "*/.venv/**"
+  ],
+  "search.exclude": {
+    "node_modules": true,
+    "dist": true,
+    "__pycache__": true,
+    ".venv": true
+  },
+  "[yaml]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   }
+}

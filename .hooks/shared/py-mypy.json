@@ -1,0 +1,5 @@
+{
+  "name": "python: mypy",
+  "command": "poetry run mypy",
+  "onlyOn": "**/*.py"
+}

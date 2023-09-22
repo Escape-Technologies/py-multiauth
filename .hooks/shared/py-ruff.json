@@ -1,0 +1,5 @@
+{
+  "name": "python: ruff",
+  "command": "poetry run ruff packages sdk services scanner",
+  "onlyOn": "**/*.py"
+}
