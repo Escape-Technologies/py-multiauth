@@ -19,9 +19,6 @@ readme = "README.md"
 [tool.poetry.scripts]
 multiauth = 'multiauth:cli'
 
-[tool.poetry.group.dev.dependencies]
-types-selenium = "^3.141.9"
-
 [tool.coverage.run]
 parallel = true
 omit = ['tests/*', 'examples/*']
@@ -63,8 +60,8 @@ pytest-timeout = "2.1.0"
 setuptools = "^67.8.0"
 types-boto3 = "^1.0.2"
 types-requests = "^2.31.0.4"
-types-setuptools = "^67.8.0.0"
 types-selenium = "^3.141.9"
+types-setuptools = "^68.2.0.0"
 types-PyYAML = "6.0.12.10"
 types-protobuf = "4.23.0.1"
 types-toml = "0.10.8.6"
