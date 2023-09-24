@@ -9,7 +9,7 @@ from attr import dataclass
 from multiauth.entities.http import HTTPMethod, Location
 from multiauth.entities.providers.aws import AuthAWSType
 from multiauth.entities.providers.oauth import AuthOAuthGrantType
-from multiauth.providers.webdriver.core import SeleniumProject
+from multiauth.entities.providers.webdriver import SeleniumProject
 
 if sys.version_info >= (3, 8):
     from typing import TypedDict  # pylint: disable=no-name-in-module
@@ -78,7 +78,7 @@ class WebdriverConfig:
 
     extract_location: str
     extract_regex: str
-    project: 'SeleniumProject'
+    project: SeleniumProject
     output_format: str
     token_lifetime: Optional[int]
     extract_match_index: Optional[int]

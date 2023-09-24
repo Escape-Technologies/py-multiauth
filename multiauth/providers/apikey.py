@@ -88,7 +88,8 @@ def apikey_authenticator(
 ) -> AuthResponse:
     """This funciton is a wrapper function that implements the API Key authentication schema.
 
-    It simply takes the API key from the user and addes the api key either to the header of the HTTP request or as a parameter of the URL
+    It simply takes the API key from the user and addes the api key either
+    to the header of the HTTP request or as a parameter of the URL
     """
 
     auth_config = apikey_config_parser(schema)

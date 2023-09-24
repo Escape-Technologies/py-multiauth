@@ -157,7 +157,7 @@ def digest_config_parser(schema: Dict) -> AuthConfigDigest:
             s += time.ctime().encode('utf-8')
             s += os.urandom(8)
 
-            auth_config['client_nonce'] = hashlib.sha1(s).hexdigest()[:16]
+            auth_config['client_nonce'] = hashlib.sha1(s).hexdigest()[:16]  # noqa: S324
 
     if parameters['domain'] is not None:
         auth_config['domain'] = parameters['domain']
@@ -216,8 +216,7 @@ def digest_auth_attach(
     else:
         response = kd(ha1, f'{auth_config["nonce"]}:{ha2}')
 
-    header_value = f'username="{username}", realm="{auth_config["realm"]}", nonce="{auth_config["nonce"]}", uri="{auth_config["domain"]}"'
-    header_value += f', response="{response}"'
+    header_value = f'username="{username}", realm="{auth_config["realm"]}", nonce="{auth_config["nonce"]}", uri="{auth_config["domain"]}, response="{response}"'  # noqa: E501
 
     if auth_config['opaque']:
         header_value += f', opaque="{auth_config["opaque"]}"'
@@ -254,7 +253,8 @@ def digest_authenticator(
 ) -> AuthResponse:
     """This function is a wrapper function that implements the Digest authentication schema.
 
-    It starts by sending an empty get request which allows it to fetch the configuration for the digest from the server using the WWW-Authenticate. After that,
+    It starts by sending an empty get request which allows it to fetch the configuration
+    for the digest from the server using the WWW-Authenticate. After that,
     it sends the credentials using the options provided from the server.
     """
 

@@ -38,7 +38,8 @@ def extract_token(
 ) -> Tuple[AuthResponse, Optional[str]]:
     """This function takes the response and tries to extract the tokens.
 
-    This function is mainly a helper function to the REST and the GraphQL authenctication schema. The goal of the function is to generate the authentication
+    This function is mainly a helper function to the REST and the GraphQL authenctication schema.
+    The goal of the function is to generate the authentication
     response according to the extracted tokens from the repsonse
     """
 
@@ -75,13 +76,15 @@ def extract_token(
                 res_token = _find_token(token_name.split('.'), response_dict)
 
                 try:
-                    assert res_token is not None
+                    if res_token is None:
+                        raise AuthenticationError("The Authentication token wasn't fetched properly.")
+
                 except AssertionError as e:
                     raise AuthenticationError(
                         f"{type(e).__name__}: The Authentication token wasn't fetched properly.",
                     ) from e
 
-                header_arg = header_arg.replace('{{' + token_name + '}}', res_token)
+                header_arg = header_arg.replace('{{' + token_name + '}}', res_token)  # noqa: PLW2901
 
             headers_to_add[header_name] = header_arg
 
@@ -102,7 +105,7 @@ def hash_calculator(
     if hash_type in (AuthHashAlgorithmDigest.MD5, AuthHashAlgorithmDigest.MD5_SESS):
         if isinstance(input_data, str):
             input_data = input_data.encode('utf-8')
-        return hashlib.md5(input_data).hexdigest()
+        return hashlib.md5(input_data).hexdigest()  # noqa: S324
 
     if hash_type in (AuthHashAlgorithmDigest.SHA_256, AuthHashAlgorithmDigest.SHA_256_SESS):
         if isinstance(input_data, str):
@@ -118,8 +121,8 @@ def hash_calculator(
 
 
 def token_endpoint_auth_method(auth_location: AuthOAuthlocation) -> str:
-    """This function takes the authorization location that is provided in the configuration and determines which token endpoint authentication method should be
-    used by the session."""
+    """This function takes the authorization location that is provided in the configuration
+    and determines which token endpoint authentication method should be used by the session."""
 
     if auth_location == AuthOAuthlocation.BODY:
         return 'client_secret_post'
@@ -134,7 +137,8 @@ def get_secret_hash(
     client_id: str,
     client_secret: str,
 ) -> str:
-    """This function calculates the secret hash used in the AWS cognito authentication in case the client secret is provided."""
+    """This function calculates the secret hash used in the AWS cognito
+    authentication in case the client secret is provided."""
 
     message = bytearray(username + client_id, 'utf-8')
     hmac_obj = hmac.new(bytearray(client_secret, 'utf-8'), message, hashlib.sha256)
@@ -252,7 +256,8 @@ def jwt_token_analyzer(token: Token) -> JWTToken:
 
 
 # def jwt_token_module(token: Token) -> None:
-#     """This function takes in a JWT token as an input and analyzes the token and finally returns some alerts regarding the JWT token."""
+#     """This function takes in a JWT token as an input and analyzes the token
+#     and finally returns some alerts regarding the JWT token."""
 
 #     # First verify the JWT signature
 #     try:
@@ -307,7 +312,8 @@ def jwt_token_analyzer(token: Token) -> JWTToken:
 #         new_header['alg'] = 'HS512'
 #         _new_header = _encode(new_header)
 #         content = _new_header + '.' + token_payload
-#         signature_hash_512 = base64.urlsafe_b64encode(hmac.new(''.encode(), content.encode(), hashlib.sha512).digest()).decode('UTF-8').strip()
+#         signature_hash_512 = base64.urlsafe_b64encode(hmac.new(''.encode(), content.encode(), hashlib.sha512,
+#           ).digest()).decode('UTF-8').strip()
 #         result.append(content + '.' + signature_hash_512)
 
 #         # For sha256
@@ -315,7 +321,8 @@ def jwt_token_analyzer(token: Token) -> JWTToken:
 #         new_header['alg'] = 'HS256'
 #         _new_header = _encode(new_header)
 #         content = _new_header + '.' + token_payload
-#         signature_hash_256 = base64.urlsafe_b64encode(hmac.new(''.encode(), content.encode(), hashlib.sha256).digest()).decode('UTF-8').strip()
+#         signature_hash_256 = base64.urlsafe_b64encode(hmac.new(''.encode(), content.encode(), hashlib.sha256,
+#           ).digest()).decode('UTF-8').strip()
 #         result.append(content + '.' + signature_hash_256)
 
 #         # For sha384
@@ -323,7 +330,8 @@ def jwt_token_analyzer(token: Token) -> JWTToken:
 #         new_header['alg'] = 'HS384'
 #         _new_header = _encode(new_header)
 #         content = _new_header + '.' + token_payload
-#         signature_hash_384 = base64.urlsafe_b64encode(hmac.new(''.encode(), content.encode(), hashlib.sha384).digest()).decode('UTF-8').strip()
+#         signature_hash_384 = base64.urlsafe_b64encode(hmac.new(''.encode(), content.encode(), hashlib.sha384,
+#           ).digest()).decode('UTF-8').strip()
 #         result.append(content + '.' + signature_hash_384)
 
 #         return result
@@ -338,11 +346,13 @@ def jwt_token_analyzer(token: Token) -> JWTToken:
 #             key = rsa.generate_private_key(backend=default_backend(), public_exponent=65537, key_size=2048)
 
 #             # get public key in OpenSSH format
-#             public_key = key.public_key().public_bytes(serialization.Encoding.OpenSSH, serialization.PublicFormat.OpenSSH)
+#             public_key = key.public_key().public_bytes(serialization.Encoding.OpenSSH,
+#               serialization.PublicFormat.OpenSSH)
 
 #             # get private key in PEM container format
 #             pem = key.private_bytes(
-#                 encoding=serialization.Encoding.PEM, format=serialization.PrivateFormat.TraditionalOpenSSL, encryption_algorithm=serialization.NoEncryption()
+#                 encoding=serialization.Encoding.PEM, format=serialization.PrivateFormat.TraditionalOpenSSL,
+#                   encryption_algorithm=serialization.NoEncryption()
 #             )
 
 #             # decode to printable strings

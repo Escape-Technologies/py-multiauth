@@ -208,7 +208,8 @@ def aws_auth_attach(
         },
     )
 
-    # Add the token, the refresh token, and the expiry time to the user manager in order to be accessed by other parts of the program
+    # Add the token, the refresh token, and the expiry time to the user manager in order
+    # to be accessed by other parts of the program
     # First we have to check if the token is a JWT token (It should be)
     try:
         expiry_time = jwt.decode(
@@ -233,8 +234,8 @@ def aws_authenticator(
 ) -> AuthResponse:
     """This function is a wrapper function that implements the AWS authentication schema.
 
-    The AWS authentication is based on creating a signature based on the access key and the secret key to the API. After creating this signature, the signature
-    is appended to a well crafted authentication header
+    The AWS authentication is based on creating a signature based on the access key and the secret key to the API.
+    After creating this signature, the signature is appended to a well crafted authentication header
     """
 
     auth_config = aws_config_parser(user, schema)

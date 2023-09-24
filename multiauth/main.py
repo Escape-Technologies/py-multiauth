@@ -159,7 +159,7 @@ class MultiAuth(IMultiAuth):
                 )
             if user['auth'] not in auth_tech_link:
                 raise InvalidConfigurationError(
-                    message=f'The authentication references user \'{user["auth"]}\' but the only users defined are: {s_users}',
+                    message=f'Auth references user \'{user["auth"]}\' but the only users defined are: {s_users}',
                     path=f'$.users.{username}.auth',
                 )
             try:

@@ -1,3 +1,4 @@
+# ruff: noqa: F811, F401
 # pylint: disable=redefined-outer-name, unused-import, line-too-long, invalid-name
 
 """Test generator."""
@@ -8,7 +9,7 @@ import pytest
 
 from multiauth.generator import _manual_fill, curl_to_escaperc
 
-from .providers.test_manual_auth import auth, users_one_header, users_two_headers  # noqa
+from .providers.test_manual_auth import auth, users_one_header, users_two_headers
 
 
 @pytest.fixture()
@@ -16,7 +17,7 @@ def graphql_curl_with_input_object_and_no_var() -> str:
     """Test auth schema."""
     return r"""curl --location --request POST 'https://qhgslipjmw.com/graphql' \
 --header 'Content-Type: application/json' \
---data-raw '{"query":"mutation {\r\n    login(userLoginInput: {email: \"LoZhylgLX8@Nuz0bhEKMY.com\", password: \"8ua36eYKlN\"}){\r\n        token\r\n    }\r\n}","variables":{}}'"""
+--data-raw '{"query":"mutation {\r\n    login(userLoginInput: {email: \"LoZhylgLX8@Nuz0bhEKMY.com\", password: \"8ua36eYKlN\"}){\r\n        token\r\n    }\r\n}","variables":{}}'"""  # noqa: E501
 
 
 @pytest.fixture()
@@ -24,7 +25,7 @@ def graphql_curl_with_input_object_and_var() -> str:
     """Test auth schema."""
     return r"""curl --location --request POST 'https://qhgslipjmw.com/graphql' \
 --header 'Content-Type: application/json' \
---data-raw '{"query":"mutation ($Login: UserLoginInput!){\r\n    login(userLoginInput: $Login){\r\n        token\r\n    }\r\n}","variables":{"Login":{"email":"LoZhylgLX8@Nuz0bhEKMY.com","password":"8ua36eYKlN"}}}'"""
+--data-raw '{"query":"mutation ($Login: UserLoginInput!){\r\n    login(userLoginInput: $Login){\r\n        token\r\n    }\r\n}","variables":{"Login":{"email":"LoZhylgLX8@Nuz0bhEKMY.com","password":"8ua36eYKlN"}}}'"""  # noqa: E501
 
 
 @pytest.fixture()
@@ -32,7 +33,7 @@ def graphql_curl_with_normal_graphql_query() -> str:
     """Test auth schema."""
     return r"""curl --location --request POST 'https://www.terrang.fr/graphql' \
 --header 'Content-Type: application/json' \
---data-raw '{"query":"mutation {\r\n    authenticateUser(username: \"ohtmjdkyhx@oergasjvhp.com\", password: \"Wj7UxfFTyzgPVM\"){\r\n        success\r\n    }\r\n}","variables":{"Login":{"email":"LoZhylgLX8@Nuz0bhEKMY.com","password":"8ua36eYKlN"}}}'"""
+--data-raw '{"query":"mutation {\r\n    authenticateUser(username: \"ohtmjdkyhx@oergasjvhp.com\", password: \"Wj7UxfFTyzgPVM\"){\r\n        success\r\n    }\r\n}","variables":{"Login":{"email":"LoZhylgLX8@Nuz0bhEKMY.com","password":"8ua36eYKlN"}}}'"""  # noqa: E501
 
 
 @pytest.fixture()

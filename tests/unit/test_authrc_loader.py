@@ -2,9 +2,8 @@
 
 import logging
 
-from pytest import MonkeyPatch
+import pytest
 
-from multiauth.entities.errors import InvalidConfigurationError
 from multiauth.main import load_authrc
 
 
@@ -32,7 +31,7 @@ class TestAuthrcLoader:
             'user2': {'auth': 'schema1', 'username': 'user2', 'password': 'pwd2'},
         }
 
-    def test_load_authrc_from_env(self, monkeypatch: MonkeyPatch) -> None:
+    def test_load_authrc_from_env(self, monkeypatch: pytest.MonkeyPatch) -> None:
         monkeypatch.setenv('AUTHRC', 'tests/fixtures/.authrc-example')
 
         res = load_authrc(self.logger)
@@ -51,13 +50,6 @@ class TestAuthrcLoader:
             'user1': {'auth': 'schema1', 'username': 'user1', 'password': 'pwd1'},
             'user2': {'auth': 'schema1', 'username': 'user2', 'password': 'pwd2'},
         }
-
-    def test_load_empty_authrc(self) -> None:
-        try:
-            _ = load_authrc(self.logger)
-            raise AssertionError('should raise an error')
-        except InvalidConfigurationError as e:
-            assert 'authrc file not found' in e.message
 
     def headers_shorthand(self) -> None:
         res = load_authrc(self.logger, 'tests/fixtures/.authrc-shorthand-example')

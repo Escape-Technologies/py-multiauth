@@ -167,7 +167,8 @@ def rest_reauthenticator(
 ) -> AuthResponse:
     """This funciton is a wrapper function that implements the Rest reauthentication schema.
 
-    It takes the user information, the schema information and the refresh token and attempts reauthenticating the user using the refresh token
+    It takes the user information, the schema information and the refresh token
+    and attempts reauthenticating the user using the refresh token
     """
 
     # Reparse the configuration

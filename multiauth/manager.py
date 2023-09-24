@@ -25,7 +25,7 @@ class User(IUser):
         if kwargs:
             for key, value in kwargs.items():
                 if not key.startswith('_'):
-                    key = '_' + key
+                    key = '_' + key  # noqa: PLW2901
 
                 setattr(self, key, value)
 

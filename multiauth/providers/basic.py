@@ -13,8 +13,8 @@ def basic_authenticator(
 ) -> AuthResponse:
     """This function implement the `Basic Authentication` Schema.
 
-    It simply takes the username and password from the current working user, appends the password to the username, and base64 encode them. Finally it adds them
-    to the authentication header in the HTTP request
+    It simply takes the username and password from the current working user, appends the password to the username,
+    and base64 encode them. Finally it adds them to the authentication header in the HTTP request
     """
 
     auth_response = AuthResponse(

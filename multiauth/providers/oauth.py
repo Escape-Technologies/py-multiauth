@@ -55,7 +55,8 @@ def extract_oauth_token(
     elif auth_config['location'] == Location.URL:
         pass
 
-    # Add the token, the refresh token, and the expiry time to the user manager in order to be accessed by other parts of the program
+    # Add the token, the refresh token, and the expiry time
+    # to the user manager in order to be accessed by other parts of the program
     user.set_token(response['access_token'], response['expires_in'])
     user.refresh_token = response['refresh_token']
 
@@ -113,7 +114,7 @@ def auth_code_handler(
         code_verifier=auth_config['code_verifier'],
     )
 
-    # Now we have to pass the authorization URL and the callback URL to the browser in order to fetch the what is necessary
+    # Now we have to pass the authorization URL and the callback URL to the browser in order to fetch what is necessary
     # The if condition is to simply avoid mypy errors
     if auth_config['callback_url'] is not None:
         exit_code, authorization_response = authentication_portal(authentication_url, auth_config['callback_url'])
@@ -160,7 +161,7 @@ def implicit_handler(
         state=auth_config['state'],
     )
 
-    # Now we have to pass the authorization URL and the callback URL to the browser in order to fetch the what is necessary
+    # Now we have to pass the authorization URL and the callback URL to the browser in order to fetch what is necessary
     # The if condition is to simply avoid mypy errors
     if auth_config['callback_url'] is not None:
         exit_code, authorization_response = authentication_portal(authentication_url, auth_config['callback_url'])
@@ -321,7 +322,8 @@ def oauth_auth_attach(
     user: User,
     auth_config: AuthConfigOAuth,
 ) -> AuthResponse:
-    """This function attaches the user credentials to the schema and generates the proper authentication response according to the grant type."""
+    """This function attaches the user credentials to the schema and generates the proper authentication
+    response according to the grant type."""
 
     # First according every grant type, we will create a handler
     grant_type: AuthOAuthGrantType = auth_config['grant_type']
@@ -356,7 +358,8 @@ def oauth_authenticator(
 ) -> AuthResponse:
     """This function is a wrapper function that implements the OAuth authentication schema.
 
-    It starts by identifying the grant type and then use the appropriate grant type funtion in order to authenticate the user to the application.
+    It starts by identifying the grant type and then use the appropriate grant type funtion in order
+    to authenticate the user to the application.
     """
 
     auth_config = oauth_config_parser(schema)
@@ -380,7 +383,8 @@ def oauth_reauthenticator(
     else:
         auth_config = cast(AuthConfigOAuth, schema)
 
-    # Since authentication requires the existance of an authentication token, Only check the grant type that require an authentication token endpoint as input
+    # Since authentication requires the existance of an authentication token, Only check the grant type that require
+    # an authentication token endpoint as input
 
     if auth_config['grant_type'] in (AuthOAuthGrantType.AUTH_CODE, AuthOAuthGrantType.REFRESH_TOKEN):
         client = auth_code_session(user, auth_config)

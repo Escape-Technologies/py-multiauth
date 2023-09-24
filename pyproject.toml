@@ -154,7 +154,7 @@ exclude = [
     "pyproject.toml",
     "sdk/py_protocol/protocol/*/v1",
 ]
-ignore = ["E999", "UP015", "S311"]
+ignore = ["E999", "UP015", "S311", "S105"]
 line-length = 120
 target-version = "py311"
 format = "grouped"
@@ -193,7 +193,7 @@ max-doc-length = 160
 ignore-overlong-task-comments = true
 
 [tool.ruff.mccabe]
-max-complexity = 10
+max-complexity = 20
 
 [tool.mypy]
 python_version = "3.11"

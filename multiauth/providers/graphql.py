@@ -46,7 +46,8 @@ def generate_authentication_mutation(
             raise AuthenticationError('Configuration file error. Missing credentials')
 
     try:
-        # This variable will host the login information part of the mutation example: (login: admin@ecape.tech, password: "p@ssword123")
+        # This variable will host the login information part of the mutation
+        # example: (login: admin@ecape.tech, password: "p@ssword123")
         arguments: str = '(' + format_arguments(credentials) + ')'
 
         # Here we start forming the Mutation string
@@ -213,7 +214,7 @@ def graphql_auth_attach(
     auth_response: AuthResponse
 
     # Fetching token from the header is priorized
-    # ToDo: Add support of optional headers (Previously inserted in `headers`)
+    # TODO(antoine@escape.tech): Add support of optional headers (Previously inserted in `headers`)
     if auth_config['header_token_name'] is not None:
         token_key = auth_config['header_token_name']
         token = response.headers.get(token_key)
@@ -267,8 +268,8 @@ def graphql_authenticator(
 ) -> AuthResponse:
     """This function is a wrapper function that implements the GraphQL authentication schema.
 
-    It sends a mutation having the credentials of the user as the arguments to the mutations. Once it receives the response, it fetches the tokens and creates
-    the authentication response
+    It sends a mutation having the credentials of the user as the arguments to the mutations.
+    Once it receives the response, it fetches the tokens and creates the authentication response
     """
 
     auth_config = graphql_config_parser(schema)
@@ -282,8 +283,8 @@ def graphql_reauthenticator(
 ) -> AuthResponse:
     """This function is a wrapper function that implements the GraphQL reauthentication schema.
 
-    It takes the user information, the schema information, and the refresh token and attempts to reauthenticate by sending the refresh token to a muatation and
-    receiving back an access token and a refresh token.
+    It takes the user information, the schema information, and the refresh token and attempts to reauthenticate
+    by sending the refresh token to a muatation and receiving back an access token and a refresh token.
     """
 
     # Reparse the configuration

@@ -12,7 +12,7 @@ from multiauth.manager import User
 def expired_token() -> str:
     """Fixture an expired token."""
 
-    return 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjEyMzQ1fQ.xVG1HwFudlbhyP0lN211c8L5UZ5oPxLjSDKYOzYSmyk'
+    return 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjEyMzQ1fQ.xVG1HwFudlbhyP0lN211c8L5UZ5oPxLjSDKYOzYSmyk'  # noqa: E501
 
 
 def test_user_with_expired_token(expired_token: str) -> None:

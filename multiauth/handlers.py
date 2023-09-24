@@ -30,7 +30,8 @@ def auth_handler(
 ) -> Optional[AuthResponse]:
     """Handles the authentication and returns the authentication response.
 
-    This function takes the current working user as input and checks the schema that the user needs. After getting the schema, it executes the appropriate
+    This function takes the current working user as input and checks the schema that the user needs.
+    After getting the schema, it executes the appropriate
     authenticator according the tech found in the schema.
     """
 
@@ -84,7 +85,8 @@ def reauth_handler(
 ) -> Optional[AuthResponse]:
     """Handles the reauthentication and returns the new authentication response.
 
-    This function takes the current working user as input and checks the schema that the user needs. After getting the schema, it executes the appropriate
+    This function takes the current working user as input and checks the schema that the user needs.
+    After getting the schema, it executes the appropriate
     reauthentication according the tech found in the schema.
     """
 
@@ -95,16 +97,16 @@ def reauth_handler(
     if authentication == AuthTech.OAUTH:
         return oauth_reauthenticator(user, schema, refresh_token)
 
-    elif authentication == AuthTech.AWS:
+    if authentication == AuthTech.AWS:
         return aws_reauthenticator(user, schema, refresh_token)
 
-    elif authentication == AuthTech.REST:
+    if authentication == AuthTech.REST:
         return rest_reauthenticator(user, schema, refresh_token)
 
-    elif authentication == AuthTech.GRAPHQL:
+    if authentication == AuthTech.GRAPHQL:
         return graphql_reauthenticator(user, schema, refresh_token)
 
-    elif authentication == AuthTech.WEBDRIVER:
+    if authentication == AuthTech.WEBDRIVER:
         return webdriver_authenticator(user, schema)
 
     return None
