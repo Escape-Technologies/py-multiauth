@@ -8,6 +8,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from seleniumwire import webdriver  # type: ignore[import]
 
+from multiauth.entities.errors import AuthenticationError
 from multiauth.providers.webdriver.core import SeleniumCommand
 from multiauth.providers.webdriver.transformers import target_to_selector_value
 
@@ -25,9 +26,29 @@ class SeleniumCommandHandler:
         self.wait_for_seconds = 30
         self.pooling_interval = 0.5
 
-    def find_element(self, selector, value) -> WebElement:
+    def find_element(self, selector: str, value: str) -> WebElement:
         wait = WebDriverWait(self.driver, self.wait_for_seconds)
         return wait.until(EC.presence_of_element_located((selector, value)))
+
+    def safe_click(self, selector: str, value: str) -> None:
+        for _ in range(10):
+            try:
+                return self.find_element(selector, value).click()
+            except Exception as e:
+                time.sleep(1)
+                last_error = e
+
+        raise AuthenticationError(f'Failed to click element after 10 retries: `{selector}`') from last_error
+
+    def safe_switch_to_frame(self, selector: str) -> None:
+        for _ in range(10):
+            try:
+                return self.driver.switch_to.frame(selector)
+            except Exception as e:
+                time.sleep(1)
+                last_error = e
+
+        raise AuthenticationError(f'Failed to click element after 10 retries: `{selector}`') from last_error
 
     def open(self, command: SeleniumCommand) -> None:
         self.driver.get(command.target)
@@ -41,7 +62,7 @@ class SeleniumCommandHandler:
         for target_pair in command.targets:
             try:
                 selector, value = target_to_selector_value(target_pair)
-                return self.find_element(selector, value).click()
+                return self.safe_click(selector, value)
             except Exception as e:
                 logging.info(
                     'Failed to execute click `%s`.`%s`: %s',
@@ -66,11 +87,12 @@ class SeleniumCommandHandler:
         try:
             if target.startswith('index='):
                 index = int(target.split('=')[1])
-                self.driver.switch_to.frame(index)
+                self.safe_switch_to_frame(index)
 
             # Check if target is a name or ID
             elif '=' not in target:  # Assumes no "=" character in frame names or IDs
-                self.driver.switch_to.frame(target)
+                self.safe_switch_to_frame(target)
+
 
             else:
                 raise ValueError(f'Unhandled selector type for selectFrame: {target}')
