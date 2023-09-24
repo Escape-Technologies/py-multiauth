@@ -1,5 +1,6 @@
 import logging
 import os
+from types import TracebackType
 from typing import Any, Self
 
 from selenium.webdriver import firefox
@@ -22,9 +23,9 @@ class SeleniumTestRunner:
 
     def __exit__(
         self,
-        exc_type,
-        exc_value,
-        traceback,
+        exc_type: type[BaseException] | None,
+        exc_value: BaseException | None,
+        traceback: TracebackType | None,
     ) -> None:
         if self.driver:
             self.driver.quit()

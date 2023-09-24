@@ -151,7 +151,8 @@ def rest_authenticator(
 ) -> AuthResponse:
     """This funciton is a wrapper function that implements the Rest authentication schema.
 
-    It takes the credentials of the user and authenticates them on the authentication URL. After authenticating, it fetches the token and adds the token to the
+    It takes the credentials of the user and authenticates them on the authentication URL.
+    After authenticating, it fetches the token and adds the token to the
     headers along with optional headers in case the user provided them.
     """
 

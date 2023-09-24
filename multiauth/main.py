@@ -8,7 +8,7 @@ from copy import deepcopy
 from importlib import resources
 from typing import Any, Dict, Optional, Tuple
 
-import jsonschema  # type: ignore[import]
+import jsonschema
 
 from multiauth import static
 from multiauth.entities.errors import InvalidConfigurationError

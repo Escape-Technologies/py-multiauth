@@ -10,7 +10,7 @@ from seleniumwire import webdriver  # type: ignore[import]
 
 from multiauth.entities.errors import AuthenticationError
 from multiauth.providers.webdriver.core import SeleniumCommand
-from multiauth.providers.webdriver.transformers import target_to_selector_value
+from multiauth.providers.webdriver.transformers import target_to_selector_value, target_to_value
 
 
 class SeleniumCommandHandler:
@@ -40,7 +40,7 @@ class SeleniumCommandHandler:
 
         raise AuthenticationError(f'Failed to click element after 10 retries: `{selector}`') from last_error
 
-    def safe_switch_to_frame(self, selector: str) -> None:
+    def safe_switch_to_frame(self, selector: int | str) -> None:
         for _ in range(10):
             try:
                 return self.driver.switch_to.frame(selector)
@@ -86,13 +86,12 @@ class SeleniumCommandHandler:
 
         try:
             if target.startswith('index='):
-                index = int(target.split('=')[1])
+                index = int(target_to_value(target))
                 self.safe_switch_to_frame(index)
 
             # Check if target is a name or ID
             elif '=' not in target:  # Assumes no "=" character in frame names or IDs
                 self.safe_switch_to_frame(target)
-
 
             else:
                 raise ValueError(f'Unhandled selector type for selectFrame: {target}')
@@ -129,7 +128,13 @@ class SeleniumCommandHandler:
         for target_pair in command.targets:
             try:
                 selector, value = target_to_selector_value(target_pair)
-                return ActionChains(self.driver).move_to_element(self.find_element(selector, value)).perform()
+                return (
+                    ActionChains(self.driver)
+                    .move_to_element(  # type: ignore[no-untyped-call]
+                        self.find_element(selector, value),
+                    )
+                    .perform()
+                )
             except Exception as e:
                 logging.info(
                     'Failed to execute mouesOver `%s`.`%s`: %s',
@@ -148,7 +153,14 @@ class SeleniumCommandHandler:
         for target_pair in command.targets:
             try:
                 selector, value = target_to_selector_value(target_pair)
-                return ActionChains(self.driver).move_to_element(self.find_element(selector, value)).perform()
+
+                return (
+                    ActionChains(self.driver)
+                    .move_to_element(  # type: ignore[no-untyped-call]
+                        self.find_element(selector, value),
+                    )
+                    .perform()
+                )
             except Exception as e:
                 logging.info(
                     'Failed to execute mouseOut `%s`.`%s`: %s',

@@ -17,7 +17,6 @@ logger = logging.getLogger('multiauth.providers.webdriver')
 __version__ = pkg_resources.get_distribution('py-multiauth').version
 
 
-
 def webdriver_config_parser(schema: dict) -> WebdriverConfig:
     if not schema.get('extract_location'):
         raise AuthenticationError('Please provide the location to where you want to extract the token')
@@ -28,7 +27,7 @@ def webdriver_config_parser(schema: dict) -> WebdriverConfig:
     if not schema.get('project'):
         raise AuthenticationError('Please provide the project to run the webdriver tests')
 
-    if not schema.get('project').get('tests'):
+    if not schema.get('project', {}).get('tests'):
         raise AuthenticationError('Please provide the tests to run the webdriver tests')
 
     options = schema.get('options') or {}
@@ -37,7 +36,7 @@ def webdriver_config_parser(schema: dict) -> WebdriverConfig:
         extract_location=schema['extract_location'],
         extract_regex=schema['extract_regex'],
         project=load_selenium_project(schema['project']),
-        output_format=options.get('output_format'),
+        output_format=options.get('output_format') or 'Authorization: Bearer @token@',
         token_lifetime=options.get('token_lifetime'),
         extract_match_index=options.get('extract_match_index'),
     )
@@ -45,8 +44,6 @@ def webdriver_config_parser(schema: dict) -> WebdriverConfig:
     if auth_config.output_format:
         if '@token@' not in auth_config.output_format:
             raise AuthenticationError('Please provide the token placeholder in the output format (`@token`).')
-    else:
-        auth_config.output_format = 'Authorization: Bearer @token@'
 
     if len(auth_config.project.tests) > 1:
         logger.warning(f'Found {len(auth_config.project.tests)}, only the first one will be executed')
