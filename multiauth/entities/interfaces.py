@@ -52,7 +52,7 @@ class IMultiAuth(ABC):
 
     _manager: Any
     _headers: Dict[str, Dict]
-    _auths: Dict
+    _methods: Dict
 
     @property
     @abstractmethod

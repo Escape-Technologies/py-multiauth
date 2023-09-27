@@ -60,7 +60,7 @@ def _manual_fill(headers: Union[Dict[str, str], List[str], str]) -> RCFile:
 
     return RCFile(
         {
-            'auth': {
+            'methods': {
                 auth_name: {
                     'tech': AuthTech.MANUAL.value,
                 },
@@ -91,7 +91,7 @@ def _basic_fill(
                     'password': password,
                 },
             },
-            'auth': {'auth_basic': {'tech': AuthTech.BASIC.value}},
+            'methods': {'auth_basic': {'tech': AuthTech.BASIC.value}},
         },
     )
 
@@ -101,7 +101,7 @@ def _basic_fill(
             optional_headers[key] = value
 
     if optional_headers:
-        rcfile['auth']['auth_basic']['options'] = {'headers': optional_headers}
+        rcfile['methods']['auth_basic']['options'] = {'headers': optional_headers}
 
     return rcfile
 
@@ -118,7 +118,7 @@ def _rest_fill(
     return RCFile(
         {
             'users': {'user1': {'auth': 'schema1', **rest_document}},
-            'auth': {
+            'methods': {
                 'schema1': {
                     'tech': AuthTech.REST.value,
                     'url': url,
@@ -172,7 +172,7 @@ def _graphql_fill(
                     **credentials,
                 },
             },
-            'auth': {
+            'methods': {
                 'schema1': {
                     'tech': AuthTech.GRAPHQL.value,
                     'url': url,
@@ -189,11 +189,11 @@ def _graphql_fill(
     # Now regarding the field
     for field in graphql_document['definitions'][0]['selection_set']['selections'][0]['selection_set']['selections']:
         if field['name']['value'].lower() in POTENTIAL_FIELD_NAME:
-            rcfile['auth']['schema1']['mutation_field'] = field['name']['value']
+            rcfile['methods']['schema1']['mutation_field'] = field['name']['value']
             break
 
     if headers:
-        rcfile['auth']['schema1']['options']['headers'] = headers
+        rcfile['methods']['schema1']['options']['headers'] = headers
 
     return rcfile
 
