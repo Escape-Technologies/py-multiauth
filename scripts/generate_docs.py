@@ -53,7 +53,7 @@ def get_example(schema: Dict) -> Any:
 
 
 # pylint: disable=too-many-statements, too-many-locals, too-many-branches
-def generate_auth_docs() -> None:
+def generate_auth_docs() -> None:  # noqa: C901
     """Generates authentication schemas documentation."""
 
     # Load the templeate
