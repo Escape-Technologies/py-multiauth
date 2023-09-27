@@ -2,7 +2,7 @@
 
 import json
 from copy import deepcopy
-from importlib import resources
+from importlib.resources import files
 from typing import Any, Dict, List, Optional, TypedDict, cast
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape
@@ -60,7 +60,7 @@ def generate_auth_docs() -> None:
     template = env.get_template('docs_auth_template.md')
 
     # Load the json schema from static
-    with resources.open_text(static, 'auth_schema.json') as f:
+    with (files(static) / 'auth_schema.json').open() as f:
         json_schema = json.load(f)
 
     # The schema layout

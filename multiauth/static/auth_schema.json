@@ -1581,7 +1581,8 @@
                 "inputType": "text",
                 "placeholder": "Authorization: Bearer @token@"
               },
-              "description": "Header output format that will be used to serve subsequent requests, where @token` is containing the previously extracted token. By default, `Authorization: Bearer @token@` is used"
+              "description": "Header output format that will be used to serve subsequent requests, where @token` is containing the previously extracted token. By default, `Authorization: Bearer @token@` is used",
+              "type": "string"
             },
             "token_lifetime": {
               "_escapeUI": {
