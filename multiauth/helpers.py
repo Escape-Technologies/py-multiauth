@@ -19,16 +19,6 @@ from multiauth.entities.main import AuthHashAlgorithmDigest, AuthResponse, AuthT
 from multiauth.entities.providers.oauth import AuthOAuthlocation
 from multiauth.utils import dict_nested_get
 
-try:
-    from PyQt5.QtCore import QUrl, pyqtSignal  # type: ignore[import]
-    from PyQt5.QtWebEngineCore import QWebEngineUrlRequestInterceptor  # type: ignore[import]
-    from PyQt5.QtWebEngineWidgets import QWebEngineView  # type: ignore[import]
-    from PyQt5.QtWidgets import QApplication, QDesktopWidget  # type: ignore[import]
-
-    PYQT5_ERROR = None
-except ImportError as error:
-    PYQT5_ERROR = error
-
 
 def extract_token(
     response: requests.Response,
@@ -151,9 +141,6 @@ def authentication_portal(
     callback_url: str,
 ) -> Tuple[int, str]:
     """This function will open up a browser for the user to enter his credentials during OAuth."""
-
-    if not PYQT5_ERROR:
-        raise ImportError('PyQT5 unavailable. Please install it properly.') from PYQT5_ERROR
 
     class RequestInterceptor(QWebEngineUrlRequestInterceptor):
 
