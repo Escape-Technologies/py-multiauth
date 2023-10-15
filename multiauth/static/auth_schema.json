@@ -1381,8 +1381,7 @@
             "auth_location",
             "location",
             "token_endpoint",
-            "callback_url",
-            "scope"
+            "callback_url"
           ]
         },
         {
@@ -1398,8 +1397,7 @@
             "location",
             "authentication_endpoint",
             "token_endpoint",
-            "callback_url",
-            "scope"
+            "callback_url"
           ]
         },
         {
@@ -1415,8 +1413,7 @@
             "location",
             "authentication_endpoint",
             "callback_url",
-            "token_endpoint",
-            "scope"
+            "token_endpoint"
           ]
         },
         {
@@ -1430,8 +1427,7 @@
             "grant_type",
             "auth_location",
             "location",
-            "authentication_endpoint",
-            "scope"
+            "authentication_endpoint"
           ]
         },
         {
@@ -1445,8 +1441,7 @@
             "grant_type",
             "auth_location",
             "location",
-            "token_endpoint",
-            "scope"
+            "token_endpoint"
           ],
           "maxProperties": 7
         }

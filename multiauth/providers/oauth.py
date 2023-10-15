@@ -295,9 +295,7 @@ def oauth_config_parser(schema: Dict) -> AuthConfigOAuth:
             raise AuthenticationError('Please provide the authenticaiton endpoint')
         auth_config['callback_url'] = schema.get('callback_url')
 
-    if not schema.get('scope'):
-        raise AuthenticationError('Please provide the scope for the authentication')
-    auth_config['scope'] = schema['scope']
+    auth_config['scope'] = schema.get('scope')
 
     if schema.get('header_prefix'):
         auth_config['header_prefix'] = schema['header_prefix']
