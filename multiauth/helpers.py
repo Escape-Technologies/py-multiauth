@@ -220,9 +220,9 @@ def jwt_token_analyzer(token: Token) -> JWTToken:
         raise AuthenticationError('The token provided is not a JWT token') from e
 
     # First of all we need to decrypt the token
-    seperated_token = token.split('.')
-    token_header: str = seperated_token[0]
-    token_payload: str = seperated_token[1]
+    separated_token = token.split('.')
+    token_header: str = separated_token[0]
+    token_payload: str = separated_token[1]
 
     header: Dict = json.loads(base64.urlsafe_b64decode(token_header + '=' * (-len(token_header) % 4)))
     payload: Dict = json.loads(base64.urlsafe_b64decode(token_payload + '=' * (-len(token_payload) % 4)))
