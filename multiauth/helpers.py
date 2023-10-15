@@ -7,7 +7,6 @@ import hashlib
 import hmac
 import json
 import re
-import sys
 from json.decoder import JSONDecodeError
 from typing import Any, Dict, Match, Optional, Tuple, Union, cast
 
@@ -133,81 +132,6 @@ def get_secret_hash(
     message = bytearray(username + client_id, 'utf-8')
     hmac_obj = hmac.new(bytearray(client_secret, 'utf-8'), message, hashlib.sha256)
     return base64.standard_b64encode(hmac_obj.digest()).decode('utf-8')
-
-
-# pylint: disable=too-few-public-methods
-def authentication_portal(
-    url: str,
-    callback_url: str,
-) -> Tuple[int, str]:
-    """This function will open up a browser for the user to enter his credentials during OAuth."""
-
-    class RequestInterceptor(QWebEngineUrlRequestInterceptor):
-
-        """This class is used to intercept all the requests sent my the browser."""
-
-        # Creating the Signal to be sent
-        found: pyqtSignal = pyqtSignal(int)
-
-        # A variable to store the link that was found
-        result: str = ''
-
-        def __init__(self, callback_url: str) -> None:
-            """Constructor."""
-            super().__init__()
-            self.callback_url = callback_url
-
-        # pylint: disable=invalid-name
-        def interceptRequest(self, info: Any) -> None:
-            """Request Interceptor."""
-            if self.callback_url in info.requestUrl().toString():
-                self.result = info.requestUrl().toString()
-
-                # Emit the signal for the main applicaiton to process
-                self.found.emit(1)
-
-    # Creating an application instance and providing it with system parameters
-    app = QApplication(sys.argv)
-
-    # Creating a Web Engine Window
-    browser = QWebEngineView()
-
-    # Giving the window a URL to open and a Title
-    browser.load(QUrl(url))
-    browser.setWindowTitle('Authentication Portal')
-
-    # Resize screen
-    browser.resize(1200, 1000)
-
-    # Taking the Rectangle forming the window
-    geometry = browser.frameGeometry()
-
-    # QDesktopWidget provides information about the screen of the computer
-    # availableGeometry returns the rectangle which forms the screen of the computer
-    # center returns the center point of the screen
-    center_point = QDesktopWidget().availableGeometry().center()
-
-    # Make the Center point of the rectangle the center point of the screen
-    geometry.moveCenter(center_point)
-
-    # move the browser
-    # since move uses the topleft point as a reference, give the top left point of ht browser
-    browser.move(geometry.topLeft())
-
-    # Now we want to create attach the interceptor to the web application
-    request_interceptor = RequestInterceptor(callback_url)
-    browser.page().profile().setUrlRequestInterceptor(request_interceptor)
-
-    # If the string is found, exit the browser
-    request_interceptor.found.connect(app.exit)
-
-    browser.show()
-
-    # It is important to note the exit codes
-    # exit_code '0' means that the application was closed before getting the url
-    # exit_code '1' means that the application was closed forcefully, and we got the URL
-    # So exit_code '1' good :) and exit_code '0' bad :(
-    return app.exec_(), request_interceptor.result
 
 
 def jwt_token_analyzer(token: Token) -> JWTToken:
