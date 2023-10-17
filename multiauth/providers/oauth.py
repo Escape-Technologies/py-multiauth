@@ -13,13 +13,14 @@ from multiauth.entities.providers.oauth import AuthConfigOAuth, AuthOAuthGrantTy
 from multiauth.entities.providers.webdriver import SeleniumCommand, SeleniumTest
 from multiauth.helpers import token_endpoint_auth_method
 from multiauth.manager import User
-from multiauth.providers.webdriver.extractors import extract_from_request_url
+from multiauth.providers.webdriver.core import load_selenium_command
 from multiauth.providers.webdriver.runner import SeleniumTestRunner
 
 
 def authentication_portal(
     url: str,
     callback_url: str,
+    login_flow: list[SeleniumCommand],
 ) -> str | None:
     """This function will open up a browser for the user to enter his credentials during OAuth."""
 
@@ -36,6 +37,9 @@ def authentication_portal(
                         targets=[],
                         value='',
                     ),
+                ]
+                + login_flow
+                + [
                     SeleniumCommand(
                         id=str(uuid.uuid4()),
                         command='wait',
@@ -47,8 +51,11 @@ def authentication_portal(
             ),
         )
 
-        matches = extract_from_request_url(requests, callback_url)
-        return matches[0] if matches else None
+        for req in requests:
+            if callback_url in req.url:
+                return req.url
+
+        return None
 
 
 def extract_oauth_token(
@@ -157,7 +164,11 @@ def auth_code_handler(
     # Now we have to pass the authorization URL and the callback URL to the browser in order to fetch what is necessary
     # The if condition is to simply avoid mypy errors
     if auth_config['callback_url'] is not None:
-        authorization_response = authentication_portal(authentication_url, auth_config['callback_url'])
+        authorization_response = authentication_portal(
+            authentication_url,
+            auth_config['callback_url'],
+            login_flow=auth_config['login_flow'],
+        )
     if not authorization_response:
         raise AuthenticationError('Authentication Error. Please complete the authentication')
 
@@ -205,7 +216,11 @@ def implicit_handler(
     # Now we have to pass the authorization URL and the callback URL to the browser in order to fetch what is necessary
     # The if condition is to simply avoid mypy errors
     if auth_config['callback_url'] is not None:
-        authorization_response = authentication_portal(authentication_url, auth_config['callback_url'])
+        authorization_response = authentication_portal(
+            authentication_url,
+            auth_config['callback_url'],
+            auth_config['login_flow'],
+        )
     if not authorization_response:
         raise AuthenticationError('Authentication Error. Please complete the authentication')
 
@@ -309,6 +324,7 @@ def oauth_config_parser(schema: Dict) -> AuthConfigOAuth:
             'auth_location': AuthOAuthlocation.BODY,
             'location': Location.HEADERS,
             'state': None,
+            'login_flow': [],
             # 'challenge_method': None,
             'code_verifier': None,
             'headers': None,
@@ -347,6 +363,9 @@ def oauth_config_parser(schema: Dict) -> AuthConfigOAuth:
     if not schema.get('location'):
         raise AuthenticationError('Please provide the location')
     auth_config['location'] = Location(schema.get('location'))
+
+    if schema.get('options', {}).get('login_flow'):
+        auth_config['login_flow'] = [load_selenium_command(ele) for ele in schema['options']['login_flow']]
 
     # Options
     if 'options' in schema:

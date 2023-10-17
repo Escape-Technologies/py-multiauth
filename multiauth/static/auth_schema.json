@@ -1327,6 +1327,15 @@
             "label": "Headers options configuration"
           },
           "properties": {
+            "login_flow": {
+              "_escapeUI": {
+                "label": "Login Flow",
+                "inputType": "text",
+                "name": "login_flow"
+              },
+              "description": "Webdriver login flow, taken from the webdriver authentication (ALPHA).",
+              "type": "array"
+            },
             "state": {
               "_escapeUI": {
                 "label": "State",
