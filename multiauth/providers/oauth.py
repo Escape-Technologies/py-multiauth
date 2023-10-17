@@ -133,6 +133,7 @@ def auth_code_session(
         client_secret,
         token_endpoint_auth_method=token_endpoint_auth_method(auth_config['auth_location']),
         scope=auth_config['scope'],
+        redirect_uri=auth_config['callback_url'],
     )
 
 
