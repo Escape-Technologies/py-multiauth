@@ -5,6 +5,7 @@ from enum import Enum, unique
 from typing import Dict, Optional
 
 from multiauth.entities.http import Location
+from multiauth.entities.providers.webdriver import SeleniumCommand
 
 if sys.version_info >= (3, 8):
     from typing import TypedDict  # pylint: disable=no-name-in-module
@@ -57,11 +58,12 @@ class AuthConfigOAuth(TypedDict):
     authentication_endpoint: Optional[str]
     token_endpoint: Optional[str]
     callback_url: Optional[str]
-    scope: str
+    scope: Optional[str]
     header_prefix: str
     auth_location: AuthOAuthlocation
     location: Location
     state: Optional[str]
+    login_flow: list[SeleniumCommand]
     # challenge_method: Optional[AuthHashAlgorithmOAuth]
     code_verifier: Optional[str]
     headers: Optional[Dict[str, str]]
