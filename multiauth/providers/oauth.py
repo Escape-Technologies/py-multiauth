@@ -1,6 +1,7 @@
 """Implementation of the OAuth authentication schema."""
 
 import time
+import uuid
 from typing import Dict, Tuple, cast
 
 from authlib.integrations.requests_client import OAuth2Session  # type: ignore[import]
@@ -9,8 +10,52 @@ from multiauth.entities.errors import AuthenticationError
 from multiauth.entities.http import Location
 from multiauth.entities.main import AuthResponse, AuthTech
 from multiauth.entities.providers.oauth import AuthConfigOAuth, AuthOAuthGrantType, AuthOAuthlocation, AuthOAuthResponse
-from multiauth.helpers import authentication_portal, token_endpoint_auth_method
+from multiauth.entities.providers.webdriver import SeleniumCommand, SeleniumTest
+from multiauth.helpers import token_endpoint_auth_method
 from multiauth.manager import User
+from multiauth.providers.webdriver.core import load_selenium_command
+from multiauth.providers.webdriver.runner import SeleniumTestRunner
+
+
+def authentication_portal(
+    url: str,
+    callback_url: str,
+    login_flow: list[SeleniumCommand],
+) -> str | None:
+    """This function will open up a browser for the user to enter his credentials during OAuth."""
+
+    with SeleniumTestRunner() as runner:
+        requests = runner.run(
+            SeleniumTest(
+                id=str(uuid.uuid4()),
+                name='oauth portal',
+                commands=[
+                    SeleniumCommand(
+                        id=str(uuid.uuid4()),
+                        command='open',
+                        target=url,
+                        targets=[],
+                        value='',
+                    ),
+                ]
+                + login_flow
+                + [
+                    SeleniumCommand(
+                        id=str(uuid.uuid4()),
+                        command='wait',
+                        target=f'request_url_contains={callback_url}',
+                        targets=[],
+                        value='',
+                    ),
+                ],
+            ),
+        )
+
+        for req in requests:
+            if callback_url in req.url:
+                return req.url
+
+        return None
 
 
 def extract_oauth_token(
@@ -95,6 +140,7 @@ def auth_code_session(
         client_secret,
         token_endpoint_auth_method=token_endpoint_auth_method(auth_config['auth_location']),
         scope=auth_config['scope'],
+        redirect_uri=auth_config['callback_url'],
     )
 
 
@@ -114,12 +160,17 @@ def auth_code_handler(
         code_verifier=auth_config['code_verifier'],
     )
 
+    authorization_response: str | None = None
     # Now we have to pass the authorization URL and the callback URL to the browser in order to fetch what is necessary
     # The if condition is to simply avoid mypy errors
     if auth_config['callback_url'] is not None:
-        exit_code, authorization_response = authentication_portal(authentication_url, auth_config['callback_url'])
-        if exit_code == 0:
-            raise AuthenticationError('Authentication Error. Please complete the authentication')
+        authorization_response = authentication_portal(
+            authentication_url,
+            auth_config['callback_url'],
+            login_flow=auth_config['login_flow'],
+        )
+    if not authorization_response:
+        raise AuthenticationError('Authentication Error. Please complete the authentication')
 
     # Now finally, we have to fetch the access token in order to use it for the applicaiton
     return client.fetch_token(auth_config['token_endpoint'], authorization_response=authorization_response)
@@ -161,12 +212,17 @@ def implicit_handler(
         state=auth_config['state'],
     )
 
+    authorization_response: str | None = None
     # Now we have to pass the authorization URL and the callback URL to the browser in order to fetch what is necessary
     # The if condition is to simply avoid mypy errors
     if auth_config['callback_url'] is not None:
-        exit_code, authorization_response = authentication_portal(authentication_url, auth_config['callback_url'])
-        if exit_code == 0:
-            raise AuthenticationError('Authentication Error. Please complete the authentication')
+        authorization_response = authentication_portal(
+            authentication_url,
+            auth_config['callback_url'],
+            auth_config['login_flow'],
+        )
+    if not authorization_response:
+        raise AuthenticationError('Authentication Error. Please complete the authentication')
 
     return client.fetch_token(authorization_response=authorization_response)
 
@@ -268,6 +324,7 @@ def oauth_config_parser(schema: Dict) -> AuthConfigOAuth:
             'auth_location': AuthOAuthlocation.BODY,
             'location': Location.HEADERS,
             'state': None,
+            'login_flow': [],
             # 'challenge_method': None,
             'code_verifier': None,
             'headers': None,
@@ -295,9 +352,7 @@ def oauth_config_parser(schema: Dict) -> AuthConfigOAuth:
             raise AuthenticationError('Please provide the authenticaiton endpoint')
         auth_config['callback_url'] = schema.get('callback_url')
 
-    if not schema.get('scope'):
-        raise AuthenticationError('Please provide the scope for the authentication')
-    auth_config['scope'] = schema['scope']
+    auth_config['scope'] = schema.get('scope')
 
     if schema.get('header_prefix'):
         auth_config['header_prefix'] = schema['header_prefix']
@@ -308,6 +363,9 @@ def oauth_config_parser(schema: Dict) -> AuthConfigOAuth:
     if not schema.get('location'):
         raise AuthenticationError('Please provide the location')
     auth_config['location'] = Location(schema.get('location'))
+
+    if schema.get('options', {}).get('login_flow'):
+        auth_config['login_flow'] = [load_selenium_command(ele) for ele in schema['options']['login_flow']]
 
     # Options
     if 'options' in schema:

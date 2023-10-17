@@ -7,7 +7,6 @@ import hashlib
 import hmac
 import json
 import re
-import sys
 from json.decoder import JSONDecodeError
 from typing import Any, Dict, Match, Optional, Tuple, Union, cast
 
@@ -18,16 +17,6 @@ from multiauth.entities.errors import AuthenticationError
 from multiauth.entities.main import AuthHashAlgorithmDigest, AuthResponse, AuthTech, JWTToken, Token
 from multiauth.entities.providers.oauth import AuthOAuthlocation
 from multiauth.utils import dict_nested_get
-
-try:
-    from PyQt5.QtCore import QUrl, pyqtSignal  # type: ignore[import]
-    from PyQt5.QtWebEngineCore import QWebEngineUrlRequestInterceptor  # type: ignore[import]
-    from PyQt5.QtWebEngineWidgets import QWebEngineView  # type: ignore[import]
-    from PyQt5.QtWidgets import QApplication, QDesktopWidget  # type: ignore[import]
-
-    PYQT5_ERROR = None
-except ImportError as error:
-    PYQT5_ERROR = error
 
 
 def extract_token(
@@ -145,84 +134,6 @@ def get_secret_hash(
     return base64.standard_b64encode(hmac_obj.digest()).decode('utf-8')
 
 
-# pylint: disable=too-few-public-methods
-def authentication_portal(
-    url: str,
-    callback_url: str,
-) -> Tuple[int, str]:
-    """This function will open up a browser for the user to enter his credentials during OAuth."""
-
-    if not PYQT5_ERROR:
-        raise ImportError('PyQT5 unavailable. Please install it properly.') from PYQT5_ERROR
-
-    class RequestInterceptor(QWebEngineUrlRequestInterceptor):
-
-        """This class is used to intercept all the requests sent my the browser."""
-
-        # Creating the Signal to be sent
-        found: pyqtSignal = pyqtSignal(int)
-
-        # A variable to store the link that was found
-        result: str = ''
-
-        def __init__(self, callback_url: str) -> None:
-            """Constructor."""
-            super().__init__()
-            self.callback_url = callback_url
-
-        # pylint: disable=invalid-name
-        def interceptRequest(self, info: Any) -> None:
-            """Request Interceptor."""
-            if self.callback_url in info.requestUrl().toString():
-                self.result = info.requestUrl().toString()
-
-                # Emit the signal for the main applicaiton to process
-                self.found.emit(1)
-
-    # Creating an application instance and providing it with system parameters
-    app = QApplication(sys.argv)
-
-    # Creating a Web Engine Window
-    browser = QWebEngineView()
-
-    # Giving the window a URL to open and a Title
-    browser.load(QUrl(url))
-    browser.setWindowTitle('Authentication Portal')
-
-    # Resize screen
-    browser.resize(1200, 1000)
-
-    # Taking the Rectangle forming the window
-    geometry = browser.frameGeometry()
-
-    # QDesktopWidget provides information about the screen of the computer
-    # availableGeometry returns the rectangle which forms the screen of the computer
-    # center returns the center point of the screen
-    center_point = QDesktopWidget().availableGeometry().center()
-
-    # Make the Center point of the rectangle the center point of the screen
-    geometry.moveCenter(center_point)
-
-    # move the browser
-    # since move uses the topleft point as a reference, give the top left point of ht browser
-    browser.move(geometry.topLeft())
-
-    # Now we want to create attach the interceptor to the web application
-    request_interceptor = RequestInterceptor(callback_url)
-    browser.page().profile().setUrlRequestInterceptor(request_interceptor)
-
-    # If the string is found, exit the browser
-    request_interceptor.found.connect(app.exit)
-
-    browser.show()
-
-    # It is important to note the exit codes
-    # exit_code '0' means that the application was closed before getting the url
-    # exit_code '1' means that the application was closed forcefully, and we got the URL
-    # So exit_code '1' good :) and exit_code '0' bad :(
-    return app.exec_(), request_interceptor.result
-
-
 def jwt_token_analyzer(token: Token) -> JWTToken:
     """This function transforms a JWT token into a defined datatype."""
 
@@ -233,9 +144,9 @@ def jwt_token_analyzer(token: Token) -> JWTToken:
         raise AuthenticationError('The token provided is not a JWT token') from e
 
     # First of all we need to decrypt the token
-    seperated_token = token.split('.')
-    token_header: str = seperated_token[0]
-    token_payload: str = seperated_token[1]
+    separated_token = token.split('.')
+    token_header: str = separated_token[0]
+    token_payload: str = separated_token[1]
 
     header: Dict = json.loads(base64.urlsafe_b64decode(token_header + '=' * (-len(token_header) % 4)))
     payload: Dict = json.loads(base64.urlsafe_b64decode(token_payload + '=' * (-len(token_payload) % 4)))
