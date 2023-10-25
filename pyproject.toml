@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "py-multiauth"
-version = "2.0.0-rc.16"
+version = "2.0.0-rc.17"
 description = "Python package to interact with multiple authentication services"
 authors = ["Escape Technologies SAS <ping@escape.tech>"]
 maintainers = [
@@ -154,7 +154,6 @@ exclude = [
 ignore = ["E999", "UP015", "S311", "S105"]
 line-length = 120
 target-version = "py311"
-format = "grouped"
 ignore-init-module-imports = true
 task-tags = ["TODO"]
 
