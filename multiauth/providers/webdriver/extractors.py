@@ -1,4 +1,3 @@
-import itertools
 import logging
 import re
 from typing import Any
@@ -19,18 +18,23 @@ def extract_from_request_url(requests: Any, rx: str) -> list[str]:
 def extract_from_request_header(requests: Any, rx: str) -> list[str]:
     res = []
 
-    for header in itertools.chain.from_iterable(request.headers for request in requests):
-        if match := re.search(rx, header):
-            res.append(match.group(1))
+    for request in requests:
+        for header, header_value in request.headers.items():
+            print(header, ': ', header_value)
+            if match := re.search(rx, header + ': ' + header_value):
+                res.append(match.group(1))
 
     return res
 
 
 def extract_from_response_header(requests: Any, rx: str) -> list[str]:
     res = []
-    for header in itertools.chain.from_iterable(request.response.headers for request in requests if request.response):
-        if match := re.search(rx, header):
-            res.append(match.group(1))
+    for request in requests:
+        if not request.response:
+            continue
+        for header, header_value in request.response.headers.items():
+            if match := re.search(rx, header + ': ' + header_value):
+                res.append(match.group(1))
 
     return res
 
