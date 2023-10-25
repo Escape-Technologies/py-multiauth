@@ -20,7 +20,6 @@ def extract_from_request_header(requests: Any, rx: str) -> list[str]:
 
     for request in requests:
         for header, header_value in request.headers.items():
-            print(header, ': ', header_value)
             if match := re.search(rx, header + ': ' + header_value):
                 res.append(match.group(1))
 
