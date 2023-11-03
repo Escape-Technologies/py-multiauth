@@ -77,11 +77,13 @@ class MultiAuth(IMultiAuth):
         users: Optional[Dict] = None,
         authrc: Optional[str] = None,
         logger: Optional[logging.Logger] = None,
+        proxy: Optional[str] = None,
     ) -> None:
         """Initialize the Auth manager."""
 
         self._logger = logger or setup_logger()
         self._authrc = authrc
+        self._proxy = proxy
 
         if auths is None or users is None:
             auths, users = load_authrc(self._logger, authrc)
