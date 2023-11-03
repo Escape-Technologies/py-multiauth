@@ -42,7 +42,7 @@ def auth_handler(
     authentication: AuthTech = user.auth_tech
     response: Optional[AuthResponse] = None
     if authentication == AuthTech.APIKEY:
-        response = apikey_authenticator(user, schema, proxy=proxy)
+        response = apikey_authenticator(user, schema)
 
     elif authentication == AuthTech.AWS:
         response = aws_authenticator(user, schema, proxy=proxy)
