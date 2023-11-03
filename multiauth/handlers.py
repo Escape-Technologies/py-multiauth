@@ -27,6 +27,7 @@ def auth_handler(
     schemas: Dict,
     user: User,
     method: Optional[HTTPMethod] = None,
+    proxy: str | None = None,
 ) -> Optional[AuthResponse]:
     """Handles the authentication and returns the authentication response.
 
@@ -41,33 +42,33 @@ def auth_handler(
     authentication: AuthTech = user.auth_tech
     response: Optional[AuthResponse] = None
     if authentication == AuthTech.APIKEY:
-        response = apikey_authenticator(user, schema)
+        response = apikey_authenticator(user, schema, proxy=proxy)
 
     elif authentication == AuthTech.AWS:
-        response = aws_authenticator(user, schema)
+        response = aws_authenticator(user, schema, proxy=proxy)
 
     elif authentication == AuthTech.BASIC:
         response = basic_authenticator(user, schema)
 
     elif authentication == AuthTech.REST:
-        response = rest_authenticator(user, schema)
+        response = rest_authenticator(user, schema, proxy=proxy)
 
     elif authentication == AuthTech.WEBDRIVER:
-        response = webdriver_authenticator(user, schema)
+        response = webdriver_authenticator(user, schema, proxy=proxy)
 
     # The method parameter added is due to the fact the digest uses the method when hashing
     # Although GraphQL apps use POST by default, we use GET in some of our test
     elif authentication == AuthTech.DIGEST:
-        response = digest_authenticator(user, schema, method)
+        response = digest_authenticator(user, schema, method, proxy=proxy)
 
     elif authentication == AuthTech.GRAPHQL:
-        response = graphql_authenticator(user, schema)
+        response = graphql_authenticator(user, schema, proxy=proxy)
 
     elif authentication == AuthTech.HAWK:
         pass
 
     elif authentication == AuthTech.OAUTH:
-        response = oauth_authenticator(user, schema)
+        response = oauth_authenticator(user, schema, proxy=proxy)
 
     elif authentication == AuthTech.MANUAL:
         response = manual_authenticator(user)
@@ -82,6 +83,7 @@ def reauth_handler(
     schemas: Dict,
     user: User,
     refresh_token: str,
+    proxy: str | None = None,
 ) -> Optional[AuthResponse]:
     """Handles the reauthentication and returns the new authentication response.
 
@@ -95,18 +97,18 @@ def reauth_handler(
 
     # For now we only have reauthentication with OAuth
     if authentication == AuthTech.OAUTH:
-        return oauth_reauthenticator(user, schema, refresh_token)
+        return oauth_reauthenticator(user, schema, refresh_token, proxy=proxy)
 
     if authentication == AuthTech.AWS:
-        return aws_reauthenticator(user, schema, refresh_token)
+        return aws_reauthenticator(user, schema, refresh_token, proxy=proxy)
 
     if authentication == AuthTech.REST:
-        return rest_reauthenticator(user, schema, refresh_token)
+        return rest_reauthenticator(user, schema, refresh_token, proxy=proxy)
 
     if authentication == AuthTech.GRAPHQL:
-        return graphql_reauthenticator(user, schema, refresh_token)
+        return graphql_reauthenticator(user, schema, refresh_token, proxy=proxy)
 
     if authentication == AuthTech.WEBDRIVER:
-        return webdriver_authenticator(user, schema)
+        return webdriver_authenticator(user, schema, proxy=proxy)
 
     return None

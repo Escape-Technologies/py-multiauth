@@ -236,7 +236,7 @@ class MultiAuth(IMultiAuth):
 
         # Call the auth handler
         self._logger.info(f'Authenticating user: {username}')
-        auth_response = auth_handler(self._auths, user_info)
+        auth_response = auth_handler(self._auths, user_info, proxy=self._proxy)
         if auth_response and isinstance(auth_response, Dict):
             self._headers[username] = auth_response['headers']
             self._logger.info(f'Authentication successful for {username}')
@@ -298,12 +298,14 @@ class MultiAuth(IMultiAuth):
                     self._auths,
                     user_info,
                     refresh_token,
+                    proxy=self._proxy,
                 )
 
             else:
                 auth_response = auth_handler(
                     self._auths,
                     user_info,
+                    proxy=self._proxy,
                 )
 
             if auth_response and isinstance(auth_response, Dict):
