@@ -1,5 +1,6 @@
 """Implementation of the OAuth authentication schema."""
 
+import logging
 import time
 import uuid
 from typing import Dict, Tuple, cast
@@ -30,16 +31,8 @@ def authentication_portal(
                 id=str(uuid.uuid4()),
                 name='oauth portal',
                 commands=[
-                    SeleniumCommand(
-                        id=str(uuid.uuid4()),
-                        command='open',
-                        target=url,
-                        targets=[],
-                        value='',
-                    ),
-                ]
-                + login_flow
-                + [
+                    SeleniumCommand(id=str(uuid.uuid4()), command='open', target=url, targets=[], value=''),
+                    *login_flow,
                     SeleniumCommand(
                         id=str(uuid.uuid4()),
                         command='wait',
@@ -413,12 +406,18 @@ def oauth_auth_attach(
 def oauth_authenticator(
     user: User,
     schema: Dict,
+    proxy: str | None = None,
 ) -> AuthResponse:
     """This function is a wrapper function that implements the OAuth authentication schema.
 
     It starts by identifying the grant type and then use the appropriate grant type funtion in order
     to authenticate the user to the application.
     """
+    if proxy:
+        logging.getLogger('multiauth').warning(
+            'Proxy is not supported for this authentication. Continuing without proxy. '
+            'If you want to use proxy you can contribute on https://github.com/Escape-Technologies/py-multiauth/.',
+        )
 
     auth_config = oauth_config_parser(schema)
     return oauth_auth_attach(user, auth_config)
@@ -429,11 +428,17 @@ def oauth_reauthenticator(
     schema: Dict,
     refresh_token: str,
     parse: bool = True,
+    proxy: str | None = None,
 ) -> AuthResponse:
     """This function is a function that implements the OAuth reauthentication.
 
     It takes the schema and user, and it starts the reauthentication process using the refresh token.
     """
+    if proxy:
+        logging.getLogger('multiauth').warning(
+            'Proxy is not supported for this authentication. Continuing without proxy. '
+            'If you want to use proxy you can contribute on https://github.com/Escape-Technologies/py-multiauth/.',
+        )
 
     # Reparse the configuration
     if parse:

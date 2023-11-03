@@ -1,5 +1,6 @@
 """Implementation of the Rest authentication schema."""
 
+import logging
 from typing import Dict, Optional, cast
 
 import jwt
@@ -148,6 +149,7 @@ def rest_auth_attach(
 def rest_authenticator(
     user: User,
     schema: Dict,
+    proxy: str | None = None,
 ) -> AuthResponse:
     """This funciton is a wrapper function that implements the Rest authentication schema.
 
@@ -155,6 +157,11 @@ def rest_authenticator(
     After authenticating, it fetches the token and adds the token to the
     headers along with optional headers in case the user provided them.
     """
+    if proxy:
+        logging.getLogger('multiauth').warning(
+            'Proxy is not supported for this authentication. Continuing without proxy. '
+            'If you want to use proxy you can contribute on https://github.com/Escape-Technologies/py-multiauth/.',
+        )
 
     auth_config = rest_config_parser(schema)
     return rest_auth_attach(user, auth_config)
@@ -164,12 +171,18 @@ def rest_reauthenticator(
     user: User,
     schema: Dict,
     refresh_token: str,
+    proxy: str | None = None,
 ) -> AuthResponse:
     """This funciton is a wrapper function that implements the Rest reauthentication schema.
 
     It takes the user information, the schema information and the refresh token
     and attempts reauthenticating the user using the refresh token
     """
+    if proxy:
+        logging.getLogger('multiauth').warning(
+            'Proxy is not supported for this authentication. Continuing without proxy. '
+            'If you want to use proxy you can contribute on https://github.com/Escape-Technologies/py-multiauth/.',
+        )
 
     # Reparse the configuration
     auth_config = rest_config_parser(schema)

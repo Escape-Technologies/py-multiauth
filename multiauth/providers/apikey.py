@@ -1,5 +1,6 @@
 """Implementation of the API Key authentication schema."""
 
+import logging
 from typing import Dict, cast
 
 from multiauth.entities.errors import AuthenticationError
@@ -85,12 +86,18 @@ def apikey_auth_attach(
 def apikey_authenticator(
     user: User,
     schema: Dict,
+    proxy: str | None = None,
 ) -> AuthResponse:
     """This funciton is a wrapper function that implements the API Key authentication schema.
 
     It simply takes the API key from the user and addes the api key either
     to the header of the HTTP request or as a parameter of the URL
     """
+    if proxy:
+        logging.getLogger('multiauth').warning(
+            'Proxy is not supported for this authentication. Continuing without proxy. '
+            'If you want to use proxy you can contribute on https://github.com/Escape-Technologies/py-multiauth/.',
+        )
 
     auth_config = apikey_config_parser(schema)
     return apikey_auth_attach(user, auth_config)

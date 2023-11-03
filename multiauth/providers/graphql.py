@@ -1,5 +1,6 @@
 """Implementation of the GraphQL authentication schema."""
 
+import logging
 import re
 from typing import Any, Dict, Match, Optional, cast
 
@@ -265,12 +266,18 @@ def graphql_auth_attach(
 def graphql_authenticator(
     user: User,
     schema: Dict,
+    proxy: str | None = None,
 ) -> AuthResponse:
     """This function is a wrapper function that implements the GraphQL authentication schema.
 
     It sends a mutation having the credentials of the user as the arguments to the mutations.
     Once it receives the response, it fetches the tokens and creates the authentication response
     """
+    if proxy:
+        logging.getLogger('multiauth').warning(
+            'Proxy is not supported for this authentication. Continuing without proxy. '
+            'If you want to use proxy you can contribute on https://github.com/Escape-Technologies/py-multiauth/.',
+        )
 
     auth_config = graphql_config_parser(schema)
     return graphql_auth_attach(user, auth_config)
@@ -280,12 +287,18 @@ def graphql_reauthenticator(
     user: User,
     schema: Dict,
     refresh_token: str,
+    proxy: str | None = None,
 ) -> AuthResponse:
     """This function is a wrapper function that implements the GraphQL reauthentication schema.
 
     It takes the user information, the schema information, and the refresh token and attempts to reauthenticate
     by sending the refresh token to a muatation and receiving back an access token and a refresh token.
     """
+    if proxy:
+        logging.getLogger('multiauth').warning(
+            'Proxy is not supported for this authentication. Continuing without proxy. '
+            'If you want to use proxy you can contribute on https://github.com/Escape-Technologies/py-multiauth/.',
+        )
 
     # Reparse the configuration
     auth_config = graphql_config_parser(schema)
