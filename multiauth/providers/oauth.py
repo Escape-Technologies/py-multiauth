@@ -1,6 +1,5 @@
 """Implementation of the OAuth authentication schema."""
 
-import logging
 import time
 import uuid
 from typing import Dict, Tuple, cast
@@ -114,6 +113,7 @@ def extract_oauth_token(
 def auth_code_session(
     user: User,
     auth_config: AuthConfigOAuth,
+    proxy: str | None = None,
 ) -> OAuth2Session:
     """Creates the authentication code seesion."""
 
@@ -135,6 +135,7 @@ def auth_code_session(
         token_endpoint_auth_method=token_endpoint_auth_method(auth_config['auth_location']),
         scope=auth_config['scope'],
         redirect_uri=auth_config['callback_url'],
+        proxies={'http': proxy, 'https': proxy} if proxy else None,
     )
 
 
@@ -175,6 +176,7 @@ def auth_code_handler(
 def implicit_session(
     user: User,
     auth_config: AuthConfigOAuth,
+    proxy: str | None = None,
 ) -> OAuth2Session:
     """Creates the session for implicit authentication."""
 
@@ -191,6 +193,7 @@ def implicit_session(
         client_id,
         token_endpoint_auth_method=token_endpoint_auth_method(auth_config['auth_location']),
         scope=auth_config['scope'],
+        proxies={'http': proxy, 'https': proxy} if proxy else None,
     )
 
 
@@ -202,7 +205,7 @@ def implicit_handler(
     """Handles the implicit authentication OAuth type."""
 
     # First initiate the OAuth session
-    client = implicit_session(user, auth_config)
+    client = implicit_session(user, auth_config, proxy=proxy)
 
     authentication_url, _ = client.create_authorization_url(
         auth_config['authentication_endpoint'],
@@ -228,6 +231,7 @@ def implicit_handler(
 def client_cred_session(
     user: User,
     auth_config: AuthConfigOAuth,
+    proxy: str | None = None,
 ) -> OAuth2Session:
     """Creates the session for client credentials authentication."""
 
@@ -248,17 +252,19 @@ def client_cred_session(
         client_secret,
         token_endpoint_auth_method=token_endpoint_auth_method(auth_config['auth_location']),
         scope=auth_config['scope'],
+        proxies={'http': proxy, 'https': proxy} if proxy else None,
     )
 
 
 def client_cred_handler(
     user: User,
     auth_config: AuthConfigOAuth,
+    proxy: str | None = None,
 ) -> Dict:
     """Handles the client credentials authentication OAuth type."""
 
     # First initiate the OAuth session
-    client = client_cred_session(user, auth_config)
+    client = client_cred_session(user, auth_config, proxy=proxy)
 
     return client.fetch_token(auth_config['token_endpoint'])
 
@@ -266,6 +272,7 @@ def client_cred_handler(
 def password_cred_session(
     user: User,
     auth_config: AuthConfigOAuth,
+    proxy: str | None = None,
 ) -> Tuple[OAuth2Session, str, str]:
     """Creates the session for password credentials authentication."""
 
@@ -292,6 +299,7 @@ def password_cred_session(
         client_secret,
         token_endpoint_auth_method=token_endpoint_auth_method(auth_config['auth_location']),
         scope=auth_config['scope'],
+        proxies={'http': proxy, 'https': proxy} if proxy else None,
     )
 
     return client, client_username, client_password
@@ -300,10 +308,11 @@ def password_cred_session(
 def password_cred_handler(
     user: User,
     auth_config: AuthConfigOAuth,
+    proxy: str | None = None,
 ) -> Dict:
     """Handles the client credentials authentication OAuth type."""
 
-    client, client_username, client_password = password_cred_session(user, auth_config)
+    client, client_username, client_password = password_cred_session(user, auth_config, proxy=proxy)
 
     return client.fetch_token(auth_config['token_endpoint'], username=client_username, password=client_password)
 
@@ -393,7 +402,7 @@ def oauth_auth_attach(
         oauth_response = implicit_handler(user, auth_config, proxy=proxy)
 
     elif grant_type == AuthOAuthGrantType.CLIENT_CRED:
-        oauth_response = client_cred_handler(user, auth_config)
+        oauth_response = client_cred_handler(user, auth_config, proxy=proxy)
 
     elif grant_type == AuthOAuthGrantType.PASSWORD_CRED:
         oauth_response = password_cred_handler(user, auth_config)
@@ -419,11 +428,6 @@ def oauth_authenticator(
     It starts by identifying the grant type and then use the appropriate grant type funtion in order
     to authenticate the user to the application.
     """
-    if proxy:
-        logging.getLogger('multiauth').warning(
-            'Proxy is not fully implemented for this authentication. '
-            'If you want to use proxy you can contribute on https://github.com/Escape-Technologies/py-multiauth/.',
-        )
 
     auth_config = oauth_config_parser(schema)
     return oauth_auth_attach(user, auth_config, proxy=proxy)
@@ -440,11 +444,6 @@ def oauth_reauthenticator(
 
     It takes the schema and user, and it starts the reauthentication process using the refresh token.
     """
-    if proxy:
-        logging.getLogger('multiauth').warning(
-            'Proxy is not fully implemented for this authentication. '
-            'If you want to use proxy you can contribute on https://github.com/Escape-Technologies/py-multiauth/.',
-        )
 
     # Reparse the configuration
     if parse:
@@ -456,16 +455,16 @@ def oauth_reauthenticator(
     # an authentication token endpoint as input
 
     if auth_config['grant_type'] in (AuthOAuthGrantType.AUTH_CODE, AuthOAuthGrantType.REFRESH_TOKEN):
-        client = auth_code_session(user, auth_config)
+        client = auth_code_session(user, auth_config, proxy=proxy)
 
     elif auth_config['grant_type'] == AuthOAuthGrantType.CLIENT_CRED:
-        client = client_cred_session(user, auth_config)
+        client = client_cred_session(user, auth_config, proxy=proxy)
 
     elif auth_config['grant_type'] == AuthOAuthGrantType.PASSWORD_CRED:
-        client, _, _ = password_cred_session(user, auth_config)
+        client, _, _ = password_cred_session(user, auth_config, proxy=proxy)
 
     elif auth_config['grant_type'] == AuthOAuthGrantType.IMPLICIT:
-        client = implicit_session(user, auth_config)
+        client = implicit_session(user, auth_config, proxy=proxy)
 
     if auth_config['token_endpoint']:
         new_token = client.refresh_token(auth_config['token_endpoint'], refresh_token)
