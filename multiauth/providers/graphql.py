@@ -1,6 +1,5 @@
 """Implementation of the GraphQL authentication schema."""
 
-import logging
 import re
 from typing import Any, Dict, Match, Optional, cast
 
@@ -142,6 +141,7 @@ def graphql_config_parser(schema: Dict) -> AuthConfigGraphQL:
 def graphql_auth_attach(
     user: User,
     auth_config: AuthConfigGraphQL,
+    proxy: str | None = None,
 ) -> AuthResponse:
     """This function attaches the user credentials to the schema and generates the proper authentication response."""
 
@@ -157,7 +157,13 @@ def graphql_auth_attach(
         data = {'query': graphql_query['graphql_query'], 'variables': graphql_query['graphql_variables']}
 
     # Now we need to send the request
-    response = requests.request(auth_config['method'], auth_config['url'], json=data, timeout=5)
+    response = requests.request(
+        auth_config['method'],
+        auth_config['url'],
+        json=data,
+        timeout=5,
+        proxies={'http': proxy, 'https': proxy} if proxy else None,
+    )
 
     # If there is a cookie that is fetched, added it to the auth response header
     cookie_header = response.cookies.get_dict()  # type: ignore[no-untyped-call]
@@ -273,14 +279,9 @@ def graphql_authenticator(
     It sends a mutation having the credentials of the user as the arguments to the mutations.
     Once it receives the response, it fetches the tokens and creates the authentication response
     """
-    if proxy:
-        logging.getLogger('multiauth').warning(
-            'Proxy is not supported for this authentication. Continuing without proxy. '
-            'If you want to use proxy you can contribute on https://github.com/Escape-Technologies/py-multiauth/.',
-        )
 
     auth_config = graphql_config_parser(schema)
-    return graphql_auth_attach(user, auth_config)
+    return graphql_auth_attach(user, auth_config, proxy=proxy)
 
 
 def graphql_reauthenticator(
@@ -294,11 +295,6 @@ def graphql_reauthenticator(
     It takes the user information, the schema information, and the refresh token and attempts to reauthenticate
     by sending the refresh token to a muatation and receiving back an access token and a refresh token.
     """
-    if proxy:
-        logging.getLogger('multiauth').warning(
-            'Proxy is not supported for this authentication. Continuing without proxy. '
-            'If you want to use proxy you can contribute on https://github.com/Escape-Technologies/py-multiauth/.',
-        )
 
     # Reparse the configuration
     auth_config = graphql_config_parser(schema)
@@ -326,7 +322,13 @@ def graphql_reauthenticator(
         data = {'query': graphql_query['graphql_query'], 'variables': graphql_query['graphql_variables']}
 
     # Now we need to send the request
-    response = requests.request(auth_config['method'], auth_config['url'], json=data, timeout=5)
+    response = requests.request(
+        auth_config['method'],
+        auth_config['url'],
+        json=data,
+        timeout=5,
+        proxies={'http': proxy, 'https': proxy} if proxy else None,
+    )
 
     # If there is a cookie that is fetched, added it to the auth response header
     cookie_header = response.cookies.get_dict()  # type: ignore[no-untyped-call]

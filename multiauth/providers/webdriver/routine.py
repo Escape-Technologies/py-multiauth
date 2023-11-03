@@ -67,7 +67,7 @@ def webdriver_authenticator(
     logger.info(f'Webdriver authentication using Multiauth {__version__}')
     logger.info(f'Executing test: {selenium_test.name}')
 
-    with SeleniumTestRunner() as r:
+    with SeleniumTestRunner(proxy) as r:
         requests: list = r.run(selenium_test)
 
     logger.info(f'Finished executing Selenium test. Sent `{len(requests)}` requests')

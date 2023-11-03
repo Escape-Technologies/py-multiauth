@@ -59,7 +59,7 @@ def auth_handler(
     # The method parameter added is due to the fact the digest uses the method when hashing
     # Although GraphQL apps use POST by default, we use GET in some of our test
     elif authentication == AuthTech.DIGEST:
-        response = digest_authenticator(user, schema, method, proxy=proxy)
+        response = digest_authenticator(user, schema, method)
 
     elif authentication == AuthTech.GRAPHQL:
         response = graphql_authenticator(user, schema, proxy=proxy)

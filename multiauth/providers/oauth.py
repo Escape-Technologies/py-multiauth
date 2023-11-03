@@ -22,10 +22,11 @@ def authentication_portal(
     url: str,
     callback_url: str,
     login_flow: list[SeleniumCommand],
+    proxy: str | None = None,
 ) -> str | None:
     """This function will open up a browser for the user to enter his credentials during OAuth."""
 
-    with SeleniumTestRunner() as runner:
+    with SeleniumTestRunner(proxy=proxy) as runner:
         requests = runner.run(
             SeleniumTest(
                 id=str(uuid.uuid4()),
@@ -140,6 +141,7 @@ def auth_code_session(
 def auth_code_handler(
     user: User,
     auth_config: AuthConfigOAuth,
+    proxy: str | None = None,
 ) -> Dict:
     """Handles the authentication code OAuth type."""
 
@@ -161,6 +163,7 @@ def auth_code_handler(
             authentication_url,
             auth_config['callback_url'],
             login_flow=auth_config['login_flow'],
+            proxy=proxy,
         )
     if not authorization_response:
         raise AuthenticationError('Authentication Error. Please complete the authentication')
@@ -194,6 +197,7 @@ def implicit_session(
 def implicit_handler(
     user: User,
     auth_config: AuthConfigOAuth,
+    proxy: str | None = None,
 ) -> Dict:
     """Handles the implicit authentication OAuth type."""
 
@@ -213,6 +217,7 @@ def implicit_handler(
             authentication_url,
             auth_config['callback_url'],
             auth_config['login_flow'],
+            proxy=proxy,
         )
     if not authorization_response:
         raise AuthenticationError('Authentication Error. Please complete the authentication')
@@ -372,6 +377,7 @@ def oauth_config_parser(schema: Dict) -> AuthConfigOAuth:
 def oauth_auth_attach(
     user: User,
     auth_config: AuthConfigOAuth,
+    proxy: str | None = None,
 ) -> AuthResponse:
     """This function attaches the user credentials to the schema and generates the proper authentication
     response according to the grant type."""
@@ -381,10 +387,10 @@ def oauth_auth_attach(
     oauth_response: Dict = {}
 
     if grant_type == AuthOAuthGrantType.AUTH_CODE:
-        oauth_response = auth_code_handler(user, auth_config)
+        oauth_response = auth_code_handler(user, auth_config, proxy=proxy)
 
     elif grant_type == AuthOAuthGrantType.IMPLICIT:
-        oauth_response = implicit_handler(user, auth_config)
+        oauth_response = implicit_handler(user, auth_config, proxy=proxy)
 
     elif grant_type == AuthOAuthGrantType.CLIENT_CRED:
         oauth_response = client_cred_handler(user, auth_config)
@@ -398,7 +404,7 @@ def oauth_auth_attach(
         if not user.credentials.get('refresh_token'):
             raise AuthenticationError('Please provide the user with refresh token')
         refresh_token = user.credentials['refresh_token']
-        return oauth_reauthenticator(user, cast(Dict, auth_config), refresh_token, parse=False)
+        return oauth_reauthenticator(user, cast(Dict, auth_config), refresh_token, parse=False, proxy=proxy)
 
     return extract_oauth_token(user, auth_config, oauth_response)
 
@@ -415,12 +421,12 @@ def oauth_authenticator(
     """
     if proxy:
         logging.getLogger('multiauth').warning(
-            'Proxy is not supported for this authentication. Continuing without proxy. '
+            'Proxy is not fully implemented for this authentication. '
             'If you want to use proxy you can contribute on https://github.com/Escape-Technologies/py-multiauth/.',
         )
 
     auth_config = oauth_config_parser(schema)
-    return oauth_auth_attach(user, auth_config)
+    return oauth_auth_attach(user, auth_config, proxy=proxy)
 
 
 def oauth_reauthenticator(
@@ -436,7 +442,7 @@ def oauth_reauthenticator(
     """
     if proxy:
         logging.getLogger('multiauth').warning(
-            'Proxy is not supported for this authentication. Continuing without proxy. '
+            'Proxy is not fully implemented for this authentication. '
             'If you want to use proxy you can contribute on https://github.com/Escape-Technologies/py-multiauth/.',
         )
 
@@ -469,4 +475,4 @@ def oauth_reauthenticator(
     if auth_config['grant_type'] == AuthOAuthGrantType.REFRESH_TOKEN and not auth_config['token_endpoint']:
         raise AuthenticationError('Please provide the token endpoint')
 
-    return oauth_auth_attach(user, auth_config)
+    return oauth_auth_attach(user, auth_config, proxy=proxy)

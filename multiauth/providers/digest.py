@@ -1,7 +1,6 @@
 """Implementation of the Digest authentication schema."""
 
 import hashlib
-import logging
 import os
 import time
 from typing import Dict, Optional
@@ -251,7 +250,6 @@ def digest_authenticator(
     user: User,
     schema: Dict,
     method: Optional[HTTPMethod],
-    proxy: str | None = None,
 ) -> AuthResponse:
     """This function is a wrapper function that implements the Digest authentication schema.
 
@@ -259,11 +257,6 @@ def digest_authenticator(
     for the digest from the server using the WWW-Authenticate. After that,
     it sends the credentials using the options provided from the server.
     """
-    if proxy:
-        logging.getLogger('multiauth').warning(
-            'Proxy is not supported for this authentication. Continuing without proxy. '
-            'If you want to use proxy you can contribute on https://github.com/Escape-Technologies/py-multiauth/.',
-        )
 
     auth_config = digest_config_parser(schema)
     return digest_auth_attach(user, auth_config, method)
