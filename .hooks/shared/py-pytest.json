@@ -1,5 +1,5 @@
 {
   "name": "python: pytest",
-  "command": "pytest tests",
+  "command": "poetry run pytest tests",
   "onlyOn": "**/*.py"
 }
