@@ -699,6 +699,8 @@
 
 ---
 
+- Login Flow (`login_flow`): Webdriver login flow, taken from the webdriver authentication (ALPHA)..
+
 - State (`state`): A value that is used to prevent cross-site request forgery.
 
 - Code Verifier (`code_verifier`): The code verifier of the token.
@@ -850,6 +852,7 @@
             "token_endpoint": "**string**",
             "callback_url": "**string**",
             "options": {
+                "login_flow": "**array**",
                 "state": "**string**",
                 "code_verifier": "**string**",
                 "headers": {
@@ -881,10 +884,10 @@
             "grant_type": "refresh_token",
             "auth_location": "**string**",
             "location": "**string**",
-            "scope": "**string**",
             "token_endpoint": "**string**",
             "callback_url": "**string**",
             "options": {
+                "login_flow": "**array**",
                 "state": "**string**",
                 "code_verifier": "**string**",
                 "headers": {
@@ -916,11 +919,11 @@
             "grant_type": "auth_code",
             "auth_location": "**string**",
             "location": "**string**",
-            "scope": "**string**",
             "authentication_endpoint": "**string**",
             "token_endpoint": "**string**",
             "callback_url": "**string**",
             "options": {
+                "login_flow": "**array**",
                 "state": "**string**",
                 "code_verifier": "**string**",
                 "headers": {
@@ -952,11 +955,11 @@
             "grant_type": "client_cred",
             "auth_location": "**string**",
             "location": "**string**",
-            "scope": "**string**",
             "authentication_endpoint": "**string**",
             "token_endpoint": "**string**",
             "callback_url": "**string**",
             "options": {
+                "login_flow": "**array**",
                 "state": "**string**",
                 "code_verifier": "**string**",
                 "headers": {
@@ -988,9 +991,9 @@
             "grant_type": "implicit",
             "auth_location": "**string**",
             "location": "**string**",
-            "scope": "**string**",
             "authentication_endpoint": "**string**",
             "options": {
+                "login_flow": "**array**",
                 "state": "**string**",
                 "code_verifier": "**string**",
                 "headers": {
@@ -1022,9 +1025,9 @@
             "grant_type": "password_cred",
             "auth_location": "**string**",
             "location": "**string**",
-            "scope": "**string**",
             "token_endpoint": "**string**",
             "options": {
+                "login_flow": "**array**",
                 "state": "**string**",
                 "code_verifier": "**string**",
                 "headers": {
