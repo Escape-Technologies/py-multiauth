@@ -6,7 +6,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
-from seleniumwire import webdriver  # type: ignore[import]
+from seleniumwire import webdriver  # type: ignore[import-untyped]
 
 from multiauth.entities.errors import AuthenticationError
 from multiauth.providers.webdriver.core import SeleniumCommand
