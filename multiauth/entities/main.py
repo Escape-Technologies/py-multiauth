@@ -116,7 +116,7 @@ class RCFile(TypedDict):
 
     """RC File."""
 
-    auth: Dict
+    methods: Dict
     users: Dict
 
 

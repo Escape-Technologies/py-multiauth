@@ -68,7 +68,7 @@
             "refresh_token": "**string**"
         }
     },
-    "auth": {
+    "methods": {
         "schema1": {
             "tech": "aws",
             "type": "**string**",
@@ -106,7 +106,7 @@
             "refresh_token": "**string**"
         }
     },
-    "auth": {
+    "methods": {
         "schema1": {
             "tech": "aws",
             "type": "SRP",
@@ -141,7 +141,7 @@
             "refresh_token": "**string**"
         }
     },
-    "auth": {
+    "methods": {
         "schema1": {
             "tech": "aws",
             "type": "Password Authentication",
@@ -175,7 +175,7 @@
             "refresh_token": "**string**"
         }
     },
-    "auth": {
+    "methods": {
         "schema1": {
             "tech": "aws",
             "type": "AWS Signature",
@@ -209,7 +209,7 @@
             "refresh_token": "**string**"
         }
     },
-    "auth": {
+    "methods": {
         "schema1": {
             "tech": "aws",
             "type": "Refresh Token",
@@ -316,7 +316,7 @@
             "**password**": "**1234**"
         }
     },
-    "auth": {
+    "methods": {
         "schema1": {
             "tech": "rest",
             "url": "**string**",
@@ -374,7 +374,7 @@
             "password": "**string**"
         }
     },
-    "auth": {
+    "methods": {
         "schema1": {
             "tech": "digest",
             "url": "**string**",
@@ -457,7 +457,7 @@
             "**password**": "**1234**"
         }
     },
-    "auth": {
+    "methods": {
         "schema1": {
             "tech": "graphql",
             "url": "**string**",
@@ -552,7 +552,7 @@
             }
         }
     },
-    "auth": {
+    "methods": {
         "schema1": {
             "tech": "manual"
         }
@@ -586,7 +586,7 @@
             }
         }
     },
-    "auth": {
+    "methods": {
         "schema1": {
             "tech": "manual"
         }
@@ -629,7 +629,7 @@
             "password": "**string**"
         }
     },
-    "auth": {
+    "methods": {
         "schema1": {
             "tech": "basic",
             "options": {
@@ -699,6 +699,8 @@
 
 ---
 
+- Login Flow (`login_flow`): Webdriver login flow, taken from the webdriver authentication (ALPHA)..
+
 - State (`state`): A value that is used to prevent cross-site request forgery.
 
 - Code Verifier (`code_verifier`): The code verifier of the token.
@@ -723,7 +725,7 @@
             "api_key": "**string**"
         }
     },
-    "auth": {
+    "methods": {
         "schema1": {
             "tech": "api_key",
             "location": "**string**",
@@ -768,7 +770,7 @@
             "auth": "schema1"
         }
     },
-    "auth": {
+    "methods": {
         "schema1": {
             "tech": "public"
         }
@@ -838,7 +840,7 @@
             "refresh_token": "**string**"
         }
     },
-    "auth": {
+    "methods": {
         "schema1": {
             "tech": "oauth",
             "grant_type": "**string**",
@@ -850,6 +852,7 @@
             "token_endpoint": "**string**",
             "callback_url": "**string**",
             "options": {
+                "login_flow": "**array**",
                 "state": "**string**",
                 "code_verifier": "**string**",
                 "headers": {
@@ -875,16 +878,16 @@
             "refresh_token": "**string**"
         }
     },
-    "auth": {
+    "methods": {
         "schema1": {
             "tech": "oauth",
             "grant_type": "refresh_token",
             "auth_location": "**string**",
             "location": "**string**",
-            "scope": "**string**",
             "token_endpoint": "**string**",
             "callback_url": "**string**",
             "options": {
+                "login_flow": "**array**",
                 "state": "**string**",
                 "code_verifier": "**string**",
                 "headers": {
@@ -910,17 +913,17 @@
             "refresh_token": "**string**"
         }
     },
-    "auth": {
+    "methods": {
         "schema1": {
             "tech": "oauth",
             "grant_type": "auth_code",
             "auth_location": "**string**",
             "location": "**string**",
-            "scope": "**string**",
             "authentication_endpoint": "**string**",
             "token_endpoint": "**string**",
             "callback_url": "**string**",
             "options": {
+                "login_flow": "**array**",
                 "state": "**string**",
                 "code_verifier": "**string**",
                 "headers": {
@@ -946,17 +949,17 @@
             "refresh_token": "**string**"
         }
     },
-    "auth": {
+    "methods": {
         "schema1": {
             "tech": "oauth",
             "grant_type": "client_cred",
             "auth_location": "**string**",
             "location": "**string**",
-            "scope": "**string**",
             "authentication_endpoint": "**string**",
             "token_endpoint": "**string**",
             "callback_url": "**string**",
             "options": {
+                "login_flow": "**array**",
                 "state": "**string**",
                 "code_verifier": "**string**",
                 "headers": {
@@ -982,15 +985,15 @@
             "refresh_token": "**string**"
         }
     },
-    "auth": {
+    "methods": {
         "schema1": {
             "tech": "oauth",
             "grant_type": "implicit",
             "auth_location": "**string**",
             "location": "**string**",
-            "scope": "**string**",
             "authentication_endpoint": "**string**",
             "options": {
+                "login_flow": "**array**",
                 "state": "**string**",
                 "code_verifier": "**string**",
                 "headers": {
@@ -1016,15 +1019,15 @@
             "refresh_token": "**string**"
         }
     },
-    "auth": {
+    "methods": {
         "schema1": {
             "tech": "oauth",
             "grant_type": "password_cred",
             "auth_location": "**string**",
             "location": "**string**",
-            "scope": "**string**",
             "token_endpoint": "**string**",
             "options": {
+                "login_flow": "**array**",
                 "state": "**string**",
                 "code_verifier": "**string**",
                 "headers": {
@@ -1050,7 +1053,7 @@
 
 
 
-- Extract Location (`extract_location`): The location in the requests and responses sequence to extract the token from.. The values that this parameter can take are: 
+- Extract Location (`extract_location`): The location in the requests and responses sequence to extract the token from. The values that this parameter can take are: 
   - `RequestURL` 
   - `RequestHeader` 
   - `RequestBody` 
@@ -1059,7 +1062,7 @@
 
 
 
-- Extract regex (`extract_regex`): The regex to match the token inside the `extract_location` (from any tuple request/response if `extract_match_index` is not specified).
+- Extract regex (`extract_regex`): The regex to match the token inside the `extract_location` (from any tuple request/response if `extract_match_index` is not specified). Use [Regex101](https://regex101.com/) in `Python` mode to test your regex..
 
 
 
@@ -1069,13 +1072,11 @@
 
 ---
 
-- Output Format (`output_format`): Header output format that will be used to serve subsequent requests
-default: `Authorization: Bearer @token@`
-`@token` is containing the previously extracted token.
+- Output Format (`output_format`): Header output format that will be used to serve subsequent requests, where @token` is containing the previously extracted token. By default, `Authorization: Bearer @token@` is used.
 
 - Token Lifetime (in seconds) (`token_lifetime`): Duration of the token in seconds, after which it will be refreshed.
 
-- Extract Index (`extract_match_index`): If `extract_regex` matched `extract_location` in multiple requests, this sets the index of the match to use. Can be `-1` for the last match..
+- Extract Index (`extract_match_index`): If `extract_regex` matched `extract_location` in multiple requests, this sets the index of the match to use. Can be `-1` for the last match.
 
 ### Template
 
@@ -1094,7 +1095,7 @@ default: `Authorization: Bearer @token@`
             "auth": "schema1"
         }
     },
-    "auth": {
+    "methods": {
         "schema1": {
             "tech": "webdriver",
             "extract_location": "**string**",
