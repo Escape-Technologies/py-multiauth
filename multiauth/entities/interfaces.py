@@ -49,6 +49,7 @@ class IUser(ABC):
 class IMultiAuth(ABC):
     _logger: logging.Logger
     _authrc: Optional[str]
+    _proxy: Optional[str]
 
     _manager: Any
     _headers: Dict[str, Dict]

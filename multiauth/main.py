@@ -80,11 +80,13 @@ class MultiAuth(IMultiAuth):
         users: Optional[Dict] = None,
         authrc: Optional[str] = None,
         logger: Optional[logging.Logger] = None,
+        proxy: Optional[str] = None,
     ) -> None:
         """Initialize the Auth manager."""
 
         self._logger = logger or setup_logger()
         self._authrc = authrc
+        self._proxy = proxy
 
         if methods is None or users is None:
             methods, users = load_authrc(self._logger, authrc)
@@ -237,7 +239,7 @@ class MultiAuth(IMultiAuth):
 
         # Call the auth handler
         self._logger.info(f'Authenticating user: {username}')
-        auth_response = auth_handler(self._methods, user_info)
+        auth_response = auth_handler(self._methods, user_info, proxy=self._proxy)
         if auth_response and isinstance(auth_response, Dict):
             self._headers[username] = auth_response['headers']
             self._logger.info(f'Authentication successful for {username}')
@@ -299,12 +301,14 @@ class MultiAuth(IMultiAuth):
                     self._methods,
                     user_info,
                     refresh_token,
+                    proxy=self._proxy,
                 )
 
             else:
                 auth_response = auth_handler(
                     self._methods,
                     user_info,
+                    proxy=self._proxy,
                 )
 
             if auth_response and isinstance(auth_response, Dict):

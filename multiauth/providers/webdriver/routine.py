@@ -51,14 +51,23 @@ def webdriver_config_parser(schema: dict) -> WebdriverConfig:
     return auth_config
 
 
-def webdriver_authenticator(user: User, schema: dict) -> AuthResponse:
+def webdriver_authenticator(
+    user: User,
+    schema: dict,
+    proxy: str | None = None,
+) -> AuthResponse:
+    if proxy:
+        logger.warning(
+            'Proxy is not supported for this authentication. Continuing without proxy. '
+            'If you want to use proxy you can contribute on https://github.com/Escape-Technologies/py-multiauth/.',
+        )
     auth_config = webdriver_config_parser(schema)
 
     selenium_test = auth_config.project.tests[0]
     logger.info(f'Webdriver authentication using Multiauth {__version__}')
     logger.info(f'Executing test: {selenium_test.name}')
 
-    with SeleniumTestRunner() as r:
+    with SeleniumTestRunner(proxy) as r:
         requests: list = r.run(selenium_test)
 
     logger.info(f'Finished executing Selenium test. Sent `{len(requests)}` requests')

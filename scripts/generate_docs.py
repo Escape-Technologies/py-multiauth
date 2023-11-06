@@ -106,7 +106,7 @@ def generate_auth_docs() -> None:  # noqa: C901
                             'type': 'string',
                             'description': '',
                             'value': property_value,
-                            'enum': '',
+                            'enum': [],
                         },
                     ),
                 )

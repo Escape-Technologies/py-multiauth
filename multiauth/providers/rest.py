@@ -59,6 +59,7 @@ def rest_config_parser(schema: Dict) -> AuthConfigRest:
 def rest_auth_attach(
     user: User,
     auth_config: AuthConfigRest,
+    proxy: str | None = None,
 ) -> AuthResponse:
     """This function attaches the user credentials to the schema and generates the proper authentication response."""
 
@@ -68,7 +69,13 @@ def rest_auth_attach(
         raise AuthenticationError('Configuration file error. Missing credentials')
 
     # Now we need to send the request
-    response = requests.request(auth_config['method'], auth_config['url'], json=credentials, timeout=5)
+    response = requests.request(
+        auth_config['method'],
+        auth_config['url'],
+        json=credentials,
+        timeout=5,
+        proxies={'http': proxy, 'https': proxy} if proxy else None,
+    )
 
     # If there is a cookie that is fetched, added it to the auth response header
     cookie_header = response.cookies.get_dict()  # type: ignore[no-untyped-call]
@@ -148,6 +155,7 @@ def rest_auth_attach(
 def rest_authenticator(
     user: User,
     schema: Dict,
+    proxy: str | None = None,
 ) -> AuthResponse:
     """This funciton is a wrapper function that implements the Rest authentication schema.
 
@@ -157,13 +165,14 @@ def rest_authenticator(
     """
 
     auth_config = rest_config_parser(schema)
-    return rest_auth_attach(user, auth_config)
+    return rest_auth_attach(user, auth_config, proxy=proxy)
 
 
 def rest_reauthenticator(
     user: User,
     schema: Dict,
     refresh_token: str,
+    proxy: str | None = None,
 ) -> AuthResponse:
     """This funciton is a wrapper function that implements the Rest reauthentication schema.
 
@@ -181,7 +190,13 @@ def rest_reauthenticator(
     payload: Dict = {auth_config['refresh_token_name']: refresh_token}
 
     # Now we have to send the payload
-    response = requests.request(auth_config['method'], auth_config['refresh_url'], json=payload, timeout=5)
+    response = requests.request(
+        auth_config['method'],
+        auth_config['refresh_url'],
+        json=payload,
+        timeout=5,
+        proxies={'http': proxy, 'https': proxy} if proxy else None,
+    )
 
     # If there is a cookie that is fetched, added it to the auth response header
     cookie_header = response.cookies.get_dict()  # type: ignore[no-untyped-call]

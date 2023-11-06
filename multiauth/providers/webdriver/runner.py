@@ -4,7 +4,7 @@ from types import TracebackType
 from typing import Any, Self
 
 from selenium.webdriver import firefox
-from seleniumwire import webdriver  # type: ignore[import]
+from seleniumwire import webdriver  # type: ignore[import-untyped]
 
 from multiauth.providers.webdriver.command import SeleniumCommandHandler
 from multiauth.providers.webdriver.core import SeleniumTest
@@ -13,10 +13,12 @@ from multiauth.providers.webdriver.core import SeleniumTest
 class SeleniumTestRunner:
     driver: webdriver.Firefox | None
     logger: logging.Logger
+    proxy: str | None
 
-    def __init__(self) -> None:
+    def __init__(self, proxy: str | None = None) -> None:
         self.driver = None
         self.logger = logging.getLogger('multiauth.providers.webdriver.seleniumtestrunner')
+        self.proxy = proxy
 
     def __enter__(self) -> Self:
         return self
@@ -77,10 +79,8 @@ class SeleniumTestRunner:
 
         driver = webdriver.Firefox(options=firefox_options)
 
-        if proxy := os.getenv('ALL_PROXY'):
-            driver.proxy = {
-                'https': proxy,
-            }
+        if self.proxy:
+            driver.proxy = {'http': self.proxy, 'https': self.proxy}
 
         self.logger.info('Prepared firefox profile..')
 
