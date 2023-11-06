@@ -7,7 +7,7 @@ import requests
 
 from multiauth.entities.errors import AuthenticationError
 from multiauth.entities.main import AuthResponse, AuthTech
-from multiauth.entities.providers.rest import AuthConfigRest
+from multiauth.entities.providers.rest import AuthConfigRest, CredentialsEncoding
 from multiauth.helpers import extract_token
 from multiauth.manager import User
 
@@ -28,6 +28,7 @@ def rest_config_parser(schema: Dict) -> AuthConfigRest:
             'header_name': None,
             'header_prefix': None,
             'headers': None,
+            'credentials_encoding': CredentialsEncoding.JSON,
         },
     )
 
@@ -52,6 +53,14 @@ def rest_config_parser(schema: Dict) -> AuthConfigRest:
         auth_config['header_prefix'] = schema['options'].get('header_prefix')
         auth_config['headers'] = schema['options'].get('headers')
 
+        if credentials_encoding := schema['options'].get('credentials_encoding'):
+            for encoding in CredentialsEncoding:
+                if encoding.value == credentials_encoding:
+                    auth_config['credentials_encoding'] = encoding
+                    break
+            else:
+                raise AuthenticationError('Invalid credentials encoding')
+
     return auth_config
 
 
@@ -62,19 +71,23 @@ def rest_auth_attach(
     proxy: str | None = None,
 ) -> AuthResponse:
     """This function attaches the user credentials to the schema and generates the proper authentication response."""
+    if not user.credentials:
+        raise AuthenticationError('Configuration file error. Missing credentials')
 
     # First we have to take the credentials from the currently working user
-    credentials = user.credentials
-    if not credentials:
-        raise AuthenticationError('Configuration file error. Missing credentials')
+    credentials: dict[str, dict] = {}
+    if auth_config['credentials_encoding'] == CredentialsEncoding.JSON:
+        credentials = {'json': user.credentials}
+    elif auth_config['credentials_encoding'] == CredentialsEncoding.FORM:
+        credentials = {'data': user.credentials}
 
     # Now we need to send the request
     response = requests.request(
         auth_config['method'],
         auth_config['url'],
-        json=credentials,
         timeout=5,
         proxies={'http': proxy, 'https': proxy} if proxy else None,
+        **credentials,  # type: ignore[arg-type]
     )
 
     # If there is a cookie that is fetched, added it to the auth response header
@@ -189,13 +202,20 @@ def rest_reauthenticator(
         raise AuthenticationError('Refresh Token found, please provide the refresh token name and the refresh URL')
     payload: Dict = {auth_config['refresh_token_name']: refresh_token}
 
+    # First we have to take the credentials from the currently working user
+    credentials: dict[str, dict] = {}
+    if auth_config['credentials_encoding'] == CredentialsEncoding.JSON:
+        credentials = {'json': payload}
+    elif auth_config['credentials_encoding'] == CredentialsEncoding.FORM:
+        credentials = {'data': payload}
+
     # Now we have to send the payload
     response = requests.request(
         auth_config['method'],
         auth_config['refresh_url'],
-        json=payload,
         timeout=5,
         proxies={'http': proxy, 'https': proxy} if proxy else None,
+        **credentials,  # type: ignore[arg-type]
     )
 
     # If there is a cookie that is fetched, added it to the auth response header

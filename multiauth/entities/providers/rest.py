@@ -1,6 +1,7 @@
 """Rest provider."""
 
 import sys
+from enum import Enum
 from typing import Dict, Optional
 
 from multiauth.entities.http import HTTPMethod
@@ -9,6 +10,11 @@ if sys.version_info >= (3, 8):
     from typing import TypedDict  # pylint: disable=no-name-in-module
 else:
     from typing_extensions import TypedDict
+
+
+class CredentialsEncoding(Enum):
+    JSON = 'json'
+    FORM = 'www-form-urlencoded'
 
 
 class AuthConfigRest(TypedDict):
@@ -24,3 +30,4 @@ class AuthConfigRest(TypedDict):
     header_name: Optional[str]
     header_prefix: Optional[str]
     headers: Optional[Dict[str, str]]
+    credentials_encoding: CredentialsEncoding
