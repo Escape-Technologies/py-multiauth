@@ -31,10 +31,9 @@ jobs:
         if: always()
         run: |
           source .venv/bin/activate
-          isort -m 9 --line-length 159 $MODULE_NAME tests --check-only
-          pylint --load-plugins pylint_quotes $MODULE_NAME tests
-          yapf -rd $MODULE_NAME tests
+          ruff -V
           mypy -V
+          ruff check $MODULE_NAME tests
           mypy $MODULE_NAME tests
       - name: Run tests
         run: |
