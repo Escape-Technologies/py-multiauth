@@ -4,7 +4,7 @@ import time
 import uuid
 from typing import Dict, Tuple, cast
 
-from authlib.integrations.requests_client import OAuth2Session  # type: ignore[import]
+from authlib.integrations.requests_client import OAuth2Session  # type: ignore[import-untyped]
 
 from multiauth.entities.errors import AuthenticationError
 from multiauth.entities.http import Location
