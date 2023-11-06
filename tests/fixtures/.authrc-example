@@ -1,5 +1,5 @@
 {
-  "auth": {
+  "methods": {
     "schema1": {
       "tech": "graphql",
       "url": "http://example.com/graphql",

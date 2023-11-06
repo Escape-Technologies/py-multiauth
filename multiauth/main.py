@@ -44,16 +44,19 @@ def load_authrc(
     with open(filepath, 'r', encoding='utf-8') as f:
         data = json.load(f)
 
+    if 'authentication' in data:
+        data = data['authentication']
+
     if 'headers' in data:
         return load_headers(data['headers'])
 
-    if 'auth' not in data:
-        raise InvalidConfigurationError('auth section not found', path='$.auth')
+    if 'methods' not in data:
+        raise InvalidConfigurationError('methods section not found', path='$.methods')
 
     if 'users' not in data:
         raise InvalidConfigurationError('users section not found', path='$.users')
 
-    return data['auth'], data['users']
+    return data['methods'], data['users']
 
 
 def load_headers(headers: Dict[str, str]) -> Tuple[Dict, Dict]:
@@ -73,7 +76,7 @@ class MultiAuth(IMultiAuth):
 
     def __init__(
         self,
-        auths: Optional[Dict] = None,
+        methods: Optional[Dict] = None,
         users: Optional[Dict] = None,
         authrc: Optional[str] = None,
         logger: Optional[logging.Logger] = None,
@@ -85,14 +88,14 @@ class MultiAuth(IMultiAuth):
         self._authrc = authrc
         self._proxy = proxy
 
-        if auths is None or users is None:
-            auths, users = load_authrc(self._logger, authrc)
+        if methods is None or users is None:
+            methods, users = load_authrc(self._logger, authrc)
 
-        self.validate(auths, users)
+        self.validate(methods, users)
 
-        self._manager: UserManager = UserManager(self.serialize_users(auths, users))
+        self._manager: UserManager = UserManager(self.serialize_users(methods, users))
         self._headers: Dict[str, Dict] = {}
-        self._auths = auths
+        self._methods = methods
 
     @property
     def headers(self) -> Dict[str, Dict]:
@@ -104,7 +107,7 @@ class MultiAuth(IMultiAuth):
     def auths(self) -> Dict[str, User]:
         """Fetch all auths methods."""
 
-        return self._auths
+        return self._methods
 
     @property
     def users(self) -> Dict[str, User]:
@@ -116,11 +119,11 @@ class MultiAuth(IMultiAuth):
     def schemas(self) -> Dict:
         """Fetch internal schemas."""
 
-        return self._auths
+        return self._methods
 
     @staticmethod
     def validate(
-        auths: Dict,
+        methods: Dict,
         users: Dict,
     ) -> None:
         """Validate the auth schema and users with json schema."""
@@ -132,7 +135,7 @@ class MultiAuth(IMultiAuth):
         auth_tech_link: Dict[str, str] = {}
         s_users = ', '.join(auth_tech_link.keys())
 
-        for auth_name, auth in auths.items():
+        for auth_name, auth in methods.items():
             if auth is None or not isinstance(auth, Dict):
                 raise InvalidConfigurationError(message='auth is None or is not a Dict', path=f'$.auth.{auth_name}')
             if 'tech' not in auth:
@@ -171,7 +174,7 @@ class MultiAuth(IMultiAuth):
 
     @staticmethod
     def serialize_users(
-        auths: Dict,
+        methods: Dict,
         users: Dict,
     ) -> Dict[str, User]:
         """Serialize raw user to valid config format."""
@@ -179,7 +182,7 @@ class MultiAuth(IMultiAuth):
         users = deepcopy(users)
 
         for user, user_info in users.items():
-            schema = auths[user_info['auth']]
+            schema = methods[user_info['auth']]
 
             _user_credientials: Dict[str, Any] = deepcopy(user_info)
             del _user_credientials['auth']
@@ -213,7 +216,7 @@ class MultiAuth(IMultiAuth):
             user_info: User = self._manager.users[username]
             auth_headers = aws_signature(
                 user_info,
-                self._auths[user_info.auth_schema],
+                self._methods[user_info.auth_schema],
                 headers,
                 method,
                 formatted_payload,
@@ -236,7 +239,7 @@ class MultiAuth(IMultiAuth):
 
         # Call the auth handler
         self._logger.info(f'Authenticating user: {username}')
-        auth_response = auth_handler(self._auths, user_info, proxy=self._proxy)
+        auth_response = auth_handler(self._methods, user_info, proxy=self._proxy)
         if auth_response and isinstance(auth_response, Dict):
             self._headers[username] = auth_response['headers']
             self._logger.info(f'Authentication successful for {username}')
@@ -295,7 +298,7 @@ class MultiAuth(IMultiAuth):
             # But before, we have to check if refresh token exists
             if refresh_token:
                 auth_response = reauth_handler(
-                    self._auths,
+                    self._methods,
                     user_info,
                     refresh_token,
                     proxy=self._proxy,
@@ -303,7 +306,7 @@ class MultiAuth(IMultiAuth):
 
             else:
                 auth_response = auth_handler(
-                    self._auths,
+                    self._methods,
                     user_info,
                     proxy=self._proxy,
                 )

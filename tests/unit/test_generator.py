@@ -7,6 +7,7 @@ from typing import Dict
 
 import pytest
 
+from multiauth.entities.main import RCFile
 from multiauth.generator import _manual_fill, curl_to_escaperc
 
 from .providers.test_manual_auth import auth, users_one_header, users_two_headers
@@ -64,7 +65,7 @@ def curl_no_data() -> str:
 
 
 @pytest.fixture()
-def graphql_curl_with_input_object_and_no_var_response() -> Dict:
+def graphql_curl_with_input_object_and_no_var_response() -> RCFile:
     """Curl Response."""
     return {
         'users': {
@@ -73,7 +74,7 @@ def graphql_curl_with_input_object_and_no_var_response() -> Dict:
                 'userLoginInput': {'email': 'LoZhylgLX8@Nuz0bhEKMY.com', 'password': '8ua36eYKlN'},
             },
         },
-        'auth': {
+        'methods': {
             'schema1': {
                 'tech': 'graphql',
                 'url': 'https://qhgslipjmw.com/graphql',
@@ -87,13 +88,13 @@ def graphql_curl_with_input_object_and_no_var_response() -> Dict:
 
 
 @pytest.fixture()
-def graphql_curl_with_input_object_and_var_response() -> Dict:
+def graphql_curl_with_input_object_and_var_response() -> RCFile:
     """Curl Response."""
     return {
         'users': {
             'user1': {'auth': 'schema1', 'Login': {'email': 'LoZhylgLX8@Nuz0bhEKMY.com', 'password': '8ua36eYKlN'}},
         },
-        'auth': {
+        'methods': {
             'schema1': {
                 'tech': 'graphql',
                 'url': 'https://qhgslipjmw.com/graphql',
@@ -107,11 +108,11 @@ def graphql_curl_with_input_object_and_var_response() -> Dict:
 
 
 @pytest.fixture()
-def graphql_curl_with_normal_graphql_query_response() -> Dict:
+def graphql_curl_with_normal_graphql_query_response() -> RCFile:
     """Curl Response."""
     return {
         'users': {'user1': {'auth': 'schema1', 'username': 'ohtmjdkyhx@oergasjvhp.com', 'password': 'Wj7UxfFTyzgPVM'}},
-        'auth': {
+        'methods': {
             'schema1': {
                 'tech': 'graphql',
                 'url': 'https://www.terrang.fr/graphql',
@@ -124,11 +125,11 @@ def graphql_curl_with_normal_graphql_query_response() -> Dict:
 
 
 @pytest.fixture()
-def rest_curl_response() -> Dict:
+def rest_curl_response() -> RCFile:
     """Curl Response."""
     return {
         'users': {'user1': {'auth': 'schema1', 'email': 'ohtmjdkyhx@oergasjvhp.com', 'password': 'Wj7UxfFTyzgPVM@'}},
-        'auth': {
+        'methods': {
             'schema1': {
                 'tech': 'rest',
                 'url': 'https://auth.ghqmcblmjc.com/login',
@@ -140,11 +141,11 @@ def rest_curl_response() -> Dict:
 
 
 @pytest.fixture()
-def rest_curl_not_json_response() -> Dict:
+def rest_curl_not_json_response() -> RCFile:
     """Curl Response."""
     return {
         'users': {'user1': {'auth': 'schema1', 'email': 'ohtmjdkyhx@oergasjvhp.com', 'password': 'Wj7UxfFTyzgPVM@'}},
-        'auth': {
+        'methods': {
             'schema1': {
                 'tech': 'rest',
                 'url': 'https://auth.ghqmcblmjc.com/login',
@@ -168,17 +169,17 @@ def test_serialize_headers(
 
     rcfile = _manual_fill(headers_str)
 
-    assert rcfile['auth'] == auth
+    assert rcfile['methods'] == auth
     assert rcfile['users'] == users_one_header
 
     rcfile = _manual_fill(headers_list)
 
-    assert rcfile['auth'] == auth
+    assert rcfile['methods'] == auth
     assert rcfile['users'] == users_two_headers
 
     rcfile = _manual_fill(headers_dict)
 
-    assert rcfile['auth'] == auth
+    assert rcfile['methods'] == auth
     assert rcfile['users'] == users_two_headers
 
 
@@ -214,7 +215,7 @@ def test_graphql_curl_with_normal_graphql_query(
 
 def test_rest_curl(
     rest_curl: str,
-    rest_curl_response: Dict,
+    rest_curl_response: RCFile,
 ) -> None:
     """Function that tests if the curl to escaperc works."""
 
@@ -223,7 +224,7 @@ def test_rest_curl(
 
 def test_rest_curl_not_json(
     rest_curl_not_json: str,
-    rest_curl_not_json_response: Dict,
+    rest_curl_not_json_response: RCFile,
 ) -> None:
     """Function that tests if the curl to escaperc works."""
 
