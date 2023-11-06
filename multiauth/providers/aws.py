@@ -10,7 +10,7 @@ from urllib.parse import urlparse
 
 import boto3
 import jwt
-from pycognito.aws_srp import AWSSRP  # type: ignore[import]
+from pycognito.aws_srp import AWSSRP  # type: ignore[import-untyped]
 
 from multiauth.entities.errors import AuthenticationError
 from multiauth.entities.http import HTTPMethod, Location
