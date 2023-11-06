@@ -141,6 +141,7 @@ def graphql_config_parser(schema: Dict) -> AuthConfigGraphQL:
 def graphql_auth_attach(
     user: User,
     auth_config: AuthConfigGraphQL,
+    proxy: str | None = None,
 ) -> AuthResponse:
     """This function attaches the user credentials to the schema and generates the proper authentication response."""
 
@@ -156,7 +157,13 @@ def graphql_auth_attach(
         data = {'query': graphql_query['graphql_query'], 'variables': graphql_query['graphql_variables']}
 
     # Now we need to send the request
-    response = requests.request(auth_config['method'], auth_config['url'], json=data, timeout=5)
+    response = requests.request(
+        auth_config['method'],
+        auth_config['url'],
+        json=data,
+        timeout=5,
+        proxies={'http': proxy, 'https': proxy} if proxy else None,
+    )
 
     # If there is a cookie that is fetched, added it to the auth response header
     cookie_header = response.cookies.get_dict()  # type: ignore[no-untyped-call]
@@ -265,6 +272,7 @@ def graphql_auth_attach(
 def graphql_authenticator(
     user: User,
     schema: Dict,
+    proxy: str | None = None,
 ) -> AuthResponse:
     """This function is a wrapper function that implements the GraphQL authentication schema.
 
@@ -273,13 +281,14 @@ def graphql_authenticator(
     """
 
     auth_config = graphql_config_parser(schema)
-    return graphql_auth_attach(user, auth_config)
+    return graphql_auth_attach(user, auth_config, proxy=proxy)
 
 
 def graphql_reauthenticator(
     user: User,
     schema: Dict,
     refresh_token: str,
+    proxy: str | None = None,
 ) -> AuthResponse:
     """This function is a wrapper function that implements the GraphQL reauthentication schema.
 
@@ -313,7 +322,13 @@ def graphql_reauthenticator(
         data = {'query': graphql_query['graphql_query'], 'variables': graphql_query['graphql_variables']}
 
     # Now we need to send the request
-    response = requests.request(auth_config['method'], auth_config['url'], json=data, timeout=5)
+    response = requests.request(
+        auth_config['method'],
+        auth_config['url'],
+        json=data,
+        timeout=5,
+        proxies={'http': proxy, 'https': proxy} if proxy else None,
+    )
 
     # If there is a cookie that is fetched, added it to the auth response header
     cookie_header = response.cookies.get_dict()  # type: ignore[no-untyped-call]

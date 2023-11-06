@@ -12,7 +12,7 @@ users = {
         'auth_schema': 'manual_headers',
         'headers': {
             'Authorization': 'Bearer 12345',
-        }
+        },
     }),
 }
 
