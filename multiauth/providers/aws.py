@@ -3,6 +3,7 @@
 import datetime
 import hashlib
 import hmac
+import logging
 from copy import deepcopy
 from typing import Any, Dict, cast
 from urllib.parse import urlparse
@@ -231,12 +232,18 @@ def aws_auth_attach(
 def aws_authenticator(
     user: User,
     schema: Dict,
+    proxy: str | None = None,
 ) -> AuthResponse:
     """This function is a wrapper function that implements the AWS authentication schema.
 
     The AWS authentication is based on creating a signature based on the access key and the secret key to the API.
     After creating this signature, the signature is appended to a well crafted authentication header
     """
+    if proxy:
+        logging.getLogger('multiauth').warning(
+            'Proxy is not supported for this authentication. Continuing without proxy. '
+            'If you want to use proxy you can contribute on https://github.com/Escape-Technologies/py-multiauth/.',
+        )
 
     auth_config = aws_config_parser(user, schema)
     return aws_auth_attach(user, auth_config)
@@ -247,11 +254,17 @@ def aws_reauthenticator(
     schema: Dict,
     refresh_token: str,
     parse: bool = True,
+    proxy: str | None = None,
 ) -> AuthResponse:
     """This function is a function that implements the AWS Authentication reauthentication.
 
     It takes schema and user as input, and it starts tth reauthentication process using the refreash token
     """
+    if proxy:
+        logging.getLogger('multiauth').warning(
+            'Proxy is not supported for this authentication. Continuing without proxy. '
+            'If you want to use proxy you can contribute on https://github.com/Escape-Technologies/py-multiauth/.',
+        )
 
     # Reparse the configuration
     if parse:

@@ -6,7 +6,14 @@
         "/.escaperc.json"
       ],
       "url": "./scanner/graphql/graphql_cli/common/config/json_schemas/escaperc.schema.json"
-    }
+    },
+    {
+      "fileMatch": [
+        "/**/.authrc.json",
+        "/**/.authrc",
+      ],
+      "url": "./multiauth/static/auth_schema.json"
+    },
   ],
   "editor.codeActionsOnSave": {
     "source.organizeImports": false
