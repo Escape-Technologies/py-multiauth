@@ -6,12 +6,7 @@
     "authSchema": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "type": "object",
-      "required": [
-        "tech",
-        "type",
-        "region",
-        "location"
-      ],
+      "required": ["tech", "type", "region", "location"],
       "description": "The auth configuration schema for AWS authentication",
       "properties": {
         "tech": {
@@ -58,10 +53,7 @@
           },
           "description": "The location where the token will be added",
           "type": "string",
-          "enum": [
-            "headers",
-            "url"
-          ]
+          "enum": ["headers", "url"]
         },
         "allOf": [
           {
@@ -95,10 +87,7 @@
                 }
               },
               "additionalProperties": false,
-              "required": [
-                "client_id",
-                "pool_id"
-              ]
+              "required": ["client_id", "pool_id"]
             }
           },
           {
@@ -122,9 +111,7 @@
                 }
               },
               "additionalProperties": false,
-              "required": [
-                "client_id"
-              ]
+              "required": ["client_id"]
             }
           },
           {
@@ -148,9 +135,7 @@
                 }
               },
               "additionalProperties": false,
-              "required": [
-                "client_id"
-              ]
+              "required": ["client_id"]
             }
           },
           {
@@ -181,10 +166,7 @@
                   },
                   "description": "The method used to send the authentication request",
                   "type": "string",
-                  "enum": [
-                    "GET",
-                    "POST"
-                  ]
+                  "enum": ["GET", "POST"]
                 },
                 "hash_algorithm": {
                   "_escapeUI": {
@@ -194,18 +176,11 @@
                   },
                   "description": "The hashing algorithm used in generating the signature",
                   "type": "string",
-                  "enum": [
-                    "sha-256",
-                    "sha-1"
-                  ]
+                  "enum": ["sha-256", "sha-1"]
                 }
               },
               "additionalProperties": false,
-              "required": [
-                "service_name",
-                "method",
-                "hash_algorithm"
-              ]
+              "required": ["service_name", "method", "hash_algorithm"]
             }
           }
         ],
@@ -274,11 +249,7 @@
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "type": "object",
       "description": "The credentials for a user in AWS authentication",
-      "required": [
-        "auth",
-        "username",
-        "password"
-      ],
+      "required": ["auth", "username", "password"],
       "properties": {
         "auth": {
           "_escapeUI": {
@@ -328,11 +299,7 @@
     "authSchema": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "type": "object",
-      "required": [
-        "tech",
-        "url",
-        "method"
-      ],
+      "required": ["tech", "url", "method"],
       "description": "The auth configuration schema for REST authentication",
       "properties": {
         "tech": {
@@ -365,10 +332,7 @@
           },
           "description": "The method used to send the authentication request",
           "type": "string",
-          "enum": [
-            "GET",
-            "POST"
-          ]
+          "enum": ["GET", "POST"]
         },
         "options": {
           "description": "Headers options configuration",
@@ -386,6 +350,18 @@
               },
               "description": "The name of the key that returns the token",
               "type": "string"
+            },
+            "credentials_encoding": {
+              "_escapeUI": {
+                "name": "credentialsEncoding",
+                "label": "Credentials encoding",
+                "inputType": "text",
+                "value": "json"
+              },
+              "description": "How to encode the credentials : json or www-form-urlencoded",
+              "type": "string",
+              "default": "json",
+              "enum": ["json", "www-form-urlencoded"]
             },
             "refresh_url": {
               "_escapeUI": {
@@ -483,9 +459,7 @@
           "inputType": "editorList"
         }
       },
-      "required": [
-        "auth"
-      ]
+      "required": ["auth"]
     }
   },
   "digest": {
@@ -495,10 +469,7 @@
     "authSchema": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "type": "object",
-      "required": [
-        "url",
-        "method"
-      ],
+      "required": ["url", "method"],
       "description": "The auth configuration schema of Digest authentication",
       "properties": {
         "tech": {
@@ -531,10 +502,7 @@
           },
           "description": "The method used to send the authentication request",
           "type": "string",
-          "enum": [
-            "GET",
-            "POST"
-          ]
+          "enum": ["GET", "POST"]
         },
         "options": {
           "description": "Optional Configurations for this authentication method",
@@ -643,11 +611,7 @@
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "type": "object",
       "description": "The credentials for a user in Digest authentication",
-      "required": [
-        "auth",
-        "username",
-        "password"
-      ],
+      "required": ["auth", "username", "password"],
       "properties": {
         "auth": {
           "_escapeUI": {
@@ -688,13 +652,7 @@
     "authSchema": {
       "type": "object",
       "$schema": "https://json-schema.org/draft/2020-12/schema",
-      "required": [
-        "tech",
-        "url",
-        "mutation_name",
-        "mutation_field",
-        "method"
-      ],
+      "required": ["tech", "url", "mutation_name", "mutation_field", "method"],
       "description": "The auth configuration schema for GraphQL authentication",
       "properties": {
         "tech": {
@@ -746,10 +704,7 @@
           },
           "description": "The method used to send the authentication request",
           "type": "string",
-          "enum": [
-            "GET",
-            "POST"
-          ]
+          "enum": ["GET", "POST"]
         },
         "options": {
           "_escapeUI": {
@@ -812,11 +767,7 @@
               },
               "description": "The name of the operation of the graphql query being sent. The default value is mutation",
               "type": "string",
-              "enum": [
-                "query",
-                "mutation",
-                "subscription"
-              ]
+              "enum": ["query", "mutation", "subscription"]
             },
             "header_prefix": {
               "_escapeUI": {
@@ -874,9 +825,7 @@
           "inputType": "editorList"
         }
       },
-      "required": [
-        "auth"
-      ]
+      "required": ["auth"]
     }
   },
   "manual": {
@@ -886,9 +835,7 @@
     "authSchema": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "type": "object",
-      "required": [
-        "tech"
-      ],
+      "required": ["tech"],
       "properties": {
         "tech": {
           "_escapeUI": {
@@ -908,10 +855,7 @@
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "type": "object",
       "description": "The users configuration schema for manual authentication",
-      "required": [
-        "auth",
-        "headers"
-      ],
+      "required": ["auth", "headers"],
       "properties": {
         "headers": {
           "_escapeUI": {
@@ -953,9 +897,7 @@
     "authSchema": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "type": "object",
-      "required": [
-        "tech"
-      ],
+      "required": ["tech"],
       "properties": {
         "tech": {
           "_escapeUI": {
@@ -1004,11 +946,7 @@
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "type": "object",
       "description": "The credentials for a user in Basic authentication",
-      "required": [
-        "auth",
-        "username",
-        "password"
-      ],
+      "required": ["auth", "username", "password"],
       "properties": {
         "auth": {
           "_escapeUI": {
@@ -1049,11 +987,7 @@
     "authSchema": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "type": "object",
-      "required": [
-        "tech",
-        "location",
-        "header_name"
-      ],
+      "required": ["tech", "location", "header_name"],
       "properties": {
         "tech": {
           "_escapeUI": {
@@ -1074,10 +1008,7 @@
           },
           "description": "The location where the token will be added",
           "type": "string",
-          "enum": [
-            "headers",
-            "url"
-          ]
+          "enum": ["headers", "url"]
         },
         "header_name": {
           "_escapeUI": {
@@ -1134,10 +1065,7 @@
     "userSchema": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "type": "object",
-      "required": [
-        "api_key",
-        "auth"
-      ],
+      "required": ["api_key", "auth"],
       "properties": {
         "api_key": {
           "_escapeUI": {
@@ -1169,9 +1097,7 @@
     "authSchema": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "type": "object",
-      "required": [
-        "tech"
-      ],
+      "required": ["tech"],
       "properties": {
         "tech": {
           "_escapeUI": {
@@ -1190,9 +1116,7 @@
     "userSchema": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "type": "object",
-      "required": [
-        "auth"
-      ],
+      "required": ["auth"],
       "description": "User by default when there is no authentification, the key of the user should be public.",
       "properties": {
         "auth": {
@@ -1253,10 +1177,7 @@
           },
           "description": "The location where the token will be added during the authentication step (in the middle of OAuth flow).",
           "type": "string",
-          "enum": [
-            "basic",
-            "body"
-          ]
+          "enum": ["basic", "body"]
         },
         "header_prefix": {
           "_escapeUI": {
@@ -1276,10 +1197,7 @@
           },
           "description": "The location where the token will be added.",
           "type": "string",
-          "enum": [
-            "headers",
-            "url"
-          ]
+          "enum": ["headers", "url"]
         },
         "scope": {
           "_escapeUI": {
@@ -1501,9 +1419,7 @@
         }
       },
       "additionalProperties": false,
-      "required": [
-        "auth"
-      ]
+      "required": ["auth"]
     }
   },
   "webdriver": {
@@ -1513,12 +1429,7 @@
     "authSchema": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "type": "object",
-      "required": [
-        "tech",
-        "extract_location",
-        "extract_regex",
-        "project"
-      ],
+      "required": ["tech", "extract_location", "extract_regex", "project"],
       "description": "The auth configuration schema for Webdriver authentication",
       "properties": {
         "tech": {
@@ -1626,9 +1537,7 @@
           "type": "string"
         }
       },
-      "required": [
-        "auth"
-      ]
+      "required": ["auth"]
     }
   }
 }

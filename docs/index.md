@@ -323,6 +323,7 @@
             "method": "**string**",
             "options": {
                 "token_name": "**string**",
+                "credentials_encoding": "**string**",
                 "refresh_url": "**string**",
                 "refresh_token_name": "**string**",
                 "header_name": "**string**",
@@ -805,6 +806,8 @@
 ---
 
 - Token name (`token_name`): The name of the key that returns the token.
+
+- Credentials encoding (`credentials_encoding`): How to encode the credentials : json or www-form-urlencoded.
 
 - Refresh url (`refresh_url`): The url to witch the refresh token is sent.
 
