@@ -12,7 +12,7 @@ pip install py-multiauth
 ## Supported methods
 
 |Name     |Authenticate|Refresh|Extra    |Proxy support|
-|---------|:----------:|:-----:|---------|-------------|
+|---------|:----------:|:-----:|---------|:-----------:|
 |`API_KEY`|✓           |       |         |✓            |
 |`AWS`    |✓           |✓      |Signature|             |
 |`BASIC`  |✓           |       |         |✓            |
