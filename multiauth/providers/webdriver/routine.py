@@ -56,11 +56,6 @@ def webdriver_authenticator(
     schema: dict,
     proxy: str | None = None,
 ) -> AuthResponse:
-    if proxy:
-        logger.warning(
-            'Proxy is not supported for this authentication. Continuing without proxy. '
-            'If you want to use proxy you can contribute on https://github.com/Escape-Technologies/py-multiauth/.',
-        )
     auth_config = webdriver_config_parser(schema)
 
     selenium_test = auth_config.project.tests[0]
