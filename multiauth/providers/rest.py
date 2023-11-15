@@ -80,7 +80,7 @@ def rest_auth_attach(
         credentials = {'json': user.credentials}
     elif auth_config['credentials_encoding'] == CredentialsEncoding.FORM:
         credentials = {'data': user.credentials}
-    
+
     if auth_config['headers']:
         credentials['headers'] = auth_config['headers']
 
