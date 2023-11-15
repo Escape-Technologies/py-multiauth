@@ -80,6 +80,9 @@ def rest_auth_attach(
         credentials = {'json': user.credentials}
     elif auth_config['credentials_encoding'] == CredentialsEncoding.FORM:
         credentials = {'data': user.credentials}
+    
+    if auth_config['headers']:
+        credentials['headers'] = auth_config['headers']
 
     # Now we need to send the request
     response = requests.request(
@@ -140,8 +143,12 @@ def rest_auth_attach(
                     'headers': headers,
                 },
             )
-
-    auth_response, refresh_token = extract_token(response, AuthTech.REST, headers, auth_config['refresh_token_name'])
+    auth_response, refresh_token = extract_token(
+        response,
+        AuthTech.REST,
+        headers,
+        auth_config['refresh_token_name'],
+    )
 
     token = auth_response['headers'][next(iter(headers))].split(' ')[1]
 
