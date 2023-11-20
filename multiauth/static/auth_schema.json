@@ -749,6 +749,15 @@
               "type": "string",
               "description": "The name of the header to fetch the token from"
             },
+            "cookie_token_name": {
+              "_escapeUI": {
+                "name": "cookieTokenName",
+                "label": "Cookie token name",
+                "inputType": "text"
+              },
+              "type": "string",
+              "description": "The name of the header to fetch the token from"
+            },
             "header_name": {
               "_escapeUI": {
                 "name": "headerName",

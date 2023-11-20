@@ -70,7 +70,7 @@ class SeleniumTestRunner:
     def setup_driver(self) -> webdriver.Firefox:
         firefox_options = firefox.options.Options()
         firefox_options.add_argument('--no-sandbox')
-        firefox_options.add_argument('--headless')
+        # firefox_options.add_argument('--headless')
         firefox_options.add_argument('--disable-gpu')
         firefox_options.set_preference('browser.download.folderList', 2)
         firefox_options.set_preference('browser.download.manager.showWhenStarting', False)
