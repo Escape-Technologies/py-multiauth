@@ -231,13 +231,14 @@ def graphql_auth_attach(
         if token:
             if auth_config['header_prefix']:
                 token_key = auth_config['header_prefix'] + ' ' + token
+            
+            headers = auth_config['headers'] if auth_config['headers'] is not None else {}
+            headers[token_key] = token
 
             auth_response = AuthResponse(
                 {
                     'tech': AuthTech.REST,
-                    'headers': {
-                        token_key: token,
-                    },
+                    'headers': headers,
                 },
             )
 
@@ -248,13 +249,14 @@ def graphql_auth_attach(
         if token:
             if auth_config['header_prefix']:
                 token_key = auth_config['header_prefix'] + ' ' + token
+            
+            headers = auth_config['headers'] if auth_config['headers'] is not None else {}
+            headers[token_key] = token
 
             auth_response = AuthResponse(
                 {
                     'tech': AuthTech.REST,
-                    'headers': {
-                        token_key: token,
-                    },
+                    'headers': headers,
                 },
             )
 
