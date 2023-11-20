@@ -98,6 +98,7 @@ def graphql_config_parser(schema: Dict) -> AuthConfigGraphQL:
             'cookie_auth': False,
             'operation': 'mutation',
             'header_token_name': None,
+            'cookie_token_name': None,
             'refresh_mutation_name': None,
             'refresh_field_name': None,
             'refresh_field': True,
@@ -133,6 +134,7 @@ def graphql_config_parser(schema: Dict) -> AuthConfigGraphQL:
         auth_config['headers'] = schema['options'].get('headers')
         auth_config['method'] = schema['options'].get('method', 'POST')
         auth_config['header_token_name'] = schema['options'].get('header_token_name')
+        auth_config['cookie_token_name'] = schema['options'].get('cookie_token_name')
 
     return auth_config
 
@@ -162,6 +164,7 @@ def graphql_auth_attach(
         auth_config['url'],
         json=data,
         timeout=5,
+        headers=auth_config['headers'],
         proxies={'http': proxy, 'https': proxy} if proxy else None,
     )
 
@@ -225,6 +228,23 @@ def graphql_auth_attach(
     if auth_config['header_token_name'] is not None:
         token_key = auth_config['header_token_name']
         token = response.headers.get(token_key)
+        if token:
+            if auth_config['header_prefix']:
+                token_key = auth_config['header_prefix'] + ' ' + token
+
+            auth_response = AuthResponse(
+                {
+                    'tech': AuthTech.REST,
+                    'headers': {
+                        token_key: token,
+                    },
+                },
+            )
+
+    # Fetching the token from the cookie is second
+    if auth_config['cookie_token_name'] is not None:
+        token_key = auth_config['cookie_token_name']
+        token = response.cookies.get(token_key) # type: ignore[no-untyped-call]
         if token:
             if auth_config['header_prefix']:
                 token_key = auth_config['header_prefix'] + ' ' + token
