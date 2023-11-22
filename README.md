@@ -25,6 +25,13 @@ pip install py-multiauth
 
 ## Usage
 
+## Local CLI
+
+Take a look at the documentation to fill you `.authrc.json` and run:
+```
+multiauth validate -f .authrc.json
+```
+
 ### Loading a configuration file
 
 Currently, we support 4 way of loading a configuration file.
