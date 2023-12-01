@@ -245,7 +245,7 @@ def graphql_auth_attach(
     # Fetching the token from the cookie is second
     if auth_config['cookie_token_name'] is not None:
         token_key = auth_config['cookie_token_name']
-        token = response.cookies.get(token_key) # type: ignore[no-untyped-call]
+        token = response.cookies.get(token_key)  # type: ignore[no-untyped-call]
         if token:
             if auth_config['header_prefix']:
                 token_key = auth_config['header_prefix'] + ' ' + token
