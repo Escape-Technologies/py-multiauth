@@ -6,6 +6,7 @@ from typing import Any, Self
 from selenium.webdriver import firefox
 from seleniumwire import webdriver  # type: ignore[import-untyped]
 
+from multiauth.entities.errors import AuthenticationError  # type: ignore[import]
 from multiauth.providers.webdriver.command import SeleniumCommandHandler
 from multiauth.providers.webdriver.core import SeleniumTest
 
@@ -57,13 +58,13 @@ class SeleniumTestRunner:
                 break
 
             if command.command not in cmd_mapping:
-                raise ValueError(f'Invalid command `{command.command}`')
+                raise AuthenticationError(f'Invalid command `{command.command}` (`{command.id}`)')
 
             try:
                 cmd_mapping[command.command](command)
             except Exception as e:
                 # self.driver.save_screenshot(f'{command.id}.png')
-                raise RuntimeError(f'Failed to execute command `{command.id}`') from e
+                raise AuthenticationError(f'Failed to execute command `{command} (`{command.id}`)') from e
 
         return self.driver.requests
 

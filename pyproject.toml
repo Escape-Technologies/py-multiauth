@@ -1,11 +1,12 @@
 [tool.poetry]
 name = "py-multiauth"
-version = "2.0.0-rc.24"
+version = "2.0.0-rc.25"
 description = "Python package to interact with multiple authentication services"
 authors = ["Escape Technologies SAS <ping@escape.tech>"]
 maintainers = [
     "Antoine Carossio <antoine@escape.tech>",
     "Swan <swan@escape.tech>",
+    "Maxence <maxence@escape.tech>",
 ]
 license = "MIT"
 packages = [{ include = "multiauth" }]

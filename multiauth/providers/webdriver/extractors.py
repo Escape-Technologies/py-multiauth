@@ -1,6 +1,9 @@
+import enum
 import logging
 import re
 from typing import Any
+
+from multiauth.entities.errors import AuthenticationError
 
 logger = logging.getLogger('multiauth.providers.webdriver.extractors')
 
@@ -61,31 +64,36 @@ def extract_from_response_body(requests: Any, rx: str) -> list[str]:
     return res
 
 
+class ExchangeLocation(enum.StrEnum):
+    REQUEST_URL = 'RequestURL'
+    REQUEST_HEADER = 'RequestHeader'
+    REQUEST_BODY = 'RequestBody'
+    RESPONSE_HEADER = 'ResponseHeader'
+    RESPONSE_BODY = 'ResponseBody'
+
+
 def extract_token(location: str, rx: str, index: int | None, requests: list) -> str:
-    locations = [
-        'RequestURL',
-        'RequestHeader',
-        'RequestBody',
-        'ResponseHeader',
-        'ResponseBody',
-    ]
+    if location not in ExchangeLocation.__members__.values():
+        raise AuthenticationError(
+            f'Invalid location `{location}`, must be one of: {" ,".join(ExchangeLocation.__members__.values())}',
+        )
 
-    if location not in locations:
-        raise ValueError(f'Invalid location `{location}`, must be one of: {locations}')
-
-    if location == locations[0]:
+    tks = []
+    if location == ExchangeLocation.REQUEST_URL:
         tks = extract_from_request_url(requests, rx)
-    elif location == locations[1]:
+    elif location == ExchangeLocation.REQUEST_HEADER:
         tks = extract_from_request_header(requests, rx)
-    elif location == locations[2]:
+    elif location == ExchangeLocation.REQUEST_BODY:
         tks = extract_from_request_body(requests, rx)
-    elif location == locations[3]:
+    elif location == ExchangeLocation.RESPONSE_HEADER:
         tks = extract_from_response_header(requests, rx)
-    elif location == locations[4]:
+    elif location == ExchangeLocation.RESPONSE_BODY:
         tks = extract_from_response_body(requests, rx)
 
     if not tks:
-        raise ValueError('No token found.')
+        raise AuthenticationError(
+            f'All commands were executed but no token matching `{rx}` in `{location}` was found.',
+        )
 
     index = index or 0
     logger.info(f'Found {len(tks)} tokens in `{location}` with regex `{rx}`. Taking index `{index}`')
