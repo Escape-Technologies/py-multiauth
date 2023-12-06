@@ -70,7 +70,10 @@ def generate_auth_docs() -> None:  # noqa: C901
     has_optional: List[bool] = [False for _ in json_schema]
 
     # The JSON schema for every authentication scheme
-    jsonschema: RCFile = {'users': {'user1': {'auth': 'schema1'}}, 'methods': {'schema1': {}}}
+    jsonschema: RCFile = {
+        'users': {'user1': {'auth': 'schema1'}},
+        'methods': {'schema1': {}},
+    }
 
     # All the JSON schemas
     jsonschemas: List[Dict[str, str]] = []
@@ -288,8 +291,11 @@ def generate_auth_docs() -> None:  # noqa: C901
         jsonschemas.append(temp)
         count += 1
 
-    sorted_auth_schema = {k: auth_schemas[k] for k in sorted(auth_schemas)}
-    auth_documentation = template.render(auth_schema=sorted_auth_schema, optional=has_optional, json_schema=jsonschemas)
+    auth_documentation = template.render(
+        auth_schema=auth_schemas,
+        optional=has_optional,
+        json_schema=jsonschemas,
+    )
 
     with open('docs/index.md', 'w+', encoding='utf-8') as f:
         f.write(auth_documentation)
