@@ -4,7 +4,7 @@ from types import TracebackType
 from typing import Any, Self
 
 from selenium.webdriver import firefox
-from seleniumwire import webdriver  # type: ignore[import-untyped]
+from seleniumwire import webdriver
 
 from multiauth.entities.errors import AuthenticationError  # type: ignore[import]
 from multiauth.providers.webdriver.command import SeleniumCommandHandler
