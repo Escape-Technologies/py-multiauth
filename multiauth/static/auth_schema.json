@@ -17,7 +17,7 @@
             "hidden": true
           },
           "title": "aws",
-          "description": "The auth method",
+          "description": "The auth method, in that case `aws`",
           "type": "string"
         },
         "type": {
@@ -207,7 +207,7 @@
                 "inputType": "text",
                 "value": "Authorization"
               },
-              "description": "The name of the header (default: `Authorization`)",
+              "description": "The name of the header in which we insert the token we extracted (default: `Authorization`)",
               "type": "string"
             },
             "header_prefix": {
@@ -226,10 +226,10 @@
                 "inputType": "list"
               },
               "type": "object",
-              "description": "The user headers for manual authentication",
+              "description": "Additional headers to insert in the requests, including the authentication request",
               "additionalProperties": {
                 "type": "string",
-                "description": "A value that will be inserted in the user auth request's headers"
+                "description": "Additional headers to insert in the requests, including the authentication request"
               },
               "patternProperties": {
                 "^.*$": {
@@ -310,7 +310,7 @@
             "hidden": true
           },
           "title": "rest",
-          "description": "The auth method",
+          "description": "The auth method, in that case `rest`",
           "type": "string"
         },
         "url": {
@@ -320,7 +320,7 @@
             "name": "url",
             "placeholder": "https://www.example.com/auth"
           },
-          "description": "The URL to the authentication gateway",
+          "description": "The REST endpoint URL that handles the authentication request",
           "type": "string",
           "format": "uri"
         },
@@ -330,7 +330,7 @@
             "label": "Method",
             "inputType": "select"
           },
-          "description": "The method used to send the authentication request",
+          "description": "The HTTP method for the authentication request",
           "type": "string",
           "enum": ["GET", "POST"]
         },
@@ -348,7 +348,7 @@
                 "inputType": "text",
                 "value": "token"
               },
-              "description": "The name of the key that returns the token",
+              "description": "The name of the key that contains the token in the response request (can be nested)",
               "type": "string"
             },
             "credentials_encoding": {
@@ -358,7 +358,7 @@
                 "inputType": "text",
                 "value": "json"
               },
-              "description": "How to encode the credentials : json or www-form-urlencoded",
+              "description": "How to encode the credentials : `json` or `www-form-urlencoded`",
               "type": "string",
               "default": "json",
               "enum": ["json", "www-form-urlencoded"]
@@ -370,7 +370,7 @@
                 "inputType": "text",
                 "value": "token"
               },
-              "description": "The url to witch the refresh token is sent",
+              "description": "The API endpoint that handles the refresh request",
               "type": "string"
             },
             "refresh_token_name": {
@@ -380,7 +380,7 @@
                 "inputType": "text",
                 "value": "token"
               },
-              "description": "The name of the refresh token in the response",
+              "description": "The key of the refresh token in the refresh response (can be nested)",
               "type": "string"
             },
             "header_name": {
@@ -390,7 +390,7 @@
                 "inputType": "text",
                 "value": "Authorization"
               },
-              "description": "The name of the header (default: `Authorization`)",
+              "description": "The key of the param in which we insert the token extracted in an authentified request (default: `Authorization`)",
               "type": "string"
             },
             "header_prefix": {
@@ -400,7 +400,7 @@
                 "inputType": "text",
                 "value": "Bearer"
               },
-              "description": "The prefix of the header (default: `Bearer`)",
+              "description": "The prefix of the token that will be inserted in an authentified request (default: `Bearer`)",
               "type": "string"
             },
             "cookie_auth": {
@@ -409,7 +409,7 @@
                 "label": "Cookie Authentication",
                 "inputType": "checkbox"
               },
-              "description": "A boolean determines if the authentication is done through cookie or no",
+              "description": "A boolean determines if the authentication is done through cookie or not (by default the authentication token is passed in the header)",
               "type": "boolean"
             },
             "headers": {
@@ -418,10 +418,10 @@
                 "inputType": "list"
               },
               "type": "object",
-              "description": "The user headers for manual authentication",
+              "description": "Additional headers to insert in the requests, including the authentication request",
               "additionalProperties": {
                 "type": "string",
-                "description": "A value that will be inserted in the user auth request's headers"
+                "description": "Additional headers to insert in the requests, including the authentication request"
               },
               "patternProperties": {
                 "^.*$": {
@@ -480,7 +480,7 @@
             "hidden": true
           },
           "title": "digest",
-          "description": "The auth method",
+          "description": "The auth method, in that case `digest`",
           "type": "string"
         },
         "url": {
@@ -490,7 +490,7 @@
             "name": "url",
             "placeholder": "https://www.example.com/auth"
           },
-          "description": "The URL to the authentication gateway",
+          "description": "The GraphQL endpoint URL that handles the authentication request",
           "type": "string",
           "format": "uri"
         },
@@ -588,10 +588,10 @@
                 "inputType": "list"
               },
               "type": "object",
-              "description": "The user headers for manual authentication",
+              "description": "Additional headers to insert in the requests, including the authentication request",
               "additionalProperties": {
                 "type": "string",
-                "description": "A value that will be inserted in the user auth request's headers"
+                "description": "Additional headers to insert in the requests, including the authentication request"
               },
               "patternProperties": {
                 "^.*$": {
@@ -663,7 +663,7 @@
             "hidden": true
           },
           "title": "graphql",
-          "description": "The auth method",
+          "description": "The auth method, in that case `graphql`",
           "type": "string"
         },
         "url": {
@@ -680,7 +680,7 @@
           "_escapeUI": {
             "name": "mutationName",
             "inputType": "text",
-            "label": "Mutation name",
+            "label": "Mutation Name",
             "placeholder": "login"
           },
           "description": "The name of the mutation used to authenticate",
@@ -693,7 +693,7 @@
             "label": "Mutation Field",
             "value": "token"
           },
-          "description": "The name of the mutation field that you want to return (usually the field of the token)",
+          "description": "The name of the GraphQL field inside the authentication mutation that contains the token",
           "type": "string"
         },
         "method": {
@@ -719,7 +719,7 @@
                 "label": "Refresh Mutation Name",
                 "inputType": "text"
               },
-              "description": "The name of the mutation used in order to refresh the access token",
+              "description": "The name of the GraphQL Mutation used in order to refresh the access token",
               "type": "string"
             },
             "refresh_field": {
@@ -728,7 +728,7 @@
                 "label": "Refresh Field",
                 "inputType": "checkbox"
               },
-              "description": "A boolean that determines if the mutation used to refresh the access token has a field or returns a scalar. True if there is a field and false when there is a scalar",
+              "description": "A boolean that determines if the Mutation used to refresh the access token has a field or returns a scalar. True if there is a field and false when there is a scalar",
               "type": "boolean"
             },
             "refresh_field_name": {
@@ -737,17 +737,17 @@
                 "label": "Refresh Field Name",
                 "inputType": "text"
               },
-              "description": "The name of the field that returns the refresh token. The same field is used to fetch the refresh token during authentication and reauthentication",
+              "description": "The name of the Field that contains the refresh token. The same field is used to fetch the refresh token during authentication and reauthentication",
               "type": "string"
             },
             "header_token_name": {
               "_escapeUI": {
                 "name": "headerTokenName",
-                "label": "Header token name",
+                "label": "Header Token Name",
                 "inputType": "text"
               },
               "type": "string",
-              "description": "The name of the header to fetch the token from"
+              "description": "Sometimes, the token is returned in a Header instead of the GraphQL response body. This is the name of the Header containing the secret."
             },
             "cookie_token_name": {
               "_escapeUI": {
@@ -756,7 +756,7 @@
                 "inputType": "text"
               },
               "type": "string",
-              "description": "The name of the header to fetch the token from"
+              "description": "Sometimes, the token is returned in a Cookie instead of the GraphQL response body. This is the name of the Cookie containing the secret."
             },
             "header_name": {
               "_escapeUI": {
@@ -774,7 +774,7 @@
                 "label": "Operation",
                 "inputType": "select"
               },
-              "description": "The name of the operation of the graphql query being sent. The default value is mutation",
+              "description": "The name of the operation of the GraphQL query being sent. The default value is `mutation`",
               "type": "string",
               "enum": ["query", "mutation", "subscription"]
             },
@@ -785,7 +785,7 @@
                 "inputType": "text",
                 "value": "Bearer"
               },
-              "description": "The prefix of the header (defautl: `Bearer`)",
+              "description": "The prefix of the token in an authenticated request (defautl: `Bearer`)",
               "type": "string"
             },
             "cookie_auth": {
@@ -794,7 +794,7 @@
                 "label": "Cookie Authentication",
                 "inputType": "boolean"
               },
-              "description": "A boolean that determines if the authentication is done through cookie or no",
+              "description": "A boolean determines if the authentication is done through cookie or not (by default the authentication token is passed in the header)",
               "type": "boolean"
             },
             "headers": {
@@ -803,7 +803,7 @@
                 "inputType": "list"
               },
               "type": "object",
-              "description": "The user headers for manual authentication.",
+              "description": "Additional headers to insert in the requests, including the authentication request",
               "additionalProperties": true
             }
           },
@@ -854,7 +854,7 @@
             "hidden": true
           },
           "title": "manual",
-          "description": "The auth method",
+          "description": "The auth method, in that case `manual`",
           "type": "string"
         }
       },
@@ -872,10 +872,10 @@
             "inputType": "list"
           },
           "type": "object",
-          "description": "The user headers for manual authentication",
+          "description": "Additional headers to insert in the requests, including the authentication request",
           "additionalProperties": {
             "type": "string",
-            "description": "A value that will be inserted in the user auth request's headers"
+            "description": "Additional headers to insert in the requests, including the authentication request"
           },
           "patternProperties": {
             "^.*$": {
@@ -916,7 +916,7 @@
             "hidden": true
           },
           "title": "basic",
-          "description": "The auth method",
+          "description": "The auth method, in that case `basic`",
           "type": "string"
         },
         "options": {
@@ -932,10 +932,10 @@
                 "inputType": "list"
               },
               "type": "object",
-              "description": "The user headers for manual authentication",
+              "description": "Additional headers to insert in the requests, including the authentication request",
               "additionalProperties": {
                 "type": "string",
-                "description": "A value that will be inserted in the user auth request's headers"
+                "description": "Additional headers to insert in the requests, including the authentication request"
               },
               "patternProperties": {
                 "^.*$": {
@@ -1006,7 +1006,7 @@
             "hidden": true
           },
           "title": "api_key",
-          "description": "The auth method",
+          "description": "The auth method, in that case `api`",
           "type": "string"
         },
         "location": {
@@ -1026,7 +1026,7 @@
             "inputType": "text",
             "value": "Authorization"
           },
-          "description": "The name of the header (default: `x-api-key`)",
+          "description": "The key of the param in which the token is inserted in an authenticated request (default: `x-api-key`)",
           "type": "string"
         },
         "options": {
@@ -1052,10 +1052,10 @@
                 "inputType": "list"
               },
               "type": "object",
-              "description": "The user headers for manual authentication",
+              "description": "Additional headers to insert in the requests, including the authentication request",
               "additionalProperties": {
                 "type": "string",
-                "description": "A value that will be inserted in the user auth request's headers"
+                "description": "Additional headers to insert in the requests, including the authentication request"
               },
               "patternProperties": {
                 "^.*$": {
@@ -1116,7 +1116,7 @@
             "hidden": true
           },
           "title": "public",
-          "description": "The auth method",
+          "description": "The auth method, in that case `public`",
           "type": "string"
         }
       },
@@ -1159,7 +1159,7 @@
             "hidden": true
           },
           "title": "oauth",
-          "description": "The auth method",
+          "description": "The auth method, in that case `oauth`",
           "type": "string"
         },
         "grant_type": {
@@ -1287,10 +1287,10 @@
                 "inputType": "list"
               },
               "type": "object",
-              "description": "The user headers for manual authentication",
+              "description": "Additional headers to insert in the requests, including the authentication request",
               "additionalProperties": {
                 "type": "string",
-                "description": "A value that will be inserted in the user auth request's headers"
+                "description": "Additional headers to insert in the requests, including the authentication request"
               },
               "patternProperties": {
                 "^.*$": {
@@ -1449,7 +1449,7 @@
             "hidden": true
           },
           "title": "webdriver",
-          "description": "The auth method",
+          "description": "The auth method, in that case `webdriver`",
           "type": "string"
         },
         "extract_location": {
