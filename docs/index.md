@@ -26,7 +26,7 @@
 
 
 
-- Tech (`tech`): The auth method.
+- Tech (`tech`): The auth method, in that case `aws`.
 
 
 
@@ -76,11 +76,11 @@
 
 - Client Secret (`client_secret`): The client secret. This parameter is used when the type is SRP or Password Authentication.
 
-- Header name (`header_name`): The name of the header (default: `Authorization`).
+- Header name (`header_name`): The name of the header in which we insert the token we extracted (default: `Authorization`).
 
 - Header prefix (`header_prefix`): The prefix of the header (defautl: `Bearer`).
 
-- Headers (`headers`): The user headers for manual authentication.
+- Headers (`headers`): Additional headers to insert in the requests, including the authentication request.
 
 ### Template
 
@@ -241,15 +241,15 @@
 
 
 
-- Tech (`tech`): The auth method.
+- Tech (`tech`): The auth method, in that case `rest`.
 
 
 
-- Auth url (`url`): The URL to the authentication gateway.
+- Auth url (`url`): The REST endpoint URL that handles the authentication request.
 
 
 
-- Method (`method`): The method used to send the authentication request. The values that this parameter can take are: 
+- Method (`method`): The HTTP method for the authentication request. The values that this parameter can take are: 
   - `GET` 
   - `POST`
 
@@ -257,21 +257,21 @@
 
 ---
 
-- Token name (`token_name`): The name of the key that returns the token.
+- Token name (`token_name`): The name of the key that contains the token in the response request (can be nested).
 
-- Credentials encoding (`credentials_encoding`): How to encode the credentials : json or www-form-urlencoded.
+- Credentials encoding (`credentials_encoding`): How to encode the credentials : `json` or `www-form-urlencoded`.
 
-- Refresh url (`refresh_url`): The url to witch the refresh token is sent.
+- Refresh url (`refresh_url`): The API endpoint that handles the refresh request.
 
-- Refresh Token Name (`refresh_token_name`): The name of the refresh token in the response.
+- Refresh Token Name (`refresh_token_name`): The key of the refresh token in the refresh response (can be nested).
 
-- Header name (`header_name`): The name of the header (default: `Authorization`).
+- Header name (`header_name`): The key of the param in which we insert the token extracted in an authentified request (default: `Authorization`).
 
-- Header prefix (`header_prefix`): The prefix of the header (default: `Bearer`).
+- Header prefix (`header_prefix`): The prefix of the token that will be inserted in an authentified request (default: `Bearer`).
 
-- Cookie Authentication (`cookie_auth`): A boolean determines if the authentication is done through cookie or no.
+- Cookie Authentication (`cookie_auth`): A boolean determines if the authentication is done through cookie or not (by default the authentication token is passed in the header).
 
-- Headers (`headers`): The user headers for manual authentication.
+- Headers (`headers`): Additional headers to insert in the requests, including the authentication request.
 
 ### Template
 
@@ -324,11 +324,11 @@
 
 
 
-- Tech (`tech`): The auth method.
+- Tech (`tech`): The auth method, in that case `digest`.
 
 
 
-- Auth url (`url`): The URL to the authentication gateway.
+- Auth url (`url`): The GraphQL endpoint URL that handles the authentication request.
 
 
 
@@ -346,7 +346,7 @@
 
 - Algorithm (`algorithm`): This parameter indicates the type of algorithm used to produce the digest..
 
-- QOP (`qop`): Inidcates the quality of protection. The value of this field should be one of the values found in the qop directive of the WWW-Authenticate header of the 401 response. If the server does not support the qop directive or if the qop directive is not included in the 401 response, this field is not present..
+- QOP (`qop`): Indicates the quality of protection. The value of this field should be one of the values found in the qop directive of the WWW-Authenticate header of the 401 response. If the server does not support the qop directive or if the qop directive is not included in the 401 response, this field is not present..
 
 - Nonce Count (`nonce_count`): This value indicates the number of times the client has reused the nonce value. The server uses this value to detect and prevent replay attacks. This value must be specified in the qop directive, and if the qop directive is not specified, this value is not provided..
 
@@ -354,7 +354,7 @@
 
 - Opaque (`opaque`): This is a string of data specified by the server in the WWW-Authenticate header of the 401 response. It is recommended that this string be base64 or hex encoded..
 
-- Headers (`headers`): The user headers for manual authentication.
+- Headers (`headers`): Additional headers to insert in the requests, including the authentication request.
 
 ### Template
 
@@ -407,7 +407,7 @@
 
 
 
-- Tech (`tech`): The auth method.
+- Tech (`tech`): The auth method, in that case `graphql`.
 
 
 
@@ -415,11 +415,11 @@
 
 
 
-- Mutation name (`mutation_name`): The name of the mutation used to authenticate.
+- Mutation Name (`mutation_name`): The name of the mutation used to authenticate.
 
 
 
-- Mutation Field (`mutation_field`): The name of the mutation field that you want to return (usually the field of the token).
+- Mutation Field (`mutation_field`): The name of the GraphQL field inside the authentication mutation that contains the token.
 
 
 
@@ -431,25 +431,25 @@
 
 ---
 
-- Refresh Mutation Name (`refresh_mutation_name`): The name of the mutation used in order to refresh the access token.
+- Refresh Mutation Name (`refresh_mutation_name`): The name of the GraphQL Mutation used in order to refresh the access token.
 
-- Refresh Field (`refresh_field`): A boolean that determines if the mutation used to refresh the access token has a field or returns a scalar. True if there is a field and false when there is a scalar.
+- Refresh Field (`refresh_field`): A boolean that determines if the Mutation used to refresh the access token has a field or returns a scalar. True if there is a field and false when there is a scalar.
 
-- Refresh Field Name (`refresh_field_name`): The name of the field that returns the refresh token. The same field is used to fetch the refresh token during authentication and reauthentication.
+- Refresh Field Name (`refresh_field_name`): The name of the Field that contains the refresh token. The same field is used to fetch the refresh token during authentication and reauthentication.
 
-- Header token name (`header_token_name`): The name of the header to fetch the token from.
+- Header Token Name (`header_token_name`): Sometimes, the token is returned in a Header instead of the GraphQL response body. This is the name of the Header containing the secret..
 
-- Cookie token name (`cookie_token_name`): The name of the header to fetch the token from.
+- Cookie token name (`cookie_token_name`): Sometimes, the token is returned in a Cookie instead of the GraphQL response body. This is the name of the Cookie containing the secret..
 
 - Header name (`header_name`): The name of the header (default: `Authorization`).
 
-- Operation (`operation`): The name of the operation of the graphql query being sent. The default value is mutation.
+- Operation (`operation`): The name of the operation of the GraphQL query being sent. The default value is `mutation`.
 
-- Header prefix (`header_prefix`): The prefix of the header (defautl: `Bearer`).
+- Header prefix (`header_prefix`): The prefix of the token in an authenticated request (defautl: `Bearer`).
 
-- Cookie Authentication (`cookie_auth`): A boolean that determines if the authentication is done through cookie or no.
+- Cookie Authentication (`cookie_auth`): A boolean determines if the authentication is done through cookie or not (by default the authentication token is passed in the header).
 
-- Headers (`headers`): The user headers for manual authentication..
+- Headers (`headers`): Additional headers to insert in the requests, including the authentication request.
 
 ### Template
 
@@ -506,7 +506,7 @@
 
 
 
-- Tech (`tech`): The auth method.
+- Tech (`tech`): The auth method, in that case `manual`.
 
 ### Template
 
@@ -562,13 +562,13 @@
 
 
 
-- Tech (`tech`): The auth method.
+- Tech (`tech`): The auth method, in that case `basic`.
 
 ### Optional
 
 ---
 
-- Headers (`headers`): The user headers for manual authentication.
+- Headers (`headers`): Additional headers to insert in the requests, including the authentication request.
 
 ### Template
 
@@ -612,7 +612,7 @@
 
 
 
-- Tech (`tech`): The auth method.
+- Tech (`tech`): The auth method, in that case `api`.
 
 
 
@@ -622,7 +622,7 @@
 
 
 
-- Header name (`header_name`): The name of the header (default: `x-api-key`).
+- Header name (`header_name`): The key of the param in which the token is inserted in an authenticated request (default: `x-api-key`).
 
 ### Optional
 
@@ -630,7 +630,7 @@
 
 - Header Prefix (`header_prefix`): The prefix of the header of The Api Key.
 
-- Headers (`headers`): The user headers for manual authentication.
+- Headers (`headers`): Additional headers to insert in the requests, including the authentication request.
 
 ### Template
 
@@ -676,7 +676,7 @@
 
 
 
-- Tech (`tech`): The auth method.
+- Tech (`tech`): The auth method, in that case `public`.
 
 ### Template
 
@@ -713,7 +713,7 @@
 
 
 
-- Tech (`tech`): The auth method.
+- Tech (`tech`): The auth method, in that case `oauth`.
 
 
 
@@ -766,7 +766,7 @@
 
 - Code Verifier (`code_verifier`): The code verifier of the token.
 
-- Headers (`headers`): The user headers for manual authentication.
+- Headers (`headers`): Additional headers to insert in the requests, including the authentication request.
 
 ### Template
 
@@ -963,7 +963,7 @@
 
 
 
-- Tech (`tech`): The auth method.
+- Tech (`tech`): The auth method, in that case `webdriver`.
 
 
 

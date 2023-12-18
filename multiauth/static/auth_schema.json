@@ -552,7 +552,7 @@
                 "label": "QOP",
                 "inputType": "text"
               },
-              "description": "Inidcates the quality of protection. The value of this field should be one of the values found in the qop directive of the WWW-Authenticate header of the 401 response. If the server does not support the qop directive or if the qop directive is not included in the 401 response, this field is not present.",
+              "description": "Indicates the quality of protection. The value of this field should be one of the values found in the qop directive of the WWW-Authenticate header of the 401 response. If the server does not support the qop directive or if the qop directive is not included in the 401 response, this field is not present.",
               "type": "string"
             },
             "nonce_count": {
