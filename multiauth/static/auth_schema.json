@@ -490,7 +490,7 @@
             "name": "url",
             "placeholder": "https://www.example.com/auth"
           },
-          "description": "The GraphQL endpoint URL that handles the authentication request",
+          "description": "The endpoint URL that handles the authentication request",
           "type": "string",
           "format": "uri"
         },
@@ -672,7 +672,7 @@
             "inputType": "text",
             "name": "url"
           },
-          "description": "The URL to the authentication gateway",
+          "description": "The GraphQL that handles the authentication request",
           "type": "string",
           "format": "uri"
         },
@@ -683,7 +683,7 @@
             "label": "Mutation Name",
             "placeholder": "login"
           },
-          "description": "The name of the mutation used to authenticate",
+          "description": "The name of the GraphQL mutation used to authenticate",
           "type": "string"
         },
         "mutation_field": {
