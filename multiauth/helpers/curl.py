@@ -1,10 +1,11 @@
 import argparse
 import json
 import shlex
+from http import HTTPMethod
 from typing import Any
-from urllib.parse import urlparse
+from urllib.parse import parse_qs, urlparse
 
-from multiauth.entities.http import HTTPMethod, HttpRequest, HttpScheme, JSONSerializable
+from multiauth.entities.providers.http import HTTPRequest, HTTPScheme, JSONSerializable
 
 parser = argparse.ArgumentParser()
 
@@ -20,14 +21,14 @@ parser.add_argument('-u', '--user', default=())
 parser.add_argument('-X', '--request', default='')
 
 
-def parse_scheme(raw_scheme: Any) -> HttpScheme:
+def parse_scheme(raw_scheme: Any) -> HTTPScheme:
     if not raw_scheme or not isinstance(raw_scheme, str):
         raise ValueError('Provided scheme is not set or not a string. Valid schemes are "http" and "https"')
     scheme = raw_scheme.lower()
-    if scheme == HttpScheme.HTTP.value:
-        return HttpScheme.HTTP
-    if scheme == HttpScheme.HTTPS.value:
-        return HttpScheme.HTTPS
+    if scheme == HTTPScheme.HTTP.value:
+        return HTTPScheme.HTTP
+    if scheme == HTTPScheme.HTTPS.value:
+        return HTTPScheme.HTTPS
     raise ValueError('Input is not cURL command with a valid scheme. Valid schemes are "http" and "https"')
 
 
@@ -35,28 +36,14 @@ def parse_method(raw_method: Any) -> HTTPMethod:
     if not isinstance(raw_method, str):
         raise ValueError('Provided method is not cURL command with a valid method.')
     if not raw_method:
-        return 'GET'
+        return HTTPMethod.GET
     raw_method = raw_method.upper()
-    if raw_method == 'POST':
-        return 'POST'
-    if raw_method == 'PUT':
-        return 'PUT'
-    if raw_method == 'DELETE':
-        return 'DELETE'
-    if raw_method == 'PATCH':
-        return 'PATCH'
-    if raw_method == 'HEAD':
-        return 'HEAD'
-    if raw_method == 'OPTIONS':
-        return 'OPTIONS'
-    if raw_method == 'TRACE':
-        return 'TRACE'
-    if raw_method == 'CONNECT':
-        return 'CONNECT'
-
-    raise ValueError(
-        f'Invalid method {raw_method.upper()}',
-    )
+    try:
+        return HTTPMethod(raw_method)
+    except ValueError as e:
+        raise ValueError(
+            f'Invalid method {raw_method.upper()}',
+        ) from e
 
 
 def parse_query_params(raw_query_params: Any) -> dict[str, str]:
@@ -85,6 +72,7 @@ def parse_user(raw_user: Any) -> tuple[str | None, str | None]:
     if not username or not isinstance(username, str):
         username = None
     return username, password
+
 
 def parse_data(raw_data: Any) -> tuple[str, JSONSerializable | None]:
     if not raw_data or not isinstance(raw_data, str):
@@ -130,12 +118,13 @@ def parse_headers(raw_headers: Any) -> dict[str, str]:
 
     return headers
 
-def parse_curl(curl: str) -> HttpRequest:
+
+def parse_curl(curl: str) -> HTTPRequest:
     """Parse a curl command into a HTTPRequest object."""
 
     cookies: dict[str, str] = {}
-    headers : dict[str, str] = {}
-    method: HTTPMethod = 'GET'
+    headers: dict[str, str] = {}
+    method: HTTPMethod = HTTPMethod.GET
 
     curl = curl.replace('\\\n', ' ')
 
@@ -155,33 +144,31 @@ def parse_curl(curl: str) -> HttpRequest:
     except Exception as e:
         raise ValueError('Input is not cURL command with a valid URL') from e
 
-    scheme=parse_scheme(url.scheme)
+    scheme = parse_scheme(url.scheme)
     path = url.path or '/'
     method = parse_method(raw_method=parsed_args.request)
-    query_parameters = parse_query_params(url.query)
     cookies = parse_cookies(parsed_args.cookie)
     headers = parse_headers(parsed_args.header)
     username, password = parse_user(parsed_args.user)
 
     data = parsed_args.data
     if data:
-        method = 'POST'
+        method = HTTPMethod.POST
         data, json = parse_data(data)
     else:
         data, json = None, None
 
-    return HttpRequest(
+    return HTTPRequest(
         method=method,
         scheme=scheme,
         host=url.netloc,
         path=path,
         headers=headers,
-        query_parameters=query_parameters,
+        query_parameters=parse_qs(url.query),
         username=username,
         password=password,
         json=json,
         data=data,
         cookies=cookies,
+        proxy=None,
     )
-
-

@@ -5,7 +5,7 @@ import logging
 import os
 import shlex
 from enum import Enum
-from typing import Dict, List, Mapping, Optional, Type, TypeVar, Union
+from typing import Any, Dict, List, Mapping, Optional, Type, TypeVar, Union
 from urllib.parse import urlparse
 
 from pydash import py_
@@ -22,6 +22,37 @@ def is_url(url: str) -> bool:
 
     parsed_url = urlparse(url)
     return bool(parsed_url.scheme and parsed_url.netloc)
+
+
+def dict_deep_merge(dict1: dict, dict2: dict) -> dict:
+    """
+    Recursively merge two dictionaries, including nested dictionaries.
+    """
+    result = dict1.copy()  # Start with dict1's keys and values
+    for key, value in dict2.items():
+        if key in result and isinstance(result[key], dict) and isinstance(value, dict):
+            # If the key is in both dictionaries and both values are dicts, merge them
+            result[key] = dict_deep_merge(result[key], value)
+        else:
+            # Otherwise, use dict2's value, overriding dict1's value if key is present
+            result[key] = value
+    return result
+
+
+def deep_merge_data(base_data: Any, user_data: Any) -> Any:
+    # If the base data is a dict, and the user data is a dict, then we merge them
+    if isinstance(base_data, dict) and isinstance(user_data, dict):
+        return dict_deep_merge(base_data, user_data)
+
+    # If the base data is a list, and the user data is a list, then we merge them
+    if isinstance(base_data, list) and isinstance(user_data, list):
+        return base_data + user_data
+
+    if user_data is None:
+        return base_data
+
+    # In any other case, user_data prevails over base_data
+    return user_data
 
 
 def in_enum(method: str, myenum: Type[Enum]) -> bool:
