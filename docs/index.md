@@ -43,8 +43,8 @@
 
 
 - Key location (`location`): The location where the token will be added. The values that this parameter can take are: 
-  - `headers` 
-  - `url`
+  - `header` 
+  - `query`
 
 
 
@@ -328,7 +328,7 @@
 
 
 
-- Auth url (`url`): The GraphQL endpoint URL that handles the authentication request.
+- Auth url (`url`): The endpoint URL that handles the authentication request.
 
 
 
@@ -411,11 +411,11 @@
 
 
 
-- Auth url (`url`): The URL to the authentication gateway.
+- Auth url (`url`): The GraphQL that handles the authentication request.
 
 
 
-- Mutation Name (`mutation_name`): The name of the mutation used to authenticate.
+- Mutation Name (`mutation_name`): The name of the GraphQL mutation used to authenticate.
 
 
 
@@ -617,8 +617,8 @@
 
 
 - Key location (`location`): The location where the token will be added. The values that this parameter can take are: 
-  - `headers` 
-  - `url`
+  - `header` 
+  - `query`
 
 
 
@@ -737,8 +737,8 @@
 
 
 - Location (`location`): The location where the token will be added.. The values that this parameter can take are: 
-  - `headers` 
-  - `url`
+  - `header` 
+  - `query`
 
 
 
