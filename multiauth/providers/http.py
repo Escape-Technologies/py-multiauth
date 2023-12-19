@@ -18,27 +18,9 @@ from multiauth.entities.providers.http import (
     HTTPScheme,
 )
 from multiauth.providers.http_parser import parse_config
-from multiauth.utils import deep_merge_data, dict_find_path, dict_nested_get
+from multiauth.utils import deep_merge_data, dict_find_path, dict_nested_get, merge_headers
 
 TIMEOUT = 5
-
-
-def merge_headers(headers1: dict[str, str], headers2: dict[str, str]) -> dict[str, str]:
-    """This function merges two headers together."""
-
-    headers1 = {k.lower(): v for k, v in headers1.items()}
-    headers2 = {k.lower(): v for k, v in headers2.items()}
-
-    headers: dict[str, str] = {}
-
-    for name, value in headers1.items():
-        # Resolving duplicate keys
-        if name in headers2 and headers1[name] == headers2[name]:
-            headers[name] += f'{headers1[name]}, {headers2[name]}'
-        else:
-            headers[name] = value
-
-    return headers
 
 
 def _format_request(requester: AuthRequester, credential: Credentials, proxy: str | None) -> HTTPRequest:

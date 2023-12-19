@@ -39,6 +39,24 @@ def dict_deep_merge(dict1: dict, dict2: dict) -> dict:
     return result
 
 
+def merge_headers(headers1: dict[str, str], headers2: dict[str, str]) -> dict[str, str]:
+    """This function merges two headers together."""
+
+    headers1 = {k.lower(): v for k, v in headers1.items()}
+    headers2 = {k.lower(): v for k, v in headers2.items()}
+
+    headers: dict[str, str] = headers1.copy()  # Start with headers1
+
+    for name, value in headers2.items():
+        # Resolving duplicate keys
+        if name in headers:
+            headers[name] += f', {value}'
+        else:
+            headers[name] = value
+
+    return headers
+
+
 def deep_merge_data(base_data: Any, user_data: Any) -> Any:
     # If the base data is a dict, and the user data is a dict, then we merge them
     if isinstance(base_data, dict) and isinstance(user_data, dict):
