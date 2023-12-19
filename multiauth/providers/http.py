@@ -1,7 +1,7 @@
 """Implementation of the HTTP authentication schema."""
 
 import json
-from typing import Dict, cast
+from typing import cast
 from urllib.parse import parse_qs, urlencode, urlparse, urlunparse
 
 import requests
@@ -9,6 +9,7 @@ import requests
 from multiauth.entities.errors import AuthenticationError
 from multiauth.entities.providers.http import (
     AuthExtractor,
+    AuthInjector,
     AuthRequester,
     Credentials,
     HTTPLocation,
@@ -16,19 +17,36 @@ from multiauth.entities.providers.http import (
     HTTPResponse,
     HTTPScheme,
 )
-from multiauth.manager import User
 from multiauth.providers.http_parser import parse_config
 from multiauth.utils import deep_merge_data, dict_find_path, dict_nested_get
 
 TIMEOUT = 5
 
 
+def merge_headers(headers1: dict[str, str], headers2: dict[str, str]) -> dict[str, str]:
+    """This function merges two headers together."""
+
+    headers1 = {k.lower(): v for k, v in headers1.items()}
+    headers2 = {k.lower(): v for k, v in headers2.items()}
+
+    headers: dict[str, str] = {}
+
+    for name, value in headers1.items():
+        # Resolving duplicate keys
+        if name in headers2 and headers1[name] == headers2[name]:
+            headers[name] += f'{headers1[name]}, {headers2[name]}'
+        else:
+            headers[name] = value
+
+    return headers
+
+
 def _format_request(requester: AuthRequester, credential: Credentials, proxy: str | None) -> HTTPRequest:
     url = requester.url
     method = requester.method
 
-    headers = requester.headers | credential.headers
-    cookies = requester.cookies | credential.cookies
+    headers = merge_headers(requester.headers, credential.headers)
+    cookies = merge_headers(requester.cookies, credential.cookies)
 
     data = deep_merge_data(requester.body, credential.body)
 
@@ -70,7 +88,7 @@ def _send_request(req: HTTPRequest) -> HTTPResponse:
         status_code=response.status_code,
         reason=response.reason,
         headers=dict(response.headers),
-        cookies=response.cookies.get_dict(),  # type: ignore[no-untyped-call]
+        cookies={cookie.name: cookie.value for cookie in response.cookies if cookie.value is not None},
         data=response.text,
         json=response.json(),
         elapsed=response.elapsed,
@@ -110,22 +128,34 @@ def extract_token(extractor: AuthExtractor, res: HTTPResponse) -> str:
     raise AuthenticationError(f'We could not find any key `{extractor.key}` nested in the response')
 
 
-def user_to_credentials(user: User) -> Credentials:
-    """This function converts the user to credentials."""
+def inject_token(injector: AuthInjector, username: str, token: str, set_cookies: dict[str, str]) -> Credentials:
+    """This function injects the token in the request.
 
-    return Credentials(
-        name=str(user.credentials),
-        headers={},
-        cookies={},
-        body={},
-    )
+    It also takes the response as input as response.cookies actually contains the parsed cookies that are returned
+    in the "Set-Cookie" header of the response and that should be returned to the server
+    """
+
+    token_value = f'{injector.prefix.strip()} {token}' if injector.prefix else token
+
+    if injector.location == HTTPLocation.HEADER:
+        return Credentials(name=username, headers={injector.key: token_value}, cookies=set_cookies, body={})
+
+    if injector.location == HTTPLocation.COOKIE:
+        return Credentials(
+            name=username,
+            headers={},
+            cookies=merge_headers(set_cookies, {injector.key: token_value}),
+            body={},
+        )
+
+    raise AuthenticationError(f'We could not find any key `{injector.key}` nested in the response')
 
 
 def http_authenticator(
-    user: User,
-    schema: Dict,
+    credentials: Credentials,
+    schema: dict,
     proxy: str | None = None,
-) -> None:
+) -> Credentials:
     """This funciton is a wrapper function that implements the Rest authentication schema.
 
     It takes the credentials of the user and authenticates them on the authentication URL.
@@ -133,10 +163,7 @@ def http_authenticator(
     headers along with optional headers in case the user provided them.
     """
 
-    creds = user_to_credentials(user)
-
     auth_provider = parse_config(schema)
-    req, res = send_request(auth_provider.requester, creds, proxy)
-    _ = extract_token(auth_provider.extractor, res)
-
-    return
+    req, res = send_request(auth_provider.requester, credentials, proxy)
+    token = extract_token(auth_provider.extractor, res)
+    return inject_token(auth_provider.injector, credentials.name, token, res.cookies)
