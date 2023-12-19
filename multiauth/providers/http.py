@@ -20,12 +20,39 @@ from multiauth.utils import deep_merge_data
 TIMEOUT = 5
 
 
-def send_request(req: HTTPRequest) -> requests.Response:
+def _format_request(requester: AuthRequester, credential: Credentials, proxy: str | None) -> HTTPRequest:
+    url = requester.url
+    method = requester.method
+
+    headers = requester.headers | credential.headers
+    cookies = requester.cookies | credential.cookies
+
+    data = deep_merge_data(requester.body, credential.body)
+
+    parsed_url = urlparse(url)
+    return HTTPRequest(
+        method=method,
+        host=parsed_url.netloc,
+        scheme=HTTPScheme(parsed_url.scheme.upper()),
+        path=parsed_url.path,
+        headers=headers,
+        username=None,
+        password=None,
+        data=json.dumps(data),
+        json=data,
+        query_parameters=parse_qs(parsed_url.query),
+        cookies=cookies,
+        proxy=proxy,
+        timeout=TIMEOUT,
+    )
+
+
+def _send_request(req: HTTPRequest) -> HTTPResponse:
     """This function converts the request to a proto object."""
 
     url = urlunparse((req.scheme.value, req.host, req.path, '', urlencode(req.query_parameters), ''))
 
-    return requests.request(
+    response = requests.request(
         req.method.value,
         url,
         headers=req.headers,
@@ -34,10 +61,6 @@ def send_request(req: HTTPRequest) -> requests.Response:
         timeout=TIMEOUT,
         proxies={'http': req.proxy, 'https': req.proxy} if req.proxy else None,
     )
-
-
-def response_to_proto(response: requests.Response) -> HTTPResponse:
-    """This function converts the response to a proto object."""
 
     return HTTPResponse(
         url=response.url,
@@ -56,34 +79,10 @@ def send_http_request(
     credential: Credentials,
     proxy: str | None,
 ) -> tuple[HTTPRequest, HTTPResponse]:
-    url = requester.url
-    method = requester.method
+    req = _format_request(requester, credential, proxy)
+    res = _send_request(req)
 
-    headers = requester.headers | credential.headers
-    cookies = requester.cookies | credential.cookies
-
-    data = deep_merge_data(requester.body, credential.body)
-
-    parsed_url = urlparse(url)
-    req = HTTPRequest(
-        method=method,
-        host=parsed_url.netloc,
-        scheme=HTTPScheme(parsed_url.scheme.upper()),
-        path=parsed_url.path,
-        headers=headers,
-        username=None,
-        password=None,
-        data=json.dumps(data),
-        json=data,
-        query_parameters=parse_qs(parsed_url.query),
-        cookies=cookies,
-        proxy=proxy,
-        timeout=TIMEOUT,
-    )
-
-    res = send_request(req)
-
-    return req, response_to_proto(res)
+    return req, res
 
 
 def user_to_credentials(user: User) -> Credentials:
