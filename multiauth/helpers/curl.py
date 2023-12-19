@@ -1,12 +1,10 @@
 import argparse
 import json
 import shlex
-from dataclasses import dataclass, field
-from enum import StrEnum
 from typing import Any
 from urllib.parse import urlparse
 
-from multiauth.entities.http import HTTPMethod
+from multiauth.entities.http import HTTPMethod, HttpRequest, HttpScheme, JSONSerializable
 
 parser = argparse.ArgumentParser()
 
@@ -20,11 +18,6 @@ parser.add_argument('-d', '--data', '--data-ascii', '--data-binary', '--data-raw
 parser.add_argument('-k', '--insecure', action='store_false')
 parser.add_argument('-u', '--user', default=())
 parser.add_argument('-X', '--request', default='')
-
-
-class HttpScheme(StrEnum):
-    HTTP = 'http'
-    HTTPS = 'https'
 
 
 def parse_scheme(raw_scheme: Any) -> HttpScheme:
@@ -93,10 +86,6 @@ def parse_user(raw_user: Any) -> tuple[str | None, str | None]:
         username = None
     return username, password
 
-
-JSONSerializable = dict | list | str | int | float | bool | None
-
-
 def parse_data(raw_data: Any) -> tuple[str, JSONSerializable | None]:
     if not raw_data or not isinstance(raw_data, str):
         raise ValueError('Provided data payload is not set or is not a string.')
@@ -141,73 +130,58 @@ def parse_headers(raw_headers: Any) -> dict[str, str]:
 
     return headers
 
+def parse_curl(curl: str) -> HttpRequest:
+    """Parse a curl command into a HTTPRequest object."""
 
-@dataclass
-class HttpRequest:
-    method: HTTPMethod
-    host: str
-    scheme: HttpScheme
-    path: str = '/'
-    headers: dict[str, str] = field(default_factory=dict)
-    username: str | None = None
-    password: str | None = None
-    json: JSONSerializable | None = None
-    data: str | None = None
-    query_parameters: dict[str, str] = field(default_factory=dict)
-    cookies: dict[str, str] = field(default_factory=dict)
-    timeout: int = 5
+    cookies: dict[str, str] = {}
+    headers : dict[str, str] = {}
+    method: HTTPMethod = 'GET'
 
-    @staticmethod
-    def from_curl(curl: str) -> 'HttpRequest':
-        """Parse a curl command into a HTTPRequest object."""
+    curl = curl.replace('\\\n', ' ')
 
-        cookies: dict[str, str] = {}
-        headers: dict[str, str] = {}
-        method: HTTPMethod = 'GET'
+    tokens = shlex.split(curl)
+    parsed_args = parser.parse_args(tokens)
 
-        curl = curl.replace('\\\n', ' ')
+    if parsed_args.command != 'curl':
+        raise ValueError('Input is not a valid cURL command')
 
-        tokens = shlex.split(curl)
-        parsed_args = parser.parse_args(tokens)
+    try:
+        raw_url = parsed_args.url
+        if not isinstance(raw_url, str):
+            raise ValueError('Input is not cURL command with a valid URL')
+        if not raw_url.startswith('http://') and not raw_url.startswith('https://'):
+            raw_url = 'http://' + raw_url
+        url = urlparse(raw_url)
+    except Exception as e:
+        raise ValueError('Input is not cURL command with a valid URL') from e
 
-        if parsed_args.command != 'curl':
-            raise ValueError('Input is not a valid cURL command')
+    scheme=parse_scheme(url.scheme)
+    path = url.path or '/'
+    method = parse_method(raw_method=parsed_args.request)
+    query_parameters = parse_query_params(url.query)
+    cookies = parse_cookies(parsed_args.cookie)
+    headers = parse_headers(parsed_args.header)
+    username, password = parse_user(parsed_args.user)
 
-        try:
-            raw_url = parsed_args.url
-            if not isinstance(raw_url, str):
-                raise ValueError('Input is not cURL command with a valid URL')
-            if not raw_url.startswith('http://') and not raw_url.startswith('https://'):
-                raw_url = 'http://' + raw_url
-            url = urlparse(raw_url)
-        except Exception as e:
-            raise ValueError('Input is not cURL command with a valid URL') from e
+    data = parsed_args.data
+    if data:
+        method = 'POST'
+        data, json = parse_data(data)
+    else:
+        data, json = None, None
 
-        scheme = parse_scheme(url.scheme)
-        path = url.path or '/'
-        method = parse_method(raw_method=parsed_args.request)
-        query_parameters = parse_query_params(url.query)
-        cookies = parse_cookies(parsed_args.cookie)
-        headers = parse_headers(parsed_args.header)
-        username, password = parse_user(parsed_args.user)
+    return HttpRequest(
+        method=method,
+        scheme=scheme,
+        host=url.netloc,
+        path=path,
+        headers=headers,
+        query_parameters=query_parameters,
+        username=username,
+        password=password,
+        json=json,
+        data=data,
+        cookies=cookies,
+    )
 
-        data = parsed_args.data
-        if data:
-            method = 'POST'
-            data, json = parse_data(data)
-        else:
-            data, json = None, None
 
-        return HttpRequest(
-            method=method,
-            scheme=scheme,
-            host=url.netloc,
-            path=path,
-            headers=headers,
-            query_parameters=query_parameters,
-            username=username,
-            password=password,
-            json=json,
-            data=data,
-            cookies=cookies,
-        )
