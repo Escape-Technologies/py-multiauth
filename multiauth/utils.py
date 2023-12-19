@@ -4,7 +4,8 @@ import argparse
 import logging
 import os
 import shlex
-from typing import Dict, List, Mapping, Optional, TypeVar, Union
+from enum import Enum
+from typing import Dict, List, Mapping, Optional, Type, TypeVar, Union
 from urllib.parse import urlparse
 
 from pydash import py_
@@ -14,6 +15,23 @@ from multiauth.entities.utils import Credentials, ParsedCurlContent
 
 Default = TypeVar('Default')
 Value = TypeVar('Value')
+
+
+def is_url(url: str) -> bool:
+    """This function checks if the url is valid."""
+
+    parsed_url = urlparse(url)
+    return bool(parsed_url.scheme and parsed_url.netloc)
+
+
+def in_enum(method: str, myenum: Type[Enum]) -> bool:
+    """This function checks if the http method is valid."""
+
+    try:
+        myenum(method.upper())
+        return True
+    except ValueError:
+        return False
 
 
 def install_logger(logger: logging.Logger) -> None:

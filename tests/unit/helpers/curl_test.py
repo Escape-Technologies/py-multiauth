@@ -21,20 +21,20 @@ class TestHttpRequest:
                     method='POST',
                     host='example.com',
                     scheme=HttpScheme.HTTPS,
-                    headers={'Authorization-Code':'test-code'},
+                    headers={'Authorization-Code': 'test-code'},
                 ),
             ),
             (
                 (
-                        'curl -X POST https://example.com '
-                        '-H "Authorization-Code: test-code" '
-                        '-H "Content-Type: application/json"'
+                    'curl -X POST https://example.com '
+                    '-H "Authorization-Code: test-code" '
+                    '-H "Content-Type: application/json"'
                 ),
                 HttpRequest(
                     method='POST',
                     host='example.com',
                     scheme=HttpScheme.HTTPS,
-                    headers={'Authorization-Code':'test-code', 'Content-Type': 'application/json'},
+                    headers={'Authorization-Code': 'test-code', 'Content-Type': 'application/json'},
                 ),
             ),
             (
@@ -68,19 +68,20 @@ class TestParseHeaders:
         ('raw_headers', 'expected'),
         [
             (None, {}),
-            ([],{}),
-            (['Authorization-Code:test-code'], {'Authorization-Code':'test-code'}),
-            (['Authorization-Code:         test-code'], {'Authorization-Code':'test-code'}),
-            (['Authorization:Bearer jwt'], {'Authorization':'Bearer jwt'}),
-            (['Authorization: Bearer jwt'], {'Authorization':'Bearer jwt'}),
+            ([], {}),
+            (['Authorization-Code:test-code'], {'Authorization-Code': 'test-code'}),
+            (['Authorization-Code:         test-code'], {'Authorization-Code': 'test-code'}),
+            (['Authorization:Bearer jwt'], {'Authorization': 'Bearer jwt'}),
+            (['Authorization: Bearer jwt'], {'Authorization': 'Bearer jwt'}),
             (
                 ['Authorization: Bearer jwt', 'Content-Type: application/json'],
-                {'Authorization':'Bearer jwt', 'Content-Type': 'application/json'},
+                {'Authorization': 'Bearer jwt', 'Content-Type': 'application/json'},
             ),
         ],
     )
     def test_parse_headers(self, raw_headers: Any, expected: dict[str, str]) -> None:
         assert parse_headers(raw_headers) == expected
+
 
 class TestParseScheme:
     @pytest.mark.parametrize(
