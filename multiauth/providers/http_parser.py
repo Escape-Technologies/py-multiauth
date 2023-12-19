@@ -8,12 +8,13 @@ from multiauth.entities.providers.http import (
     AuthInjector,
     AuthProvider,
     AuthRequester,
+    Credentials,
     HTTPLocation,
 )
 from multiauth.utils import in_enum, is_url
 
 
-def _parser_requester(schema: dict) -> AuthRequester:
+def parser_requester(schema: dict) -> AuthRequester:
     """This function parses the input schema and checks if all the necessary fields exist."""
 
     if 'url' not in schema:
@@ -43,7 +44,7 @@ def _parser_requester(schema: dict) -> AuthRequester:
     )
 
 
-def _parse_extractor(schema: dict) -> AuthExtractor:
+def parse_extractor(schema: dict) -> AuthExtractor:
     """This function parses the extract schema and checks if all the necessary fields exist."""
 
     if 'key' not in schema:
@@ -64,7 +65,7 @@ def _parse_extractor(schema: dict) -> AuthExtractor:
     )
 
 
-def _parse_injector(schema: dict) -> AuthInjector:
+def parse_injector(schema: dict) -> AuthInjector:
     """This function parses the inject schema and checks if all the necessary fields exist."""
 
     if 'key' not in schema:
@@ -87,7 +88,7 @@ def _parse_injector(schema: dict) -> AuthInjector:
     )
 
 
-def _parse_refresher(
+def parse_refresher(
     schema: dict,
     requester: AuthRequester,
     extractor: AuthExtractor,
@@ -122,20 +123,55 @@ def parse_config(schema: dict) -> AuthProvider:
     if 'requester' not in schema:
         raise AuthenticationError('Mandatory `requester` key is missing')
 
-    requester = _parser_requester(schema['requester'])
+    requester = parser_requester(schema['requester'])
 
     if 'extractor' not in schema:
         raise AuthenticationError('Mandatory `extractor` key is missing')
 
-    extractor = _parse_extractor(schema['extractor'])
+    extractor = parse_extractor(schema['extractor'])
 
     if 'injector' not in schema:
         raise AuthenticationError('Mandatory `injector` key is missing')
 
-    injector = _parse_injector(schema['injector'])
+    injector = parse_injector(schema['injector'])
 
     refresher = None
     if 'refresher' in schema:
-        refresher = _parse_refresher(schema, requester, extractor, injector)
+        refresher = parse_refresher(schema, requester, extractor, injector)
 
     return AuthProvider(requester=requester, extractor=extractor, injector=injector, refresher=refresher)
+
+
+def parse_credentials(schema: dict) -> Credentials:
+    """This function parses the credentials schema and checks if all the necessary fields exist."""
+
+    if 'name' not in schema:
+        raise AuthenticationError('Mandatory `name` key is missing from credentials')
+
+    if not isinstance(schema['name'], str):
+        raise AuthenticationError('`name` must be a string in credentials')
+
+    if 'headers' not in schema:
+        raise AuthenticationError('Mandatory `headers` key is missing from credentials')
+
+    if not isinstance(schema['headers'], dict):
+        raise AuthenticationError('`headers` must be a dictionary in credentials')
+
+    if 'cookies' not in schema:
+        raise AuthenticationError('Mandatory `cookies` key is missing from credentials')
+
+    if not isinstance(schema['cookies'], dict):
+        raise AuthenticationError('`cookies` must be a dictionary in credentials')
+
+    if 'body' not in schema:
+        raise AuthenticationError('Mandatory `body` key is missing from credentials')
+
+    if not isinstance(schema['body'], dict):
+        raise AuthenticationError('`body` must be a dictionary in credentials')
+
+    return Credentials(
+        name=schema['name'],
+        headers=schema['headers'],
+        cookies=schema['cookies'],
+        body=schema['body'],
+    )

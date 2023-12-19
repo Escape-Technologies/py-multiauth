@@ -1,4 +1,4 @@
-"""Implementation of the Rest authentication schema."""
+"""Implementation of the HTTP authentication schema."""
 
 import json
 from typing import Dict, cast
@@ -77,11 +77,13 @@ def _send_request(req: HTTPRequest) -> HTTPResponse:
     )
 
 
-def send_http_request(
+def send_request(
     requester: AuthRequester,
     credential: Credentials,
     proxy: str | None,
 ) -> tuple[HTTPRequest, HTTPResponse]:
+    """Send request from the requester and credential."""
+
     req = _format_request(requester, credential, proxy)
     res = _send_request(req)
 
@@ -105,7 +107,7 @@ def extract_token(extractor: AuthExtractor, res: HTTPResponse) -> str:
         path = dict_find_path(body, extractor.key, '')
         return dict_nested_get(body, path)
 
-    raise AuthenticationError(f'We could not find any key {extractor.key} nested in the response')
+    raise AuthenticationError(f'We could not find any key `{extractor.key}` nested in the response')
 
 
 def user_to_credentials(user: User) -> Credentials:
@@ -134,7 +136,7 @@ def http_authenticator(
     creds = user_to_credentials(user)
 
     auth_provider = parse_config(schema)
-    req, res = send_http_request(auth_provider.requester, creds, proxy)
+    req, res = send_request(auth_provider.requester, creds, proxy)
     _ = extract_token(auth_provider.extractor, res)
 
     return
