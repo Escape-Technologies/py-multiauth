@@ -1,21 +1,24 @@
 """Implementation of the Rest authentication schema."""
 
 import json
-from typing import Dict
+from typing import Dict, cast
 from urllib.parse import parse_qs, urlencode, urlparse, urlunparse
 
 import requests
 
+from multiauth.entities.errors import AuthenticationError
 from multiauth.entities.providers.http import (
+    AuthExtractor,
     AuthRequester,
     Credentials,
+    HTTPLocation,
     HTTPRequest,
     HTTPResponse,
     HTTPScheme,
 )
 from multiauth.manager import User
 from multiauth.providers.http_parser import parse_config
-from multiauth.utils import deep_merge_data
+from multiauth.utils import deep_merge_data, dict_find_path, dict_nested_get
 
 TIMEOUT = 5
 
@@ -85,6 +88,26 @@ def send_http_request(
     return req, res
 
 
+def extract_token(extractor: AuthExtractor, res: HTTPResponse) -> str:
+    """This function extracts the token from the response."""
+
+    if extractor.location == HTTPLocation.HEADER:
+        return res.headers[extractor.key]
+
+    if extractor.location == HTTPLocation.COOKIE:
+        return res.cookies[extractor.key]
+
+    if extractor.location == HTTPLocation.BODY:
+        body = cast(
+            dict,
+            res.json,
+        )  # TODO(antoine@escape.tech): This makes the assertion that a valid request will always return a JSON
+        path = dict_find_path(body, extractor.key, '')
+        return dict_nested_get(body, path)
+
+    raise AuthenticationError(f'We could not find any key {extractor.key} nested in the response')
+
+
 def user_to_credentials(user: User) -> Credentials:
     """This function converts the user to credentials."""
 
@@ -112,3 +135,6 @@ def http_authenticator(
 
     auth_provider = parse_config(schema)
     req, res = send_http_request(auth_provider.requester, creds, proxy)
+    _ = extract_token(auth_provider.extractor, res)
+
+    return
