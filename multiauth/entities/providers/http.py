@@ -36,17 +36,11 @@ class AuthInjector:
 
 
 @dataclass
-class AuthRefresher:
-    input: AuthRequester
-    extract: AuthExtractor
-
-
-@dataclass
 class AuthProvider:
-    input: AuthRequester
-    extract: AuthExtractor
-    inject: AuthInjector
-    refresh: Optional['AuthProvider']
+    requester: AuthRequester
+    extractor: AuthExtractor
+    injector: AuthInjector
+    refresher: Optional['AuthProvider']
 
 
 ###### Authentication Extensions ######
