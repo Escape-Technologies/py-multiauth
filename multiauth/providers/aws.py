@@ -13,9 +13,10 @@ import jwt
 from pycognito.aws_srp import AWSSRP  # type: ignore[import-untyped]
 
 from multiauth.entities.errors import AuthenticationError
-from multiauth.entities.http import HTTPMethod, Location
+from multiauth.entities.http import HTTPMethod
 from multiauth.entities.main import AuthAWSType, AuthResponse, AuthTech
 from multiauth.entities.providers.aws import AuthConfigAWS, AuthHashalgorithmHawkandAWS
+from multiauth.entities.providers.http import HTTPLocation
 from multiauth.helpers import get_secret_hash
 from multiauth.manager import User
 
@@ -47,7 +48,7 @@ def aws_config_parser(
             'hash_algorithm': None,
             'pool_id': None,
             'client_secret': None,
-            'location': Location.HEADERS,
+            'location': HTTPLocation.HEADER,
             'header_name': None,
             'header_prefix': None,
             'headers': None,
@@ -65,7 +66,7 @@ def aws_config_parser(
     auth_config['type'] = schema['type']
     user.auth_type = schema['type']
     auth_config['region'] = schema['region']
-    auth_config['location'] = Location(schema['location'])
+    auth_config['location'] = HTTPLocation(schema['location'])
 
     if auth_config['type'] == AuthAWSType.AWS_SIGNATURE:
         if not schema.get('service_name'):

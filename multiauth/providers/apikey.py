@@ -3,8 +3,8 @@
 from typing import Dict, cast
 
 from multiauth.entities.errors import AuthenticationError
-from multiauth.entities.http import Location
 from multiauth.entities.main import AuthConfigApiKey, AuthResponse, AuthTech
+from multiauth.entities.providers.http import HTTPLocation
 from multiauth.manager import User
 
 
@@ -13,7 +13,7 @@ def apikey_config_parser(schema: Dict) -> AuthConfigApiKey:
 
     auth_config = AuthConfigApiKey(
         {
-            'location': Location.HEADERS,
+            'location': HTTPLocation.HEADER,
             'header_name': '',
             'header_prefix': None,
             'headers': None,
@@ -60,13 +60,13 @@ def apikey_auth_attach(
     user.set_token(api_key, None)
 
     # Implementation with no expression matching in order to work with mypy
-    if auth_config['location'] == Location.HEADERS:
+    if auth_config['location'] == HTTPLocation.HEADER:
         if auth_config['header_prefix'] is not None:
             auth_response['headers'][auth_config['header_name']] = auth_config['header_prefix'] + ' ' + api_key
         else:
             auth_response['headers'][auth_config['header_name']] = api_key
 
-    if auth_config['location'] == Location.URL:
+    if auth_config['location'] == HTTPLocation.QUERY:
         pass
 
     # Append the optional headers to the header

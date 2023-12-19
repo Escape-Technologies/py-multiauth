@@ -7,8 +7,8 @@ from typing import Dict, Tuple, cast
 from authlib.integrations.requests_client import OAuth2Session  # type: ignore[import-untyped]
 
 from multiauth.entities.errors import AuthenticationError
-from multiauth.entities.http import Location
 from multiauth.entities.main import AuthResponse, AuthTech
+from multiauth.entities.providers.http import HTTPLocation
 from multiauth.entities.providers.oauth import AuthConfigOAuth, AuthOAuthGrantType, AuthOAuthlocation, AuthOAuthResponse
 from multiauth.entities.providers.webdriver import SeleniumCommand, SeleniumTest
 from multiauth.helpers import token_endpoint_auth_method
@@ -87,10 +87,10 @@ def extract_oauth_token(
         response['expires_in'] = int(oauth_response['expires_at']) + time.time()
 
     # Now check the location to know where should add the token (header or body)
-    if auth_config['location'] == Location.HEADERS:
+    if auth_config['location'] == HTTPLocation.HEADER:
         auth_response['headers']['authorization'] = auth_config['header_prefix'] + ' ' + response['access_token']
 
-    elif auth_config['location'] == Location.URL:
+    elif auth_config['location'] == HTTPLocation.QUERY:
         pass
 
     # Add the token, the refresh token, and the expiry time
@@ -329,7 +329,7 @@ def oauth_config_parser(schema: Dict) -> AuthConfigOAuth:
             'scope': '',
             'header_prefix': 'Bearer',
             'auth_location': AuthOAuthlocation.BODY,
-            'location': Location.HEADERS,
+            'location': HTTPLocation.HEADER,
             'state': None,
             'login_flow': [],
             # 'challenge_method': None,
@@ -369,7 +369,7 @@ def oauth_config_parser(schema: Dict) -> AuthConfigOAuth:
 
     if not schema.get('location'):
         raise AuthenticationError('Please provide the location')
-    auth_config['location'] = Location(schema.get('location'))
+    auth_config['location'] = HTTPLocation(str(schema.get('location')))
 
     if schema.get('options', {}).get('login_flow'):
         auth_config['login_flow'] = [load_selenium_command(ele) for ele in schema['options']['login_flow']]

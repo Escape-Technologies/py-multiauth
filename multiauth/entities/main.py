@@ -6,8 +6,9 @@ from typing import Any, Dict, Optional, Union
 
 from attr import dataclass
 
-from multiauth.entities.http import HTTPMethod, Location
+from multiauth.entities.http import HTTPMethod
 from multiauth.entities.providers.aws import AuthAWSType
+from multiauth.entities.providers.http import HTTPLocation
 from multiauth.entities.providers.oauth import AuthOAuthGrantType
 from multiauth.entities.providers.webdriver import SeleniumProject
 
@@ -65,7 +66,7 @@ class AuthConfigApiKey(TypedDict):
 
     """Authentication Configuration Parameters of the Api Key Method."""
 
-    location: Location
+    location: HTTPLocation
     header_name: str
     header_prefix: Optional[str]
     headers: Optional[Dict[str, str]]

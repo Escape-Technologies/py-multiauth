@@ -4,7 +4,7 @@ import sys
 from enum import Enum, unique
 from typing import Dict, Optional
 
-from multiauth.entities.http import Location
+from multiauth.entities.providers.http import HTTPLocation
 from multiauth.entities.providers.webdriver import SeleniumCommand
 
 if sys.version_info >= (3, 8):
@@ -61,7 +61,7 @@ class AuthConfigOAuth(TypedDict):
     scope: Optional[str]
     header_prefix: str
     auth_location: AuthOAuthlocation
-    location: Location
+    location: HTTPLocation
     state: Optional[str]
     login_flow: list[SeleniumCommand]
     # challenge_method: Optional[AuthHashAlgorithmOAuth]

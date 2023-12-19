@@ -4,7 +4,8 @@ import sys
 from enum import Enum, unique
 from typing import Dict, Optional
 
-from multiauth.entities.http import HTTPMethod, Location
+from multiauth.entities.http import HTTPMethod
+from multiauth.entities.providers.http import HTTPLocation
 
 if sys.version_info >= (3, 8):
     from typing import TypedDict  # pylint: disable=no-name-in-module
@@ -66,7 +67,7 @@ class AuthConfigAWS(TypedDict):
     hash_algorithm: Optional[AuthHashalgorithmHawkandAWS]
     pool_id: Optional[str]
     client_secret: Optional[str]
-    location: Location
+    location: HTTPLocation
     header_name: Optional[str]
     header_prefix: Optional[str]
     headers: Optional[Dict[str, str]]
