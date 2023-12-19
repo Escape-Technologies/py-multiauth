@@ -1,27 +1,81 @@
+from http import HTTPMethod
 from typing import Any
 
 import pytest
 
-from multiauth.helpers.curl import HttpRequest, HttpScheme, parse_headers, parse_scheme
+from multiauth.helpers.curl import HTTPRequest, HTTPScheme, parse_curl, parse_headers, parse_scheme
 
 
 class TestHttpRequest:
     @pytest.mark.parametrize(
         ('curl', 'expected'),
         [
-            ('curl example.com', HttpRequest(method='GET', host='example.com', scheme=HttpScheme.HTTP)),
-            ('curl https://example.com', HttpRequest(method='GET', host='example.com', scheme=HttpScheme.HTTPS)),
+            (
+                'curl example.com',
+                HTTPRequest(
+                    method=HTTPMethod.GET,
+                    host='example.com',
+                    scheme=HTTPScheme.HTTP,
+                    path='/',
+                    headers={},
+                    query_parameters={},
+                    username=None,
+                    password=None,
+                    json=None,
+                    data=None,
+                    cookies={},
+                    proxy=None,
+                ),
+            ),
+            (
+                'curl https://example.com',
+                HTTPRequest(
+                    method=HTTPMethod.GET,
+                    host='example.com',
+                    scheme=HTTPScheme.HTTPS,
+                    path='/',
+                    headers={},
+                    query_parameters={},
+                    username=None,
+                    password=None,
+                    json=None,
+                    data=None,
+                    cookies={},
+                    proxy=None,
+                ),
+            ),
             (
                 'curl -X POST https://example.com',
-                HttpRequest(method='POST', host='example.com', scheme=HttpScheme.HTTPS),
+                HTTPRequest(
+                    method=HTTPMethod.POST,
+                    host='example.com',
+                    scheme=HTTPScheme.HTTPS,
+                    path='/',
+                    headers={},
+                    query_parameters={},
+                    username=None,
+                    password=None,
+                    json=None,
+                    data=None,
+                    cookies={},
+                    proxy=None,
+                ),
             ),
             (
                 'curl -X POST https://example.com -H "Authorization-Code: test-code"',
-                HttpRequest(
-                    method='POST',
+                HTTPRequest(
+                    method=HTTPMethod.POST,
                     host='example.com',
-                    scheme=HttpScheme.HTTPS,
+                    scheme=HTTPScheme.HTTPS,
                     headers={'Authorization-Code': 'test-code'},
+                    path='/',
+                    query_parameters={},
+                    username=None,
+                    password=None,
+                    json=None,
+                    data=None,
+                    cookies={},
+                    proxy=None,
                 ),
             ),
             (
@@ -30,37 +84,59 @@ class TestHttpRequest:
                     '-H "Authorization-Code: test-code" '
                     '-H "Content-Type: application/json"'
                 ),
-                HttpRequest(
-                    method='POST',
+                HTTPRequest(
+                    method=HTTPMethod.POST,
                     host='example.com',
-                    scheme=HttpScheme.HTTPS,
+                    scheme=HTTPScheme.HTTPS,
                     headers={'Authorization-Code': 'test-code', 'Content-Type': 'application/json'},
+                    path='/',
+                    query_parameters={},
+                    username=None,
+                    password=None,
+                    json=None,
+                    data=None,
+                    cookies={},
+                    proxy=None,
                 ),
             ),
             (
                 'curl -X POST https://example.com -d \'{\"foo\": \"bar\"}\'',
-                HttpRequest(
-                    method='POST',
+                HTTPRequest(
+                    method=HTTPMethod.POST,
                     host='example.com',
-                    scheme=HttpScheme.HTTPS,
+                    scheme=HTTPScheme.HTTPS,
                     data='{"foo": "bar"}',
                     json={'foo': 'bar'},
+                    path='/',
+                    headers={},
+                    query_parameters={},
+                    username=None,
+                    password=None,
+                    cookies={},
+                    proxy=None,
                 ),
             ),
             (
                 'curl -X POST https://example.com -d "{\\\"foo\\\": \\\"bar\\\"}"',
-                HttpRequest(
-                    method='POST',
+                HTTPRequest(
+                    method=HTTPMethod.POST,
                     host='example.com',
-                    scheme=HttpScheme.HTTPS,
+                    scheme=HTTPScheme.HTTPS,
                     data='{"foo": "bar"}',
                     json={'foo': 'bar'},
+                    path='/',
+                    headers={},
+                    query_parameters={},
+                    username=None,
+                    password=None,
+                    cookies={},
+                    proxy=None,
                 ),
             ),
         ],
     )
-    def test_parse_valid_curl(self, curl: str, expected: HttpRequest) -> None:
-        assert HttpRequest.from_curl(curl) == expected
+    def test_parse_valid_curl(self, curl: str, expected: HTTPRequest) -> None:
+        assert parse_curl(curl) == expected
 
 
 class TestParseHeaders:
@@ -87,11 +163,11 @@ class TestParseScheme:
     @pytest.mark.parametrize(
         ('raw_scheme', 'expected'),
         [
-            ('HTTP', HttpScheme.HTTP),
-            ('http', HttpScheme.HTTP),
-            ('HTTPS', HttpScheme.HTTPS),
-            ('https', HttpScheme.HTTPS),
+            ('HTTP', HTTPScheme.HTTP),
+            ('http', HTTPScheme.HTTP),
+            ('HTTPS', HTTPScheme.HTTPS),
+            ('https', HTTPScheme.HTTPS),
         ],
     )
-    def test_parse_scheme(self, raw_scheme: Any, expected: HttpScheme) -> None:
+    def test_parse_scheme(self, raw_scheme: Any, expected: HTTPScheme) -> None:
         assert parse_scheme(raw_scheme) == expected
