@@ -21,6 +21,7 @@ parser.add_argument('-k', '--insecure', action='store_false')
 parser.add_argument('-u', '--user', default=())
 parser.add_argument('-X', '--request', default='')
 
+
 class HttpScheme(StrEnum):
     HTTP = 'http'
     HTTPS = 'https'
@@ -35,6 +36,7 @@ def parse_scheme(raw_scheme: Any) -> HttpScheme:
     if scheme == HttpScheme.HTTPS.value:
         return HttpScheme.HTTPS
     raise ValueError('Input is not cURL command with a valid scheme. Valid schemes are "http" and "https"')
+
 
 def parse_method(raw_method: Any) -> HTTPMethod:
     if not isinstance(raw_method, str):
@@ -77,6 +79,7 @@ def parse_query_params(raw_query_params: Any) -> dict[str, str]:
         query_params[key] = value
     return query_params
 
+
 def parse_user(raw_user: Any) -> tuple[str | None, str | None]:
     if not raw_user or not isinstance(raw_user, str):
         return None, None
@@ -90,7 +93,10 @@ def parse_user(raw_user: Any) -> tuple[str | None, str | None]:
         username = None
     return username, password
 
+
 JSONSerializable = dict | list | str | int | float | bool | None
+
+
 def parse_data(raw_data: Any) -> tuple[str, JSONSerializable | None]:
     if not raw_data or not isinstance(raw_data, str):
         raise ValueError('Provided data payload is not set or is not a string.')
@@ -99,6 +105,7 @@ def parse_data(raw_data: Any) -> tuple[str, JSONSerializable | None]:
         return raw_data, body
     except json.JSONDecodeError:
         return raw_data, None
+
 
 def parse_cookies(raw_cookies: Any) -> dict[str, str]:
     raw_cookies = raw_cookies or []
@@ -115,6 +122,7 @@ def parse_cookies(raw_cookies: Any) -> dict[str, str]:
             cookies[key] = value
 
     return cookies
+
 
 def parse_headers(raw_headers: Any) -> dict[str, str]:
     raw_headers = raw_headers or []
@@ -154,7 +162,7 @@ class HttpRequest:
         """Parse a curl command into a HTTPRequest object."""
 
         cookies: dict[str, str] = {}
-        headers : dict[str, str] = {}
+        headers: dict[str, str] = {}
         method: HTTPMethod = 'GET'
 
         curl = curl.replace('\\\n', ' ')
@@ -175,7 +183,7 @@ class HttpRequest:
         except Exception as e:
             raise ValueError('Input is not cURL command with a valid URL') from e
 
-        scheme=parse_scheme(url.scheme)
+        scheme = parse_scheme(url.scheme)
         path = url.path or '/'
         method = parse_method(raw_method=parsed_args.request)
         query_parameters = parse_query_params(url.query)
@@ -189,8 +197,6 @@ class HttpRequest:
             data, json = parse_data(data)
         else:
             data, json = None, None
-
-
 
         return HttpRequest(
             method=method,
