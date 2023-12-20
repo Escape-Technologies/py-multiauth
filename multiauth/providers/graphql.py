@@ -133,7 +133,7 @@ def graphql_config_parser(schema: dict) -> AuthConfigGraphQL:
         auth_config['param_name'] = schema['options'].get('param_name')
         auth_config['param_prefix'] = schema['options'].get('param_prefix')
         auth_config['headers'] = schema['options'].get('headers')
-        auth_config['method'] = schema['options'].get('method', 'POST')
+        auth_config['method'] = HTTPMethod(schema['options'].get('method', 'POST').upper())
         auth_config['token_name'] = schema['options'].get('token_name')
 
     return auth_config
