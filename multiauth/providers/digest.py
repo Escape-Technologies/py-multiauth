@@ -3,7 +3,6 @@
 import hashlib
 import os
 import time
-from typing import Dict, Optional
 from urllib.parse import urlparse
 
 import requests
@@ -74,7 +73,7 @@ def send_401_request(url: str) -> AuthDigestChallenge:
 
 
 # pylint: disable=[too-many-branches, too-many-statements]
-def digest_config_parser(schema: Dict) -> AuthConfigDigest:
+def digest_config_parser(schema: dict) -> AuthConfigDigest:
     """This function parses the Digest schema and checks if all necessary fields exist."""
 
     auth_config = AuthConfigDigest(
@@ -84,7 +83,7 @@ def digest_config_parser(schema: Dict) -> AuthConfigDigest:
             'nonce': '',
             'algorithm': AuthHashAlgorithmDigest.MD5,
             'domain': '',
-            'method': 'POST',
+            'method': HTTPMethod.POST,
             'qop': None,
             'nonce_count': None,
             'client_nonce': None,
@@ -132,7 +131,7 @@ def digest_config_parser(schema: Dict) -> AuthConfigDigest:
     if not schema['options'].get('method'):
         raise AuthenticationError('Please provide the used method in the API')
 
-    auth_config['method'] = schema['options'].get('method')
+    auth_config['method'] = HTTPMethod(schema['options'].get('method').upper())
 
     auth_config['qop'] = schema['options'].get('qop')
     if not auth_config['qop']:
@@ -172,7 +171,7 @@ def digest_config_parser(schema: Dict) -> AuthConfigDigest:
 def digest_auth_attach(
     user: User,
     auth_config: AuthConfigDigest,
-    method: Optional[HTTPMethod],
+    method: HTTPMethod | None,
 ) -> AuthResponse:
     """This function attaches the user credentials to the schema and generates the proper authentication response."""
 
@@ -248,8 +247,8 @@ def digest_auth_attach(
 
 def digest_authenticator(
     user: User,
-    schema: Dict,
-    method: Optional[HTTPMethod],
+    schema: dict,
+    method: HTTPMethod | None,
 ) -> AuthResponse:
     """This function is a wrapper function that implements the Digest authentication schema.
 

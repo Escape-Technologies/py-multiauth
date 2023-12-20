@@ -1,16 +1,12 @@
 """Rest provider."""
 
-import sys
 from enum import Enum
-from typing import Dict, Optional
+from typing import (
+    TypedDict,
+)
 
 from multiauth.entities.http import HTTPMethod
 from multiauth.entities.providers.http import HTTPLocation
-
-if sys.version_info >= (3, 8):
-    from typing import TypedDict  # pylint: disable=no-name-in-module
-else:
-    from typing_extensions import TypedDict
 
 
 class CredentialsEncoding(Enum):
@@ -24,11 +20,11 @@ class AuthConfigRest(TypedDict):
 
     url: str
     method: HTTPMethod
-    refresh_url: Optional[str]
-    refresh_token_name: Optional[str]
-    token_name: Optional[str]
-    param_name: Optional[str]
-    param_prefix: Optional[str]
+    refresh_url: str | None
+    refresh_token_name: str | None
+    token_name: str | None
+    param_name: str | None
+    param_prefix: str | None
     param_location: HTTPLocation
-    headers: Optional[Dict[str, str]]
+    headers: dict[str, str] | None
     credentials_encoding: CredentialsEncoding

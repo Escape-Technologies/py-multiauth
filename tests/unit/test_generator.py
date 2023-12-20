@@ -3,7 +3,6 @@
 
 """Test generator."""
 
-from typing import Dict
 
 import pytest
 
@@ -157,9 +156,9 @@ def rest_curl_not_json_response() -> RCFile:
 
 
 def test_serialize_headers(
-    auth: Dict,
-    users_one_header: Dict,
-    users_two_headers: Dict,
+    auth: dict,
+    users_one_header: dict,
+    users_two_headers: dict,
 ) -> None:
     """Test serialize_headers."""
 
@@ -185,7 +184,7 @@ def test_serialize_headers(
 
 def test_graphql_curl_with_input_object_and_no_var(
     graphql_curl_with_input_object_and_no_var: str,
-    graphql_curl_with_input_object_and_no_var_response: Dict,
+    graphql_curl_with_input_object_and_no_var_response: dict,
 ) -> None:
     """Function that tests if the curl to escaperc works."""
 
@@ -197,7 +196,7 @@ def test_graphql_curl_with_input_object_and_no_var(
 
 def test_graphql_curl_with_input_object_and_var(
     graphql_curl_with_input_object_and_var: str,
-    graphql_curl_with_input_object_and_var_response: Dict,
+    graphql_curl_with_input_object_and_var_response: dict,
 ) -> None:
     """Function that tests if the curl to escaperc works."""
 
@@ -206,7 +205,7 @@ def test_graphql_curl_with_input_object_and_var(
 
 def test_graphql_curl_with_normal_graphql_query(
     graphql_curl_with_normal_graphql_query: str,
-    graphql_curl_with_normal_graphql_query_response: Dict,
+    graphql_curl_with_normal_graphql_query_response: dict,
 ) -> None:
     """Function that tests if the curl to escaperc works."""
 

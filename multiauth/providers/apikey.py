@@ -1,6 +1,6 @@
 """Implementation of the API Key authentication schema."""
 
-from typing import Dict, cast
+from typing import cast
 
 from multiauth.entities.errors import AuthenticationError
 from multiauth.entities.main import AuthConfigApiKey, AuthResponse, AuthTech
@@ -8,7 +8,7 @@ from multiauth.entities.providers.http import HTTPLocation
 from multiauth.manager import User
 
 
-def apikey_config_parser(schema: Dict) -> AuthConfigApiKey:
+def apikey_config_parser(schema: dict) -> AuthConfigApiKey:
     """This function parses the API Key schema and checks if all necessary fields exist."""
 
     auth_config = AuthConfigApiKey(
@@ -84,7 +84,7 @@ def apikey_auth_attach(
 
 def apikey_authenticator(
     user: User,
-    schema: Dict,
+    schema: dict,
 ) -> AuthResponse:
     """This funciton is a wrapper function that implements the API Key authentication schema.
 

@@ -7,6 +7,7 @@ from multiauth.entities.providers.http import (
     AuthExtractor,
     AuthInjector,
     AuthProvider,
+    AuthRefresher,
     AuthRequester,
     Credentials,
     HTTPLocation,
@@ -93,10 +94,10 @@ def parse_refresher(
     requester: AuthRequester,
     extractor: AuthExtractor,
     injector: AuthInjector,
-) -> AuthProvider:
+) -> AuthRefresher:
     """The parser is a bit lightweight (we should check the types of every keys)"""
 
-    return AuthProvider(
+    return AuthRefresher(
         requester=AuthRequester(
             url=schema['refresh']['input'].get('url') or requester.url,
             method=schema['refresh']['input'].get('method') or requester.method,
@@ -113,7 +114,6 @@ def parse_refresher(
             location=schema['refresh']['inject'].get('param_location') or injector.location,
             prefix=schema['refresh']['inject'].get('prefix') or injector.prefix,
         ),
-        refresher=None,
     )
 
 

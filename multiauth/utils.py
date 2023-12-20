@@ -5,7 +5,7 @@ import logging
 import os
 import shlex
 from enum import Enum
-from typing import Any, Dict, List, Mapping, Optional, Type, TypeVar, Union
+from typing import Any, Mapping, Type, TypeVar
 from urllib.parse import urlparse
 
 from pydash import py_
@@ -101,7 +101,7 @@ def install_logger(logger: logging.Logger) -> None:
     logging.getLogger('asyncio').setLevel(logging.ERROR)
 
 
-def setup_logger(name: Optional[str] = None) -> logging.Logger:
+def setup_logger(name: str | None = None) -> logging.Logger:
     """Setup logger."""
 
     name = name or 'multiauth'
@@ -116,9 +116,9 @@ def dict_find_path(
     nested_dict: Mapping,
     key: str,
     prepath: str = '',
-    index: Optional[int] = None,
+    index: int | None = None,
 ) -> str:
-    """Recursively find the path of a certain key in a Dict."""
+    """Recursively find the path of a certain key in a dict."""
 
     for k, v in nested_dict.items():
         if prepath == '':
@@ -131,14 +131,14 @@ def dict_find_path(
         if k == key:  # found value
             return path
 
-        if isinstance(v, Dict):
+        if isinstance(v, dict):
             p = dict_find_path(v, key, path, None)  # recursive call
             if p != '':
                 return p
 
-        if isinstance(v, List):
+        if isinstance(v, list):
             for i, elem in enumerate(v):
-                if isinstance(elem, Dict):
+                if isinstance(elem, dict):
                     p = dict_find_path(elem, key, path, i)
                     if p != '':
                         return p
@@ -149,8 +149,8 @@ def dict_find_path(
 def dict_nested_get(
     dictionary: Mapping[str, Value],
     key: str,
-    default_return: Optional[Default] = None,
-) -> Union[Default, Value]:
+    default_return: Default | None = None,
+) -> Default | Value:
     """Search for a certain key inside a dict and returns its value (no matter the depth)"""
     return py_.get(dictionary, dict_find_path(dictionary, key, ''), default_return)
 
@@ -191,24 +191,24 @@ def uncurl(curl: str) -> ParsedCurlContent:
     parser.add_argument('-k', '--insecure', action='store_true')
 
     # First we need to prepare the curl for parsing
-    result_curl: List[str] = shlex.split(curl.replace('\\\n', ''))
+    result_curl: list[str] = shlex.split(curl.replace('\\\n', ''))
 
     # Now we have to parse the curl command
     parsed_args, _ = parser.parse_known_args(result_curl)
 
     # Now we have to analyze what we have
     # First find out what type of method are we using
-    method: HTTPMethod = 'GET'
+    method: HTTPMethod = HTTPMethod.GET
     if parsed_args.request:
-        method = parsed_args.request.upper()
+        method = HTTPMethod(parsed_args.request.upper())
     else:
         if parsed_args.data:
-            method = 'POST'
+            method = HTTPMethod.POST
         else:
-            method = 'GET'
+            method = HTTPMethod.GET
 
     # Now we have to extract the headers
-    headers: Dict[str, str] = {}
+    headers: dict[str, str] = {}
     for header in parsed_args.header:
         param_prefix, header_value = header.split(':', 1)
         headers[param_prefix] = header_value.strip()
@@ -220,7 +220,7 @@ def uncurl(curl: str) -> ParsedCurlContent:
         headers['Referer'] = parsed_args.user_agent
 
     datas: list = parsed_args.data
-    final_data: Optional[str] = None
+    final_data: str | None = None
     if len(datas) != 0:
         final_data = datas[0]
     if len(datas) != 1:
@@ -238,7 +238,7 @@ def uncurl(curl: str) -> ParsedCurlContent:
         url = parsed_args.url
 
     # Add auth
-    credentials: Optional[Credentials] = None
+    credentials: Credentials | None = None
     if parsed_args.user:
         user_name, password = parsed_args.user.split(':', 1)
         credentials = Credentials(user_name, password)

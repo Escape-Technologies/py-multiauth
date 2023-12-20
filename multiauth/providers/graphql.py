@@ -1,7 +1,8 @@
 """Implementation of the GraphQL authentication schema."""
 
 import re
-from typing import Any, Dict, Match, Optional, cast
+from http import HTTPMethod
+from typing import Any, Match, cast
 
 import jwt
 import requests
@@ -16,13 +17,13 @@ from multiauth.manager import User
 # from escape_cli.common.user import USER_MANAGER
 
 
-def format_arguments(credentials: Dict) -> str:
+def format_arguments(credentials: dict) -> str:
     """Generates the arguments for the graphql authentication schema."""
 
     arguments: str = ''
 
     for cred_field, cred_value in credentials.items():
-        if isinstance(cred_value, Dict):
+        if isinstance(cred_value, dict):
             arguments += cred_field + ': {' + format_arguments(cred_value) + '},'
 
         else:
@@ -34,10 +35,10 @@ def format_arguments(credentials: Dict) -> str:
 def generate_authentication_mutation(
     user: User,
     auth_config: AuthConfigGraphQL,
-    credentials: Optional[Dict[str, Any]] = None,
+    credentials: dict[str, Any] | None = None,
     refresh: bool = False,
     refresh_field: bool = True,
-) -> Dict:
+) -> dict:
     """Generate the graphQL query."""
 
     # Take the credentials from the users
@@ -87,7 +88,7 @@ def generate_authentication_mutation(
         raise KeyError(f'The key {error} is missing in the graphql auth config') from error
 
 
-def graphql_config_parser(schema: Dict) -> AuthConfigGraphQL:
+def graphql_config_parser(schema: dict) -> AuthConfigGraphQL:
     """This function parses the GraphQL schema and checks if all necessary fields exist."""
 
     auth_config = AuthConfigGraphQL(
@@ -95,7 +96,7 @@ def graphql_config_parser(schema: Dict) -> AuthConfigGraphQL:
             'url': '',
             'mutation_name': 'str',
             'mutation_field': '',
-            'method': 'POST',
+            'method': HTTPMethod.POST,
             'operation': 'mutation',
             'token_name': '',
             'refresh_mutation_name': None,
@@ -132,7 +133,7 @@ def graphql_config_parser(schema: Dict) -> AuthConfigGraphQL:
         auth_config['param_name'] = schema['options'].get('param_name')
         auth_config['param_prefix'] = schema['options'].get('param_prefix')
         auth_config['headers'] = schema['options'].get('headers')
-        auth_config['method'] = schema['options'].get('method', 'POST')
+        auth_config['method'] = HTTPMethod(schema['options'].get('method', 'POST').upper())
         auth_config['token_name'] = schema['options'].get('token_name')
 
     return auth_config
@@ -148,7 +149,7 @@ def graphql_auth_attach(
 
     # First we have to generate the graphQL query that we need to send
     graphql_query = generate_authentication_mutation(user, auth_config)
-    data: Dict[Any, Any]
+    data: dict[Any, Any]
 
     # Create the payload
     if not graphql_query['graphql_variables']:
@@ -180,7 +181,7 @@ def graphql_auth_attach(
 
     # Prepare the header in order to fetch the token
     # We are creating a header for the token because the helper function '_extract_token' works like that
-    headers: Dict[str, str] = {}
+    headers: dict[str, str] = {}
 
     # Now we want to append the authentication headers
     # There are two parts
@@ -219,7 +220,7 @@ def graphql_auth_attach(
                 },
             )
 
-    token: Optional[str] = None
+    token: str | None = None
     auth_response: AuthResponse
 
     # Fetching token from the header is priorized
@@ -274,7 +275,7 @@ def graphql_auth_attach(
 
 def graphql_authenticator(
     user: User,
-    schema: Dict,
+    schema: dict,
     proxy: str | None = None,
 ) -> AuthResponse:
     """This function is a wrapper function that implements the GraphQL authentication schema.
@@ -289,7 +290,7 @@ def graphql_authenticator(
 
 def graphql_reauthenticator(
     user: User,
-    schema: Dict,
+    schema: dict,
     refresh_token: str,
     proxy: str | None = None,
 ) -> AuthResponse:
@@ -304,7 +305,7 @@ def graphql_reauthenticator(
 
     # Now we have to generate the graphQL query that we need to send
     # To do that we have to generate a dictionary
-    credentials: Dict = {auth_config['refresh_field_name']: refresh_token}
+    credentials: dict = {auth_config['refresh_field_name']: refresh_token}
 
     # Now we do the same thing we do in the function above
     # First we have to generate the graphQL query that we need to send
@@ -315,7 +316,7 @@ def graphql_reauthenticator(
         refresh=True,
         refresh_field=auth_config['refresh_field'],
     )
-    data: Dict[Any, Any]
+    data: dict[Any, Any]
 
     # Create the payload
     if not graphql_query['graphql_variables']:
@@ -346,7 +347,7 @@ def graphql_reauthenticator(
 
     # Prepare the header in order to fetch the token
     # We are creating a header for the token because the helper function '_extract_token' works like that
-    headers: Dict[str, str] = {}
+    headers: dict[str, str] = {}
 
     # Now we want to append the authentication headers
     # There are two parts
