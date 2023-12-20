@@ -403,14 +403,15 @@
               "description": "The prefix of the token that will be inserted in an authentified request (default: `Bearer`)",
               "type": "string"
             },
-            "cookie_auth": {
+            "location": {
               "_escapeUI": {
-                "name": "cookieAuth",
-                "label": "Cookie Authentication",
-                "inputType": "checkbox"
+                "name": "Location",
+                "label": "Key location",
+                "inputType": "select"
               },
-              "description": "A boolean determines if the authentication is done through cookie or not (by default the authentication token is passed in the header)",
-              "type": "boolean"
+              "description": "The location where the token will be added (default `header`)",
+              "type": "string",
+              "enum": ["header", "query"]
             },
             "headers": {
               "_escapeUI": {
@@ -517,7 +518,7 @@
                 "label": "Realm",
                 "inputType": "text"
               },
-              "description": "This is a string specified by the server in the WWW-Authenticate header of the 401 response. It should contain at least the name of the host performing the authentication and might additionally indicate the collwction of users who might have access.",
+              "description": "This is a string specified by the server in the `WWW-Authenticate` header of the 401 response. It should contain at least the name of the host performing the authentication and might additionally indicate the collwction of users who might have access",
               "type": "string"
             },
             "nonce": {
@@ -526,7 +527,7 @@
                 "label": "Nonce",
                 "inputType": "text"
               },
-              "description": "The nonce is a unique string specified by the server in the WWW-Authenticate header of the 401 response. It is used to prevent replay attacks and is used to prevent request forgery attacks.",
+              "description": "The nonce is a unique string specified by the server in the `WWW-Authenticate` header of the 401 response. It is used to prevent replay attacks and is used to prevent request forgery attacks",
               "type": "string"
             },
             "algorithm": {
@@ -535,7 +536,7 @@
                 "label": "Algorithm",
                 "inputType": "select"
               },
-              "description": "This parameter indicates the type of algorithm used to produce the digest.",
+              "description": "This parameter indicates the type of algorithm used to produce the digest",
               "type": "string",
               "enum": [
                 "MD5",
@@ -552,7 +553,7 @@
                 "label": "QOP",
                 "inputType": "text"
               },
-              "description": "Indicates the quality of protection. The value of this field should be one of the values found in the qop directive of the WWW-Authenticate header of the 401 response. If the server does not support the qop directive or if the qop directive is not included in the 401 response, this field is not present.",
+              "description": "Indicates the quality of protection. The value of this field should be one of the values found in the qop directive of the `WWW-Authenticate` header of the 401 response. If the server does not support the `qop` directive or if the `qop` directive is not included in the 401 response, this field is not present",
               "type": "string"
             },
             "nonce_count": {
@@ -561,7 +562,7 @@
                 "label": "Nonce Count",
                 "inputType": "text"
               },
-              "description": "This value indicates the number of times the client has reused the nonce value. The server uses this value to detect and prevent replay attacks. This value must be specified in the qop directive, and if the qop directive is not specified, this value is not provided.",
+              "description": "This value indicates the number of times the client has reused the nonce value. The server uses this value to detect and prevent replay attacks. This value must be specified in the qop directive, and if the qop directive is not specified, this value is not provided",
               "type": "string"
             },
             "client_nonce": {
@@ -570,7 +571,7 @@
                 "label": "Client Nonce",
                 "inputType": "text"
               },
-              "description": "An opaque quoted value provided by the client and used by the server to avoid chosen plaintext attacks. This value must be specified in the qop directive, and if the qop directive is not specified, this value is not provided.",
+              "description": "An opaque quoted value provided by the client and used by the server to avoid chosen plaintext attacks. This value must be specified in the qop directive, and if the qop directive is not specified, this value is not provided",
               "type": "string"
             },
             "opaque": {
@@ -579,7 +580,7 @@
                 "label": "Opaque",
                 "inputType": "text"
               },
-              "description": "This is a string of data specified by the server in the WWW-Authenticate header of the 401 response. It is recommended that this string be base64 or hex encoded.",
+              "description": "This is a string of data specified by the server in the `WWW-Authenticate` header of the 401 response. It is recommended that this string be `base64` or `hex` encoded",
               "type": "string"
             },
             "headers": {
@@ -788,14 +789,15 @@
               "description": "The prefix of the token in an authenticated request (defautl: `Bearer`)",
               "type": "string"
             },
-            "cookie_auth": {
+            "location": {
               "_escapeUI": {
-                "name": "cookieAuth",
-                "label": "Cookie Authentication",
-                "inputType": "boolean"
+                "name": "Location",
+                "label": "Key location",
+                "inputType": "select"
               },
-              "description": "A boolean determines if the authentication is done through cookie or not (by default the authentication token is passed in the header)",
-              "type": "boolean"
+              "description": "The location where the token will be added (default `header`)",
+              "type": "string",
+              "enum": ["header", "query"]
             },
             "headers": {
               "_escapeUI": {
@@ -1015,7 +1017,7 @@
             "label": "Key location",
             "inputType": "select"
           },
-          "description": "The location where the token will be added",
+          "description": "The location where the token will be added (default `header`)",
           "type": "string",
           "enum": ["header", "query"]
         },

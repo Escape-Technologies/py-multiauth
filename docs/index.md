@@ -269,7 +269,7 @@
 
 - Header prefix (`header_prefix`): The prefix of the token that will be inserted in an authentified request (default: `Bearer`).
 
-- Cookie Authentication (`cookie_auth`): A boolean determines if the authentication is done through cookie or not (by default the authentication token is passed in the header).
+- Key location (`location`): The location where the token will be added (default `header`).
 
 - Headers (`headers`): Additional headers to insert in the requests, including the authentication request.
 
@@ -304,7 +304,7 @@
                 "refresh_token_name": "**string**",
                 "header_name": "**string**",
                 "header_prefix": "**string**",
-                "cookie_auth": "**boolean**",
+                "location": "**string**",
                 "headers": {
                     "**name**": "**value**"
                 }
@@ -340,19 +340,19 @@
 
 ---
 
-- Realm (`realm`): This is a string specified by the server in the WWW-Authenticate header of the 401 response. It should contain at least the name of the host performing the authentication and might additionally indicate the collwction of users who might have access..
+- Realm (`realm`): This is a string specified by the server in the `WWW-Authenticate` header of the 401 response. It should contain at least the name of the host performing the authentication and might additionally indicate the collwction of users who might have access.
 
-- Nonce (`nonce`): The nonce is a unique string specified by the server in the WWW-Authenticate header of the 401 response. It is used to prevent replay attacks and is used to prevent request forgery attacks..
+- Nonce (`nonce`): The nonce is a unique string specified by the server in the `WWW-Authenticate` header of the 401 response. It is used to prevent replay attacks and is used to prevent request forgery attacks.
 
-- Algorithm (`algorithm`): This parameter indicates the type of algorithm used to produce the digest..
+- Algorithm (`algorithm`): This parameter indicates the type of algorithm used to produce the digest.
 
-- QOP (`qop`): Indicates the quality of protection. The value of this field should be one of the values found in the qop directive of the WWW-Authenticate header of the 401 response. If the server does not support the qop directive or if the qop directive is not included in the 401 response, this field is not present..
+- QOP (`qop`): Indicates the quality of protection. The value of this field should be one of the values found in the qop directive of the `WWW-Authenticate` header of the 401 response. If the server does not support the `qop` directive or if the `qop` directive is not included in the 401 response, this field is not present.
 
-- Nonce Count (`nonce_count`): This value indicates the number of times the client has reused the nonce value. The server uses this value to detect and prevent replay attacks. This value must be specified in the qop directive, and if the qop directive is not specified, this value is not provided..
+- Nonce Count (`nonce_count`): This value indicates the number of times the client has reused the nonce value. The server uses this value to detect and prevent replay attacks. This value must be specified in the qop directive, and if the qop directive is not specified, this value is not provided.
 
-- Client Nonce (`client_nonce`): An opaque quoted value provided by the client and used by the server to avoid chosen plaintext attacks. This value must be specified in the qop directive, and if the qop directive is not specified, this value is not provided..
+- Client Nonce (`client_nonce`): An opaque quoted value provided by the client and used by the server to avoid chosen plaintext attacks. This value must be specified in the qop directive, and if the qop directive is not specified, this value is not provided.
 
-- Opaque (`opaque`): This is a string of data specified by the server in the WWW-Authenticate header of the 401 response. It is recommended that this string be base64 or hex encoded..
+- Opaque (`opaque`): This is a string of data specified by the server in the `WWW-Authenticate` header of the 401 response. It is recommended that this string be `base64` or `hex` encoded.
 
 - Headers (`headers`): Additional headers to insert in the requests, including the authentication request.
 
@@ -447,7 +447,7 @@
 
 - Header prefix (`header_prefix`): The prefix of the token in an authenticated request (defautl: `Bearer`).
 
-- Cookie Authentication (`cookie_auth`): A boolean determines if the authentication is done through cookie or not (by default the authentication token is passed in the header).
+- Key location (`location`): The location where the token will be added (default `header`).
 
 - Headers (`headers`): Additional headers to insert in the requests, including the authentication request.
 
@@ -486,7 +486,7 @@
                 "header_name": "**string**",
                 "operation": "**string**",
                 "header_prefix": "**string**",
-                "cookie_auth": "**boolean**",
+                "location": "**string**",
                 "headers": {
                     "**name**": "**value**"
                 }
@@ -616,7 +616,7 @@
 
 
 
-- Key location (`location`): The location where the token will be added. The values that this parameter can take are: 
+- Key location (`location`): The location where the token will be added (default `header`). The values that this parameter can take are: 
   - `header` 
   - `query`
 
