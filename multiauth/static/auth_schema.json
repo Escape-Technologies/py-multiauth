@@ -200,24 +200,24 @@
               "description": "The client secret. This parameter is used when the type is SRP or Password Authentication",
               "type": "string"
             },
-            "header_name": {
+            "param_name": {
               "_escapeUI": {
                 "name": "headerName",
-                "label": "Header name",
+                "label": "Param name",
                 "inputType": "text",
                 "value": "Authorization"
               },
-              "description": "The name of the header in which we insert the token we extracted (default: `Authorization`)",
+              "description": "The name of the param in which we insert the token we inserted (default: `Authorization`)",
               "type": "string"
             },
-            "header_prefix": {
+            "param_prefix": {
               "_escapeUI": {
                 "name": "headerKey",
                 "label": "Header prefix",
                 "inputType": "text",
                 "value": "Bearer"
               },
-              "description": "The prefix of the header (defautl: `Bearer`)",
+              "description": "The prefix of the token (defautl: `Bearer`)",
               "type": "string"
             },
             "headers": {
@@ -383,17 +383,17 @@
               "description": "The key of the refresh token in the refresh response (can be nested)",
               "type": "string"
             },
-            "header_name": {
+            "param_name": {
               "_escapeUI": {
                 "name": "headerName",
-                "label": "Header name",
+                "label": "Param name",
                 "inputType": "text",
                 "value": "Authorization"
               },
-              "description": "The key of the param in which we insert the token extracted in an authentified request (default: `Authorization`)",
+              "description": "The name of the param in which we insert the token extracted in an authentified request (default: `Authorization`)",
               "type": "string"
             },
-            "header_prefix": {
+            "param_prefix": {
               "_escapeUI": {
                 "name": "headerKey",
                 "label": "Header prefix",
@@ -759,14 +759,14 @@
               "type": "string",
               "description": "Sometimes, the token is returned in a Cookie instead of the GraphQL response body. This is the name of the Cookie containing the secret."
             },
-            "header_name": {
+            "param_name": {
               "_escapeUI": {
                 "name": "headerName",
-                "label": "Header name",
+                "label": "Param name",
                 "inputType": "text",
                 "value": "Authorization"
               },
-              "description": "The name of the header (default: `Authorization`)",
+              "description": "The name of the param in which the token will be inserted (default: `Authorization`)",
               "type": "string"
             },
             "operation": {
@@ -779,7 +779,7 @@
               "type": "string",
               "enum": ["query", "mutation", "subscription"]
             },
-            "header_prefix": {
+            "param_prefix": {
               "_escapeUI": {
                 "name": "headerKey",
                 "label": "Header prefix",
@@ -998,7 +998,7 @@
     "authSchema": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "type": "object",
-      "required": ["tech", "location", "header_name"],
+      "required": ["tech", "location", "param_name"],
       "properties": {
         "tech": {
           "_escapeUI": {
@@ -1021,14 +1021,14 @@
           "type": "string",
           "enum": ["header", "query"]
         },
-        "header_name": {
+        "param_name": {
           "_escapeUI": {
             "name": "headerName",
             "label": "Header name",
             "inputType": "text",
             "value": "Authorization"
           },
-          "description": "The key of the param in which the token is inserted in an authenticated request (default: `x-api-key`)",
+          "description": "The name of the param in which the token is inserted in an authenticated request (default: `x-api-key`)",
           "type": "string"
         },
         "options": {
@@ -1038,14 +1038,14 @@
           "description": "Optional Parameters of the API Authentication",
           "type": "object",
           "properties": {
-            "header_prefix": {
+            "param_prefix": {
               "_escapeUI": {
-                "name": "header_prefix",
-                "label": "Header Prefix",
+                "name": "paramPrefix",
+                "label": "Param Prefix",
                 "inputType": "text",
                 "placeholder": "bearer"
               },
-              "description": "The prefix of the header of The Api Key",
+              "description": "The prefix of the API Key that will be inserted (nothing by default)",
               "type": "string"
             },
             "headers": {
@@ -1190,13 +1190,13 @@
           "type": "string",
           "enum": ["basic", "body"]
         },
-        "header_prefix": {
+        "param_prefix": {
           "_escapeUI": {
-            "label": "Header Prefix",
+            "label": "Param Prefix",
             "inputType": "text",
-            "name": "header_prefix"
+            "name": "paramPrefix"
           },
-          "description": "The prefix of the header of the token",
+          "description": "The prefix of the token the token that will be inserted in an authentified request (default: `Bearer`)",
           "type": "string",
           "default": "Bearer"
         },

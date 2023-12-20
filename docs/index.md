@@ -76,9 +76,9 @@
 
 - Client Secret (`client_secret`): The client secret. This parameter is used when the type is SRP or Password Authentication.
 
-- Header name (`header_name`): The name of the header in which we insert the token we extracted (default: `Authorization`).
+- Param name (`param_name`): The name of the param in which we insert the token we inserted (default: `Authorization`).
 
-- Header prefix (`header_prefix`): The prefix of the header (defautl: `Bearer`).
+- Header prefix (`param_prefix`): The prefix of the token (defautl: `Bearer`).
 
 - Headers (`headers`): Additional headers to insert in the requests, including the authentication request.
 
@@ -116,8 +116,8 @@
             "pool_id": "**string**",
             "options": {
                 "client_secret": "**string**",
-                "header_name": "**string**",
-                "header_prefix": "**string**",
+                "param_name": "**string**",
+                "param_prefix": "**string**",
                 "headers": {
                     "**name**": "**value**"
                 }
@@ -150,8 +150,8 @@
             "client_id": "**string**",
             "options": {
                 "client_secret": "**string**",
-                "header_name": "**string**",
-                "header_prefix": "**string**",
+                "param_name": "**string**",
+                "param_prefix": "**string**",
                 "headers": {
                     "**name**": "**value**"
                 }
@@ -184,8 +184,8 @@
             "client_id": "**string**",
             "options": {
                 "client_secret": "**string**",
-                "header_name": "**string**",
-                "header_prefix": "**string**",
+                "param_name": "**string**",
+                "param_prefix": "**string**",
                 "headers": {
                     "**name**": "**value**"
                 }
@@ -220,8 +220,8 @@
             "hash_algorithm": "**string**",
             "options": {
                 "client_secret": "**string**",
-                "header_name": "**string**",
-                "header_prefix": "**string**",
+                "param_name": "**string**",
+                "param_prefix": "**string**",
                 "headers": {
                     "**name**": "**value**"
                 }
@@ -265,9 +265,9 @@
 
 - Refresh Token Name (`refresh_token_name`): The key of the refresh token in the refresh response (can be nested).
 
-- Header name (`header_name`): The key of the param in which we insert the token extracted in an authentified request (default: `Authorization`).
+- Param name (`param_name`): The name of the param in which we insert the token extracted in an authentified request (default: `Authorization`).
 
-- Header prefix (`header_prefix`): The prefix of the token that will be inserted in an authentified request (default: `Bearer`).
+- Header prefix (`param_prefix`): The prefix of the token that will be inserted in an authentified request (default: `Bearer`).
 
 - Key location (`location`): The location where the token will be added (default `header`).
 
@@ -302,8 +302,8 @@
                 "credentials_encoding": "**string**",
                 "refresh_url": "**string**",
                 "refresh_token_name": "**string**",
-                "header_name": "**string**",
-                "header_prefix": "**string**",
+                "param_name": "**string**",
+                "param_prefix": "**string**",
                 "location": "**string**",
                 "headers": {
                     "**name**": "**value**"
@@ -441,11 +441,11 @@
 
 - Cookie token name (`cookie_token_name`): Sometimes, the token is returned in a Cookie instead of the GraphQL response body. This is the name of the Cookie containing the secret..
 
-- Header name (`header_name`): The name of the header (default: `Authorization`).
+- Param name (`param_name`): The name of the param in which the token will be inserted (default: `Authorization`).
 
 - Operation (`operation`): The name of the operation of the GraphQL query being sent. The default value is `mutation`.
 
-- Header prefix (`header_prefix`): The prefix of the token in an authenticated request (defautl: `Bearer`).
+- Header prefix (`param_prefix`): The prefix of the token in an authenticated request (defautl: `Bearer`).
 
 - Key location (`location`): The location where the token will be added (default `header`).
 
@@ -483,9 +483,9 @@
                 "refresh_field_name": "**string**",
                 "header_token_name": "**string**",
                 "cookie_token_name": "**string**",
-                "header_name": "**string**",
+                "param_name": "**string**",
                 "operation": "**string**",
-                "header_prefix": "**string**",
+                "param_prefix": "**string**",
                 "location": "**string**",
                 "headers": {
                     "**name**": "**value**"
@@ -622,13 +622,13 @@
 
 
 
-- Header name (`header_name`): The key of the param in which the token is inserted in an authenticated request (default: `x-api-key`).
+- Header name (`param_name`): The name of the param in which the token is inserted in an authenticated request (default: `x-api-key`).
 
 ### Optional
 
 ---
 
-- Header Prefix (`header_prefix`): The prefix of the header of The Api Key.
+- Param Prefix (`param_prefix`): The prefix of the API Key that will be inserted (nothing by default).
 
 - Headers (`headers`): Additional headers to insert in the requests, including the authentication request.
 
@@ -654,9 +654,9 @@
         "schema1": {
             "tech": "api_key",
             "location": "**string**",
-            "header_name": "**string**",
+            "param_name": "**string**",
             "options": {
-                "header_prefix": "**string**",
+                "param_prefix": "**string**",
                 "headers": {
                     "**name**": "**value**"
                 }
@@ -732,7 +732,7 @@
 
 
 
-- Header Prefix (`header_prefix`): The prefix of the header of the token.
+- Param Prefix (`param_prefix`): The prefix of the token the token that will be inserted in an authentified request (default: `Bearer`).
 
 
 
