@@ -7,6 +7,7 @@ import requests
 
 from multiauth.entities.errors import AuthenticationError
 from multiauth.entities.main import AuthResponse, AuthTech
+from multiauth.entities.providers.http import HTTPLocation
 from multiauth.entities.providers.rest import AuthConfigRest, CredentialsEncoding
 from multiauth.helpers import extract_token
 from multiauth.manager import User
@@ -22,7 +23,7 @@ def rest_config_parser(schema: Dict) -> AuthConfigRest:
             'url': '',
             'method': 'POST',
             'token_name': None,
-            'cookie_auth': False,
+            'location': HTTPLocation.HEADER,
             'refresh_url': None,
             'refresh_token_name': None,
             'header_name': None,
@@ -42,8 +43,8 @@ def rest_config_parser(schema: Dict) -> AuthConfigRest:
 
     # Options:
     if 'options' in schema:
-        auth_config['cookie_auth'] = schema['options'].get('cookie_auth', False)
-        if not auth_config['cookie_auth'] and not schema['options'].get('token_name'):
+        auth_config['location'] = HTTPLocation(schema['options'].get('location', 'header').upper())
+        if not auth_config['location'] == HTTPLocation.COOKIE and not schema['options'].get('token_name'):
             raise AuthenticationError('Please provide the token name in the authentication response')
 
         auth_config['refresh_url'] = schema['options'].get('refresh_url')
@@ -98,7 +99,7 @@ def rest_auth_attach(
     if cookie_header:
         cookie_header = [f'{name}={value}' for name, value in cookie_header.items()]
         cookie_header = ';'.join(cookie_header)
-        if auth_config['cookie_auth'] and not cookie_header:
+        if auth_config['location'] == HTTPLocation.COOKIE and not cookie_header:
             raise AuthenticationError('Authentication Failed: No cookie was found')
     else:
         cookie_header = None
@@ -111,7 +112,7 @@ def rest_auth_attach(
     # There are two parts
     # 1- If auth cookie is enabled, then we simply search add the cookie to the auth response and that is it
     # 2- If auth cookie is disables, we continue the authentication process
-    if not auth_config['cookie_auth']:
+    if not auth_config['location'] == HTTPLocation.COOKIE:
         token_name = cast(str, auth_config['token_name'])
         if auth_config['header_name'] is None:
             headers['Authorization'] = ''
@@ -136,7 +137,7 @@ def rest_auth_attach(
     # Append the cookie header and check if the authentication type is a cookie authentication or no
     if cookie_header:
         headers['cookie'] = cookie_header
-        if auth_config['cookie_auth']:
+        if auth_config['location'] == HTTPLocation.COOKIE:
             return AuthResponse(
                 {
                     'tech': AuthTech.REST,
@@ -230,7 +231,7 @@ def rest_reauthenticator(
     if cookie_header:
         cookie_header = [f'{name}={value}' for name, value in cookie_header.items()]
         cookie_header = ';'.join(cookie_header)
-        if auth_config['cookie_auth'] and not cookie_header:
+        if auth_config['location'] == HTTPLocation.COOKIE and not cookie_header:
             raise AuthenticationError('Authentication Failed: No cookie was found')
     else:
         cookie_header = None
@@ -243,7 +244,7 @@ def rest_reauthenticator(
     # There are two parts
     # 1- If auth cookie is enabled, then we simply search add the cookie to the auth response and that is it
     # 2- If auth cookie is disables, we continue the authentication process
-    if not auth_config['cookie_auth']:
+    if not auth_config['location'] == HTTPLocation.COOKIE:
         token_name = cast(str, auth_config['token_name'])
         if auth_config['header_name'] is None:
             headers['Authorization'] = ''
@@ -268,7 +269,7 @@ def rest_reauthenticator(
     # Append the cookie header and check if the authentication type is a cookie authentication or no
     if cookie_header:
         headers['cookie'] = cookie_header
-        if auth_config['cookie_auth']:
+        if auth_config['location'] == HTTPLocation.COOKIE:
             return AuthResponse(
                 {
                     'tech': AuthTech.REST,

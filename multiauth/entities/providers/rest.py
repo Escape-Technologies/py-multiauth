@@ -5,6 +5,7 @@ from enum import Enum
 from typing import Dict, Optional
 
 from multiauth.entities.http import HTTPMethod
+from multiauth.entities.providers.http import HTTPLocation
 
 if sys.version_info >= (3, 8):
     from typing import TypedDict  # pylint: disable=no-name-in-module
@@ -23,7 +24,7 @@ class AuthConfigRest(TypedDict):
 
     url: str
     method: HTTPMethod
-    cookie_auth: bool
+    location: HTTPLocation
     refresh_url: Optional[str]
     refresh_token_name: Optional[str]
     token_name: Optional[str]
