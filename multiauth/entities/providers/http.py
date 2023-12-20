@@ -68,7 +68,7 @@ class AuthExtractor:
 
 @dataclass
 class AuthInjector:
-    key: str | list[str]  # list[str] is used for in depth token injection in body
+    key: str
     location: HTTPLocation
     prefix: str
 

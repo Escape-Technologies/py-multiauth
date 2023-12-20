@@ -6,7 +6,7 @@
     "authSchema": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "type": "object",
-      "required": ["tech", "type", "region", "location"],
+      "required": ["tech", "type", "region", "param_location"],
       "description": "The auth configuration schema for AWS authentication",
       "properties": {
         "tech": {
@@ -45,10 +45,10 @@
           "description": "The AWS Region where the application exists",
           "type": "string"
         },
-        "location": {
+        "param_location": {
           "_escapeUI": {
             "name": "Location",
-            "label": "Key location",
+            "label": "Param Location",
             "inputType": "select"
           },
           "description": "The location where the token will be added",
@@ -200,24 +200,24 @@
               "description": "The client secret. This parameter is used when the type is SRP or Password Authentication",
               "type": "string"
             },
-            "header_name": {
+            "param_name": {
               "_escapeUI": {
                 "name": "headerName",
-                "label": "Header name",
+                "label": "Param name",
                 "inputType": "text",
                 "value": "Authorization"
               },
-              "description": "The name of the header in which we insert the token we extracted (default: `Authorization`)",
+              "description": "The name of the param in which we insert the token we inserted (default: `Authorization`)",
               "type": "string"
             },
-            "header_prefix": {
+            "param_prefix": {
               "_escapeUI": {
                 "name": "headerKey",
                 "label": "Header prefix",
                 "inputType": "text",
                 "value": "Bearer"
               },
-              "description": "The prefix of the header (defautl: `Bearer`)",
+              "description": "The prefix of the token (defautl: `Bearer`)",
               "type": "string"
             },
             "headers": {
@@ -383,17 +383,17 @@
               "description": "The key of the refresh token in the refresh response (can be nested)",
               "type": "string"
             },
-            "header_name": {
+            "param_name": {
               "_escapeUI": {
                 "name": "headerName",
-                "label": "Header name",
+                "label": "Param name",
                 "inputType": "text",
                 "value": "Authorization"
               },
-              "description": "The key of the param in which we insert the token extracted in an authentified request (default: `Authorization`)",
+              "description": "The name of the param in which we insert the token extracted in an authentified request (default: `Authorization`)",
               "type": "string"
             },
-            "header_prefix": {
+            "param_prefix": {
               "_escapeUI": {
                 "name": "headerKey",
                 "label": "Header prefix",
@@ -403,14 +403,15 @@
               "description": "The prefix of the token that will be inserted in an authentified request (default: `Bearer`)",
               "type": "string"
             },
-            "cookie_auth": {
+            "param_location": {
               "_escapeUI": {
-                "name": "cookieAuth",
-                "label": "Cookie Authentication",
-                "inputType": "checkbox"
+                "name": "Location",
+                "label": "Param Location",
+                "inputType": "select"
               },
-              "description": "A boolean determines if the authentication is done through cookie or not (by default the authentication token is passed in the header)",
-              "type": "boolean"
+              "description": "The location where the token will be added (default `header`)",
+              "type": "string",
+              "enum": ["header", "query"]
             },
             "headers": {
               "_escapeUI": {
@@ -517,7 +518,7 @@
                 "label": "Realm",
                 "inputType": "text"
               },
-              "description": "This is a string specified by the server in the WWW-Authenticate header of the 401 response. It should contain at least the name of the host performing the authentication and might additionally indicate the collwction of users who might have access.",
+              "description": "This is a string specified by the server in the `WWW-Authenticate` header of the 401 response. It should contain at least the name of the host performing the authentication and might additionally indicate the collwction of users who might have access",
               "type": "string"
             },
             "nonce": {
@@ -526,7 +527,7 @@
                 "label": "Nonce",
                 "inputType": "text"
               },
-              "description": "The nonce is a unique string specified by the server in the WWW-Authenticate header of the 401 response. It is used to prevent replay attacks and is used to prevent request forgery attacks.",
+              "description": "The nonce is a unique string specified by the server in the `WWW-Authenticate` header of the 401 response. It is used to prevent replay attacks and is used to prevent request forgery attacks",
               "type": "string"
             },
             "algorithm": {
@@ -535,7 +536,7 @@
                 "label": "Algorithm",
                 "inputType": "select"
               },
-              "description": "This parameter indicates the type of algorithm used to produce the digest.",
+              "description": "This parameter indicates the type of algorithm used to produce the digest",
               "type": "string",
               "enum": [
                 "MD5",
@@ -552,7 +553,7 @@
                 "label": "QOP",
                 "inputType": "text"
               },
-              "description": "Indicates the quality of protection. The value of this field should be one of the values found in the qop directive of the WWW-Authenticate header of the 401 response. If the server does not support the qop directive or if the qop directive is not included in the 401 response, this field is not present.",
+              "description": "Indicates the quality of protection. The value of this field should be one of the values found in the qop directive of the `WWW-Authenticate` header of the 401 response. If the server does not support the `qop` directive or if the `qop` directive is not included in the 401 response, this field is not present",
               "type": "string"
             },
             "nonce_count": {
@@ -561,7 +562,7 @@
                 "label": "Nonce Count",
                 "inputType": "text"
               },
-              "description": "This value indicates the number of times the client has reused the nonce value. The server uses this value to detect and prevent replay attacks. This value must be specified in the qop directive, and if the qop directive is not specified, this value is not provided.",
+              "description": "This value indicates the number of times the client has reused the nonce value. The server uses this value to detect and prevent replay attacks. This value must be specified in the qop directive, and if the qop directive is not specified, this value is not provided",
               "type": "string"
             },
             "client_nonce": {
@@ -570,7 +571,7 @@
                 "label": "Client Nonce",
                 "inputType": "text"
               },
-              "description": "An opaque quoted value provided by the client and used by the server to avoid chosen plaintext attacks. This value must be specified in the qop directive, and if the qop directive is not specified, this value is not provided.",
+              "description": "An opaque quoted value provided by the client and used by the server to avoid chosen plaintext attacks. This value must be specified in the qop directive, and if the qop directive is not specified, this value is not provided",
               "type": "string"
             },
             "opaque": {
@@ -579,7 +580,7 @@
                 "label": "Opaque",
                 "inputType": "text"
               },
-              "description": "This is a string of data specified by the server in the WWW-Authenticate header of the 401 response. It is recommended that this string be base64 or hex encoded.",
+              "description": "This is a string of data specified by the server in the `WWW-Authenticate` header of the 401 response. It is recommended that this string be `base64` or `hex` encoded",
               "type": "string"
             },
             "headers": {
@@ -740,32 +741,23 @@
               "description": "The name of the Field that contains the refresh token. The same field is used to fetch the refresh token during authentication and reauthentication",
               "type": "string"
             },
-            "header_token_name": {
+            "token_name": {
               "_escapeUI": {
-                "name": "headerTokenName",
-                "label": "Header Token Name",
-                "inputType": "text"
+                "name": "Location",
+                "label": "Param Location",
+                "inputType": "select"
               },
-              "type": "string",
-              "description": "Sometimes, the token is returned in a Header instead of the GraphQL response body. This is the name of the Header containing the secret."
+              "description": "The name of the key that contains the token in the response request (can be nested).",
+              "type": "string"
             },
-            "cookie_token_name": {
-              "_escapeUI": {
-                "name": "cookieTokenName",
-                "label": "Cookie token name",
-                "inputType": "text"
-              },
-              "type": "string",
-              "description": "Sometimes, the token is returned in a Cookie instead of the GraphQL response body. This is the name of the Cookie containing the secret."
-            },
-            "header_name": {
+            "param_name": {
               "_escapeUI": {
                 "name": "headerName",
-                "label": "Header name",
+                "label": "Param name",
                 "inputType": "text",
                 "value": "Authorization"
               },
-              "description": "The name of the header (default: `Authorization`)",
+              "description": "The name of the param in which the token will be inserted (default: `Authorization`)",
               "type": "string"
             },
             "operation": {
@@ -778,7 +770,7 @@
               "type": "string",
               "enum": ["query", "mutation", "subscription"]
             },
-            "header_prefix": {
+            "param_prefix": {
               "_escapeUI": {
                 "name": "headerKey",
                 "label": "Header prefix",
@@ -788,14 +780,15 @@
               "description": "The prefix of the token in an authenticated request (defautl: `Bearer`)",
               "type": "string"
             },
-            "cookie_auth": {
+            "param_location": {
               "_escapeUI": {
-                "name": "cookieAuth",
-                "label": "Cookie Authentication",
-                "inputType": "boolean"
+                "name": "Location",
+                "label": "Param Location",
+                "inputType": "select"
               },
-              "description": "A boolean determines if the authentication is done through cookie or not (by default the authentication token is passed in the header)",
-              "type": "boolean"
+              "description": "The location where the token will be added (default `header`)",
+              "type": "string",
+              "enum": ["header", "query"]
             },
             "headers": {
               "_escapeUI": {
@@ -996,7 +989,7 @@
     "authSchema": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "type": "object",
-      "required": ["tech", "location", "header_name"],
+      "required": ["tech", "param_location", "param_name"],
       "properties": {
         "tech": {
           "_escapeUI": {
@@ -1009,24 +1002,24 @@
           "description": "The auth method, in that case `api`",
           "type": "string"
         },
-        "location": {
+        "param_location": {
           "_escapeUI": {
             "name": "Location",
-            "label": "Key location",
+            "label": "Param Location",
             "inputType": "select"
           },
-          "description": "The location where the token will be added",
+          "description": "The location where the token will be added (default `header`)",
           "type": "string",
           "enum": ["header", "query"]
         },
-        "header_name": {
+        "param_name": {
           "_escapeUI": {
             "name": "headerName",
             "label": "Header name",
             "inputType": "text",
             "value": "Authorization"
           },
-          "description": "The key of the param in which the token is inserted in an authenticated request (default: `x-api-key`)",
+          "description": "The name of the param in which the token is inserted in an authenticated request (default: `x-api-key`)",
           "type": "string"
         },
         "options": {
@@ -1036,14 +1029,14 @@
           "description": "Optional Parameters of the API Authentication",
           "type": "object",
           "properties": {
-            "header_prefix": {
+            "param_prefix": {
               "_escapeUI": {
-                "name": "header_prefix",
-                "label": "Header Prefix",
+                "name": "paramPrefix",
+                "label": "Param Prefix",
                 "inputType": "text",
                 "placeholder": "bearer"
               },
-              "description": "The prefix of the header of The Api Key",
+              "description": "The prefix of the API Key that will be inserted (nothing by default)",
               "type": "string"
             },
             "headers": {
@@ -1188,21 +1181,21 @@
           "type": "string",
           "enum": ["basic", "body"]
         },
-        "header_prefix": {
+        "param_prefix": {
           "_escapeUI": {
-            "label": "Header Prefix",
+            "label": "Param Prefix",
             "inputType": "text",
-            "name": "header_prefix"
+            "name": "paramPrefix"
           },
-          "description": "The prefix of the header of the token",
+          "description": "The prefix of the token the token that will be inserted in an authentified request (default: `Bearer`)",
           "type": "string",
           "default": "Bearer"
         },
-        "location": {
+        "param_location": {
           "_escapeUI": {
             "label": "Location",
             "inputType": "text",
-            "name": "location"
+            "name": "param_location"
           },
           "description": "The location where the token will be added.",
           "type": "string",
@@ -1315,7 +1308,7 @@
             "tech",
             "grant_type",
             "auth_location",
-            "location",
+            "param_location",
             "token_endpoint",
             "callback_url"
           ]
@@ -1330,7 +1323,7 @@
             "tech",
             "grant_type",
             "auth_location",
-            "location",
+            "param_location",
             "authentication_endpoint",
             "token_endpoint",
             "callback_url"
@@ -1346,7 +1339,7 @@
             "tech",
             "grant_type",
             "auth_location",
-            "location",
+            "param_location",
             "authentication_endpoint",
             "callback_url",
             "token_endpoint"
@@ -1362,7 +1355,7 @@
             "tech",
             "grant_type",
             "auth_location",
-            "location",
+            "param_location",
             "authentication_endpoint"
           ]
         },
@@ -1376,7 +1369,7 @@
             "tech",
             "grant_type",
             "auth_location",
-            "location",
+            "param_location",
             "token_endpoint"
           ],
           "maxProperties": 7

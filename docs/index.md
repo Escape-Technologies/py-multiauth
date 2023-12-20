@@ -42,7 +42,7 @@
 
 
 
-- Key location (`location`): The location where the token will be added. The values that this parameter can take are: 
+- Param Location (`param_location`): The location where the token will be added. The values that this parameter can take are: 
   - `header` 
   - `query`
 
@@ -76,9 +76,9 @@
 
 - Client Secret (`client_secret`): The client secret. This parameter is used when the type is SRP or Password Authentication.
 
-- Header name (`header_name`): The name of the header in which we insert the token we extracted (default: `Authorization`).
+- Param name (`param_name`): The name of the param in which we insert the token we inserted (default: `Authorization`).
 
-- Header prefix (`header_prefix`): The prefix of the header (defautl: `Bearer`).
+- Header prefix (`param_prefix`): The prefix of the token (defautl: `Bearer`).
 
 - Headers (`headers`): Additional headers to insert in the requests, including the authentication request.
 
@@ -111,13 +111,13 @@
             "tech": "aws",
             "type": "SRP",
             "region": "**string**",
-            "location": "**string**",
+            "param_location": "**string**",
             "client_id": "**string**",
             "pool_id": "**string**",
             "options": {
                 "client_secret": "**string**",
-                "header_name": "**string**",
-                "header_prefix": "**string**",
+                "param_name": "**string**",
+                "param_prefix": "**string**",
                 "headers": {
                     "**name**": "**value**"
                 }
@@ -146,12 +146,12 @@
             "tech": "aws",
             "type": "Password Authentication",
             "region": "**string**",
-            "location": "**string**",
+            "param_location": "**string**",
             "client_id": "**string**",
             "options": {
                 "client_secret": "**string**",
-                "header_name": "**string**",
-                "header_prefix": "**string**",
+                "param_name": "**string**",
+                "param_prefix": "**string**",
                 "headers": {
                     "**name**": "**value**"
                 }
@@ -180,12 +180,12 @@
             "tech": "aws",
             "type": "AWS Signature",
             "region": "**string**",
-            "location": "**string**",
+            "param_location": "**string**",
             "client_id": "**string**",
             "options": {
                 "client_secret": "**string**",
-                "header_name": "**string**",
-                "header_prefix": "**string**",
+                "param_name": "**string**",
+                "param_prefix": "**string**",
                 "headers": {
                     "**name**": "**value**"
                 }
@@ -214,14 +214,14 @@
             "tech": "aws",
             "type": "Refresh Token",
             "region": "**string**",
-            "location": "**string**",
+            "param_location": "**string**",
             "service_name": "**string**",
             "method": "**string**",
             "hash_algorithm": "**string**",
             "options": {
                 "client_secret": "**string**",
-                "header_name": "**string**",
-                "header_prefix": "**string**",
+                "param_name": "**string**",
+                "param_prefix": "**string**",
                 "headers": {
                     "**name**": "**value**"
                 }
@@ -265,11 +265,11 @@
 
 - Refresh Token Name (`refresh_token_name`): The key of the refresh token in the refresh response (can be nested).
 
-- Header name (`header_name`): The key of the param in which we insert the token extracted in an authentified request (default: `Authorization`).
+- Param name (`param_name`): The name of the param in which we insert the token extracted in an authentified request (default: `Authorization`).
 
-- Header prefix (`header_prefix`): The prefix of the token that will be inserted in an authentified request (default: `Bearer`).
+- Header prefix (`param_prefix`): The prefix of the token that will be inserted in an authentified request (default: `Bearer`).
 
-- Cookie Authentication (`cookie_auth`): A boolean determines if the authentication is done through cookie or not (by default the authentication token is passed in the header).
+- Param Location (`param_location`): The location where the token will be added (default `header`).
 
 - Headers (`headers`): Additional headers to insert in the requests, including the authentication request.
 
@@ -302,9 +302,9 @@
                 "credentials_encoding": "**string**",
                 "refresh_url": "**string**",
                 "refresh_token_name": "**string**",
-                "header_name": "**string**",
-                "header_prefix": "**string**",
-                "cookie_auth": "**boolean**",
+                "param_name": "**string**",
+                "param_prefix": "**string**",
+                "param_location": "**string**",
                 "headers": {
                     "**name**": "**value**"
                 }
@@ -340,19 +340,19 @@
 
 ---
 
-- Realm (`realm`): This is a string specified by the server in the WWW-Authenticate header of the 401 response. It should contain at least the name of the host performing the authentication and might additionally indicate the collwction of users who might have access..
+- Realm (`realm`): This is a string specified by the server in the `WWW-Authenticate` header of the 401 response. It should contain at least the name of the host performing the authentication and might additionally indicate the collwction of users who might have access.
 
-- Nonce (`nonce`): The nonce is a unique string specified by the server in the WWW-Authenticate header of the 401 response. It is used to prevent replay attacks and is used to prevent request forgery attacks..
+- Nonce (`nonce`): The nonce is a unique string specified by the server in the `WWW-Authenticate` header of the 401 response. It is used to prevent replay attacks and is used to prevent request forgery attacks.
 
-- Algorithm (`algorithm`): This parameter indicates the type of algorithm used to produce the digest..
+- Algorithm (`algorithm`): This parameter indicates the type of algorithm used to produce the digest.
 
-- QOP (`qop`): Indicates the quality of protection. The value of this field should be one of the values found in the qop directive of the WWW-Authenticate header of the 401 response. If the server does not support the qop directive or if the qop directive is not included in the 401 response, this field is not present..
+- QOP (`qop`): Indicates the quality of protection. The value of this field should be one of the values found in the qop directive of the `WWW-Authenticate` header of the 401 response. If the server does not support the `qop` directive or if the `qop` directive is not included in the 401 response, this field is not present.
 
-- Nonce Count (`nonce_count`): This value indicates the number of times the client has reused the nonce value. The server uses this value to detect and prevent replay attacks. This value must be specified in the qop directive, and if the qop directive is not specified, this value is not provided..
+- Nonce Count (`nonce_count`): This value indicates the number of times the client has reused the nonce value. The server uses this value to detect and prevent replay attacks. This value must be specified in the qop directive, and if the qop directive is not specified, this value is not provided.
 
-- Client Nonce (`client_nonce`): An opaque quoted value provided by the client and used by the server to avoid chosen plaintext attacks. This value must be specified in the qop directive, and if the qop directive is not specified, this value is not provided..
+- Client Nonce (`client_nonce`): An opaque quoted value provided by the client and used by the server to avoid chosen plaintext attacks. This value must be specified in the qop directive, and if the qop directive is not specified, this value is not provided.
 
-- Opaque (`opaque`): This is a string of data specified by the server in the WWW-Authenticate header of the 401 response. It is recommended that this string be base64 or hex encoded..
+- Opaque (`opaque`): This is a string of data specified by the server in the `WWW-Authenticate` header of the 401 response. It is recommended that this string be `base64` or `hex` encoded.
 
 - Headers (`headers`): Additional headers to insert in the requests, including the authentication request.
 
@@ -437,17 +437,15 @@
 
 - Refresh Field Name (`refresh_field_name`): The name of the Field that contains the refresh token. The same field is used to fetch the refresh token during authentication and reauthentication.
 
-- Header Token Name (`header_token_name`): Sometimes, the token is returned in a Header instead of the GraphQL response body. This is the name of the Header containing the secret..
+- Param Location (`token_name`): The name of the key that contains the token in the response request (can be nested)..
 
-- Cookie token name (`cookie_token_name`): Sometimes, the token is returned in a Cookie instead of the GraphQL response body. This is the name of the Cookie containing the secret..
-
-- Header name (`header_name`): The name of the header (default: `Authorization`).
+- Param name (`param_name`): The name of the param in which the token will be inserted (default: `Authorization`).
 
 - Operation (`operation`): The name of the operation of the GraphQL query being sent. The default value is `mutation`.
 
-- Header prefix (`header_prefix`): The prefix of the token in an authenticated request (defautl: `Bearer`).
+- Header prefix (`param_prefix`): The prefix of the token in an authenticated request (defautl: `Bearer`).
 
-- Cookie Authentication (`cookie_auth`): A boolean determines if the authentication is done through cookie or not (by default the authentication token is passed in the header).
+- Param Location (`param_location`): The location where the token will be added (default `header`).
 
 - Headers (`headers`): Additional headers to insert in the requests, including the authentication request.
 
@@ -481,12 +479,11 @@
                 "refresh_mutation_name": "**string**",
                 "refresh_field": "**boolean**",
                 "refresh_field_name": "**string**",
-                "header_token_name": "**string**",
-                "cookie_token_name": "**string**",
-                "header_name": "**string**",
+                "token_name": "**string**",
+                "param_name": "**string**",
                 "operation": "**string**",
-                "header_prefix": "**string**",
-                "cookie_auth": "**boolean**",
+                "param_prefix": "**string**",
+                "param_location": "**string**",
                 "headers": {
                     "**name**": "**value**"
                 }
@@ -616,19 +613,19 @@
 
 
 
-- Key location (`location`): The location where the token will be added. The values that this parameter can take are: 
+- Param Location (`param_location`): The location where the token will be added (default `header`). The values that this parameter can take are: 
   - `header` 
   - `query`
 
 
 
-- Header name (`header_name`): The key of the param in which the token is inserted in an authenticated request (default: `x-api-key`).
+- Header name (`param_name`): The name of the param in which the token is inserted in an authenticated request (default: `x-api-key`).
 
 ### Optional
 
 ---
 
-- Header Prefix (`header_prefix`): The prefix of the header of The Api Key.
+- Param Prefix (`param_prefix`): The prefix of the API Key that will be inserted (nothing by default).
 
 - Headers (`headers`): Additional headers to insert in the requests, including the authentication request.
 
@@ -653,10 +650,10 @@
     "methods": {
         "schema1": {
             "tech": "api_key",
-            "location": "**string**",
-            "header_name": "**string**",
+            "param_location": "**string**",
+            "param_name": "**string**",
             "options": {
-                "header_prefix": "**string**",
+                "param_prefix": "**string**",
                 "headers": {
                     "**name**": "**value**"
                 }
@@ -732,11 +729,11 @@
 
 
 
-- Header Prefix (`header_prefix`): The prefix of the header of the token.
+- Param Prefix (`param_prefix`): The prefix of the token the token that will be inserted in an authentified request (default: `Bearer`).
 
 
 
-- Location (`location`): The location where the token will be added.. The values that this parameter can take are: 
+- Location (`param_location`): The location where the token will be added.. The values that this parameter can take are: 
   - `header` 
   - `query`
 
@@ -797,7 +794,7 @@
             "tech": "oauth",
             "grant_type": "refresh_token",
             "auth_location": "**string**",
-            "location": "**string**",
+            "param_location": "**string**",
             "token_endpoint": "**string**",
             "callback_url": "**string**",
             "options": {
@@ -832,7 +829,7 @@
             "tech": "oauth",
             "grant_type": "auth_code",
             "auth_location": "**string**",
-            "location": "**string**",
+            "param_location": "**string**",
             "authentication_endpoint": "**string**",
             "token_endpoint": "**string**",
             "callback_url": "**string**",
@@ -868,7 +865,7 @@
             "tech": "oauth",
             "grant_type": "client_cred",
             "auth_location": "**string**",
-            "location": "**string**",
+            "param_location": "**string**",
             "authentication_endpoint": "**string**",
             "token_endpoint": "**string**",
             "callback_url": "**string**",
@@ -904,7 +901,7 @@
             "tech": "oauth",
             "grant_type": "implicit",
             "auth_location": "**string**",
-            "location": "**string**",
+            "param_location": "**string**",
             "authentication_endpoint": "**string**",
             "options": {
                 "login_flow": "**array**",
@@ -938,7 +935,7 @@
             "tech": "oauth",
             "grant_type": "password_cred",
             "auth_location": "**string**",
-            "location": "**string**",
+            "param_location": "**string**",
             "token_endpoint": "**string**",
             "options": {
                 "login_flow": "**array**",

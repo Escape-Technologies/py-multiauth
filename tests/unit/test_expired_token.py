@@ -19,11 +19,7 @@ def test_user_with_expired_token(expired_token: str) -> None:
     """Test instance of User with expired token."""
 
     try:
-        _user = User(
-            {
-                'token': expired_token,
-            },
-        )
+        _user = User(token=expired_token)
         raise AssertionError
 
     except ExpiredTokenError:
@@ -34,11 +30,7 @@ def test_user_with_expired_refresh_token(expired_token: str) -> None:
     """Test instance of User with expired token."""
 
     try:
-        _user = User(
-            {
-                'refresh_token': expired_token,
-            },
-        )
+        _user = User(refresh_token=expired_token)
         raise AssertionError
 
     except ExpiredTokenError:

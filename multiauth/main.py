@@ -13,7 +13,6 @@ import jsonschema
 from multiauth import static
 from multiauth.entities.errors import InvalidConfigurationError
 from multiauth.entities.http import HTTPMethod
-from multiauth.entities.interfaces import IMultiAuth
 from multiauth.entities.main import AuthTech, Token
 from multiauth.handlers import auth_handler, reauth_handler
 from multiauth.manager import User, UserManager
@@ -71,8 +70,16 @@ def load_headers(headers: Dict[str, str]) -> Tuple[Dict, Dict]:
     return auth, users
 
 
-class MultiAuth(IMultiAuth):
+class MultiAuth:
     """Multiauth manager."""
+
+    logger: logging.Logger
+    authrc: str | None
+    proxy: str | None
+
+    manager: Any
+    headers: dict[str, Dict]
+    methods: Dict
 
     def __init__(
         self,
@@ -84,42 +91,24 @@ class MultiAuth(IMultiAuth):
     ) -> None:
         """Initialize the Auth manager."""
 
-        self._logger = logger or setup_logger()
-        self._authrc = authrc
-        self._proxy = proxy
+        self.logger = logger or setup_logger()
+        self.authrc = authrc
+        self.proxy = proxy
 
         if methods is None or users is None:
-            methods, users = load_authrc(self._logger, authrc)
+            methods, users = load_authrc(self.logger, authrc)
 
         self.validate(methods, users)
 
-        self._manager: UserManager = UserManager(self.serialize_users(methods, users))
-        self._headers: Dict[str, Dict] = {}
-        self._methods = methods
-
-    @property
-    def headers(self) -> Dict[str, Dict]:
-        """Fetch all user's headers."""
-
-        return self._headers
-
-    @property
-    def auths(self) -> Dict[str, User]:
-        """Fetch all auths methods."""
-
-        return self._methods
+        self.manager: UserManager = UserManager(self.serialize_users(methods, users))
+        self.headers: Dict[str, Dict] = {}
+        self.methods = methods
 
     @property
     def users(self) -> Dict[str, User]:
         """Fetch all users of the internal manager."""
 
-        return self._manager.users
-
-    @property
-    def schemas(self) -> Dict:
-        """Fetch internal schemas."""
-
-        return self._methods
+        return self.manager.users
 
     @staticmethod
     def validate(
@@ -188,11 +177,9 @@ class MultiAuth(IMultiAuth):
             del _user_credientials['auth']
 
             _user: User = User(
-                {
-                    'auth_schema': user_info['auth'],
-                    'auth_tech': AuthTech.PUBLIC if user_info['auth'] is None else AuthTech(schema['tech']),
-                    'credentials': _user_credientials,
-                },
+                auth_schema=user_info['auth'],
+                auth_tech=AuthTech.PUBLIC if user_info['auth'] is None else AuthTech(schema['tech']),
+                credentials=_user_credientials,
             )
 
             users[user] = _user
@@ -212,11 +199,11 @@ class MultiAuth(IMultiAuth):
         This is a mandatory for AWS Signature.
         """
 
-        if self._manager.users[username].auth_type == 'aws_signature':
-            user_info: User = self._manager.users[username]
+        if self.users[username].auth_type == 'aws_signature':
+            user_info: User = self.users[username]
             auth_headers = aws_signature(
                 user_info,
-                self._methods[user_info.auth_schema],
+                self.methods[user_info.auth_schema],
                 headers,
                 method,
                 formatted_payload,
@@ -233,34 +220,34 @@ class MultiAuth(IMultiAuth):
         """Authenticate the client using the current user."""
 
         # Reset the user's headers
-        self._headers[username] = {}
+        self.headers[username] = {}
 
-        user_info: User = self._manager.users[username]
+        user_info: User = self.users[username]
 
         # Call the auth handler
-        self._logger.info(f'Authenticating user: {username}')
-        auth_response = auth_handler(self._methods, user_info, proxy=self._proxy)
+        self.logger.info(f'Authenticating user: {username}')
+        auth_response = auth_handler(self.methods, user_info, proxy=self.proxy)
         if auth_response and isinstance(auth_response, Dict):
-            self._headers[username] = auth_response['headers']
-            self._logger.info(f'Authentication successful for {username}')
+            self.headers[username] = auth_response['headers']
+            self.logger.info(f'Authentication successful for {username}')
 
         # In case we provided custom headers, we need to merge them with the ones we got from auth_handler
         if user_info.headers:
-            self._headers[username].update(user_info.headers)
+            self.headers[username].update(user_info.headers)
 
-        return self._headers[username], username
+        return self.headers[username], username
 
     def authenticate_users(self) -> Dict[str, Optional[Token]]:
         """Authenticate all the users."""
 
         tokens: Dict[str, Optional[Token]] = {}
-        for user, user_info in self._manager.users.items():
-            self._logger.info(f'Authenticating users : {user}')
+        for user, user_info in self.users.items():
+            self.logger.info(f'Authenticating users : {user}')
 
             if user_info.auth_schema:
                 self.authenticate(user)
 
-            tokens[user] = self._manager.users[user].token
+            tokens[user] = self.users[user].token
 
         return tokens
 
@@ -283,14 +270,14 @@ class MultiAuth(IMultiAuth):
         """
 
         headers = additional_headers or {}
-        user_info = self._manager.users[username]
+        user_info = self.users[username]
         expiry_time = user_info.expires_in
         refresh_token = user_info.refresh_token
 
         # If there is no expiry date, no reauthentication is necessary
         # If the expiry date is more then the current time, no reauthentication is necessary
         if expiry_time and expiry_time < time.time():
-            self._logger.info('Token is expired')
+            self.logger.info('Token is expired')
 
             user_info.expired_token = user_info.token
 
@@ -298,24 +285,24 @@ class MultiAuth(IMultiAuth):
             # But before, we have to check if refresh token exists
             if refresh_token:
                 auth_response = reauth_handler(
-                    self._methods,
+                    self.methods,
                     user_info,
                     refresh_token,
-                    proxy=self._proxy,
+                    proxy=self.proxy,
                 )
 
             else:
                 auth_response = auth_handler(
-                    self._methods,
+                    self.methods,
                     user_info,
-                    proxy=self._proxy,
+                    proxy=self.proxy,
                 )
 
             if auth_response and isinstance(auth_response, Dict):
-                self._headers[username] = auth_response['headers']
-                self._logger.info('Reauthentication Successful')
+                self.headers[username] = auth_response['headers']
+                self.logger.info('Reauthentication Successful')
 
         if not public:
-            headers.update(self._headers.get(username, {}))
+            headers.update(self.headers.get(username, {}))
 
         return headers, None if public else username

@@ -4,6 +4,7 @@ import sys
 from typing import Dict, Optional
 
 from multiauth.entities.http import HTTPMethod
+from multiauth.entities.providers.http import HTTPLocation
 
 if sys.version_info >= (3, 8):
     from typing import Literal, TypedDict  # pylint: disable=no-name-in-module
@@ -19,15 +20,14 @@ class AuthConfigGraphQL(TypedDict):
 
     url: str
     mutation_name: str
-    cookie_auth: bool
+    token_name: str
     method: HTTPMethod
     mutation_field: str
     operation: Operation
-    header_token_name: Optional[str]
-    cookie_token_name: Optional[str]
     refresh_mutation_name: Optional[str]
     refresh_field_name: Optional[str]
     refresh_field: bool
-    header_name: Optional[str]
-    header_prefix: Optional[str]
+    param_name: Optional[str]
+    param_prefix: Optional[str]
+    param_location: HTTPLocation
     headers: Optional[Dict[str, str]]
