@@ -1,6 +1,6 @@
 """Implementation of the Manual authentication schema."""
 
-from typing import Any, Dict, cast
+from typing import Any, cast
 
 from multiauth.entities.errors import AuthenticationError
 from multiauth.entities.main import AuthResponse, AuthTech
@@ -29,7 +29,7 @@ def manual_authenticator(user: User) -> AuthResponse:
 
         headers = user.credentials['headers']
 
-    auth_response['headers'] = cast(Dict[str, Any], headers)
+    auth_response['headers'] = cast(dict[str, Any], headers)
     auth_response['tech'] = AuthTech.MANUAL
 
     return auth_response

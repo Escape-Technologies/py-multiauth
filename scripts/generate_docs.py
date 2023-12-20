@@ -3,7 +3,7 @@
 import json
 from copy import deepcopy
 from importlib.resources import files
-from typing import Any, Dict, List, Optional, TypedDict, cast
+from typing import Any, List, Optional, TypedDict, cast, dict
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
@@ -27,12 +27,12 @@ class AuthProperty(TypedDict):
 
 AuthName = str
 ParameterName = str
-AuthParameter = Dict[ParameterName, AuthProperty]
-AuthSchema = Dict[AuthName, List[Dict[AuthName, AuthParameter]]]
-SubSchema = Dict[AuthName, AuthParameter]
+AuthParameter = dict[ParameterName, AuthProperty]
+AuthSchema = dict[AuthName, List[dict[AuthName, AuthParameter]]]
+SubSchema = dict[AuthName, AuthParameter]
 
 
-def get_example(schema: Dict) -> Any:
+def get_example(schema: dict) -> Any:
     """From the schema of a parameter find an example."""
 
     if 'enum' in schema:
@@ -41,7 +41,7 @@ def get_example(schema: Dict) -> Any:
         return '**value**'
     if schema['type'] == 'object':
         example = {}
-        if 'additionalProperties' in schema and isinstance(schema['additionalProperties'], Dict):
+        if 'additionalProperties' in schema and isinstance(schema['additionalProperties'], dict):
             example['**value**'] = get_example(schema['additionalProperties'])
         for field_name, field in schema['properties'].items():
             example[field_name] = get_example(field)
@@ -76,7 +76,7 @@ def generate_auth_docs() -> None:  # noqa: C901
     }
 
     # All the JSON schemas
-    jsonschemas: List[Dict[str, str]] = []
+    jsonschemas: List[dict[str, str]] = []
 
     # A counter to fill the lists
     count = 0
@@ -209,7 +209,7 @@ def generate_auth_docs() -> None:  # noqa: C901
                 if auth_property.get('title') is not None:
                     auth_schemas[auth_name][0][auth_name][name]['value'] = auth_property['title']
 
-        the_temp: Dict = {}
+        the_temp: dict = {}
         for schema_name, schema_properties in sub_schema.items():
             original_schema = deepcopy(auth_schemas[auth_name][0][auth_name])
             if 'oneOf' in auth_schema['authSchema']:
@@ -252,7 +252,7 @@ def generate_auth_docs() -> None:  # noqa: C901
             _json_schema['users'][user_name]['**password**'] = '**1234**'
 
         # Now we will build the auth part of the schema
-        temp: Dict = {}
+        temp: dict = {}
 
         if has_optional[count]:
             _json_schema['methods']['schema1']['options'] = {}
@@ -275,7 +275,7 @@ def generate_auth_docs() -> None:  # noqa: C901
                             _new_json_schema['methods']['schema1']['options'][name] = (
                                 '**' + auth_property['type'] + '**'
                             )
-                # This is simply to rearange the Dict (althought there is no order) so that options is at the end
+                # This is simply to rearange the dict (althought there is no order) so that options is at the end
                 if _new_json_schema['methods']['schema1'].get('options') is not None:
                     _temp = deepcopy(_new_json_schema['methods']['schema1']['options'])
                     del _new_json_schema['methods']['schema1']['options']

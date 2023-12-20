@@ -6,7 +6,7 @@ import hmac
 import json
 import re
 from json.decoder import JSONDecodeError
-from typing import Any, Dict, Match, Optional, Tuple, Union, cast
+from typing import Any, Match, Optional, Tuple, Union, cast
 
 import jwt
 import requests
@@ -20,7 +20,7 @@ from multiauth.utils import dict_nested_get
 def extract_token(
     response: requests.Response,
     tech: AuthTech,
-    headers: Dict[str, str],
+    headers: dict[str, str],
     refresh_token_name: Optional[str] = None,
 ) -> Tuple[AuthResponse, Optional[str]]:
     """This function takes the response and tries to extract the tokens.
@@ -51,7 +51,7 @@ def extract_token(
             f'{type(e).__name__}: Response returned by authentication server is invalid: {e}',
         ) from e
 
-    headers_to_add: Dict = {}
+    headers_to_add: dict = {}
 
     if headers is not None:
         for param_name, header_arg in headers.items():
@@ -146,8 +146,8 @@ def jwt_token_analyzer(token: Token) -> JWTToken:
     token_header: str = separated_token[0]
     token_payload: str = separated_token[1]
 
-    header: Dict = json.loads(base64.urlsafe_b64decode(token_header + '=' * (-len(token_header) % 4)))
-    payload: Dict = json.loads(base64.urlsafe_b64decode(token_payload + '=' * (-len(token_payload) % 4)))
+    header: dict = json.loads(base64.urlsafe_b64decode(token_header + '=' * (-len(token_header) % 4)))
+    payload: dict = json.loads(base64.urlsafe_b64decode(token_payload + '=' * (-len(token_payload) % 4)))
 
     return JWTToken(
         {
@@ -180,17 +180,17 @@ def jwt_token_analyzer(token: Token) -> JWTToken:
 #     token_payload: str = seperated_token[1]
 #     token_signature: str = seperated_token[2]
 
-#     def _decode(string: Token) -> Dict:
+#     def _decode(string: Token) -> dict:
 #         return json.loads(base64.urlsafe_b64decode(string + '=' * (-len(string) % 4)))
 
-#     def _encode(string: Dict) -> Token:
+#     def _encode(string: dict) -> Token:
 #         return base64.urlsafe_b64encode(json.dumps(string, separators=(',', ':')).encode()).decode('UTF-8').strip('=')
 
 #     def _check_none_alg(token_header: str, token_payload: str) -> List[Token]:
 #         """This function creates tokens with None signature."""
 
 #         algorithms: List[str] = ['none', 'None', 'NONE', 'nOnE']
-#         token_header_decoded: Dict = _decode(token_header)
+#         token_header_decoded: dict = _decode(token_header)
 #         result: List[str] = []
 
 #         for algorithm in algorithms:

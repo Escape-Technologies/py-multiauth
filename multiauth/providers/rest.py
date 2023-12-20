@@ -1,6 +1,6 @@
 """Implementation of the Rest authentication schema."""
 
-from typing import Dict, Optional, cast
+from typing import Optional, cast
 
 import jwt
 import requests
@@ -15,7 +15,7 @@ from multiauth.manager import User
 # from escape_cli.common.user import USER_MANAGER
 
 
-def rest_config_parser(schema: Dict) -> AuthConfigRest:
+def rest_config_parser(schema: dict) -> AuthConfigRest:
     """This function parses the Rest schema and checks if all the necessary fields exist."""
 
     auth_config = AuthConfigRest(
@@ -106,7 +106,7 @@ def rest_auth_attach(
 
     # Prepare the header in order to fetch the token
     # We are creating a header for the token because the helper function '_extract_token' works like that
-    headers: Dict[str, str] = {}
+    headers: dict[str, str] = {}
 
     # Now we want to append the authentication headers
     # There are two parts
@@ -175,7 +175,7 @@ def rest_auth_attach(
 
 def rest_authenticator(
     user: User,
-    schema: Dict,
+    schema: dict,
     proxy: str | None = None,
 ) -> AuthResponse:
     """This funciton is a wrapper function that implements the Rest authentication schema.
@@ -191,7 +191,7 @@ def rest_authenticator(
 
 def rest_reauthenticator(
     user: User,
-    schema: Dict,
+    schema: dict,
     refresh_token: str,
     proxy: str | None = None,
 ) -> AuthResponse:
@@ -208,7 +208,7 @@ def rest_reauthenticator(
     # First we have to create a payload
     if auth_config['refresh_token_name'] is None or auth_config['refresh_url'] is None:
         raise AuthenticationError('Refresh Token found, please provide the refresh token name and the refresh URL')
-    payload: Dict = {auth_config['refresh_token_name']: refresh_token}
+    payload: dict = {auth_config['refresh_token_name']: refresh_token}
 
     # First we have to take the credentials from the currently working user
     credentials: dict[str, dict] = {}
@@ -238,7 +238,7 @@ def rest_reauthenticator(
 
     # Prepare the header in order to fetch the token
     # We are creating a header for the token because the helper function '_extract_token' works like that
-    headers: Dict[str, str] = {}
+    headers: dict[str, str] = {}
 
     # Now we want to append the authentication headers
     # There are two parts

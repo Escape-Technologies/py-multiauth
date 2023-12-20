@@ -3,7 +3,6 @@
 from enum import Enum, unique
 from typing import (
     Any,
-    Dict,
     Optional,
     TypedDict,
     Union,
@@ -69,7 +68,7 @@ class AuthConfigApiKey(TypedDict):
     param_location: HTTPLocation
     param_name: str
     param_prefix: Optional[str]
-    headers: Optional[Dict[str, str]]
+    headers: Optional[dict[str, str]]
 
 
 @dataclass
@@ -99,7 +98,7 @@ class AuthConfigDigest(TypedDict):
     nonce_count: Optional[str]
     client_nonce: Optional[str]
     opaque: Optional[str]
-    headers: Optional[Dict[str, str]]
+    headers: Optional[dict[str, str]]
 
 
 class AuthResponse(TypedDict):
@@ -107,7 +106,7 @@ class AuthResponse(TypedDict):
     """The Processed Authentication Configuration."""
 
     tech: AuthTech
-    headers: Dict[str, str]
+    headers: dict[str, str]
 
 
 Token = str
@@ -117,8 +116,8 @@ class RCFile(TypedDict):
 
     """RC File."""
 
-    methods: Dict
-    users: Dict
+    methods: dict
+    users: dict
 
 
 class JWTToken(TypedDict):
@@ -145,7 +144,7 @@ class JWTToken(TypedDict):
     nbf: Optional[str]
     iat: Optional[str]
     jti: Optional[str]
-    other: Dict[Any, Any]
+    other: dict[Any, Any]
 
 
 # Helper Entities

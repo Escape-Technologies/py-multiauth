@@ -2,7 +2,6 @@
 
 from enum import Enum, unique
 from typing import (
-    Dict,
     Optional,
     TypedDict,
 )
@@ -68,4 +67,4 @@ class AuthConfigAWS(TypedDict):
     param_location: HTTPLocation
     param_name: Optional[str]
     param_prefix: Optional[str]
-    headers: Optional[Dict[str, str]]
+    headers: Optional[dict[str, str]]

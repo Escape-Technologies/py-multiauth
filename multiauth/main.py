@@ -6,7 +6,7 @@ import os
 import time
 from copy import deepcopy
 from importlib import resources
-from typing import Any, Dict, Optional, Tuple
+from typing import Any, Optional, Tuple
 
 import jsonschema
 
@@ -23,7 +23,7 @@ from multiauth.utils import setup_logger
 def load_authrc(
     logger: logging.Logger,
     authrc: Optional[str] = None,
-) -> Tuple[Dict, Dict]:
+) -> Tuple[dict, dict]:
     """Load authrc file."""
 
     filepath = authrc or os.getenv('AUTHRC')
@@ -58,7 +58,7 @@ def load_authrc(
     return data['methods'], data['users']
 
 
-def load_headers(headers: Dict[str, str]) -> Tuple[Dict, Dict]:
+def load_headers(headers: dict[str, str]) -> Tuple[dict, dict]:
     """Creates a valid user and auth schema from the headers.
 
     This is used to be able to pass headers easily.
@@ -78,13 +78,13 @@ class MultiAuth:
     proxy: str | None
 
     manager: Any
-    headers: dict[str, Dict]
-    methods: Dict
+    headers: dict[str, dict]
+    methods: dict
 
     def __init__(
         self,
-        methods: Optional[Dict] = None,
-        users: Optional[Dict] = None,
+        methods: Optional[dict] = None,
+        users: Optional[dict] = None,
         authrc: Optional[str] = None,
         logger: Optional[logging.Logger] = None,
         proxy: Optional[str] = None,
@@ -101,19 +101,19 @@ class MultiAuth:
         self.validate(methods, users)
 
         self.manager: UserManager = UserManager(self.serialize_users(methods, users))
-        self.headers: Dict[str, Dict] = {}
+        self.headers: dict[str, dict] = {}
         self.methods = methods
 
     @property
-    def users(self) -> Dict[str, User]:
+    def users(self) -> dict[str, User]:
         """Fetch all users of the internal manager."""
 
         return self.manager.users
 
     @staticmethod
     def validate(
-        methods: Dict,
-        users: Dict,
+        methods: dict,
+        users: dict,
     ) -> None:
         """Validate the auth schema and users with json schema."""
 
@@ -121,12 +121,12 @@ class MultiAuth:
         with resources.open_text(static, 'auth_schema.json') as f:
             json_schema = json.load(f)
 
-        auth_tech_link: Dict[str, str] = {}
+        auth_tech_link: dict[str, str] = {}
         s_users = ', '.join(auth_tech_link.keys())
 
         for auth_name, auth in methods.items():
-            if auth is None or not isinstance(auth, Dict):
-                raise InvalidConfigurationError(message='auth is None or is not a Dict', path=f'$.auth.{auth_name}')
+            if auth is None or not isinstance(auth, dict):
+                raise InvalidConfigurationError(message='auth is None or is not a dict', path=f'$.auth.{auth_name}')
             if 'tech' not in auth:
                 raise InvalidConfigurationError(message="'tech' is a required property", path=f'$.auth.{auth_name}')
             if auth['tech'] not in json_schema:
@@ -144,8 +144,8 @@ class MultiAuth:
                 ) from e
 
         for username, user in users.items():
-            if user is None or not isinstance(user, Dict):
-                raise InvalidConfigurationError(message='user is None or is not a Dict', path=f'$.users.{username}')
+            if user is None or not isinstance(user, dict):
+                raise InvalidConfigurationError(message='user is None or is not a dict', path=f'$.users.{username}')
             if 'auth' not in user:
                 raise InvalidConfigurationError(
                     message="'auth' is a required property inside a user",
@@ -163,9 +163,9 @@ class MultiAuth:
 
     @staticmethod
     def serialize_users(
-        methods: Dict,
-        users: Dict,
-    ) -> Dict[str, User]:
+        methods: dict,
+        users: dict,
+    ) -> dict[str, User]:
         """Serialize raw user to valid config format."""
 
         users = deepcopy(users)
@@ -173,7 +173,7 @@ class MultiAuth:
         for user, user_info in users.items():
             schema = methods[user_info['auth']]
 
-            _user_credientials: Dict[str, Any] = deepcopy(user_info)
+            _user_credientials: dict[str, Any] = deepcopy(user_info)
             del _user_credientials['auth']
 
             _user: User = User(
@@ -191,9 +191,9 @@ class MultiAuth:
         url: str,
         username: str,
         method: HTTPMethod,
-        headers: Dict[str, str],
+        headers: dict[str, str],
         formatted_payload: Any,
-    ) -> Dict[str, str]:
+    ) -> dict[str, str]:
         """Sign a payload before sending it.
 
         This is a mandatory for AWS Signature.
@@ -216,7 +216,7 @@ class MultiAuth:
     def authenticate(
         self,
         username: str,
-    ) -> Tuple[Dict[str, str], str]:
+    ) -> Tuple[dict[str, str], str]:
         """Authenticate the client using the current user."""
 
         # Reset the user's headers
@@ -227,7 +227,7 @@ class MultiAuth:
         # Call the auth handler
         self.logger.info(f'Authenticating user: {username}')
         auth_response = auth_handler(self.methods, user_info, proxy=self.proxy)
-        if auth_response and isinstance(auth_response, Dict):
+        if auth_response and isinstance(auth_response, dict):
             self.headers[username] = auth_response['headers']
             self.logger.info(f'Authentication successful for {username}')
 
@@ -237,10 +237,10 @@ class MultiAuth:
 
         return self.headers[username], username
 
-    def authenticate_users(self) -> Dict[str, Optional[Token]]:
+    def authenticate_users(self) -> dict[str, Optional[Token]]:
         """Authenticate all the users."""
 
-        tokens: Dict[str, Optional[Token]] = {}
+        tokens: dict[str, Optional[Token]] = {}
         for user, user_info in self.users.items():
             self.logger.info(f'Authenticating users : {user}')
 
@@ -254,9 +254,9 @@ class MultiAuth:
     def reauthenticate(
         self,
         username: str,
-        additional_headers: Optional[Dict[str, str]] = None,
+        additional_headers: Optional[dict[str, str]] = None,
         public: bool = False,
-    ) -> Tuple[Dict[str, str], Optional[str]]:
+    ) -> Tuple[dict[str, str], Optional[str]]:
         """Reauthentication of the user in case of token expiry.
 
         Args:
@@ -298,7 +298,7 @@ class MultiAuth:
                     proxy=self.proxy,
                 )
 
-            if auth_response and isinstance(auth_response, Dict):
+            if auth_response and isinstance(auth_response, dict):
                 self.headers[username] = auth_response['headers']
                 self.logger.info('Reauthentication Successful')
 

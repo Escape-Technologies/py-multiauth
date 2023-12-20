@@ -3,7 +3,7 @@
 import hashlib
 import os
 import time
-from typing import Dict, Optional
+from typing import Optional
 from urllib.parse import urlparse
 
 import requests
@@ -74,7 +74,7 @@ def send_401_request(url: str) -> AuthDigestChallenge:
 
 
 # pylint: disable=[too-many-branches, too-many-statements]
-def digest_config_parser(schema: Dict) -> AuthConfigDigest:
+def digest_config_parser(schema: dict) -> AuthConfigDigest:
     """This function parses the Digest schema and checks if all necessary fields exist."""
 
     auth_config = AuthConfigDigest(
@@ -248,7 +248,7 @@ def digest_auth_attach(
 
 def digest_authenticator(
     user: User,
-    schema: Dict,
+    schema: dict,
     method: Optional[HTTPMethod],
 ) -> AuthResponse:
     """This function is a wrapper function that implements the Digest authentication schema.

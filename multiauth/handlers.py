@@ -1,6 +1,6 @@
 """Parse a response to extract auth credentials."""
 
-from typing import Dict, Optional
+from typing import Optional
 
 from multiauth.entities.http import HTTPMethod
 from multiauth.entities.main import AuthResponse, AuthTech
@@ -24,7 +24,7 @@ from multiauth.providers.webdriver.routine import webdriver_authenticator
 
 # pylint: disable=no-else-return, too-many-return-statements
 def auth_handler(
-    schemas: Dict,
+    schemas: dict,
     user: User,
     method: Optional[HTTPMethod] = None,
     proxy: str | None = None,
@@ -80,7 +80,7 @@ def auth_handler(
 
 
 def reauth_handler(
-    schemas: Dict,
+    schemas: dict,
     user: User,
     refresh_token: str,
     proxy: str | None = None,

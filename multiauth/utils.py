@@ -5,7 +5,7 @@ import logging
 import os
 import shlex
 from enum import Enum
-from typing import Any, Dict, List, Mapping, Optional, Type, TypeVar, Union
+from typing import Any, List, Mapping, Optional, Type, TypeVar, Union
 from urllib.parse import urlparse
 
 from pydash import py_
@@ -118,7 +118,7 @@ def dict_find_path(
     prepath: str = '',
     index: Optional[int] = None,
 ) -> str:
-    """Recursively find the path of a certain key in a Dict."""
+    """Recursively find the path of a certain key in a dict."""
 
     for k, v in nested_dict.items():
         if prepath == '':
@@ -131,14 +131,14 @@ def dict_find_path(
         if k == key:  # found value
             return path
 
-        if isinstance(v, Dict):
+        if isinstance(v, dict):
             p = dict_find_path(v, key, path, None)  # recursive call
             if p != '':
                 return p
 
         if isinstance(v, List):
             for i, elem in enumerate(v):
-                if isinstance(elem, Dict):
+                if isinstance(elem, dict):
                     p = dict_find_path(elem, key, path, i)
                     if p != '':
                         return p
@@ -208,7 +208,7 @@ def uncurl(curl: str) -> ParsedCurlContent:
             method = 'GET'
 
     # Now we have to extract the headers
-    headers: Dict[str, str] = {}
+    headers: dict[str, str] = {}
     for header in parsed_args.header:
         param_prefix, header_value = header.split(':', 1)
         headers[param_prefix] = header_value.strip()

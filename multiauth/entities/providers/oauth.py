@@ -2,7 +2,6 @@
 
 from enum import Enum, unique
 from typing import (
-    Dict,
     Optional,
     TypedDict,
 )
@@ -64,4 +63,4 @@ class AuthConfigOAuth(TypedDict):
     login_flow: list[SeleniumCommand]
     # challenge_method: Optional[AuthHashAlgorithmOAuth]
     code_verifier: Optional[str]
-    headers: Optional[Dict[str, str]]
+    headers: Optional[dict[str, str]]

@@ -2,7 +2,6 @@
 
 from enum import Enum
 from typing import (
-    Dict,
     Optional,
     TypedDict,
 )
@@ -28,5 +27,5 @@ class AuthConfigRest(TypedDict):
     param_name: Optional[str]
     param_prefix: Optional[str]
     param_location: HTTPLocation
-    headers: Optional[Dict[str, str]]
+    headers: Optional[dict[str, str]]
     credentials_encoding: CredentialsEncoding

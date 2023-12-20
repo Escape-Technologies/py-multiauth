@@ -1,6 +1,6 @@
 """Custom data used in utils."""
 
-from typing import Dict, NamedTuple, Optional
+from typing import NamedTuple, Optional
 
 from multiauth.entities.http import HTTPMethod
 
@@ -20,5 +20,5 @@ class ParsedCurlContent(NamedTuple):
     method: HTTPMethod
     url: str
     data: Optional[str]
-    headers: Dict[str, str]
+    headers: dict[str, str]
     credentials: Optional[Credentials]

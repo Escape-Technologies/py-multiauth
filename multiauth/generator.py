@@ -2,7 +2,7 @@
 
 import base64
 import json
-from typing import Dict, List, Optional, Union, cast
+from typing import List, Optional, Union, cast
 from urllib.parse import parse_qs
 
 import graphql
@@ -23,7 +23,7 @@ def urlencoded_to_json(data: Optional[str]) -> Optional[str]:
         return None
 
     new_form = parse_qs(data)
-    json_data: Dict = {}
+    json_data: dict = {}
     for name, value in new_form.items():
         if len(value) == 1:
             json_data[name] = value[0]
@@ -33,10 +33,10 @@ def urlencoded_to_json(data: Optional[str]) -> Optional[str]:
     return json.dumps(json_data)
 
 
-def deserialize_headers(headers: Union[Dict[str, str], List[str], str]) -> Dict[str, str]:
+def deserialize_headers(headers: Union[dict[str, str], List[str], str]) -> dict[str, str]:
     """Convert headers to standard format."""
 
-    res: Dict[str, str] = {}
+    res: dict[str, str] = {}
 
     if isinstance(headers, str):
         headers = [headers]
@@ -51,7 +51,7 @@ def deserialize_headers(headers: Union[Dict[str, str], List[str], str]) -> Dict[
     return headers
 
 
-def _manual_fill(headers: Union[Dict[str, str], List[str], str]) -> RCFile:
+def _manual_fill(headers: Union[dict[str, str], List[str], str]) -> RCFile:
     """Serialize raw headers in "manual" auth format."""
 
     headers_dict = deserialize_headers(headers)
@@ -71,7 +71,7 @@ def _manual_fill(headers: Union[Dict[str, str], List[str], str]) -> RCFile:
 
 
 def _basic_fill(
-    headers: Dict[str, str],
+    headers: dict[str, str],
     authorization_header: str,
 ) -> RCFile:
     """Convert basic headers to curl."""
@@ -95,7 +95,7 @@ def _basic_fill(
         },
     )
 
-    optional_headers: Dict = {}
+    optional_headers: dict = {}
     for key, value in headers.items():
         if 'authorization' not in key.lower():
             optional_headers[key] = value
@@ -107,10 +107,10 @@ def _basic_fill(
 
 
 def _rest_fill(
-    rest_document: Dict,
+    rest_document: dict,
     url: str,
     method: HTTPMethod,
-    headers: Dict[str, str],
+    headers: dict[str, str],
 ) -> RCFile:
     """This function fills the rest file."""
 
@@ -133,18 +133,18 @@ def _rest_fill(
 
 
 def _graphql_fill(
-    graphql_document: Dict,
+    graphql_document: dict,
     url: str,
     method: HTTPMethod,
-    headers: Dict[str, str],
-    variables: Optional[Dict] = None,
+    headers: dict[str, str],
+    variables: Optional[dict] = None,
 ) -> RCFile:
     """This function fills the graphql escaperc file."""
 
     variables = variables or {}
 
     # Now we need to get the user information
-    credentials: Dict = {}
+    credentials: dict = {}
     if variables and graphql_document['definitions'][0]['variable_definitions']:
         for variable in graphql_document['definitions'][0]['variable_definitions']:
             variable_name = variable['variable']['name']['value']
@@ -217,7 +217,7 @@ def curl_to_escaperc(curl: str) -> Optional[RCFile]:
                 return _manual_fill(parsed_content.headers)
 
     if parsed_content.data is not None:
-        query: Optional[Dict] = None
+        query: Optional[dict] = None
         try:
             query = json.loads(parsed_content.data)
         except Exception:
