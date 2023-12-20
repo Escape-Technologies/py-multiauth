@@ -25,3 +25,16 @@ class SeleniumProject:
     # name: str
     # url: str
     tests: list[SeleniumTest]
+
+
+@dataclass
+class WebdriverConfig:
+
+    """Authentication Configuration Parameters of the Webdriver Method."""
+
+    extract_location: str
+    extract_regex: str
+    project: SeleniumProject
+    output_format: str
+    token_lifetime: int | None
+    extract_match_index: int | None

@@ -3,7 +3,8 @@
 from typing import cast
 
 from multiauth.entities.errors import AuthenticationError
-from multiauth.entities.main import AuthConfigApiKey, AuthResponse, AuthTech
+from multiauth.entities.main import AuthResponse, AuthTech
+from multiauth.entities.providers.apikey import AuthConfigApiKey
 from multiauth.entities.providers.http import HTTPLocation
 from multiauth.manager import User
 
