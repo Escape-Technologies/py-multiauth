@@ -12,7 +12,8 @@ import jwt
 import requests
 
 from multiauth.entities.errors import AuthenticationError
-from multiauth.entities.main import AuthHashAlgorithmDigest, AuthResponse, AuthTech, JWTToken, Token
+from multiauth.entities.main import AuthResponse, AuthTech, JWTToken, Token
+from multiauth.entities.providers.digest import AuthHashAlgorithmDigest
 from multiauth.entities.providers.oauth import AuthOAuthlocation
 from multiauth.utils import dict_nested_get
 

@@ -5,7 +5,8 @@ from datetime import timedelta
 import pkg_resources
 
 from multiauth.entities.errors import AuthenticationError
-from multiauth.entities.main import AuthResponse, AuthTech, WebdriverConfig
+from multiauth.entities.main import AuthResponse, AuthTech
+from multiauth.entities.providers.webdriver import WebdriverConfig
 from multiauth.manager import User
 from multiauth.providers.webdriver.core import load_selenium_project
 from multiauth.providers.webdriver.extractors import extract_token

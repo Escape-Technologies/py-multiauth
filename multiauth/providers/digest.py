@@ -10,12 +10,10 @@ import requests
 from multiauth.entities.errors import AuthenticationError
 from multiauth.entities.http import HTTPMethod
 from multiauth.entities.main import (
-    AuthConfigDigest,
-    AuthDigestChallenge,
-    AuthHashAlgorithmDigest,
     AuthResponse,
     AuthTech,
 )
+from multiauth.entities.providers.digest import AuthConfigDigest, AuthDigestChallenge, AuthHashAlgorithmDigest
 from multiauth.helpers import hash_calculator
 from multiauth.manager import User
 
