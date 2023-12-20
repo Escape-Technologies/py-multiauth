@@ -1,4 +1,6 @@
-from multiauth.utils import dict_deep_merge, merge_headers  # Replace with the actual module name
+import pytest
+
+from multiauth.utils import dict_deep_merge, is_url, merge_headers  # Replace with the actual module name
 
 
 def test_merge_different_keys() -> None:
@@ -72,3 +74,30 @@ def test_merge_with_empty_dict() -> None:
     dict2 = {'a': 1}
     assert dict_deep_merge(dict1, dict2) == dict2
     assert dict_deep_merge(dict2, dict1) == dict2
+
+
+# Test suite
+
+
+def test_valid_urls() -> None:
+    assert is_url('http://example.com') is True
+    assert is_url('https://www.example.com') is True
+    assert is_url('ftp://example.com/file.txt') is True
+
+
+def test_invalid_urls() -> None:
+    assert is_url('www.example.com') is False
+    assert is_url('example') is False
+    assert is_url('http//example') is False
+
+
+def test_empty_string() -> None:
+    assert is_url('') is False
+
+
+def test_non_string_input() -> None:
+    with pytest.raises(TypeError):
+        is_url(None)  # type: ignore[arg-type]
+
+    with pytest.raises(TypeError):
+        is_url(123)  # type: ignore[arg-type]

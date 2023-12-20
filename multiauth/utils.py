@@ -20,6 +20,9 @@ Value = TypeVar('Value')
 def is_url(url: str) -> bool:
     """This function checks if the url is valid."""
 
+    if not isinstance(url, str):
+        raise TypeError(f'Expected a string, got {type(url)}')
+
     parsed_url = urlparse(url)
     return bool(parsed_url.scheme and parsed_url.netloc)
 
