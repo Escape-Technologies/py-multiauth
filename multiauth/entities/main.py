@@ -4,7 +4,6 @@ from enum import Enum, unique
 from typing import (
     Any,
     TypedDict,
-    Union,
 )
 
 from attr import dataclass
@@ -147,4 +146,4 @@ class JWTToken(TypedDict):
 
 
 # Helper Entities
-AuthType = Union[AuthAWSType, AuthOAuthGrantType]
+AuthType = AuthAWSType | AuthOAuthGrantType

@@ -5,7 +5,7 @@ import logging
 import os
 import shlex
 from enum import Enum
-from typing import Any, List, Mapping, Type, TypeVar, Union
+from typing import Any, List, Mapping, Type, TypeVar
 from urllib.parse import urlparse
 
 from pydash import py_
@@ -150,7 +150,7 @@ def dict_nested_get(
     dictionary: Mapping[str, Value],
     key: str,
     default_return: Default | None = None,
-) -> Union[Default, Value]:
+) -> Default | Value:
     """Search for a certain key inside a dict and returns its value (no matter the depth)"""
     return py_.get(dictionary, dict_find_path(dictionary, key, ''), default_return)
 

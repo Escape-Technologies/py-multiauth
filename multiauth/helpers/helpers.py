@@ -6,7 +6,7 @@ import hmac
 import json
 import re
 from json.decoder import JSONDecodeError
-from typing import Any, Match, Union, cast
+from typing import Any, Match, cast
 
 import jwt
 import requests
@@ -85,7 +85,7 @@ def extract_token(
 
 def hash_calculator(
     hash_type: AuthHashAlgorithmDigest,
-    input_data: Union[str, bytes],
+    input_data: str | bytes,
 ) -> str:
     """This function determines the appropriate hashing function and returns the hashing of the input."""
 
