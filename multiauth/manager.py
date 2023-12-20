@@ -105,7 +105,7 @@ class User:
         return self.credentials['username'], self.credentials['password']
 
     def to_dict(self) -> dict[str, Any]:
-        """Get user as Dict."""
+        """Get user as dict."""
 
         return {
             'auth_schema': self.auth_schema,

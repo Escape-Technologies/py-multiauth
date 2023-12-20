@@ -1,16 +1,12 @@
 """Aws provider."""
 
-import sys
 from enum import Enum, unique
-from typing import Dict, Optional
+from typing import (
+    TypedDict,
+)
 
 from multiauth.entities.http import HTTPMethod
 from multiauth.entities.providers.http import HTTPLocation
-
-if sys.version_info >= (3, 8):
-    from typing import TypedDict  # pylint: disable=no-name-in-module
-else:
-    from typing_extensions import TypedDict
 
 
 @unique
@@ -47,12 +43,12 @@ class AuthConfigHawk(TypedDict):
     """Authentication Configuration Parameters of the Hawk Method."""
 
     algorithm: AuthHashalgorithmHawkandAWS
-    user: Optional[str]
-    nonce: Optional[str]
-    ext: Optional[str]
-    app: Optional[str]
-    dig: Optional[str]
-    timestamp: Optional[str]
+    user: str | None
+    nonce: str | None
+    ext: str | None
+    app: str | None
+    dig: str | None
+    timestamp: str | None
 
 
 class AuthConfigAWS(TypedDict):
@@ -61,13 +57,13 @@ class AuthConfigAWS(TypedDict):
 
     type: AuthAWSType
     region: str
-    client_id: Optional[str]
-    method: Optional[HTTPMethod]
-    service_name: Optional[str]
-    hash_algorithm: Optional[AuthHashalgorithmHawkandAWS]
-    pool_id: Optional[str]
-    client_secret: Optional[str]
+    client_id: str | None
+    method: HTTPMethod | None
+    service_name: str | None
+    hash_algorithm: AuthHashalgorithmHawkandAWS | None
+    pool_id: str | None
+    client_secret: str | None
     param_location: HTTPLocation
-    param_name: Optional[str]
-    param_prefix: Optional[str]
-    headers: Optional[Dict[str, str]]
+    param_name: str | None
+    param_prefix: str | None
+    headers: dict[str, str] | None

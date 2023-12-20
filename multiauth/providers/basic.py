@@ -1,7 +1,6 @@
 """Implementation of the API Key authentication schema."""
 
 import base64
-from typing import Dict
 
 from multiauth.entities.main import AuthResponse, AuthTech
 from multiauth.manager import User
@@ -9,7 +8,7 @@ from multiauth.manager import User
 
 def basic_authenticator(
     user: User,
-    schema: Dict,
+    schema: dict,
 ) -> AuthResponse:
     """This function implement the `Basic Authentication` Schema.
 

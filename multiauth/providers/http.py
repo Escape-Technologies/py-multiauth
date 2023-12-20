@@ -7,16 +7,8 @@ from urllib.parse import parse_qs, urlencode, urlparse, urlunparse
 import requests
 
 from multiauth.entities.errors import AuthenticationError
-from multiauth.entities.providers.http import (
-    AuthExtractor,
-    AuthInjector,
-    AuthRequester,
-    Credentials,
-    HTTPLocation,
-    HTTPRequest,
-    HTTPResponse,
-    HTTPScheme,
-)
+from multiauth.entities.http import HTTPLocation, HTTPRequest, HTTPResponse, HTTPScheme
+from multiauth.entities.providers.http import AuthExtractor, AuthInjector, AuthRequester, Credentials
 from multiauth.providers.http_parser import parse_config
 from multiauth.utils import deep_merge_data, dict_find_path, dict_nested_get, merge_headers
 

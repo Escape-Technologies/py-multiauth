@@ -1,16 +1,12 @@
 """Oauth provider."""
 
-import sys
 from enum import Enum, unique
-from typing import Dict, Optional
+from typing import (
+    TypedDict,
+)
 
 from multiauth.entities.providers.http import HTTPLocation
 from multiauth.entities.providers.webdriver import SeleniumCommand
-
-if sys.version_info >= (3, 8):
-    from typing import TypedDict  # pylint: disable=no-name-in-module
-else:
-    from typing_extensions import TypedDict
 
 
 @unique
@@ -46,8 +42,8 @@ class AuthOAuthResponse(TypedDict):
     """The format of the OAuth access token response according to the official documentation."""
 
     access_token: str
-    expires_in: Optional[float]
-    refresh_token: Optional[str]
+    expires_in: float | None
+    refresh_token: str | None
 
 
 class AuthConfigOAuth(TypedDict):
@@ -55,15 +51,15 @@ class AuthConfigOAuth(TypedDict):
     """Authentication Configuration Parameters of the OAuth Method."""
 
     grant_type: AuthOAuthGrantType
-    authentication_endpoint: Optional[str]
-    token_endpoint: Optional[str]
-    callback_url: Optional[str]
-    scope: Optional[str]
+    authentication_endpoint: str | None
+    token_endpoint: str | None
+    callback_url: str | None
+    scope: str | None
     param_prefix: str
     auth_location: AuthOAuthlocation
     param_location: HTTPLocation
-    state: Optional[str]
+    state: str | None
     login_flow: list[SeleniumCommand]
-    # challenge_method: Optional[AuthHashAlgorithmOAuth]
-    code_verifier: Optional[str]
-    headers: Optional[Dict[str, str]]
+    # challenge_method: AuthHashAlgorithmOAuth | None
+    code_verifier: str | None
+    headers: dict[str, str] | None

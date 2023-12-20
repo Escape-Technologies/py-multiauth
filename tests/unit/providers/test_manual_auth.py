@@ -2,7 +2,6 @@
 
 """Basic example of what a developper would do to start a flow."""
 
-from typing import Dict
 
 import pytest
 
@@ -11,7 +10,7 @@ from multiauth.providers.manual import manual_authenticator
 
 
 @pytest.fixture()
-def auth() -> Dict:
+def auth() -> dict:
     """Return a fixture of schemas."""
 
     return {
@@ -22,7 +21,7 @@ def auth() -> Dict:
 
 
 @pytest.fixture()
-def users_one_header() -> Dict:
+def users_one_header() -> dict:
     """Return a fixture of users."""
 
     return {
@@ -34,7 +33,7 @@ def users_one_header() -> Dict:
 
 
 @pytest.fixture()
-def users_two_headers() -> Dict:
+def users_two_headers() -> dict:
     """Return a fixture of users."""
 
     return {
@@ -46,8 +45,8 @@ def users_two_headers() -> Dict:
 
 
 def test_manual_authentication_headers(
-    users_one_header: Dict,
-    auth: Dict,
+    users_one_header: dict,
+    auth: dict,
 ) -> None:
     """Test manual authentication."""
 
@@ -63,8 +62,8 @@ def test_manual_authentication_headers(
 
 
 def test_manual_authentication_credentials(
-    users_two_headers: Dict,
-    auth: Dict,
+    users_two_headers: dict,
+    auth: dict,
 ) -> None:
     """Test manual authentication."""
 
@@ -81,8 +80,8 @@ def test_manual_authentication_credentials(
 
 
 def test_manual_handler_headers(
-    users_one_header: Dict,
-    auth: Dict,
+    users_one_header: dict,
+    auth: dict,
 ) -> None:
     """Test manual handler."""
 

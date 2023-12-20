@@ -2,7 +2,7 @@
 
 import time
 import uuid
-from typing import Dict, Tuple, cast
+from typing import cast
 
 from authlib.integrations.requests_client import OAuth2Session  # type: ignore[import-untyped]
 
@@ -54,7 +54,7 @@ def authentication_portal(
 def extract_oauth_token(
     user: User,
     auth_config: AuthConfigOAuth,
-    oauth_response: Dict,
+    oauth_response: dict,
 ) -> AuthResponse:
     """Extract the token, refresh token, and the expiry time from the OAuth access token response."""
 
@@ -74,7 +74,7 @@ def extract_oauth_token(
         },
     )
 
-    if not oauth_response or not isinstance(oauth_response, Dict):
+    if not oauth_response or not isinstance(oauth_response, dict):
         raise AuthenticationError('Invalid OAuth Response')
     if not oauth_response.get('access_token'):
         raise AuthenticationError('Invalid OAuth Response')
@@ -143,7 +143,7 @@ def auth_code_handler(
     user: User,
     auth_config: AuthConfigOAuth,
     proxy: str | None = None,
-) -> Dict:
+) -> dict:
     """Handles the authentication code OAuth type."""
 
     # First initiate the OAuth Session
@@ -201,7 +201,7 @@ def implicit_handler(
     user: User,
     auth_config: AuthConfigOAuth,
     proxy: str | None = None,
-) -> Dict:
+) -> dict:
     """Handles the implicit authentication OAuth type."""
 
     # First initiate the OAuth session
@@ -260,7 +260,7 @@ def client_cred_handler(
     user: User,
     auth_config: AuthConfigOAuth,
     proxy: str | None = None,
-) -> Dict:
+) -> dict:
     """Handles the client credentials authentication OAuth type."""
 
     # First initiate the OAuth session
@@ -273,7 +273,7 @@ def password_cred_session(
     user: User,
     auth_config: AuthConfigOAuth,
     proxy: str | None = None,
-) -> Tuple[OAuth2Session, str, str]:
+) -> tuple[OAuth2Session, str, str]:
     """Creates the session for password credentials authentication."""
 
     # First we have to fetch the user credentials from the user
@@ -309,7 +309,7 @@ def password_cred_handler(
     user: User,
     auth_config: AuthConfigOAuth,
     proxy: str | None = None,
-) -> Dict:
+) -> dict:
     """Handles the client credentials authentication OAuth type."""
 
     client, client_username, client_password = password_cred_session(user, auth_config, proxy=proxy)
@@ -317,7 +317,7 @@ def password_cred_handler(
     return client.fetch_token(auth_config['token_endpoint'], username=client_username, password=client_password)
 
 
-def oauth_config_parser(schema: Dict) -> AuthConfigOAuth:
+def oauth_config_parser(schema: dict) -> AuthConfigOAuth:
     """This function parses the OAuth schema and checks if all necessary fields exist."""
 
     auth_config: AuthConfigOAuth = AuthConfigOAuth(
@@ -393,7 +393,7 @@ def oauth_auth_attach(
 
     # First according every grant type, we will create a handler
     grant_type: AuthOAuthGrantType = auth_config['grant_type']
-    oauth_response: Dict = {}
+    oauth_response: dict = {}
 
     if grant_type == AuthOAuthGrantType.AUTH_CODE:
         oauth_response = auth_code_handler(user, auth_config, proxy=proxy)
@@ -413,14 +413,14 @@ def oauth_auth_attach(
         if not user.credentials.get('refresh_token'):
             raise AuthenticationError('Please provide the user with refresh token')
         refresh_token = user.credentials['refresh_token']
-        return oauth_reauthenticator(user, cast(Dict, auth_config), refresh_token, parse=False, proxy=proxy)
+        return oauth_reauthenticator(user, cast(dict, auth_config), refresh_token, parse=False, proxy=proxy)
 
     return extract_oauth_token(user, auth_config, oauth_response)
 
 
 def oauth_authenticator(
     user: User,
-    schema: Dict,
+    schema: dict,
     proxy: str | None = None,
 ) -> AuthResponse:
     """This function is a wrapper function that implements the OAuth authentication schema.
@@ -435,7 +435,7 @@ def oauth_authenticator(
 
 def oauth_reauthenticator(
     user: User,
-    schema: Dict,
+    schema: dict,
     refresh_token: str,
     parse: bool = True,
     proxy: str | None = None,
