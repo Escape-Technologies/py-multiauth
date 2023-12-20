@@ -1,16 +1,14 @@
 """Oauth provider."""
 
-import sys
 from enum import Enum, unique
-from typing import Dict, Optional
+from typing import (
+    Dict,
+    Optional,
+    TypedDict,
+)
 
 from multiauth.entities.providers.http import HTTPLocation
 from multiauth.entities.providers.webdriver import SeleniumCommand
-
-if sys.version_info >= (3, 8):
-    from typing import TypedDict  # pylint: disable=no-name-in-module
-else:
-    from typing_extensions import TypedDict
 
 
 @unique

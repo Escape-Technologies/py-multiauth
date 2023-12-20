@@ -1,5 +1,3 @@
-# pylint: disable=no-name-in-module
-
 """Helper functions for the authentication process."""
 
 import base64

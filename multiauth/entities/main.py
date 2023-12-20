@@ -1,8 +1,13 @@
 """Custom types of authentication module."""
 
-import sys
 from enum import Enum, unique
-from typing import Any, Dict, Optional, Union
+from typing import (
+    Any,
+    Dict,
+    Optional,
+    TypedDict,
+    Union,
+)
 
 from attr import dataclass
 
@@ -11,11 +16,6 @@ from multiauth.entities.providers.aws import AuthAWSType
 from multiauth.entities.providers.http import HTTPLocation
 from multiauth.entities.providers.oauth import AuthOAuthGrantType
 from multiauth.entities.providers.webdriver import SeleniumProject
-
-if sys.version_info >= (3, 8):
-    from typing import TypedDict  # pylint: disable=no-name-in-module
-else:
-    from typing_extensions import TypedDict
 
 
 @unique

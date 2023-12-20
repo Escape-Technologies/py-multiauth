@@ -1,16 +1,14 @@
 """Rest provider."""
 
-import sys
 from enum import Enum
-from typing import Dict, Optional
+from typing import (
+    Dict,
+    Optional,
+    TypedDict,
+)
 
 from multiauth.entities.http import HTTPMethod
 from multiauth.entities.providers.http import HTTPLocation
-
-if sys.version_info >= (3, 8):
-    from typing import TypedDict  # pylint: disable=no-name-in-module
-else:
-    from typing_extensions import TypedDict
 
 
 class CredentialsEncoding(Enum):
