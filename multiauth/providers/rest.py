@@ -1,5 +1,6 @@
 """Implementation of the Rest authentication schema."""
 
+from http import HTTPMethod
 from typing import cast
 
 import jwt
@@ -21,7 +22,7 @@ def rest_config_parser(schema: dict) -> AuthConfigRest:
     auth_config = AuthConfigRest(
         {
             'url': '',
-            'method': 'POST',
+            'method': HTTPMethod.POST,
             'token_name': None,
             'param_location': HTTPLocation.HEADER,
             'refresh_url': None,

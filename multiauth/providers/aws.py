@@ -5,6 +5,7 @@ import hashlib
 import hmac
 import logging
 from copy import deepcopy
+from http import HTTPMethod
 from typing import Any, cast
 from urllib.parse import urlparse
 
@@ -13,7 +14,6 @@ import jwt
 from pycognito.aws_srp import AWSSRP  # type: ignore[import-untyped]
 
 from multiauth.entities.errors import AuthenticationError
-from multiauth.entities.http import HTTPMethod
 from multiauth.entities.main import AuthAWSType, AuthResponse, AuthTech
 from multiauth.entities.providers.aws import AuthConfigAWS, AuthHashalgorithmHawkandAWS
 from multiauth.entities.providers.http import HTTPLocation
@@ -77,7 +77,7 @@ def aws_config_parser(
             raise AuthenticationError('Please provide the hashing algorithm')
 
         auth_config['service_name'] = schema['service_name']
-        auth_config['method'] = schema['method']
+        auth_config['method'] = HTTPMethod(schema['method'].upper())
         auth_config['hash_algorithm'] = AuthHashalgorithmHawkandAWS(schema['hash_algorithm'])
 
     else:
@@ -426,13 +426,13 @@ def aws_signature(
     payload_hash = hashlib.sha256(payload.encode('utf-8')).hexdigest()
 
     # Now we have to create the cannonical URL
-    if method == 'POST':
+    if method == HTTPMethod.POST:
         canonical_request = (
-            method + '\n' + path + '\n' + '\n' + canonical_header + '\n' + signed_header + '\n' + payload_hash + '\n'
+            method.value + '\n' + path + '\n\n' + canonical_header + '\n' + signed_header + '\n' + payload_hash + '\n'
         )
     else:
         canonical_request = (
-            method + '\n' + path + '\n' + payload + '\n' + canonical_header + '\n' + signed_header + '\n' + '\n'
+            method.value + '\n' + path + '\n' + payload + '\n' + canonical_header + '\n' + signed_header + '\n' + '\n'
         )
 
     # Now we have to create the strings to sign

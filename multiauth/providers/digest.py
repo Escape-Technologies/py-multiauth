@@ -83,7 +83,7 @@ def digest_config_parser(schema: dict) -> AuthConfigDigest:
             'nonce': '',
             'algorithm': AuthHashAlgorithmDigest.MD5,
             'domain': '',
-            'method': 'POST',
+            'method': HTTPMethod.POST,
             'qop': None,
             'nonce_count': None,
             'client_nonce': None,
@@ -131,7 +131,7 @@ def digest_config_parser(schema: dict) -> AuthConfigDigest:
     if not schema['options'].get('method'):
         raise AuthenticationError('Please provide the used method in the API')
 
-    auth_config['method'] = schema['options'].get('method')
+    auth_config['method'] = HTTPMethod(schema['options'].get('method').upper())
 
     auth_config['qop'] = schema['options'].get('qop')
     if not auth_config['qop']:

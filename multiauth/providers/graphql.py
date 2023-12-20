@@ -1,6 +1,7 @@
 """Implementation of the GraphQL authentication schema."""
 
 import re
+from http import HTTPMethod
 from typing import Any, Match, cast
 
 import jwt
@@ -95,7 +96,7 @@ def graphql_config_parser(schema: dict) -> AuthConfigGraphQL:
             'url': '',
             'mutation_name': 'str',
             'mutation_field': '',
-            'method': 'POST',
+            'method': HTTPMethod.POST,
             'operation': 'mutation',
             'token_name': '',
             'refresh_mutation_name': None,

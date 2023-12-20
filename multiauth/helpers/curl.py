@@ -5,7 +5,7 @@ from http import HTTPMethod
 from typing import Any
 from urllib.parse import parse_qs, urlparse
 
-from multiauth.entities.providers.http import HTTPRequest, HTTPScheme, JSONSerializable
+from multiauth.entities.http import HTTPRequest, HTTPScheme, JSONSerializable
 
 parser = argparse.ArgumentParser()
 
