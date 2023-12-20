@@ -21,8 +21,8 @@ class AuthProperty(TypedDict):
     optional: bool
     type: str
     description: str
-    value: Optional[str]
-    enum: Optional[List[str]]
+    value: str | None
+    enum: List[str | None
 
 
 AuthName = str

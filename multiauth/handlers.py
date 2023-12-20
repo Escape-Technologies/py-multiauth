@@ -1,6 +1,5 @@
 """Parse a response to extract auth credentials."""
 
-from typing import Optional
 
 from multiauth.entities.http import HTTPMethod
 from multiauth.entities.main import AuthResponse, AuthTech
@@ -26,9 +25,9 @@ from multiauth.providers.webdriver.routine import webdriver_authenticator
 def auth_handler(
     schemas: dict,
     user: User,
-    method: Optional[HTTPMethod] = None,
+    method: HTTPMethod | None = None,
     proxy: str | None = None,
-) -> Optional[AuthResponse]:
+) -> AuthResponse | None:
     """Handles the authentication and returns the authentication response.
 
     This function takes the current working user as input and checks the schema that the user needs.
@@ -40,7 +39,7 @@ def auth_handler(
     schema = schemas[user.auth_schema]
 
     authentication: AuthTech = user.auth_tech
-    response: Optional[AuthResponse] = None
+    response: AuthResponse | None = None
     if authentication == AuthTech.APIKEY:
         response = apikey_authenticator(user, schema)
 
@@ -84,7 +83,7 @@ def reauth_handler(
     user: User,
     refresh_token: str,
     proxy: str | None = None,
-) -> Optional[AuthResponse]:
+) -> AuthResponse | None:
     """Handles the reauthentication and returns the new authentication response.
 
     This function takes the current working user as input and checks the schema that the user needs.

@@ -5,7 +5,7 @@ import logging
 import os
 import shlex
 from enum import Enum
-from typing import Any, List, Mapping, Optional, Type, TypeVar, Union
+from typing import Any, List, Mapping, Type, TypeVar, Union
 from urllib.parse import urlparse
 
 from pydash import py_
@@ -101,7 +101,7 @@ def install_logger(logger: logging.Logger) -> None:
     logging.getLogger('asyncio').setLevel(logging.ERROR)
 
 
-def setup_logger(name: Optional[str] = None) -> logging.Logger:
+def setup_logger(name: str | None = None) -> logging.Logger:
     """Setup logger."""
 
     name = name or 'multiauth'
@@ -116,7 +116,7 @@ def dict_find_path(
     nested_dict: Mapping,
     key: str,
     prepath: str = '',
-    index: Optional[int] = None,
+    index: int | None = None,
 ) -> str:
     """Recursively find the path of a certain key in a dict."""
 
@@ -149,7 +149,7 @@ def dict_find_path(
 def dict_nested_get(
     dictionary: Mapping[str, Value],
     key: str,
-    default_return: Optional[Default] = None,
+    default_return: Default | None = None,
 ) -> Union[Default, Value]:
     """Search for a certain key inside a dict and returns its value (no matter the depth)"""
     return py_.get(dictionary, dict_find_path(dictionary, key, ''), default_return)
@@ -220,7 +220,7 @@ def uncurl(curl: str) -> ParsedCurlContent:
         headers['Referer'] = parsed_args.user_agent
 
     datas: list = parsed_args.data
-    final_data: Optional[str] = None
+    final_data: str | None = None
     if len(datas) != 0:
         final_data = datas[0]
     if len(datas) != 1:
@@ -238,7 +238,7 @@ def uncurl(curl: str) -> ParsedCurlContent:
         url = parsed_args.url
 
     # Add auth
-    credentials: Optional[Credentials] = None
+    credentials: Credentials | None = None
     if parsed_args.user:
         user_name, password = parsed_args.user.split(':', 1)
         credentials = Credentials(user_name, password)

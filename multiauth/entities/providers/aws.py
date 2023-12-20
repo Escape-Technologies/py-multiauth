@@ -2,7 +2,6 @@
 
 from enum import Enum, unique
 from typing import (
-    Optional,
     TypedDict,
 )
 
@@ -44,12 +43,12 @@ class AuthConfigHawk(TypedDict):
     """Authentication Configuration Parameters of the Hawk Method."""
 
     algorithm: AuthHashalgorithmHawkandAWS
-    user: Optional[str]
-    nonce: Optional[str]
-    ext: Optional[str]
-    app: Optional[str]
-    dig: Optional[str]
-    timestamp: Optional[str]
+    user: str | None
+    nonce: str | None
+    ext: str | None
+    app: str | None
+    dig: str | None
+    timestamp: str | None
 
 
 class AuthConfigAWS(TypedDict):
@@ -58,13 +57,13 @@ class AuthConfigAWS(TypedDict):
 
     type: AuthAWSType
     region: str
-    client_id: Optional[str]
-    method: Optional[HTTPMethod]
-    service_name: Optional[str]
-    hash_algorithm: Optional[AuthHashalgorithmHawkandAWS]
-    pool_id: Optional[str]
-    client_secret: Optional[str]
+    client_id: str | None
+    method: HTTPMethod | None
+    service_name: str | None
+    hash_algorithm: AuthHashalgorithmHawkandAWS | None
+    pool_id: str | None
+    client_secret: str | None
     param_location: HTTPLocation
-    param_name: Optional[str]
-    param_prefix: Optional[str]
-    headers: Optional[dict[str, str]]
+    param_name: str | None
+    param_prefix: str | None
+    headers: dict[str, str] | None

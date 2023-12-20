@@ -6,7 +6,7 @@ import os
 import time
 from copy import deepcopy
 from importlib import resources
-from typing import Any, Optional, Tuple
+from typing import Any, Tuple
 
 import jsonschema
 
@@ -22,7 +22,7 @@ from multiauth.utils import setup_logger
 
 def load_authrc(
     logger: logging.Logger,
-    authrc: Optional[str] = None,
+    authrc: str | None = None,
 ) -> Tuple[dict, dict]:
     """Load authrc file."""
 
@@ -83,11 +83,11 @@ class MultiAuth:
 
     def __init__(
         self,
-        methods: Optional[dict] = None,
-        users: Optional[dict] = None,
-        authrc: Optional[str] = None,
-        logger: Optional[logging.Logger] = None,
-        proxy: Optional[str] = None,
+        methods: dict | None = None,
+        users: dict | None = None,
+        authrc: str | None = None,
+        logger: logging.Logger | None = None,
+        proxy: str | None = None,
     ) -> None:
         """Initialize the Auth manager."""
 
@@ -237,10 +237,10 @@ class MultiAuth:
 
         return self.headers[username], username
 
-    def authenticate_users(self) -> dict[str, Optional[Token]]:
+    def authenticate_users(self) -> dict[str, Token | None]:
         """Authenticate all the users."""
 
-        tokens: dict[str, Optional[Token]] = {}
+        tokens: dict[str, Token | None] = {}
         for user, user_info in self.users.items():
             self.logger.info(f'Authenticating users : {user}')
 
@@ -254,9 +254,9 @@ class MultiAuth:
     def reauthenticate(
         self,
         username: str,
-        additional_headers: Optional[dict[str, str]] = None,
+        additional_headers: dict[str, str] | None = None,
         public: bool = False,
-    ) -> Tuple[dict[str, str], Optional[str]]:
+    ) -> Tuple[dict[str, str], str | None]:
         """Reauthentication of the user in case of token expiry.
 
         Args:

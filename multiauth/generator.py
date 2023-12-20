@@ -2,7 +2,7 @@
 
 import base64
 import json
-from typing import List, Optional, Union, cast
+from typing import List, Union, cast
 from urllib.parse import parse_qs
 
 import graphql
@@ -16,7 +16,7 @@ POTENTIAL_FIELD_NAME = ['token']
 LOGGER = setup_logger()
 
 
-def urlencoded_to_json(data: Optional[str]) -> Optional[str]:
+def urlencoded_to_json(data: str | None) -> str | None:
     """This function transforms data in application/x-www-form-urlencoded to json data."""
 
     if data is None:
@@ -137,7 +137,7 @@ def _graphql_fill(
     url: str,
     method: HTTPMethod,
     headers: dict[str, str],
-    variables: Optional[dict] = None,
+    variables: dict | None = None,
 ) -> RCFile:
     """This function fills the graphql escaperc file."""
 
@@ -199,7 +199,7 @@ def _graphql_fill(
 
 
 # pylint: disable=too-many-branches, too-many-statements
-def curl_to_escaperc(curl: str) -> Optional[RCFile]:
+def curl_to_escaperc(curl: str) -> RCFile | None:
     """This function transforms the curl request to an escaperc file."""
 
     # First we uncurl
@@ -217,7 +217,7 @@ def curl_to_escaperc(curl: str) -> Optional[RCFile]:
                 return _manual_fill(parsed_content.headers)
 
     if parsed_content.data is not None:
-        query: Optional[dict] = None
+        query: dict | None = None
         try:
             query = json.loads(parsed_content.data)
         except Exception:

@@ -1,7 +1,7 @@
 """Implementation of the GraphQL authentication schema."""
 
 import re
-from typing import Any, Match, Optional, cast
+from typing import Any, Match, cast
 
 import jwt
 import requests
@@ -34,7 +34,7 @@ def format_arguments(credentials: dict) -> str:
 def generate_authentication_mutation(
     user: User,
     auth_config: AuthConfigGraphQL,
-    credentials: Optional[dict[str, Any]] = None,
+    credentials: dict[str, Any] | None = None,
     refresh: bool = False,
     refresh_field: bool = True,
 ) -> dict:
@@ -219,7 +219,7 @@ def graphql_auth_attach(
                 },
             )
 
-    token: Optional[str] = None
+    token: str | None = None
     auth_response: AuthResponse
 
     # Fetching token from the header is priorized

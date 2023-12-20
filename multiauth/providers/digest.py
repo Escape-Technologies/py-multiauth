@@ -3,7 +3,6 @@
 import hashlib
 import os
 import time
-from typing import Optional
 from urllib.parse import urlparse
 
 import requests
@@ -172,7 +171,7 @@ def digest_config_parser(schema: dict) -> AuthConfigDigest:
 def digest_auth_attach(
     user: User,
     auth_config: AuthConfigDigest,
-    method: Optional[HTTPMethod],
+    method: HTTPMethod | None,
 ) -> AuthResponse:
     """This function attaches the user credentials to the schema and generates the proper authentication response."""
 
@@ -249,7 +248,7 @@ def digest_auth_attach(
 def digest_authenticator(
     user: User,
     schema: dict,
-    method: Optional[HTTPMethod],
+    method: HTTPMethod | None,
 ) -> AuthResponse:
     """This function is a wrapper function that implements the Digest authentication schema.
 

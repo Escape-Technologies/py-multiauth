@@ -2,7 +2,7 @@ import datetime
 import enum
 from dataclasses import dataclass
 from http import HTTPMethod
-from typing import Any, Optional
+from typing import Any
 
 ##### Authentications ######
 
@@ -74,11 +74,18 @@ class AuthInjector:
 
 
 @dataclass
+class AuthRefresher:
+    requester: AuthRequester
+    extractor: AuthExtractor
+    injector: AuthInjector
+
+
+@dataclass
 class AuthProvider:
     requester: AuthRequester
     extractor: AuthExtractor
     injector: AuthInjector
-    refresher: Optional['AuthProvider']
+    refresher: AuthRefresher | None
 
 
 ###### Authentication Extensions ######

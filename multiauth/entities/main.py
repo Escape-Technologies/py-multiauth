@@ -3,7 +3,6 @@
 from enum import Enum, unique
 from typing import (
     Any,
-    Optional,
     TypedDict,
     Union,
 )
@@ -53,12 +52,12 @@ class AuthDigestChallenge(TypedDict):
 
     """The format of the challenge in a digest authentication schema as specified by the RFC 2617."""
 
-    realm: Optional[str]
-    domain: Optional[str]
-    nonce: Optional[str]
-    opaque: Optional[str]
-    algorithm: Optional[AuthHashAlgorithmDigest]
-    qop_options: Optional[str]
+    realm: str | None
+    domain: str | None
+    nonce: str | None
+    opaque: str | None
+    algorithm: AuthHashAlgorithmDigest | None
+    qop_options: str | None
 
 
 class AuthConfigApiKey(TypedDict):
@@ -67,8 +66,8 @@ class AuthConfigApiKey(TypedDict):
 
     param_location: HTTPLocation
     param_name: str
-    param_prefix: Optional[str]
-    headers: Optional[dict[str, str]]
+    param_prefix: str | None
+    headers: dict[str, str] | None
 
 
 @dataclass
@@ -80,8 +79,8 @@ class WebdriverConfig:
     extract_regex: str
     project: SeleniumProject
     output_format: str
-    token_lifetime: Optional[int]
-    extract_match_index: Optional[int]
+    token_lifetime: int | None
+    extract_match_index: int | None
 
 
 class AuthConfigDigest(TypedDict):
@@ -94,11 +93,11 @@ class AuthConfigDigest(TypedDict):
     algorithm: AuthHashAlgorithmDigest
     domain: str
     method: HTTPMethod
-    qop: Optional[str]
-    nonce_count: Optional[str]
-    client_nonce: Optional[str]
-    opaque: Optional[str]
-    headers: Optional[dict[str, str]]
+    qop: str | None
+    nonce_count: str | None
+    client_nonce: str | None
+    opaque: str | None
+    headers: dict[str, str] | None
 
 
 class AuthResponse(TypedDict):
@@ -137,13 +136,13 @@ class JWTToken(TypedDict):
     """
 
     sig: str
-    iss: Optional[str]
-    sub: Optional[str]
-    aud: Optional[str]
-    exp: Optional[str]
-    nbf: Optional[str]
-    iat: Optional[str]
-    jti: Optional[str]
+    iss: str | None
+    sub: str | None
+    aud: str | None
+    exp: str | None
+    nbf: str | None
+    iat: str | None
+    jti: str | None
     other: dict[Any, Any]
 
 

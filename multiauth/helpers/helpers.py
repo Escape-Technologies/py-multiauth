@@ -6,7 +6,7 @@ import hmac
 import json
 import re
 from json.decoder import JSONDecodeError
-from typing import Any, Match, Optional, Tuple, Union, cast
+from typing import Any, Match, Tuple, Union, cast
 
 import jwt
 import requests
@@ -21,8 +21,8 @@ def extract_token(
     response: requests.Response,
     tech: AuthTech,
     headers: dict[str, str],
-    refresh_token_name: Optional[str] = None,
-) -> Tuple[AuthResponse, Optional[str]]:
+    refresh_token_name: str | None = None,
+) -> Tuple[AuthResponse, str | None]:
     """This function takes the response and tries to extract the tokens.
 
     This function is mainly a helper function to the REST and the GraphQL authenctication schema.

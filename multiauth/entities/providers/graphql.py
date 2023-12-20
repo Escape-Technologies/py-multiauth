@@ -1,6 +1,6 @@
 """Graphql provider."""
 
-from typing import Literal, Optional, TypedDict
+from typing import Literal, TypedDict
 
 from multiauth.entities.http import HTTPMethod
 from multiauth.entities.providers.http import HTTPLocation
@@ -18,10 +18,10 @@ class AuthConfigGraphQL(TypedDict):
     method: HTTPMethod
     mutation_field: str
     operation: Operation
-    refresh_mutation_name: Optional[str]
-    refresh_field_name: Optional[str]
+    refresh_mutation_name: str | None
+    refresh_field_name: str | None
     refresh_field: bool
-    param_name: Optional[str]
-    param_prefix: Optional[str]
+    param_name: str | None
+    param_prefix: str | None
     param_location: HTTPLocation
-    headers: Optional[dict[str, str]]
+    headers: dict[str, str] | None

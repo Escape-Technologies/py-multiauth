@@ -2,7 +2,6 @@
 
 from enum import Enum
 from typing import (
-    Optional,
     TypedDict,
 )
 
@@ -21,11 +20,11 @@ class AuthConfigRest(TypedDict):
 
     url: str
     method: HTTPMethod
-    refresh_url: Optional[str]
-    refresh_token_name: Optional[str]
-    token_name: Optional[str]
-    param_name: Optional[str]
-    param_prefix: Optional[str]
+    refresh_url: str | None
+    refresh_token_name: str | None
+    token_name: str | None
+    param_name: str | None
+    param_prefix: str | None
     param_location: HTTPLocation
-    headers: Optional[dict[str, str]]
+    headers: dict[str, str] | None
     credentials_encoding: CredentialsEncoding
