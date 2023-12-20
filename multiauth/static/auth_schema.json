@@ -6,7 +6,7 @@
     "authSchema": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "type": "object",
-      "required": ["tech", "type", "region", "location"],
+      "required": ["tech", "type", "region", "param_location"],
       "description": "The auth configuration schema for AWS authentication",
       "properties": {
         "tech": {
@@ -45,10 +45,10 @@
           "description": "The AWS Region where the application exists",
           "type": "string"
         },
-        "location": {
+        "param_location": {
           "_escapeUI": {
             "name": "Location",
-            "label": "Key location",
+            "label": "Param Location",
             "inputType": "select"
           },
           "description": "The location where the token will be added",
@@ -403,10 +403,10 @@
               "description": "The prefix of the token that will be inserted in an authentified request (default: `Bearer`)",
               "type": "string"
             },
-            "location": {
+            "param_location": {
               "_escapeUI": {
                 "name": "Location",
-                "label": "Key location",
+                "label": "Param Location",
                 "inputType": "select"
               },
               "description": "The location where the token will be added (default `header`)",
@@ -741,23 +741,14 @@
               "description": "The name of the Field that contains the refresh token. The same field is used to fetch the refresh token during authentication and reauthentication",
               "type": "string"
             },
-            "header_token_name": {
+            "token_name": {
               "_escapeUI": {
-                "name": "headerTokenName",
-                "label": "Header Token Name",
-                "inputType": "text"
+                "name": "Location",
+                "label": "Param Location",
+                "inputType": "select"
               },
-              "type": "string",
-              "description": "Sometimes, the token is returned in a Header instead of the GraphQL response body. This is the name of the Header containing the secret."
-            },
-            "cookie_token_name": {
-              "_escapeUI": {
-                "name": "cookieTokenName",
-                "label": "Cookie token name",
-                "inputType": "text"
-              },
-              "type": "string",
-              "description": "Sometimes, the token is returned in a Cookie instead of the GraphQL response body. This is the name of the Cookie containing the secret."
+              "description": "The name of the key that contains the token in the response request (can be nested).",
+              "type": "string"
             },
             "param_name": {
               "_escapeUI": {
@@ -789,10 +780,10 @@
               "description": "The prefix of the token in an authenticated request (defautl: `Bearer`)",
               "type": "string"
             },
-            "location": {
+            "param_location": {
               "_escapeUI": {
                 "name": "Location",
-                "label": "Key location",
+                "label": "Param Location",
                 "inputType": "select"
               },
               "description": "The location where the token will be added (default `header`)",
@@ -998,7 +989,7 @@
     "authSchema": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "type": "object",
-      "required": ["tech", "location", "param_name"],
+      "required": ["tech", "param_location", "param_name"],
       "properties": {
         "tech": {
           "_escapeUI": {
@@ -1011,10 +1002,10 @@
           "description": "The auth method, in that case `api`",
           "type": "string"
         },
-        "location": {
+        "param_location": {
           "_escapeUI": {
             "name": "Location",
-            "label": "Key location",
+            "label": "Param Location",
             "inputType": "select"
           },
           "description": "The location where the token will be added (default `header`)",
@@ -1200,11 +1191,11 @@
           "type": "string",
           "default": "Bearer"
         },
-        "location": {
+        "param_location": {
           "_escapeUI": {
             "label": "Location",
             "inputType": "text",
-            "name": "location"
+            "name": "param_location"
           },
           "description": "The location where the token will be added.",
           "type": "string",
@@ -1317,7 +1308,7 @@
             "tech",
             "grant_type",
             "auth_location",
-            "location",
+            "param_location",
             "token_endpoint",
             "callback_url"
           ]
@@ -1332,7 +1323,7 @@
             "tech",
             "grant_type",
             "auth_location",
-            "location",
+            "param_location",
             "authentication_endpoint",
             "token_endpoint",
             "callback_url"
@@ -1348,7 +1339,7 @@
             "tech",
             "grant_type",
             "auth_location",
-            "location",
+            "param_location",
             "authentication_endpoint",
             "callback_url",
             "token_endpoint"
@@ -1364,7 +1355,7 @@
             "tech",
             "grant_type",
             "auth_location",
-            "location",
+            "param_location",
             "authentication_endpoint"
           ]
         },
@@ -1378,7 +1369,7 @@
             "tech",
             "grant_type",
             "auth_location",
-            "location",
+            "param_location",
             "token_endpoint"
           ],
           "maxProperties": 7

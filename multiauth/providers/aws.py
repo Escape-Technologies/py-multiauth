@@ -48,7 +48,7 @@ def aws_config_parser(
             'hash_algorithm': None,
             'pool_id': None,
             'client_secret': None,
-            'location': HTTPLocation.HEADER,
+            'param_location': HTTPLocation.HEADER,
             'param_name': None,
             'param_prefix': None,
             'headers': None,
@@ -60,13 +60,13 @@ def aws_config_parser(
         raise AuthenticationError('Please provide the type of AWS authentication that you want to perform')
     if not schema.get('region'):
         raise AuthenticationError('Please provide the region in which the service exists (eg: us-east-1)')
-    if not schema.get('location'):
+    if not schema.get('param_location'):
         raise AuthenticationError('Please provide with the location where the headers should be added')
 
     auth_config['type'] = schema['type']
     user.auth_type = schema['type']
     auth_config['region'] = schema['region']
-    auth_config['location'] = HTTPLocation(schema['location'])
+    auth_config['param_location'] = HTTPLocation(schema['param_location'])
 
     if auth_config['type'] == AuthAWSType.AWS_SIGNATURE:
         if not schema.get('service_name'):

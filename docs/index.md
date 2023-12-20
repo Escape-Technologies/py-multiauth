@@ -42,7 +42,7 @@
 
 
 
-- Key location (`location`): The location where the token will be added. The values that this parameter can take are: 
+- Param Location (`param_location`): The location where the token will be added. The values that this parameter can take are: 
   - `header` 
   - `query`
 
@@ -111,7 +111,7 @@
             "tech": "aws",
             "type": "SRP",
             "region": "**string**",
-            "location": "**string**",
+            "param_location": "**string**",
             "client_id": "**string**",
             "pool_id": "**string**",
             "options": {
@@ -146,7 +146,7 @@
             "tech": "aws",
             "type": "Password Authentication",
             "region": "**string**",
-            "location": "**string**",
+            "param_location": "**string**",
             "client_id": "**string**",
             "options": {
                 "client_secret": "**string**",
@@ -180,7 +180,7 @@
             "tech": "aws",
             "type": "AWS Signature",
             "region": "**string**",
-            "location": "**string**",
+            "param_location": "**string**",
             "client_id": "**string**",
             "options": {
                 "client_secret": "**string**",
@@ -214,7 +214,7 @@
             "tech": "aws",
             "type": "Refresh Token",
             "region": "**string**",
-            "location": "**string**",
+            "param_location": "**string**",
             "service_name": "**string**",
             "method": "**string**",
             "hash_algorithm": "**string**",
@@ -269,7 +269,7 @@
 
 - Header prefix (`param_prefix`): The prefix of the token that will be inserted in an authentified request (default: `Bearer`).
 
-- Key location (`location`): The location where the token will be added (default `header`).
+- Param Location (`param_location`): The location where the token will be added (default `header`).
 
 - Headers (`headers`): Additional headers to insert in the requests, including the authentication request.
 
@@ -304,7 +304,7 @@
                 "refresh_token_name": "**string**",
                 "param_name": "**string**",
                 "param_prefix": "**string**",
-                "location": "**string**",
+                "param_location": "**string**",
                 "headers": {
                     "**name**": "**value**"
                 }
@@ -437,9 +437,7 @@
 
 - Refresh Field Name (`refresh_field_name`): The name of the Field that contains the refresh token. The same field is used to fetch the refresh token during authentication and reauthentication.
 
-- Header Token Name (`header_token_name`): Sometimes, the token is returned in a Header instead of the GraphQL response body. This is the name of the Header containing the secret..
-
-- Cookie token name (`cookie_token_name`): Sometimes, the token is returned in a Cookie instead of the GraphQL response body. This is the name of the Cookie containing the secret..
+- Param Location (`token_name`): The name of the key that contains the token in the response request (can be nested)..
 
 - Param name (`param_name`): The name of the param in which the token will be inserted (default: `Authorization`).
 
@@ -447,7 +445,7 @@
 
 - Header prefix (`param_prefix`): The prefix of the token in an authenticated request (defautl: `Bearer`).
 
-- Key location (`location`): The location where the token will be added (default `header`).
+- Param Location (`param_location`): The location where the token will be added (default `header`).
 
 - Headers (`headers`): Additional headers to insert in the requests, including the authentication request.
 
@@ -481,12 +479,11 @@
                 "refresh_mutation_name": "**string**",
                 "refresh_field": "**boolean**",
                 "refresh_field_name": "**string**",
-                "header_token_name": "**string**",
-                "cookie_token_name": "**string**",
+                "token_name": "**string**",
                 "param_name": "**string**",
                 "operation": "**string**",
                 "param_prefix": "**string**",
-                "location": "**string**",
+                "param_location": "**string**",
                 "headers": {
                     "**name**": "**value**"
                 }
@@ -616,7 +613,7 @@
 
 
 
-- Key location (`location`): The location where the token will be added (default `header`). The values that this parameter can take are: 
+- Param Location (`param_location`): The location where the token will be added (default `header`). The values that this parameter can take are: 
   - `header` 
   - `query`
 
@@ -653,7 +650,7 @@
     "methods": {
         "schema1": {
             "tech": "api_key",
-            "location": "**string**",
+            "param_location": "**string**",
             "param_name": "**string**",
             "options": {
                 "param_prefix": "**string**",
@@ -736,7 +733,7 @@
 
 
 
-- Location (`location`): The location where the token will be added.. The values that this parameter can take are: 
+- Location (`param_location`): The location where the token will be added.. The values that this parameter can take are: 
   - `header` 
   - `query`
 
@@ -797,7 +794,7 @@
             "tech": "oauth",
             "grant_type": "refresh_token",
             "auth_location": "**string**",
-            "location": "**string**",
+            "param_location": "**string**",
             "token_endpoint": "**string**",
             "callback_url": "**string**",
             "options": {
@@ -832,7 +829,7 @@
             "tech": "oauth",
             "grant_type": "auth_code",
             "auth_location": "**string**",
-            "location": "**string**",
+            "param_location": "**string**",
             "authentication_endpoint": "**string**",
             "token_endpoint": "**string**",
             "callback_url": "**string**",
@@ -868,7 +865,7 @@
             "tech": "oauth",
             "grant_type": "client_cred",
             "auth_location": "**string**",
-            "location": "**string**",
+            "param_location": "**string**",
             "authentication_endpoint": "**string**",
             "token_endpoint": "**string**",
             "callback_url": "**string**",
@@ -904,7 +901,7 @@
             "tech": "oauth",
             "grant_type": "implicit",
             "auth_location": "**string**",
-            "location": "**string**",
+            "param_location": "**string**",
             "authentication_endpoint": "**string**",
             "options": {
                 "login_flow": "**array**",
@@ -938,7 +935,7 @@
             "tech": "oauth",
             "grant_type": "password_cred",
             "auth_location": "**string**",
-            "location": "**string**",
+            "param_location": "**string**",
             "token_endpoint": "**string**",
             "options": {
                 "login_flow": "**array**",

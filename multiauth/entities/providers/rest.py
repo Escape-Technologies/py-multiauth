@@ -24,11 +24,11 @@ class AuthConfigRest(TypedDict):
 
     url: str
     method: HTTPMethod
-    location: HTTPLocation
     refresh_url: Optional[str]
     refresh_token_name: Optional[str]
     token_name: Optional[str]
     param_name: Optional[str]
     param_prefix: Optional[str]
+    param_location: HTTPLocation
     headers: Optional[Dict[str, str]]
     credentials_encoding: CredentialsEncoding

@@ -53,15 +53,15 @@ def parse_extractor(schema: dict) -> AuthExtractor:
     if not isinstance(schema['key'], str):
         raise AuthenticationError('`extractor.key` must be a string')
 
-    if 'location' not in schema:
+    if 'param_location' not in schema:
         raise AuthenticationError('Mandatory `extractor.location` key is missing')
 
-    if not in_enum(schema['location'], HTTPLocation):
+    if not in_enum(schema['param_location'], HTTPLocation):
         raise AuthenticationError('`extractor.location` is not a valid HTTP location')
 
     return AuthExtractor(
         key=schema['key'],
-        location=schema['location'],
+        location=schema['param_location'],
     )
 
 
@@ -75,7 +75,7 @@ def parse_injector(schema: dict) -> AuthInjector:
         if not all(isinstance(key, str) for key in schema['key']):
             raise AuthenticationError('`injector.key` must be a list of strings or a string')
 
-    if 'location' not in schema:
+    if 'param_location' not in schema:
         raise AuthenticationError('Mandatory `injector.location` key is missing')
 
     if 'prefix' not in schema:
@@ -83,7 +83,7 @@ def parse_injector(schema: dict) -> AuthInjector:
 
     return AuthInjector(
         key=schema['key'],
-        location=schema['location'],
+        location=schema['param_location'],
         prefix=schema['prefix'],
     )
 
@@ -106,11 +106,11 @@ def parse_refresher(
         ),
         extractor=AuthExtractor(
             key=schema['refresh']['extract'].get('key') or extractor.key,
-            location=schema['refresh']['extract'].get('location') or extractor.location,
+            location=schema['refresh']['extract'].get('param_location') or extractor.location,
         ),
         injector=AuthInjector(
             key=schema['refresh']['inject'].get('key') or injector.key,
-            location=schema['refresh']['inject'].get('location') or injector.location,
+            location=schema['refresh']['inject'].get('param_location') or injector.location,
             prefix=schema['refresh']['inject'].get('prefix') or injector.prefix,
         ),
         refresher=None,

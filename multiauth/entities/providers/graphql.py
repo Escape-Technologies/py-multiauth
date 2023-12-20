@@ -20,15 +20,14 @@ class AuthConfigGraphQL(TypedDict):
 
     url: str
     mutation_name: str
-    location: HTTPLocation
+    token_name: str
     method: HTTPMethod
     mutation_field: str
     operation: Operation
-    header_token_name: Optional[str]
-    cookie_token_name: Optional[str]
     refresh_mutation_name: Optional[str]
     refresh_field_name: Optional[str]
     refresh_field: bool
     param_name: Optional[str]
     param_prefix: Optional[str]
+    param_location: HTTPLocation
     headers: Optional[Dict[str, str]]

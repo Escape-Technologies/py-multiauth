@@ -61,7 +61,7 @@ class AuthConfigOAuth(TypedDict):
     scope: Optional[str]
     param_prefix: str
     auth_location: AuthOAuthlocation
-    location: HTTPLocation
+    param_location: HTTPLocation
     state: Optional[str]
     login_flow: list[SeleniumCommand]
     # challenge_method: Optional[AuthHashAlgorithmOAuth]
