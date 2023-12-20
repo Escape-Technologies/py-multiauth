@@ -2,7 +2,7 @@
 
 import time
 import uuid
-from typing import Tuple, cast
+from typing import cast
 
 from authlib.integrations.requests_client import OAuth2Session  # type: ignore[import-untyped]
 
@@ -273,7 +273,7 @@ def password_cred_session(
     user: User,
     auth_config: AuthConfigOAuth,
     proxy: str | None = None,
-) -> Tuple[OAuth2Session, str, str]:
+) -> tuple[OAuth2Session, str, str]:
     """Creates the session for password credentials authentication."""
 
     # First we have to fetch the user credentials from the user

@@ -6,7 +6,7 @@ import hmac
 import json
 import re
 from json.decoder import JSONDecodeError
-from typing import Any, Match, Tuple, Union, cast
+from typing import Any, Match, Union, cast
 
 import jwt
 import requests
@@ -22,7 +22,7 @@ def extract_token(
     tech: AuthTech,
     headers: dict[str, str],
     refresh_token_name: str | None = None,
-) -> Tuple[AuthResponse, str | None]:
+) -> tuple[AuthResponse, str | None]:
     """This function takes the response and tries to extract the tokens.
 
     This function is mainly a helper function to the REST and the GraphQL authenctication schema.
@@ -248,7 +248,7 @@ def jwt_token_analyzer(token: Token) -> JWTToken:
 #     def _check_rsa_embed(token_header: str, token_payload: str) -> Token:
 #         """Check in case the signature that RSA based."""
 
-#         def _get_rsa_key_pair() -> Tuple[Any, Any]:
+#         def _get_rsa_key_pair() -> tuple[Any, Any]:
 #             """Generate RSA keys."""
 
 #             # generate private/public key pair

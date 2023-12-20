@@ -6,7 +6,7 @@ import os
 import time
 from copy import deepcopy
 from importlib import resources
-from typing import Any, Tuple
+from typing import Any
 
 import jsonschema
 
@@ -23,7 +23,7 @@ from multiauth.utils import setup_logger
 def load_authrc(
     logger: logging.Logger,
     authrc: str | None = None,
-) -> Tuple[dict, dict]:
+) -> tuple[dict, dict]:
     """Load authrc file."""
 
     filepath = authrc or os.getenv('AUTHRC')
@@ -58,7 +58,7 @@ def load_authrc(
     return data['methods'], data['users']
 
 
-def load_headers(headers: dict[str, str]) -> Tuple[dict, dict]:
+def load_headers(headers: dict[str, str]) -> tuple[dict, dict]:
     """Creates a valid user and auth schema from the headers.
 
     This is used to be able to pass headers easily.
@@ -216,7 +216,7 @@ class MultiAuth:
     def authenticate(
         self,
         username: str,
-    ) -> Tuple[dict[str, str], str]:
+    ) -> tuple[dict[str, str], str]:
         """Authenticate the client using the current user."""
 
         # Reset the user's headers
@@ -256,7 +256,7 @@ class MultiAuth:
         username: str,
         additional_headers: dict[str, str] | None = None,
         public: bool = False,
-    ) -> Tuple[dict[str, str], str | None]:
+    ) -> tuple[dict[str, str], str | None]:
         """Reauthentication of the user in case of token expiry.
 
         Args:
