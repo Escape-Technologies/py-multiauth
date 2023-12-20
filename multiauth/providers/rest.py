@@ -26,8 +26,8 @@ def rest_config_parser(schema: Dict) -> AuthConfigRest:
             'location': HTTPLocation.HEADER,
             'refresh_url': None,
             'refresh_token_name': None,
-            'header_name': None,
-            'header_prefix': None,
+            'param_name': None,
+            'param_prefix': None,
             'headers': None,
             'credentials_encoding': CredentialsEncoding.JSON,
         },
@@ -50,8 +50,8 @@ def rest_config_parser(schema: Dict) -> AuthConfigRest:
         auth_config['refresh_url'] = schema['options'].get('refresh_url')
         auth_config['refresh_token_name'] = schema['options'].get('refresh_token_name')
         auth_config['token_name'] = schema['options'].get('token_name')
-        auth_config['header_name'] = schema['options'].get('header_name')
-        auth_config['header_prefix'] = schema['options'].get('header_prefix')
+        auth_config['param_name'] = schema['options'].get('param_name')
+        auth_config['param_prefix'] = schema['options'].get('param_prefix')
         auth_config['headers'] = schema['options'].get('headers')
 
         if credentials_encoding := schema['options'].get('credentials_encoding'):
@@ -114,13 +114,13 @@ def rest_auth_attach(
     # 2- If auth cookie is disables, we continue the authentication process
     if not auth_config['location'] == HTTPLocation.COOKIE:
         token_name = cast(str, auth_config['token_name'])
-        if auth_config['header_name'] is None:
+        if auth_config['param_name'] is None:
             headers['Authorization'] = ''
         else:
-            headers[auth_config['header_name']] = ''
+            headers[auth_config['param_name']] = ''
 
-        if auth_config['header_prefix'] is not None:
-            headers[next(iter(headers))] += auth_config['header_prefix'] + ' ' + '{{' + token_name + '}}'
+        if auth_config['param_prefix'] is not None:
+            headers[next(iter(headers))] += auth_config['param_prefix'] + ' ' + '{{' + token_name + '}}'
         else:
             headers[next(iter(headers))] += 'Bearer {{' + token_name + '}}'
 
@@ -246,13 +246,13 @@ def rest_reauthenticator(
     # 2- If auth cookie is disables, we continue the authentication process
     if not auth_config['location'] == HTTPLocation.COOKIE:
         token_name = cast(str, auth_config['token_name'])
-        if auth_config['header_name'] is None:
+        if auth_config['param_name'] is None:
             headers['Authorization'] = ''
         else:
-            headers[auth_config['header_name']] = ''
+            headers[auth_config['param_name']] = ''
 
-        if auth_config['header_prefix'] is not None:
-            headers[next(iter(headers))] += auth_config['header_prefix'] + ' ' + '{{' + token_name + '}}'
+        if auth_config['param_prefix'] is not None:
+            headers[next(iter(headers))] += auth_config['param_prefix'] + ' ' + '{{' + token_name + '}}'
         else:
             headers[next(iter(headers))] += 'Bearer {{' + token_name + '}}'
 

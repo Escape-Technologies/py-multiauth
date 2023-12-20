@@ -29,6 +29,6 @@ class AuthConfigGraphQL(TypedDict):
     refresh_mutation_name: Optional[str]
     refresh_field_name: Optional[str]
     refresh_field: bool
-    header_name: Optional[str]
-    header_prefix: Optional[str]
+    param_name: Optional[str]
+    param_prefix: Optional[str]
     headers: Optional[Dict[str, str]]

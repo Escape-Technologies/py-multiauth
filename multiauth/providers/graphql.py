@@ -103,8 +103,8 @@ def graphql_config_parser(schema: Dict) -> AuthConfigGraphQL:
             'refresh_mutation_name': None,
             'refresh_field_name': None,
             'refresh_field': True,
-            'header_name': None,
-            'header_prefix': None,
+            'param_name': None,
+            'param_prefix': None,
             'headers': None,
         },
     )
@@ -130,8 +130,8 @@ def graphql_config_parser(schema: Dict) -> AuthConfigGraphQL:
         auth_config['refresh_field'] = schema['options'].get('refresh_field', True)
         auth_config['operation'] = schema['options'].get('operation', 'mutation')
         auth_config['location'] = HTTPLocation(schema['options'].get('location', 'header').upper())
-        auth_config['header_name'] = schema['options'].get('header_name')
-        auth_config['header_prefix'] = schema['options'].get('header_prefix')
+        auth_config['param_name'] = schema['options'].get('param_name')
+        auth_config['param_prefix'] = schema['options'].get('param_prefix')
         auth_config['headers'] = schema['options'].get('headers')
         auth_config['method'] = schema['options'].get('method', 'POST')
         auth_config['header_token_name'] = schema['options'].get('header_token_name')
@@ -189,14 +189,14 @@ def graphql_auth_attach(
     # 1- If auth cookie is enabled, then we simply search add the cookie to the auth response and that is it
     # 2- If auth cookie is disables, we continue the authentication process
     if not auth_config['location'] == HTTPLocation.COOKIE:
-        if auth_config['header_name'] is None:
+        if auth_config['param_name'] is None:
             headers['Authorization'] = ''
         else:
-            headers[auth_config['header_name']] = ''
+            headers[auth_config['param_name']] = ''
 
-        if auth_config['header_prefix'] is not None:
+        if auth_config['param_prefix'] is not None:
             headers[next(iter(headers))] += (
-                auth_config['header_prefix'] + ' ' + '{{' + auth_config['mutation_field'] + '}}'
+                auth_config['param_prefix'] + ' ' + '{{' + auth_config['mutation_field'] + '}}'
             )
         else:
             headers[next(iter(headers))] += 'Bearer {{' + auth_config['mutation_field'] + '}}'
@@ -230,8 +230,8 @@ def graphql_auth_attach(
         token_key = auth_config['header_token_name']
         token = response.headers.get(token_key)
         if token:
-            if auth_config['header_prefix']:
-                token_key = auth_config['header_prefix'] + ' ' + token
+            if auth_config['param_prefix']:
+                token_key = auth_config['param_prefix'] + ' ' + token
 
             headers = auth_config['headers'] if auth_config['headers'] is not None else {}
             headers[token_key] = token
@@ -248,8 +248,8 @@ def graphql_auth_attach(
         token_key = auth_config['cookie_token_name']
         token = response.cookies.get(token_key)  # type: ignore[no-untyped-call]
         if token:
-            if auth_config['header_prefix']:
-                token_key = auth_config['header_prefix'] + ' ' + token
+            if auth_config['param_prefix']:
+                token_key = auth_config['param_prefix'] + ' ' + token
 
             headers = auth_config['headers'] if auth_config['headers'] is not None else {}
             headers[token_key] = token
@@ -373,14 +373,14 @@ def graphql_reauthenticator(
     # 1- If auth cookie is enabled, then we simply search add the cookie to the auth response and that is it
     # 2- If auth cookie is disables, we continue the authentication process
     if not auth_config['location'] == HTTPLocation.COOKIE:
-        if auth_config['header_name'] is None:
+        if auth_config['param_name'] is None:
             headers['Authorization'] = ''
         else:
-            headers[auth_config['header_name']] = ''
+            headers[auth_config['param_name']] = ''
 
-        if auth_config['header_prefix'] is not None:
+        if auth_config['param_prefix'] is not None:
             headers[next(iter(headers))] += (
-                auth_config['header_prefix'] + ' ' + '{{' + auth_config['mutation_field'] + '}}'
+                auth_config['param_prefix'] + ' ' + '{{' + auth_config['mutation_field'] + '}}'
             )
         else:
             headers[next(iter(headers))] += 'Bearer {{' + auth_config['mutation_field'] + '}}'

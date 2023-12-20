@@ -14,22 +14,22 @@ def apikey_config_parser(schema: Dict) -> AuthConfigApiKey:
     auth_config = AuthConfigApiKey(
         {
             'location': HTTPLocation.HEADER,
-            'header_name': '',
-            'header_prefix': None,
+            'param_name': '',
+            'param_prefix': None,
             'headers': None,
         },
     )
 
-    if not schema.get('header_name'):
+    if not schema.get('param_name'):
         raise AuthenticationError('Please provide the key of the API Authentication')
     if not schema.get('location'):
         raise AuthenticationError('Please provide the location to where you want to add the API Key')
 
-    auth_config['header_name'] = cast(str, schema.get('header_name'))
+    auth_config['param_name'] = cast(str, schema.get('param_name'))
     auth_config['location'] = schema['location']
 
     if 'options' in schema:
-        auth_config['header_prefix'] = schema['options'].get('header_prefix', 'Authorization')
+        auth_config['param_prefix'] = schema['options'].get('param_prefix', 'Authorization')
         auth_config['headers'] = schema['options'].get('headers')
 
     return auth_config
@@ -61,10 +61,10 @@ def apikey_auth_attach(
 
     # Implementation with no expression matching in order to work with mypy
     if auth_config['location'] == HTTPLocation.HEADER:
-        if auth_config['header_prefix'] is not None:
-            auth_response['headers'][auth_config['header_name']] = auth_config['header_prefix'] + ' ' + api_key
+        if auth_config['param_prefix'] is not None:
+            auth_response['headers'][auth_config['param_name']] = auth_config['param_prefix'] + ' ' + api_key
         else:
-            auth_response['headers'][auth_config['header_name']] = api_key
+            auth_response['headers'][auth_config['param_name']] = api_key
 
     if auth_config['location'] == HTTPLocation.QUERY:
         pass

@@ -28,7 +28,7 @@ class AuthConfigRest(TypedDict):
     refresh_url: Optional[str]
     refresh_token_name: Optional[str]
     token_name: Optional[str]
-    header_name: Optional[str]
-    header_prefix: Optional[str]
+    param_name: Optional[str]
+    param_prefix: Optional[str]
     headers: Optional[Dict[str, str]]
     credentials_encoding: CredentialsEncoding

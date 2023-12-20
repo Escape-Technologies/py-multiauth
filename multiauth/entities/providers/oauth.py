@@ -59,7 +59,7 @@ class AuthConfigOAuth(TypedDict):
     token_endpoint: Optional[str]
     callback_url: Optional[str]
     scope: Optional[str]
-    header_prefix: str
+    param_prefix: str
     auth_location: AuthOAuthlocation
     location: HTTPLocation
     state: Optional[str]

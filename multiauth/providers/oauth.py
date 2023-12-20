@@ -88,7 +88,7 @@ def extract_oauth_token(
 
     # Now check the location to know where should add the token (header or body)
     if auth_config['location'] == HTTPLocation.HEADER:
-        auth_response['headers']['authorization'] = auth_config['header_prefix'] + ' ' + response['access_token']
+        auth_response['headers']['authorization'] = auth_config['param_prefix'] + ' ' + response['access_token']
 
     elif auth_config['location'] == HTTPLocation.QUERY:
         pass
@@ -327,7 +327,7 @@ def oauth_config_parser(schema: Dict) -> AuthConfigOAuth:
             'token_endpoint': None,
             'callback_url': None,
             'scope': '',
-            'header_prefix': 'Bearer',
+            'param_prefix': 'Bearer',
             'auth_location': AuthOAuthlocation.BODY,
             'location': HTTPLocation.HEADER,
             'state': None,
@@ -361,8 +361,8 @@ def oauth_config_parser(schema: Dict) -> AuthConfigOAuth:
 
     auth_config['scope'] = schema.get('scope')
 
-    if schema.get('header_prefix'):
-        auth_config['header_prefix'] = schema['header_prefix']
+    if schema.get('param_prefix'):
+        auth_config['param_prefix'] = schema['param_prefix']
 
     if schema.get('auth_location'):
         auth_config['auth_location'] = AuthOAuthlocation(schema.get('auth_location'))

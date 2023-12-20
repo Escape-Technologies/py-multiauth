@@ -210,8 +210,8 @@ def uncurl(curl: str) -> ParsedCurlContent:
     # Now we have to extract the headers
     headers: Dict[str, str] = {}
     for header in parsed_args.header:
-        header_prefix, header_value = header.split(':', 1)
-        headers[header_prefix] = header_value.strip()
+        param_prefix, header_value = header.split(':', 1)
+        headers[param_prefix] = header_value.strip()
 
     if parsed_args.user_agent:
         headers['User-Agent'] = parsed_args.user_agent

@@ -68,6 +68,6 @@ class AuthConfigAWS(TypedDict):
     pool_id: Optional[str]
     client_secret: Optional[str]
     location: HTTPLocation
-    header_name: Optional[str]
-    header_prefix: Optional[str]
+    param_name: Optional[str]
+    param_prefix: Optional[str]
     headers: Optional[Dict[str, str]]

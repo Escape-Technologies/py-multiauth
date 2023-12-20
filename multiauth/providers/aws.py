@@ -49,8 +49,8 @@ def aws_config_parser(
             'pool_id': None,
             'client_secret': None,
             'location': HTTPLocation.HEADER,
-            'header_name': None,
-            'header_prefix': None,
+            'param_name': None,
+            'param_prefix': None,
             'headers': None,
         },
     )
@@ -93,8 +93,8 @@ def aws_config_parser(
     # Options
     if 'options' in schema:
         auth_config['client_secret'] = schema['options'].get('client_secret')
-        auth_config['header_name'] = schema['options'].get('header_name')
-        auth_config['header_prefix'] = schema['options'].get('header_prefix')
+        auth_config['param_name'] = schema['options'].get('param_name')
+        auth_config['param_prefix'] = schema['options'].get('param_prefix')
         auth_config['headers'] = schema['options'].get('headers')
 
     return auth_config
@@ -184,13 +184,13 @@ def aws_auth_attach(
     refresh_token = aws_response['AuthenticationResult']['RefreshToken']
 
     # Now we to have prepare the header
-    if auth_config['header_name'] is not None:
-        headers[auth_config['header_name']] = ''
+    if auth_config['param_name'] is not None:
+        headers[auth_config['param_name']] = ''
     else:
         headers['Authorization'] = ''
 
-    if auth_config['header_prefix'] is not None:
-        headers[next(iter(headers))] += auth_config['header_prefix'] + ' ' + access_token
+    if auth_config['param_prefix'] is not None:
+        headers[next(iter(headers))] += auth_config['param_prefix'] + ' ' + access_token
     else:
         headers[next(iter(headers))] += 'Bearer ' + access_token
 
@@ -322,13 +322,13 @@ def aws_reauthenticator(
     # Now we to have prepare the header
     headers: Dict[str, str] = {}
 
-    if not auth_config['header_name'] is not None:
+    if not auth_config['param_name'] is not None:
         headers['Authorization'] = ''
     else:
-        headers[auth_config['header_name']] = ''
+        headers[auth_config['param_name']] = ''
 
-    if auth_config['header_prefix'] is not None:
-        headers[next(iter(headers))] += auth_config['header_prefix'] + ' ' + access_token
+    if auth_config['param_prefix'] is not None:
+        headers[next(iter(headers))] += auth_config['param_prefix'] + ' ' + access_token
     else:
         headers[next(iter(headers))] += 'Bearer ' + access_token
 
@@ -415,9 +415,9 @@ def aws_signature(
     # Now we have to prepare the headers
     signed_header = 'host;x-amz-date'
     canonical_header = 'host: ' + host + '\n' + 'x-amz-date: ' + amz_date
-    for header_name, header_value in _headers.items():
-        canonical_header += header_name + ': ' + header_value + '\n'
-        signed_header += header_name + ';'
+    for param_name, header_value in _headers.items():
+        canonical_header += param_name + ': ' + header_value + '\n'
+        signed_header += param_name + ';'
 
     canonical_header = canonical_header[:-1]
     signed_header = signed_header[:-1]

@@ -67,8 +67,8 @@ class AuthConfigApiKey(TypedDict):
     """Authentication Configuration Parameters of the Api Key Method."""
 
     location: HTTPLocation
-    header_name: str
-    header_prefix: Optional[str]
+    param_name: str
+    param_prefix: Optional[str]
     headers: Optional[Dict[str, str]]
 
 
