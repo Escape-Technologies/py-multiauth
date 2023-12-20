@@ -2,7 +2,7 @@
 
 import base64
 import json
-from typing import List, cast
+from typing import cast
 from urllib.parse import parse_qs
 
 import graphql
@@ -33,7 +33,7 @@ def urlencoded_to_json(data: str | None) -> str | None:
     return json.dumps(json_data)
 
 
-def deserialize_headers(headers: dict[str, str] | List[str] | str) -> dict[str, str]:
+def deserialize_headers(headers: dict[str, str] | list[str] | str) -> dict[str, str]:
     """Convert headers to standard format."""
 
     res: dict[str, str] = {}

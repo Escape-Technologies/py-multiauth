@@ -3,7 +3,7 @@
 import json
 from copy import deepcopy
 from importlib.resources import files
-from typing import Any, List, Optional, TypedDict, cast, dict
+from typing import Any, TypedDict, cast, dict
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
@@ -22,13 +22,13 @@ class AuthProperty(TypedDict):
     type: str
     description: str
     value: str | None
-    enum: List[str | None
+    enum: list[str] | None
 
 
 AuthName = str
 ParameterName = str
 AuthParameter = dict[ParameterName, AuthProperty]
-AuthSchema = dict[AuthName, List[dict[AuthName, AuthParameter]]]
+AuthSchema = dict[AuthName, list[dict[AuthName, AuthParameter]]]
 SubSchema = dict[AuthName, AuthParameter]
 
 
@@ -67,7 +67,7 @@ def generate_auth_docs() -> None:  # noqa: C901
     auth_schemas: AuthSchema = {}
 
     # A list which shows which authentication techniques have an optional parameter
-    has_optional: List[bool] = [False for _ in json_schema]
+    has_optional: list[bool] = [False for _ in json_schema]
 
     # The JSON schema for every authentication scheme
     jsonschema: RCFile = {
@@ -76,7 +76,7 @@ def generate_auth_docs() -> None:  # noqa: C901
     }
 
     # All the JSON schemas
-    jsonschemas: List[dict[str, str]] = []
+    jsonschemas: list[dict[str, str]] = []
 
     # A counter to fill the lists
     count = 0

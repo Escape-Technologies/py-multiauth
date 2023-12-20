@@ -5,7 +5,7 @@ import logging
 import os
 import shlex
 from enum import Enum
-from typing import Any, List, Mapping, Type, TypeVar
+from typing import Any, Mapping, Type, TypeVar
 from urllib.parse import urlparse
 
 from pydash import py_
@@ -136,7 +136,7 @@ def dict_find_path(
             if p != '':
                 return p
 
-        if isinstance(v, List):
+        if isinstance(v, list):
             for i, elem in enumerate(v):
                 if isinstance(elem, dict):
                     p = dict_find_path(elem, key, path, i)
@@ -191,7 +191,7 @@ def uncurl(curl: str) -> ParsedCurlContent:
     parser.add_argument('-k', '--insecure', action='store_true')
 
     # First we need to prepare the curl for parsing
-    result_curl: List[str] = shlex.split(curl.replace('\\\n', ''))
+    result_curl: list[str] = shlex.split(curl.replace('\\\n', ''))
 
     # Now we have to parse the curl command
     parsed_args, _ = parser.parse_known_args(result_curl)
