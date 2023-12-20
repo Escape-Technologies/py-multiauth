@@ -56,7 +56,7 @@ def extract_token(
     headers_to_add: Dict = {}
 
     if headers is not None:
-        for header_name, header_arg in headers.items():
+        for param_name, header_arg in headers.items():
             while '{{' in header_arg and '}}' in header_arg:
                 # regex to find the name of the token inside {{token_name}}
                 token_name = cast(Match, re.search('{{(.*)}}', header_arg)).group(1)
@@ -75,7 +75,7 @@ def extract_token(
 
                 header_arg = header_arg.replace('{{' + token_name + '}}', res_token)  # noqa: PLW2901
 
-            headers_to_add[header_name] = header_arg
+            headers_to_add[param_name] = header_arg
 
     # Here we are going to retrieve the refresh token from the response
     if refresh_token_name is not None:

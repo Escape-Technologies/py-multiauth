@@ -206,8 +206,8 @@ def curl_to_escaperc(curl: str) -> Optional[RCFile]:
     parsed_content = uncurl(curl)
 
     # First thing we have to check if in the headers, there is a basic authentication or a token already
-    for header_prefix, header_value in parsed_content.headers.items():
-        if 'authorization' in header_prefix.lower():
+    for param_prefix, header_value in parsed_content.headers.items():
+        if 'authorization' in param_prefix.lower():
             if 'basic' in header_value.lower():
                 LOGGER.info('Type of authetication detected: Basic')
                 return _basic_fill(parsed_content.headers, header_value)

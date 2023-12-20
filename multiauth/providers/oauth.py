@@ -87,10 +87,10 @@ def extract_oauth_token(
         response['expires_in'] = int(oauth_response['expires_at']) + time.time()
 
     # Now check the location to know where should add the token (header or body)
-    if auth_config['location'] == HTTPLocation.HEADER:
-        auth_response['headers']['authorization'] = auth_config['header_prefix'] + ' ' + response['access_token']
+    if auth_config['param_location'] == HTTPLocation.HEADER:
+        auth_response['headers']['authorization'] = auth_config['param_prefix'] + ' ' + response['access_token']
 
-    elif auth_config['location'] == HTTPLocation.QUERY:
+    elif auth_config['param_location'] == HTTPLocation.QUERY:
         pass
 
     # Add the token, the refresh token, and the expiry time
@@ -327,9 +327,9 @@ def oauth_config_parser(schema: Dict) -> AuthConfigOAuth:
             'token_endpoint': None,
             'callback_url': None,
             'scope': '',
-            'header_prefix': 'Bearer',
+            'param_prefix': 'Bearer',
             'auth_location': AuthOAuthlocation.BODY,
-            'location': HTTPLocation.HEADER,
+            'param_location': HTTPLocation.HEADER,
             'state': None,
             'login_flow': [],
             # 'challenge_method': None,
@@ -361,15 +361,15 @@ def oauth_config_parser(schema: Dict) -> AuthConfigOAuth:
 
     auth_config['scope'] = schema.get('scope')
 
-    if schema.get('header_prefix'):
-        auth_config['header_prefix'] = schema['header_prefix']
+    if schema.get('param_prefix'):
+        auth_config['param_prefix'] = schema['param_prefix']
 
     if schema.get('auth_location'):
         auth_config['auth_location'] = AuthOAuthlocation(schema.get('auth_location'))
 
-    if not schema.get('location'):
+    if not schema.get('param_location'):
         raise AuthenticationError('Please provide the location')
-    auth_config['location'] = HTTPLocation(str(schema.get('location')))
+    auth_config['param_location'] = HTTPLocation(str(schema.get('param_location')))
 
     if schema.get('options', {}).get('login_flow'):
         auth_config['login_flow'] = [load_selenium_command(ele) for ele in schema['options']['login_flow']]

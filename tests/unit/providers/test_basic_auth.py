@@ -25,17 +25,15 @@ def user_config() -> User:
     """Test user configuration."""
 
     return User(
-        {
-            'auth_schema': 'schema1',
-            'auth_tech': AuthTech.BASIC,
-            'auth_type': None,
-            'credentials': {'username': 'postman', 'password': 'password'},
-            'token': None,
-            'refresh_token': None,
-            'expires_in': None,
-            'expired_token': None,
-            'token_info': None,
-        },
+        auth_schema='schema1',
+        auth_tech=AuthTech.BASIC,
+        auth_type=None,
+        credentials={'username': 'postman', 'password': 'password'},
+        token=None,
+        refresh_token=None,
+        expires_in=None,
+        expired_token=None,
+        token_info=None,
     )
 
 
