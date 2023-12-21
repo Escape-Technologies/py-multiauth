@@ -168,18 +168,18 @@ def test_serialize_headers(
 
     rcfile = _manual_fill(headers_str)
 
-    assert rcfile['methods'] == auth
-    assert rcfile['users'] == users_one_header
+    assert rcfile.methods == auth
+    assert rcfile.users == users_one_header
 
     rcfile = _manual_fill(headers_list)
 
-    assert rcfile['methods'] == auth
-    assert rcfile['users'] == users_two_headers
+    assert rcfile.methods == auth
+    assert rcfile.users == users_two_headers
 
     rcfile = _manual_fill(headers_dict)
 
-    assert rcfile['methods'] == auth
-    assert rcfile['users'] == users_two_headers
+    assert rcfile.methods == auth
+    assert rcfile.users == users_two_headers
 
 
 def test_graphql_curl_with_input_object_and_no_var(
