@@ -1,5 +1,6 @@
 """Custom types of authentication module."""
 
+from dataclasses import dataclass
 from enum import Enum, unique
 from typing import (
     Any,
@@ -40,7 +41,8 @@ class AuthResponse(TypedDict):
 Token = str
 
 
-class RCFile(TypedDict):
+@dataclass
+class RCFile:
 
     """RC File."""
 
@@ -48,7 +50,8 @@ class RCFile(TypedDict):
     users: dict
 
 
-class JWTToken(TypedDict):
+@dataclass
+class JWTToken:
 
     """This class finds all the registered claims in the JWT token payload.
 

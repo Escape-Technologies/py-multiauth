@@ -60,14 +60,12 @@ def _manual_fill(headers: dict[str, str] | list[str] | str) -> RCFile:
     auth_name: str = 'manual_headers'
 
     return RCFile(
-        {
-            'methods': {
-                auth_name: {
-                    'tech': AuthTech.MANUAL.value,
-                },
+        methods={
+            auth_name: {
+                'tech': AuthTech.MANUAL.value,
             },
-            'users': {'manual_user': {'headers': headers_dict, 'auth': auth_name}},
         },
+        users={'manual_user': {'headers': headers_dict, 'auth': auth_name}},
     )
 
 
@@ -84,16 +82,14 @@ def _basic_fill(
 
     # The JSON schema for every authentication scheme
     rcfile = RCFile(
-        {
-            'users': {
-                'user_basic': {
-                    'auth': 'auth_basic',
-                    'username': username,
-                    'password': password,
-                },
+        users={
+            'user_basic': {
+                'auth': 'auth_basic',
+                'username': username,
+                'password': password,
             },
-            'methods': {'auth_basic': {'tech': AuthTech.BASIC.value}},
         },
+        methods={'auth_basic': {'tech': AuthTech.BASIC.value}},
     )
 
     optional_headers: dict = {}
@@ -102,7 +98,7 @@ def _basic_fill(
             optional_headers[key] = value
 
     if optional_headers:
-        rcfile['methods']['auth_basic']['options'] = {'headers': optional_headers}
+        rcfile.methods['auth_basic']['options'] = {'headers': optional_headers}
 
     return rcfile
 
@@ -117,16 +113,14 @@ def _rest_fill(
 
     # The JSON schema for every authentication scheme
     return RCFile(
-        {
-            'users': {'user1': {'auth': 'schema1', **rest_document}},
-            'methods': {
-                'schema1': {
-                    'tech': AuthTech.REST.value,
-                    'url': url,
-                    'method': method,
-                    'options': {
-                        'headers': headers,
-                    },
+        users={'user1': {'auth': 'schema1', **rest_document}},
+        methods={
+            'schema1': {
+                'tech': AuthTech.REST.value,
+                'url': url,
+                'method': method,
+                'options': {
+                    'headers': headers,
                 },
             },
         },
@@ -166,23 +160,19 @@ def _graphql_fill(
                         ] = input_object_field['value']['value']
 
     rcfile = RCFile(
-        {
-            'users': {
-                'user1': {
-                    'auth': 'schema1',
-                    **credentials,
-                },
+        users={
+            'user1': {
+                'auth': 'schema1',
+                **credentials,
             },
-            'methods': {
-                'schema1': {
-                    'tech': AuthTech.GRAPHQL.value,
-                    'url': url,
-                    'method': method,
-                    'mutation_name': graphql_document['definitions'][0]['selection_set']['selections'][0]['name'][
-                        'value'
-                    ],
-                    'options': {'operation': graphql_document['definitions'][0]['operation']},
-                },
+        },
+        methods={
+            'schema1': {
+                'tech': AuthTech.GRAPHQL.value,
+                'url': url,
+                'method': method,
+                'mutation_name': graphql_document['definitions'][0]['selection_set']['selections'][0]['name']['value'],
+                'options': {'operation': graphql_document['definitions'][0]['operation']},
             },
         },
     )
@@ -190,11 +180,11 @@ def _graphql_fill(
     # Now regarding the field
     for field in graphql_document['definitions'][0]['selection_set']['selections'][0]['selection_set']['selections']:
         if field['name']['value'].lower() in POTENTIAL_FIELD_NAME:
-            rcfile['methods']['schema1']['mutation_field'] = field['name']['value']
+            rcfile.methods['schema1']['mutation_field'] = field['name']['value']
             break
 
     if headers:
-        rcfile['methods']['schema1']['options']['headers'] = headers
+        rcfile.methods['schema1']['options']['headers'] = headers
 
     return rcfile
 
