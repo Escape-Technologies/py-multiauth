@@ -1,13 +1,13 @@
 """Custom types of authentication module."""
 
-from enum import Enum, unique
+from enum import StrEnum, unique
 from http import HTTPMethod
 
 from pydantic import BaseModel
 
 
 @unique
-class AuthHashAlgorithmDigest(str, Enum):
+class AuthHashAlgorithmDigest(StrEnum):
 
     """The Available Hashing algorithms for Digest Authentication."""
 

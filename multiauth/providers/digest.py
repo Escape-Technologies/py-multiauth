@@ -59,7 +59,7 @@ def send_401_request(url: str) -> AuthDigestChallenge:
         challenge.opaque = parameters.get('opaque')
 
         if parameters.get('algorithm'):
-            challenge.algorithm = AuthHashAlgorithmDigest(parameters.get('algorithm'))
+            challenge.algorithm = AuthHashAlgorithmDigest(parameters.get('algorithm', '').upper())
         else:
             challenge.algorithm = AuthHashAlgorithmDigest.MD5
 

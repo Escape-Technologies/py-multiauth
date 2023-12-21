@@ -1,6 +1,6 @@
 """Custom types of authentication module."""
 
-from enum import Enum, unique
+from enum import StrEnum, unique
 from typing import (
     Any,
     TypedDict,
@@ -14,7 +14,7 @@ from multiauth.entities.providers.oauth import AuthOAuthGrantType
 
 # The Authentication Schemas can be found below
 @unique
-class AuthTech(str, Enum):
+class AuthTech(StrEnum):
 
     """Authentication Method Enumeration."""
 
