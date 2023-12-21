@@ -9,7 +9,8 @@ import graphql
 
 from multiauth.entities.http import HTTPMethod
 from multiauth.entities.main import AuthTech, RCFile
-from multiauth.utils import setup_logger, uncurl
+from multiauth.helpers.curl import uncurl
+from multiauth.helpers.logger import setup_logger
 
 POTENTIAL_FIELD_NAME = ['token']
 
