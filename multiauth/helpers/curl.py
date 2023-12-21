@@ -5,8 +5,8 @@ from http import HTTPMethod
 from typing import Any, TypeVar
 from urllib.parse import parse_qs, urlparse
 
+from multiauth.entities.curl import ParsedCurlContent, RawCredentials
 from multiauth.entities.http import HTTPRequest, HTTPScheme, JSONSerializable
-from multiauth.entities.utils import Credentials, ParsedCurlContent
 
 parser = argparse.ArgumentParser()
 
@@ -262,9 +262,9 @@ def uncurl(curl: str) -> ParsedCurlContent:
         url = parsed_args.url
 
     # Add auth
-    credentials: Credentials | None = None
+    credentials: RawCredentials | None = None
     if parsed_args.user:
         user_name, password = parsed_args.user.split(':', 1)
-        credentials = Credentials(user_name, password)
+        credentials = RawCredentials(username=user_name, password=password)
 
-    return ParsedCurlContent(method, url, final_data, headers, credentials)
+    return ParsedCurlContent(method=method, url=url, data=final_data, headers=headers, credentials=credentials)

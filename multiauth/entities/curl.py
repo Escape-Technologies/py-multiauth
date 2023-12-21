@@ -1,11 +1,12 @@
 """Custom data used in utils."""
 
-from typing import NamedTuple
+
+from pydantic import BaseModel
 
 from multiauth.entities.http import HTTPMethod
 
 
-class Credentials(NamedTuple):
+class RawCredentials(BaseModel):
 
     """This is the credentials class that are the credentials found in the curl."""
 
@@ -13,7 +14,7 @@ class Credentials(NamedTuple):
     password: str
 
 
-class ParsedCurlContent(NamedTuple):
+class ParsedCurlContent(BaseModel):
 
     """This is the datatype which shows the curl command."""
 
@@ -21,4 +22,4 @@ class ParsedCurlContent(NamedTuple):
     url: str
     data: str | None
     headers: dict[str, str]
-    credentials: Credentials | None
+    credentials: RawCredentials | None
