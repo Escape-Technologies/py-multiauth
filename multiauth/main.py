@@ -15,9 +15,9 @@ from multiauth.entities.errors import InvalidConfigurationError
 from multiauth.entities.http import HTTPMethod
 from multiauth.entities.main import AuthTech, Token
 from multiauth.handlers import auth_handler, reauth_handler
+from multiauth.helpers.logger import setup_logger
 from multiauth.manager import User, UserManager
 from multiauth.providers.aws import aws_signature
-from multiauth.utils import setup_logger
 
 
 def load_authrc(

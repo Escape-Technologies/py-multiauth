@@ -7,8 +7,8 @@ from datetime import date
 
 import pkg_resources
 
+from multiauth.helpers.logger import setup_logger
 from multiauth.main import MultiAuth
-from multiauth.utils import setup_logger
 
 __version__ = pkg_resources.get_distribution('py-multiauth').version
 
