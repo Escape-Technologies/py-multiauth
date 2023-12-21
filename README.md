@@ -28,6 +28,7 @@ pip install py-multiauth
 ## Local CLI
 
 Take a look at the documentation to fill you `.authrc.json` and run:
+
 ```
 multiauth validate -f .authrc.json
 ```
@@ -70,6 +71,12 @@ r = requests.get('https://example.com', headers=auth_headers[0])
 ## Contributing
 
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+
+Setup the developer environment:
+
+```
+make
+```
 
 Please make sure to update tests as appropriate.
 
