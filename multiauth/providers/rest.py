@@ -155,7 +155,7 @@ def rest_auth_attach(
     token = auth_response['headers'][next(iter(headers))].split(' ')[1]
 
     # Add the token and the expiry time to the user manager in order to be accessed by other parts of the program
-    expiry_time: float | None = None
+    expiry_time: int | None = None
     try:
         expiry_time = jwt.decode(
             token,
@@ -288,7 +288,7 @@ def rest_reauthenticator(
     token = auth_response['headers'][next(iter(headers))].split(' ')[1]
 
     # Add the token and the expiry time to the user manager in order to be accessed by other parts of the program
-    expiry_time: float | None = None
+    expiry_time: int | None = None
     try:
         expiry_time = jwt.decode(
             token,

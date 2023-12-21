@@ -1,11 +1,12 @@
 """Custom types of authentication module."""
 
-from dataclasses import dataclass
 from enum import Enum, unique
 from typing import (
     Any,
     TypedDict,
 )
+
+from pydantic import BaseModel
 
 from multiauth.entities.providers.aws import AuthAWSType
 from multiauth.entities.providers.oauth import AuthOAuthGrantType
@@ -41,8 +42,7 @@ class AuthResponse(TypedDict):
 Token = str
 
 
-@dataclass
-class RCFile:
+class RCFile(BaseModel):
 
     """RC File."""
 
@@ -50,8 +50,7 @@ class RCFile:
     users: dict
 
 
-@dataclass
-class JWTToken:
+class JWTToken(BaseModel):
 
     """This class finds all the registered claims in the JWT token payload.
 
@@ -71,9 +70,9 @@ class JWTToken:
     iss: str | None
     sub: str | None
     aud: str | None
-    exp: str | None
-    nbf: str | None
-    iat: str | None
+    exp: int | None
+    nbf: int | None
+    iat: int | None
     jti: str | None
     other: dict[Any, Any]
 

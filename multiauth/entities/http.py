@@ -1,8 +1,9 @@
 """Multiauth types related to HTTP protocol."""
 import datetime
 import enum
-from dataclasses import dataclass
 from http import HTTPMethod
+
+from pydantic import BaseModel
 
 
 class HTTPLocation(enum.StrEnum):
@@ -17,11 +18,10 @@ class HTTPScheme(enum.StrEnum):
     HTTPS = 'https'
 
 
-JSONSerializable = dict | list | str | int | float | bool | None
+JSONSerializable = dict | list | str | int | float | bool
 
 
-@dataclass
-class HTTPRequest:
+class HTTPRequest(BaseModel):
     method: HTTPMethod
     host: str
     scheme: HTTPScheme
@@ -29,21 +29,20 @@ class HTTPRequest:
     headers: dict[str, str]
     username: str | None
     password: str | None
-    json: JSONSerializable | None
-    data: str | None
+    data_json: JSONSerializable | None
+    data_text: str | None
     query_parameters: dict[str, list[str]]
     cookies: dict[str, str]
     proxy: str | None
     timeout: int = 5
 
 
-@dataclass
-class HTTPResponse:
+class HTTPResponse(BaseModel):
     url: str
     status_code: int
     reason: str
     headers: dict[str, str]
     cookies: dict[str, str]
-    data: str | None
-    json: JSONSerializable | None
+    data_text: str | None
+    data_json: JSONSerializable | None
     elapsed: datetime.timedelta

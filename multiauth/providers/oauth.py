@@ -84,7 +84,7 @@ def extract_oauth_token(
 
     # The expire_at field is the amount of seconds to expire. So we need to calculate the UNIX expiry date
     if oauth_response.get('expires_at'):
-        response['expires_in'] = int(oauth_response['expires_at']) + time.time()
+        response['expires_in'] = int(oauth_response['expires_at'] + time.time())
 
     # Now check the location to know where should add the token (header or body)
     if auth_config['param_location'] == HTTPLocation.HEADER:

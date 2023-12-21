@@ -33,8 +33,8 @@ def _format_request(requester: AuthRequester, credential: Credentials, proxy: st
         headers=headers,
         username=None,
         password=None,
-        data=json.dumps(data),
-        json=data,
+        data_text=json.dumps(data),
+        data_json=data,
         query_parameters=parse_qs(parsed_url.query),
         cookies=cookies,
         proxy=proxy,
@@ -52,7 +52,7 @@ def _send_request(req: HTTPRequest) -> HTTPResponse:
         url,
         headers=req.headers,
         cookies=req.cookies,
-        data=req.data,
+        data=req.data_text,
         timeout=TIMEOUT,
         proxies={'http': req.proxy, 'https': req.proxy} if req.proxy else None,
     )
@@ -63,8 +63,8 @@ def _send_request(req: HTTPRequest) -> HTTPResponse:
         reason=response.reason,
         headers=dict(response.headers),
         cookies={cookie.name: cookie.value for cookie in response.cookies if cookie.value is not None},
-        data=response.text,
-        json=response.json(),
+        data_text=response.text,
+        data_json=response.json(),
         elapsed=response.elapsed,
     )
 
@@ -94,7 +94,7 @@ def extract_token(extractor: AuthExtractor, res: HTTPResponse) -> str:
     if extractor.location == HTTPLocation.BODY:
         body = cast(
             dict,
-            res.json,
+            res.data_json,
         )  # TODO(antoine@escape.tech): This makes the assertion that a valid request will always return a JSON
         path = dict_find_path(body, extractor.key, '')
         return dict_nested_get(body, path)

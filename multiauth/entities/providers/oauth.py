@@ -42,7 +42,7 @@ class AuthOAuthResponse(TypedDict):
     """The format of the OAuth access token response according to the official documentation."""
 
     access_token: str
-    expires_in: float | None
+    expires_in: int | None
     refresh_token: str | None
 
 

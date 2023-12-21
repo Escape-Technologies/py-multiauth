@@ -168,8 +168,8 @@ def parse_curl(curl: str) -> HTTPRequest:
         query_parameters=parse_qs(url.query),
         username=username,
         password=password,
-        json=json,
-        data=data,
+        data_json=json,
+        data_text=data,
         cookies=cookies,
         proxy=None,
     )
