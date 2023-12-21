@@ -151,17 +151,15 @@ def jwt_token_analyzer(token: Token) -> JWTToken:
     payload: dict = json.loads(base64.urlsafe_b64decode(token_payload + '=' * (-len(token_payload) % 4)))
 
     return JWTToken(
-        {
-            'sig': header['alg'],
-            'iss': payload.pop('iss', None),
-            'sub': payload.pop('sub', None),
-            'aud': payload.pop('aud', None),
-            'exp': payload.pop('exp', None),
-            'nbf': payload.pop('nbf', None),
-            'iat': payload.pop('iat', None),
-            'jti': payload.pop('jti', None),
-            'other': payload,
-        },
+        sig=header['alg'],
+        iss=payload.pop('iss', None),
+        sub=payload.pop('sub', None),
+        aud=payload.pop('aud', None),
+        exp=payload.pop('exp', None),
+        nbf=payload.pop('nbf', None),
+        iat=payload.pop('iat', None),
+        jti=payload.pop('jti', None),
+        other=payload,
     )
 
 

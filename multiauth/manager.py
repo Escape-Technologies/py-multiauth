@@ -1,7 +1,7 @@
 """User manager."""
 
 import time
-from typing import Any, cast
+from typing import Any
 
 from multiauth.entities.errors import AuthenticationError, ExpiredTokenError
 from multiauth.entities.main import AuthTech, AuthType, JWTToken, Token
@@ -57,8 +57,8 @@ class User:
                 continue
 
             serialized_token = jwt_token_analyzer(token)
-            if serialized_token.get('exp'):
-                self.expires_in = float(cast(str, serialized_token['exp'])) - time.time()
+            if serialized_token.exp is not None:
+                self.expires_in = float(serialized_token.exp) - time.time()
                 if self.expires_in < 0:
                     raise ExpiredTokenError('Token expired.')
 
