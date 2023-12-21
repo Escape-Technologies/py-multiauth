@@ -211,10 +211,8 @@ def graphql_auth_attach(
         headers['cookie'] = cookie_header
         if auth_config.param_location == HTTPLocation.COOKIE:
             return AuthResponse(
-                {
-                    'tech': AuthTech.GRAPHQL,
-                    'headers': headers,
-                },
+                tech=AuthTech.GRAPHQL,
+                headers=headers,
             )
 
     token: str | None = None
@@ -234,10 +232,8 @@ def graphql_auth_attach(
             headers[token_key] = token
 
             auth_response = AuthResponse(
-                {
-                    'tech': AuthTech.REST,
-                    'headers': headers,
-                },
+                tech=AuthTech.REST,
+                headers=headers,
             )
 
     if not token:
@@ -249,7 +245,7 @@ def graphql_auth_attach(
             auth_config.refresh_field_name,
         )
 
-        token = auth_response['headers'][next(iter(headers))].split(' ')[1]
+        token = auth_response.headers[next(iter(headers))].split(' ')[1]
 
     # If the token is not a JWT token, don't add expiry time (No way of knowing if the token is expired or no)
     try:
@@ -377,10 +373,8 @@ def graphql_reauthenticator(
         headers['cookie'] = cookie_header
         if auth_config.param_location == HTTPLocation.COOKIE:
             return AuthResponse(
-                {
-                    'tech': AuthTech.GRAPHQL,
-                    'headers': headers,
-                },
+                tech=AuthTech.GRAPHQL,
+                headers=headers,
             )
 
     # Now fetch the token and create the Authentication Response
@@ -391,7 +385,7 @@ def graphql_reauthenticator(
         auth_config.refresh_field_name,
     )
 
-    token = auth_response['headers'][next(iter(headers))].split(' ')[1]
+    token = auth_response.headers[next(iter(headers))].split(' ')[1]
 
     # If the token is not a JWT token, don't add expiry time (No way of knowing if the token is expired or no)
     try:

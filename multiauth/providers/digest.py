@@ -170,10 +170,8 @@ def digest_auth_attach(
     """This function attaches the user credentials to the schema and generates the proper authentication response."""
 
     auth_response = AuthResponse(
-        {
-            'headers': {},
-            'tech': AuthTech.DIGEST,
-        },
+        headers={},
+        tech=AuthTech.DIGEST,
     )
 
     # Response Calculator
@@ -234,7 +232,7 @@ def digest_auth_attach(
             else:
                 header[name] = value
 
-    auth_response['headers'] = header
+    auth_response.headers = header
 
     return auth_response
 

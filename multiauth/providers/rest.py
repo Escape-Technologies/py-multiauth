@@ -138,10 +138,8 @@ def rest_auth_attach(
         headers['cookie'] = cookie_header
         if auth_config.param_location == HTTPLocation.COOKIE:
             return AuthResponse(
-                {
-                    'tech': AuthTech.REST,
-                    'headers': headers,
-                },
+                tech=AuthTech.REST,
+                headers=headers,
             )
     auth_response, refresh_token = extract_token(
         response,
@@ -150,7 +148,7 @@ def rest_auth_attach(
         auth_config.refresh_token_name,
     )
 
-    token = auth_response['headers'][next(iter(headers))].split(' ')[1]
+    token = auth_response.headers[next(iter(headers))].split(' ')[1]
 
     # Add the token and the expiry time to the user manager in order to be accessed by other parts of the program
     expiry_time: int | None = None
@@ -270,10 +268,8 @@ def rest_reauthenticator(
         headers['cookie'] = cookie_header
         if auth_config.param_location == HTTPLocation.COOKIE:
             return AuthResponse(
-                {
-                    'tech': AuthTech.REST,
-                    'headers': headers,
-                },
+                tech=AuthTech.REST,
+                headers=headers,
             )
 
     auth_response, refresh_token_result = extract_token(
@@ -283,7 +279,7 @@ def rest_reauthenticator(
         auth_config.refresh_token_name,
     )
 
-    token = auth_response['headers'][next(iter(headers))].split(' ')[1]
+    token = auth_response.headers[next(iter(headers))].split(' ')[1]
 
     # Add the token and the expiry time to the user manager in order to be accessed by other parts of the program
     expiry_time: int | None = None

@@ -17,10 +17,8 @@ def basic_authenticator(
     """
 
     auth_response = AuthResponse(
-        {
-            'headers': {},
-            'tech': AuthTech.BASIC,
-        },
+        headers={},
+        tech=AuthTech.BASIC,
     )
 
     # Take the username and password from the user in the configuration file
@@ -34,7 +32,7 @@ def basic_authenticator(
     # Add the token to the current user
     user.set_token(header_value, None)
 
-    auth_response['headers']['Authorization'] = 'Basic ' + header_value
+    auth_response.headers['Authorization'] = 'Basic ' + header_value
 
     if 'options' not in schema:
         return auth_response
@@ -44,9 +42,9 @@ def basic_authenticator(
     if headers:
         for name, value in headers.items():
             # Resolving duplicate keys
-            if name in auth_response['headers']:
-                auth_response['headers'][name] += ', ' + value
+            if name in auth_response.headers:
+                auth_response.headers[name] += ', ' + value
             else:
-                auth_response['headers'][name] = value
+                auth_response.headers[name] = value
 
     return auth_response

@@ -3,7 +3,6 @@
 from enum import StrEnum, unique
 from typing import (
     Any,
-    TypedDict,
 )
 
 from pydantic import BaseModel
@@ -31,7 +30,7 @@ class AuthTech(StrEnum):
     WEBDRIVER = 'webdriver'
 
 
-class AuthResponse(TypedDict):
+class AuthResponse(BaseModel):
 
     """The Processed Authentication Configuration."""
 

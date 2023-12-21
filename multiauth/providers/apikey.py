@@ -41,10 +41,8 @@ def apikey_auth_attach(
     """This function attaches the user credentials to the schema and generates the proper authentication response."""
 
     auth_response = AuthResponse(
-        {
-            'headers': {},
-            'tech': AuthTech.APIKEY,
-        },
+        headers={},
+        tech=AuthTech.APIKEY,
     )
 
     # First take the credentials from the user
@@ -61,9 +59,9 @@ def apikey_auth_attach(
     # Implementation with no expression matching in order to work with mypy
     if auth_config.param_location == HTTPLocation.HEADER:
         if auth_config.param_prefix is not None:
-            auth_response['headers'][auth_config.param_name] = auth_config.param_prefix + ' ' + api_key
+            auth_response.headers[auth_config.param_name] = auth_config.param_prefix + ' ' + api_key
         else:
-            auth_response['headers'][auth_config.param_name] = api_key
+            auth_response.headers[auth_config.param_name] = api_key
 
     if auth_config.param_location == HTTPLocation.QUERY:
         pass
@@ -72,11 +70,11 @@ def apikey_auth_attach(
     if auth_config.headers is not None:
         for name, value in auth_config.headers.items():
             # Resolving duplicate keys
-            if name in auth_response['headers']:
-                auth_response['headers'][name] += ', ' + value
+            if name in auth_response.headers:
+                auth_response.headers[name] += ', ' + value
 
             else:
-                auth_response['headers'][name] = value
+                auth_response.headers[name] = value
 
     return auth_response
 

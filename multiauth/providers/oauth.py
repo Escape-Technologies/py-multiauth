@@ -60,10 +60,8 @@ def extract_oauth_token(
 
     # Initialize the variables
     auth_response = AuthResponse(
-        {
-            'headers': {},
-            'tech': AuthTech.OAUTH,
-        },
+        headers={},
+        tech=AuthTech.OAUTH,
     )
 
     response = AuthOAuthResponse(
@@ -86,7 +84,7 @@ def extract_oauth_token(
 
     # Now check the location to know where should add the token (header or body)
     if auth_config.param_location == HTTPLocation.HEADER:
-        auth_response['headers']['authorization'] = auth_config.param_prefix + ' ' + response.access_token
+        auth_response.headers['authorization'] = auth_config.param_prefix + ' ' + response.access_token
 
     elif auth_config.param_location == HTTPLocation.QUERY:
         pass
@@ -100,10 +98,10 @@ def extract_oauth_token(
     if auth_config.headers is not None:
         for name, value in auth_config.headers.items():
             # Resolving duplicate keys
-            if name in auth_response['headers']:
-                auth_response['headers'][name] += ', ' + value
+            if name in auth_response.headers:
+                auth_response.headers[name] += ', ' + value
             else:
-                auth_response['headers'][name] = value
+                auth_response.headers[name] = value
 
     return auth_response
 
