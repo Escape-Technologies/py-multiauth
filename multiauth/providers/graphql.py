@@ -143,7 +143,7 @@ def graphql_auth_attach(
     user: User,
     auth_config: AuthConfigGraphQL,
     proxy: str | None = None,
-) -> AuthResponse:
+) -> AuthResponse | None:
     """This function attaches the user credentials to the schema and generates the proper authentication response."""
 
     # First we have to generate the graphQL query that we need to send
@@ -219,6 +219,7 @@ def graphql_auth_attach(
 
     token: str | None = None
     auth_response: AuthResponse
+    refresh_token: str | None = None
 
     # Fetching token from the header is priorized
     # TODO(antoine@escape.tech): Add support of optional headers (Previously inserted in `headers`)
@@ -260,21 +261,21 @@ def graphql_auth_attach(
             },
         ).get('exp')
     except Exception:
-        return auth_response
+        return None
 
     # Add the token and the expiry time to the user manager in order to be accessed by other parts of the program
     user.set_token(token, expiry_time)
 
     user.refresh_token = refresh_token
 
-    return auth_response
+    return None
 
 
 def graphql_authenticator(
     user: User,
     schema: dict,
     proxy: str | None = None,
-) -> AuthResponse:
+) -> AuthResponse | None:
     """This function is a wrapper function that implements the GraphQL authentication schema.
 
     It sends a mutation having the credentials of the user as the arguments to the mutations.
