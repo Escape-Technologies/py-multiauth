@@ -7,8 +7,9 @@ from urllib.parse import parse_qs, urlencode, urlparse, urlunparse
 import requests
 
 from multiauth.entities.errors import AuthenticationError
-from multiauth.entities.http import HTTPLocation, HTTPRequest, HTTPResponse, HTTPScheme
+from multiauth.entities.http import HTTPLocation, HTTPRequest, HTTPResponse
 from multiauth.entities.providers.http import AuthExtractor, AuthInjector, AuthRequester, Credentials
+from multiauth.helpers.curl import parse_scheme
 from multiauth.providers.http_parser import parse_config
 from multiauth.utils import deep_merge_data, dict_find_path, dict_nested_get, merge_headers
 
@@ -28,7 +29,7 @@ def _format_request(requester: AuthRequester, credential: Credentials, proxy: st
     return HTTPRequest(
         method=method,
         host=parsed_url.netloc,
-        scheme=HTTPScheme(parsed_url.scheme.upper()),
+        scheme=parse_scheme(parsed_url.scheme),
         path=parsed_url.path,
         headers=headers,
         username=None,

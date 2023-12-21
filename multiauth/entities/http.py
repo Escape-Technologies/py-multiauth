@@ -2,6 +2,7 @@
 import datetime
 import enum
 from http import HTTPMethod
+from typing import Any
 
 from pydantic import BaseModel
 
@@ -16,6 +17,29 @@ class HTTPLocation(enum.StrEnum):
 class HTTPScheme(enum.StrEnum):
     HTTP = 'http'
     HTTPS = 'https'
+
+def parse_method(raw_method: Any) -> HTTPMethod:
+    if not isinstance(raw_method, str):
+        raise ValueError('Provided method is not cURL command with a valid method.')
+    if not raw_method:
+        return HTTPMethod.GET
+    raw_method = raw_method.upper()
+    try:
+        return HTTPMethod(raw_method)
+    except ValueError as e:
+        raise ValueError(
+            f'Invalid method {raw_method.upper()}',
+        ) from e
+
+def parse_scheme(raw_scheme: Any) -> HTTPScheme:
+    if not raw_scheme or not isinstance(raw_scheme, str):
+        raise ValueError('Provided scheme is not set or not a string. Valid schemes are "http" and "https"')
+    scheme = raw_scheme.lower()
+    if scheme == HTTPScheme.HTTP.value:
+        return HTTPScheme.HTTP
+    if scheme == HTTPScheme.HTTPS.value:
+        return HTTPScheme.HTTPS
+    raise ValueError('Input is not cURL command with a valid scheme. Valid schemes are "http" and "https"')
 
 
 JSONSerializable = dict | list | str | int | float | bool
