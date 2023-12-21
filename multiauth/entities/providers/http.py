@@ -1,14 +1,14 @@
-from dataclasses import dataclass
 from http import HTTPMethod
 from typing import Any
+
+from pydantic import BaseModel
 
 from multiauth.entities.http import HTTPLocation
 
 ##### Authentications ######
 
 
-@dataclass
-class AuthRequester:
+class AuthRequester(BaseModel):
     url: str
     method: HTTPMethod
     body: Any | None
@@ -16,28 +16,24 @@ class AuthRequester:
     cookies: dict[str, str]
 
 
-@dataclass
-class AuthExtractor:
+class AuthExtractor(BaseModel):
     location: HTTPLocation
     key: str  # this is use to extract the token from the response in depth in the location
 
 
-@dataclass
-class AuthInjector:
+class AuthInjector(BaseModel):
     key: str
     location: HTTPLocation
     prefix: str
 
 
-@dataclass
-class AuthRefresher:
+class AuthRefresher(BaseModel):
     requester: AuthRequester
     extractor: AuthExtractor
     injector: AuthInjector
 
 
-@dataclass
-class AuthProvider:
+class AuthProvider(BaseModel):
     requester: AuthRequester
     extractor: AuthExtractor
     injector: AuthInjector
@@ -47,7 +43,6 @@ class AuthProvider:
 ###### Authentication Extensions ######
 
 
-@dataclass
 class GraphQLAuthRequester(AuthRequester):
     query: str
 
@@ -55,30 +50,25 @@ class GraphQLAuthRequester(AuthRequester):
 ##### Credentials ####
 
 
-@dataclass
-class Credentials:
+class Credentials(BaseModel):
     name: str
     body: Any | None
     headers: dict[str, str]
     cookies: dict[str, str]
 
 
-@dataclass
 class RESTCredentials(Credentials):
     pass
 
 
-@dataclass
 class APICredentials(Credentials):
     pass
 
 
-@dataclass
 class BasicCredentials(Credentials):
     username: str
     password: str
 
 
-@dataclass
 class GraphQLCredentials(Credentials):
     variables: dict[str, str]

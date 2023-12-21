@@ -100,8 +100,8 @@ class MultiAuth:
 
         self.validate(methods, users)
 
-        self.manager: UserManager = UserManager(self.serialize_users(methods, users))
-        self.headers: dict[str, dict] = {}
+        self.manager = UserManager(self.serialize_users(methods, users))
+        self.headers = {}
         self.methods = methods
 
     @property
@@ -209,7 +209,7 @@ class MultiAuth:
                 formatted_payload,
                 url,
             )
-            headers.update(auth_headers['headers'])
+            headers.update(auth_headers.headers)
 
         return headers
 
@@ -227,8 +227,8 @@ class MultiAuth:
         # Call the auth handler
         self.logger.info(f'Authenticating user: {username}')
         auth_response = auth_handler(self.methods, user_info, proxy=self.proxy)
-        if auth_response and isinstance(auth_response, dict):
-            self.headers[username] = auth_response['headers']
+        if auth_response is not None:
+            self.headers[username] = auth_response.headers
             self.logger.info(f'Authentication successful for {username}')
 
         # In case we provided custom headers, we need to merge them with the ones we got from auth_handler
@@ -298,8 +298,8 @@ class MultiAuth:
                     proxy=self.proxy,
                 )
 
-            if auth_response and isinstance(auth_response, dict):
-                self.headers[username] = auth_response['headers']
+            if auth_response is not None:
+                self.headers[username] = auth_response.headers
                 self.logger.info('Reauthentication Successful')
 
         if not public:

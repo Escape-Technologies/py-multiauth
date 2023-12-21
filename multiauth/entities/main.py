@@ -1,11 +1,11 @@
 """Custom types of authentication module."""
 
-from dataclasses import dataclass
-from enum import Enum, unique
+from enum import StrEnum, unique
 from typing import (
     Any,
-    TypedDict,
 )
+
+from pydantic import BaseModel
 
 from multiauth.entities.providers.aws import AuthAWSType
 from multiauth.entities.providers.oauth import AuthOAuthGrantType
@@ -13,7 +13,7 @@ from multiauth.entities.providers.oauth import AuthOAuthGrantType
 
 # The Authentication Schemas can be found below
 @unique
-class AuthTech(str, Enum):
+class AuthTech(StrEnum):
 
     """Authentication Method Enumeration."""
 
@@ -30,7 +30,7 @@ class AuthTech(str, Enum):
     WEBDRIVER = 'webdriver'
 
 
-class AuthResponse(TypedDict):
+class AuthResponse(BaseModel):
 
     """The Processed Authentication Configuration."""
 
@@ -41,8 +41,7 @@ class AuthResponse(TypedDict):
 Token = str
 
 
-@dataclass
-class RCFile:
+class RCFile(BaseModel):
 
     """RC File."""
 
@@ -50,8 +49,7 @@ class RCFile:
     users: dict
 
 
-@dataclass
-class JWTToken:
+class JWTToken(BaseModel):
 
     """This class finds all the registered claims in the JWT token payload.
 
@@ -71,9 +69,9 @@ class JWTToken:
     iss: str | None
     sub: str | None
     aud: str | None
-    exp: str | None
-    nbf: str | None
-    iat: str | None
+    exp: int | None
+    nbf: int | None
+    iat: int | None
     jti: str | None
     other: dict[Any, Any]
 

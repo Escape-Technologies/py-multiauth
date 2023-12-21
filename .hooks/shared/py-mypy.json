@@ -1,5 +1,5 @@
 {
   "name": "python: mypy",
-  "command": "poetry run mypy multiauth tests",
+  "command": "poetry run mypy multiauth tests scripts",
   "onlyOn": "**/*.py"
 }

@@ -87,4 +87,4 @@ def test_manual_handler_headers(
 
     auth_response = manual_authenticator(MultiAuth.serialize_users(auth, users_one_header)['manual_user'])
 
-    assert auth_response['headers']['Authorization'] == 'Bearer 12345'
+    assert auth_response.headers['Authorization'] == 'Bearer 12345'

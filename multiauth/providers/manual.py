@@ -14,10 +14,8 @@ def manual_authenticator(user: User) -> AuthResponse:
     """
 
     auth_response = AuthResponse(
-        {
-            'headers': {},
-            'tech': AuthTech.MANUAL,
-        },
+        headers={},
+        tech=AuthTech.MANUAL,
     )
 
     headers = user.headers
@@ -29,7 +27,7 @@ def manual_authenticator(user: User) -> AuthResponse:
 
         headers = user.credentials['headers']
 
-    auth_response['headers'] = cast(dict[str, Any], headers)
-    auth_response['tech'] = AuthTech.MANUAL
+    auth_response.headers = cast(dict[str, Any], headers)
+    auth_response.tech = AuthTech.MANUAL
 
     return auth_response

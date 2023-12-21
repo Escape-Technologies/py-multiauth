@@ -20,18 +20,16 @@ def rest_config_parser(schema: dict) -> AuthConfigRest:
     """This function parses the Rest schema and checks if all the necessary fields exist."""
 
     auth_config = AuthConfigRest(
-        {
-            'url': '',
-            'method': HTTPMethod.POST,
-            'token_name': None,
-            'param_location': HTTPLocation.HEADER,
-            'refresh_url': None,
-            'refresh_token_name': None,
-            'param_name': None,
-            'param_prefix': None,
-            'headers': None,
-            'credentials_encoding': CredentialsEncoding.JSON,
-        },
+        url='',
+        method=HTTPMethod.POST,
+        token_name=None,
+        param_location=HTTPLocation.HEADER,
+        refresh_url=None,
+        refresh_token_name=None,
+        param_name=None,
+        param_prefix=None,
+        headers=None,
+        credentials_encoding=CredentialsEncoding.JSON,
     )
 
     if not schema.get('url'):
@@ -39,26 +37,26 @@ def rest_config_parser(schema: dict) -> AuthConfigRest:
     if not schema.get('method'):
         raise AuthenticationError('Please provide the HTTP method to use for authentication')
 
-    auth_config['url'] = schema['url']
-    auth_config['method'] = schema['method']
+    auth_config.url = schema['url']
+    auth_config.method = schema['method']
 
     # Options:
     if 'options' in schema:
-        auth_config['param_location'] = HTTPLocation(schema['options'].get('param_location', 'header').upper())
-        if not auth_config['param_location'] == HTTPLocation.COOKIE and not schema['options'].get('token_name'):
+        auth_config.param_location = HTTPLocation(schema['options'].get('param_location', 'header').upper())
+        if not auth_config.param_location == HTTPLocation.COOKIE and not schema['options'].get('token_name'):
             raise AuthenticationError('Please provide the token name in the authentication response')
 
-        auth_config['refresh_url'] = schema['options'].get('refresh_url')
-        auth_config['refresh_token_name'] = schema['options'].get('refresh_token_name')
-        auth_config['token_name'] = schema['options'].get('token_name')
-        auth_config['param_name'] = schema['options'].get('param_name')
-        auth_config['param_prefix'] = schema['options'].get('param_prefix')
-        auth_config['headers'] = schema['options'].get('headers')
+        auth_config.refresh_url = schema['options'].get('refresh_url')
+        auth_config.refresh_token_name = schema['options'].get('refresh_token_name')
+        auth_config.token_name = schema['options'].get('token_name')
+        auth_config.param_name = schema['options'].get('param_name')
+        auth_config.param_prefix = schema['options'].get('param_prefix')
+        auth_config.headers = schema['options'].get('headers')
 
         if credentials_encoding := schema['options'].get('credentials_encoding'):
             for encoding in CredentialsEncoding:
                 if encoding.value == credentials_encoding:
-                    auth_config['credentials_encoding'] = encoding
+                    auth_config.credentials_encoding = encoding
                     break
             else:
                 raise AuthenticationError('Invalid credentials encoding')
@@ -78,18 +76,18 @@ def rest_auth_attach(
 
     # First we have to take the credentials from the currently working user
     credentials: dict[str, dict] = {}
-    if auth_config['credentials_encoding'] == CredentialsEncoding.JSON:
+    if auth_config.credentials_encoding == CredentialsEncoding.JSON:
         credentials = {'json': user.credentials}
-    elif auth_config['credentials_encoding'] == CredentialsEncoding.FORM:
+    elif auth_config.credentials_encoding == CredentialsEncoding.FORM:
         credentials = {'data': user.credentials}
 
-    if auth_config['headers']:
-        credentials['headers'] = auth_config['headers']
+    if auth_config.headers:
+        credentials['headers'] = auth_config.headers
 
     # Now we need to send the request
     response = requests.request(
-        auth_config['method'],
-        auth_config['url'],
+        auth_config.method,
+        auth_config.url,
         timeout=5,
         proxies={'http': proxy, 'https': proxy} if proxy else None,
         **credentials,  # type: ignore[arg-type]
@@ -100,7 +98,7 @@ def rest_auth_attach(
     if cookie_header:
         cookie_header = [f'{name}={value}' for name, value in cookie_header.items()]
         cookie_header = ';'.join(cookie_header)
-        if auth_config['param_location'] == HTTPLocation.COOKIE and not cookie_header:
+        if auth_config.param_location == HTTPLocation.COOKIE and not cookie_header:
             raise AuthenticationError('Authentication Failed: No cookie was found')
     else:
         cookie_header = None
@@ -113,21 +111,21 @@ def rest_auth_attach(
     # There are two parts
     # 1- If auth cookie is enabled, then we simply search add the cookie to the auth response and that is it
     # 2- If auth cookie is disables, we continue the authentication process
-    if not auth_config['param_location'] == HTTPLocation.COOKIE:
-        token_name = cast(str, auth_config['token_name'])
-        if auth_config['param_name'] is None:
+    if not auth_config.param_location == HTTPLocation.COOKIE:
+        token_name = cast(str, auth_config.token_name)
+        if auth_config.param_name is None:
             headers['Authorization'] = ''
         else:
-            headers[auth_config['param_name']] = ''
+            headers[auth_config.param_name] = ''
 
-        if auth_config['param_prefix'] is not None:
-            headers[next(iter(headers))] += auth_config['param_prefix'] + ' ' + '{{' + token_name + '}}'
+        if auth_config.param_prefix is not None:
+            headers[next(iter(headers))] += auth_config.param_prefix + ' ' + '{{' + token_name + '}}'
         else:
             headers[next(iter(headers))] += 'Bearer {{' + token_name + '}}'
 
     # Append the optional headers to the header
-    if auth_config['headers'] is not None:
-        for name, value in auth_config['headers'].items():
+    if auth_config.headers is not None:
+        for name, value in auth_config.headers.items():
             # Resolving duplicate keys
             if name in headers:
                 headers[name] += ', ' + value
@@ -138,24 +136,22 @@ def rest_auth_attach(
     # Append the cookie header and check if the authentication type is a cookie authentication or no
     if cookie_header:
         headers['cookie'] = cookie_header
-        if auth_config['param_location'] == HTTPLocation.COOKIE:
+        if auth_config.param_location == HTTPLocation.COOKIE:
             return AuthResponse(
-                {
-                    'tech': AuthTech.REST,
-                    'headers': headers,
-                },
+                tech=AuthTech.REST,
+                headers=headers,
             )
     auth_response, refresh_token = extract_token(
         response,
         AuthTech.REST,
         headers,
-        auth_config['refresh_token_name'],
+        auth_config.refresh_token_name,
     )
 
-    token = auth_response['headers'][next(iter(headers))].split(' ')[1]
+    token = auth_response.headers[next(iter(headers))].split(' ')[1]
 
     # Add the token and the expiry time to the user manager in order to be accessed by other parts of the program
-    expiry_time: float | None = None
+    expiry_time: int | None = None
     try:
         expiry_time = jwt.decode(
             token,
@@ -207,21 +203,21 @@ def rest_reauthenticator(
 
     # Now we will do the same thing we are doing in the authentication function
     # First we have to create a payload
-    if auth_config['refresh_token_name'] is None or auth_config['refresh_url'] is None:
+    if auth_config.refresh_token_name is None or auth_config.refresh_url is None:
         raise AuthenticationError('Refresh Token found, please provide the refresh token name and the refresh URL')
-    payload: dict = {auth_config['refresh_token_name']: refresh_token}
+    payload: dict = {auth_config.refresh_token_name: refresh_token}
 
     # First we have to take the credentials from the currently working user
     credentials: dict[str, dict] = {}
-    if auth_config['credentials_encoding'] == CredentialsEncoding.JSON:
+    if auth_config.credentials_encoding == CredentialsEncoding.JSON:
         credentials = {'json': payload}
-    elif auth_config['credentials_encoding'] == CredentialsEncoding.FORM:
+    elif auth_config.credentials_encoding == CredentialsEncoding.FORM:
         credentials = {'data': payload}
 
     # Now we have to send the payload
     response = requests.request(
-        auth_config['method'],
-        auth_config['refresh_url'],
+        auth_config.method,
+        auth_config.refresh_url,
         timeout=5,
         proxies={'http': proxy, 'https': proxy} if proxy else None,
         **credentials,  # type: ignore[arg-type]
@@ -232,7 +228,7 @@ def rest_reauthenticator(
     if cookie_header:
         cookie_header = [f'{name}={value}' for name, value in cookie_header.items()]
         cookie_header = ';'.join(cookie_header)
-        if auth_config['param_location'] == HTTPLocation.COOKIE and not cookie_header:
+        if auth_config.param_location == HTTPLocation.COOKIE and not cookie_header:
             raise AuthenticationError('Authentication Failed: No cookie was found')
     else:
         cookie_header = None
@@ -245,21 +241,21 @@ def rest_reauthenticator(
     # There are two parts
     # 1- If auth cookie is enabled, then we simply search add the cookie to the auth response and that is it
     # 2- If auth cookie is disables, we continue the authentication process
-    if not auth_config['param_location'] == HTTPLocation.COOKIE:
-        token_name = cast(str, auth_config['token_name'])
-        if auth_config['param_name'] is None:
+    if not auth_config.param_location == HTTPLocation.COOKIE:
+        token_name = cast(str, auth_config.token_name)
+        if auth_config.param_name is None:
             headers['Authorization'] = ''
         else:
-            headers[auth_config['param_name']] = ''
+            headers[auth_config.param_name] = ''
 
-        if auth_config['param_prefix'] is not None:
-            headers[next(iter(headers))] += auth_config['param_prefix'] + ' ' + '{{' + token_name + '}}'
+        if auth_config.param_prefix is not None:
+            headers[next(iter(headers))] += auth_config.param_prefix + ' ' + '{{' + token_name + '}}'
         else:
             headers[next(iter(headers))] += 'Bearer {{' + token_name + '}}'
 
     # Append the optional headers to the header
-    if auth_config['headers'] is not None:
-        for name, value in auth_config['headers'].items():
+    if auth_config.headers is not None:
+        for name, value in auth_config.headers.items():
             # Resolving duplicate keys
             if name in headers:
                 headers[name] += ', ' + value
@@ -270,25 +266,23 @@ def rest_reauthenticator(
     # Append the cookie header and check if the authentication type is a cookie authentication or no
     if cookie_header:
         headers['cookie'] = cookie_header
-        if auth_config['param_location'] == HTTPLocation.COOKIE:
+        if auth_config.param_location == HTTPLocation.COOKIE:
             return AuthResponse(
-                {
-                    'tech': AuthTech.REST,
-                    'headers': headers,
-                },
+                tech=AuthTech.REST,
+                headers=headers,
             )
 
     auth_response, refresh_token_result = extract_token(
         response,
         AuthTech.REST,
         headers,
-        auth_config['refresh_token_name'],
+        auth_config.refresh_token_name,
     )
 
-    token = auth_response['headers'][next(iter(headers))].split(' ')[1]
+    token = auth_response.headers[next(iter(headers))].split(' ')[1]
 
     # Add the token and the expiry time to the user manager in order to be accessed by other parts of the program
-    expiry_time: float | None = None
+    expiry_time: int | None = None
     try:
         expiry_time = jwt.decode(
             token,

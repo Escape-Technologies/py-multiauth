@@ -1,8 +1,9 @@
 from dataclasses import dataclass
 
+from pydantic import BaseModel
 
-@dataclass
-class SeleniumCommand:
+
+class SeleniumCommand(BaseModel):
     id: str
     # comment: str
     command: str
@@ -11,15 +12,13 @@ class SeleniumCommand:
     value: str
 
 
-@dataclass
-class SeleniumTest:
+class SeleniumTest(BaseModel):
     id: str
     name: str
     commands: list[SeleniumCommand]
 
 
-@dataclass
-class SeleniumProject:
+class SeleniumProject(BaseModel):
     # id: str
     # version: str
     # name: str
@@ -28,7 +27,7 @@ class SeleniumProject:
 
 
 @dataclass
-class WebdriverConfig:
+class WebdriverConfig(BaseModel):
 
     """Authentication Configuration Parameters of the Webdriver Method."""
 
