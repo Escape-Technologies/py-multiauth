@@ -1,9 +1,8 @@
 """Aws provider."""
 
 from enum import Enum, unique
-from typing import (
-    TypedDict,
-)
+
+from pydantic import BaseModel
 
 from multiauth.entities.http import HTTPMethod
 from multiauth.entities.providers.http import HTTPLocation
@@ -38,7 +37,7 @@ class AuthHashalgorithmHawkandAWS(str, Enum):
     SHA_1 = 'sha-1'
 
 
-class AuthConfigHawk(TypedDict):
+class AuthConfigHawk(BaseModel):
 
     """Authentication Configuration Parameters of the Hawk Method."""
 
@@ -51,7 +50,7 @@ class AuthConfigHawk(TypedDict):
     timestamp: str | None
 
 
-class AuthConfigAWS(TypedDict):
+class AuthConfigAWS(BaseModel):
 
     """Authenticaiton Configuration Parameters of the AWS Method."""
 
