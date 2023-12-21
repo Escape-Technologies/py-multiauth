@@ -3,7 +3,8 @@ from typing import Any
 
 import pytest
 
-from multiauth.helpers.curl import HTTPRequest, HTTPScheme, parse_curl, parse_headers, parse_scheme
+from multiauth.entities.http import HTTPScheme
+from multiauth.helpers.curl import HTTPRequest, parse_curl, parse_headers, parse_scheme
 
 
 class TestHttpRequest:
