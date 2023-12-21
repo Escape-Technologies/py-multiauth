@@ -58,6 +58,12 @@ def _send_request(req: HTTPRequest) -> HTTPResponse:
         proxies={'http': req.proxy, 'https': req.proxy} if req.proxy else None,
     )
 
+    data_json = None
+    try:
+        data_json = response.json()
+    except json.JSONDecodeError:
+        pass
+
     return HTTPResponse(
         url=response.url,
         status_code=response.status_code,
@@ -65,7 +71,7 @@ def _send_request(req: HTTPRequest) -> HTTPResponse:
         headers=dict(response.headers),
         cookies={cookie.name: cookie.value for cookie in response.cookies if cookie.value is not None},
         data_text=response.text,
-        data_json=response.json(),
+        data_json=data_json,
         elapsed=response.elapsed,
     )
 
