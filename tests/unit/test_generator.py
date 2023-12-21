@@ -66,14 +66,14 @@ def curl_no_data() -> str:
 @pytest.fixture()
 def graphql_curl_with_input_object_and_no_var_response() -> RCFile:
     """Curl Response."""
-    return {
-        'users': {
+    return RCFile(
+        users={
             'user1': {
                 'auth': 'schema1',
                 'userLoginInput': {'email': 'LoZhylgLX8@Nuz0bhEKMY.com', 'password': '8ua36eYKlN'},
             },
         },
-        'methods': {
+        methods={
             'schema1': {
                 'tech': 'graphql',
                 'url': 'https://qhgslipjmw.com/graphql',
@@ -83,17 +83,17 @@ def graphql_curl_with_input_object_and_no_var_response() -> RCFile:
                 'options': {'operation': 'mutation', 'headers': {'Content-Type': 'application/json'}},
             },
         },
-    }
+    )
 
 
 @pytest.fixture()
 def graphql_curl_with_input_object_and_var_response() -> RCFile:
     """Curl Response."""
-    return {
-        'users': {
+    return RCFile(
+        users={
             'user1': {'auth': 'schema1', 'Login': {'email': 'LoZhylgLX8@Nuz0bhEKMY.com', 'password': '8ua36eYKlN'}},
         },
-        'methods': {
+        methods={
             'schema1': {
                 'tech': 'graphql',
                 'url': 'https://qhgslipjmw.com/graphql',
@@ -103,15 +103,15 @@ def graphql_curl_with_input_object_and_var_response() -> RCFile:
                 'options': {'operation': 'mutation', 'headers': {'Content-Type': 'application/json'}},
             },
         },
-    }
+    )
 
 
 @pytest.fixture()
 def graphql_curl_with_normal_graphql_query_response() -> RCFile:
     """Curl Response."""
-    return {
-        'users': {'user1': {'auth': 'schema1', 'username': 'ohtmjdkyhx@oergasjvhp.com', 'password': 'Wj7UxfFTyzgPVM'}},
-        'methods': {
+    return RCFile(
+        users={'user1': {'auth': 'schema1', 'username': 'ohtmjdkyhx@oergasjvhp.com', 'password': 'Wj7UxfFTyzgPVM'}},
+        methods={
             'schema1': {
                 'tech': 'graphql',
                 'url': 'https://www.terrang.fr/graphql',
@@ -120,15 +120,15 @@ def graphql_curl_with_normal_graphql_query_response() -> RCFile:
                 'options': {'operation': 'mutation', 'headers': {'Content-Type': 'application/json'}},
             },
         },
-    }
+    )
 
 
 @pytest.fixture()
 def rest_curl_response() -> RCFile:
     """Curl Response."""
-    return {
-        'users': {'user1': {'auth': 'schema1', 'email': 'ohtmjdkyhx@oergasjvhp.com', 'password': 'Wj7UxfFTyzgPVM@'}},
-        'methods': {
+    return RCFile(
+        users={'user1': {'auth': 'schema1', 'email': 'ohtmjdkyhx@oergasjvhp.com', 'password': 'Wj7UxfFTyzgPVM@'}},
+        methods={
             'schema1': {
                 'tech': 'rest',
                 'url': 'https://auth.ghqmcblmjc.com/login',
@@ -136,15 +136,15 @@ def rest_curl_response() -> RCFile:
                 'options': {'headers': {'Content-Type': 'application/json'}},
             },
         },
-    }
+    )
 
 
 @pytest.fixture()
 def rest_curl_not_json_response() -> RCFile:
     """Curl Response."""
-    return {
-        'users': {'user1': {'auth': 'schema1', 'email': 'ohtmjdkyhx@oergasjvhp.com', 'password': 'Wj7UxfFTyzgPVM@'}},
-        'methods': {
+    return RCFile(
+        users={'user1': {'auth': 'schema1', 'email': 'ohtmjdkyhx@oergasjvhp.com', 'password': 'Wj7UxfFTyzgPVM@'}},
+        methods={
             'schema1': {
                 'tech': 'rest',
                 'url': 'https://auth.ghqmcblmjc.com/login',
@@ -152,7 +152,7 @@ def rest_curl_not_json_response() -> RCFile:
                 'options': {'headers': {'Content-Type': 'application/x-www-form-urlencoded'}},
             },
         },
-    }
+    )
 
 
 def test_serialize_headers(
@@ -184,7 +184,7 @@ def test_serialize_headers(
 
 def test_graphql_curl_with_input_object_and_no_var(
     graphql_curl_with_input_object_and_no_var: str,
-    graphql_curl_with_input_object_and_no_var_response: dict,
+    graphql_curl_with_input_object_and_no_var_response: RCFile,
 ) -> None:
     """Function that tests if the curl to escaperc works."""
 
@@ -196,7 +196,7 @@ def test_graphql_curl_with_input_object_and_no_var(
 
 def test_graphql_curl_with_input_object_and_var(
     graphql_curl_with_input_object_and_var: str,
-    graphql_curl_with_input_object_and_var_response: dict,
+    graphql_curl_with_input_object_and_var_response: RCFile,
 ) -> None:
     """Function that tests if the curl to escaperc works."""
 
@@ -205,7 +205,7 @@ def test_graphql_curl_with_input_object_and_var(
 
 def test_graphql_curl_with_normal_graphql_query(
     graphql_curl_with_normal_graphql_query: str,
-    graphql_curl_with_normal_graphql_query_response: dict,
+    graphql_curl_with_normal_graphql_query_response: RCFile,
 ) -> None:
     """Function that tests if the curl to escaperc works."""
 
