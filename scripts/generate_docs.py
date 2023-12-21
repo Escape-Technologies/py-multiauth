@@ -3,7 +3,7 @@
 import json
 from copy import deepcopy
 from importlib.resources import files
-from typing import Any, TypedDict, cast, dict
+from typing import Any, TypedDict, cast
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
@@ -70,10 +70,10 @@ def generate_auth_docs() -> None:  # noqa: C901
     has_optional: list[bool] = [False for _ in json_schema]
 
     # The JSON schema for every authentication scheme
-    jsonschema: RCFile = {
-        'users': {'user1': {'auth': 'schema1'}},
-        'methods': {'schema1': {}},
-    }
+    jsonschema = RCFile(
+        users={'user1': {'auth': 'schema1'}},
+        methods={'schema1': {}},
+    ).model_dump()
 
     # All the JSON schemas
     jsonschemas: list[dict[str, str]] = []
@@ -89,11 +89,11 @@ def generate_auth_docs() -> None:  # noqa: C901
         auth_name = cast(AuthName, auth_schema['_escapeUI']['label'])
         auth_schemas.setdefault(auth_name, [{auth_name: {}}])
 
+        whitelist = {}
         if 'oneOf' in auth_schema['authSchema']:
             # here we are in the oauth case
             # we want to create a subschema for each possible values of the grant_type
             # and store in the whitelist{grant_type: required_fields}
-            whitelist = {}
             for todo in auth_schema['authSchema']['oneOf']:
                 property_name = next(iter(todo['properties'].keys()))
                 property_value = todo['properties'][property_name]['const']

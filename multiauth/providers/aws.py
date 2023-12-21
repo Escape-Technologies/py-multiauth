@@ -29,7 +29,7 @@ def aws_check_type(
 
     auth_config = aws_config_parser(user, schema)
 
-    return auth_config['type']
+    return auth_config.type
 
 
 def aws_config_parser(
@@ -39,20 +39,18 @@ def aws_config_parser(
     """This function parses the Digest schema and checks if all necessary fields exist."""
 
     auth_config = AuthConfigAWS(
-        {
-            'type': AuthAWSType.USER_PASSWORD_AUTH,
-            'region': '',
-            'client_id': None,
-            'method': None,
-            'service_name': None,
-            'hash_algorithm': None,
-            'pool_id': None,
-            'client_secret': None,
-            'param_location': HTTPLocation.HEADER,
-            'param_name': None,
-            'param_prefix': None,
-            'headers': None,
-        },
+        type=AuthAWSType.USER_PASSWORD_AUTH,
+        region='',
+        client_id=None,
+        method=None,
+        service_name=None,
+        hash_algorithm=None,
+        pool_id=None,
+        client_secret=None,
+        param_location=HTTPLocation.HEADER,
+        param_name=None,
+        param_prefix=None,
+        headers=None,
     )
 
     # Start by taking the type
@@ -63,12 +61,12 @@ def aws_config_parser(
     if not schema.get('param_location'):
         raise AuthenticationError('Please provide with the location where the headers should be added')
 
-    auth_config['type'] = schema['type']
+    auth_config.type = schema['type']
     user.auth_type = schema['type']
-    auth_config['region'] = schema['region']
-    auth_config['param_location'] = HTTPLocation(schema['param_location'])
+    auth_config.region = schema['region']
+    auth_config.param_location = HTTPLocation(schema['param_location'])
 
-    if auth_config['type'] == AuthAWSType.AWS_SIGNATURE:
+    if auth_config.type == AuthAWSType.AWS_SIGNATURE:
         if not schema.get('service_name'):
             raise AuthenticationError('Please provide the service name in which you are trying to access (eg: EC2)')
         if not schema.get('method'):
@@ -76,26 +74,26 @@ def aws_config_parser(
         if not schema.get('hash_algorithm'):
             raise AuthenticationError('Please provide the hashing algorithm')
 
-        auth_config['service_name'] = schema['service_name']
-        auth_config['method'] = HTTPMethod(schema['method'].upper())
-        auth_config['hash_algorithm'] = AuthHashalgorithmHawkandAWS(schema['hash_algorithm'])
+        auth_config.service_name = schema['service_name']
+        auth_config.method = HTTPMethod(schema['method'].upper())
+        auth_config.hash_algorithm = AuthHashalgorithmHawkandAWS(schema['hash_algorithm'])
 
     else:
         if not schema.get('client_id'):
             raise AuthenticationError('Please provide the client ID')
-        auth_config['client_id'] = schema['client_id']
+        auth_config.client_id = schema['client_id']
 
-        if auth_config['type'] == AuthAWSType.USER_SRP_AUTH:
+        if auth_config.type == AuthAWSType.USER_SRP_AUTH:
             if not schema.get('pool_id'):
                 raise AuthenticationError('Please provide the AWS cognito pool ID')
-            auth_config['pool_id'] = schema['pool_id']
+            auth_config.pool_id = schema['pool_id']
 
     # Options
     if 'options' in schema:
-        auth_config['client_secret'] = schema['options'].get('client_secret')
-        auth_config['param_name'] = schema['options'].get('param_name')
-        auth_config['param_prefix'] = schema['options'].get('param_prefix')
-        auth_config['headers'] = schema['options'].get('headers')
+        auth_config.client_secret = schema['options'].get('client_secret')
+        auth_config.param_name = schema['options'].get('param_name')
+        auth_config.param_prefix = schema['options'].get('param_prefix')
+        auth_config.headers = schema['options'].get('headers')
 
     return auth_config
 
@@ -110,7 +108,7 @@ def aws_user_password_handler(
     username, password = user.get_credentials_pair()
 
     # Now we have to initiate the client
-    client = boto3.client('cognito-idp', region_name=auth_config['region'])
+    client = boto3.client('cognito-idp', region_name=auth_config.region)
 
     # Now we have to create the parameters
     parameters: dict[str, str] = {
@@ -118,14 +116,14 @@ def aws_user_password_handler(
         'PASSWORD': password,
     }
 
-    if auth_config['client_secret'] is not None:
-        client_id = cast(str, auth_config['client_id'])
-        parameters['SECRET_HASH'] = get_secret_hash(username, client_id, auth_config['client_secret'])
+    if auth_config.client_secret is not None:
+        client_id = cast(str, auth_config.client_id)
+        parameters['SECRET_HASH'] = get_secret_hash(username, client_id, auth_config.client_secret)
 
     # Now we have to initiate the connection
     return client.initiate_auth(
-        ClientId=auth_config['client_id'],
-        AuthFlow=auth_config['type'].value,
+        ClientId=auth_config.client_id,
+        AuthFlow=auth_config.type.value,
         AuthParameters=parameters,
     )
 
@@ -140,15 +138,15 @@ def aws_user_srp_handler(
     username, password = user.get_credentials_pair()
 
     # Now we have to initiate the client
-    client = boto3.client('cognito-idp', region_name=auth_config['region'])
+    client = boto3.client('cognito-idp', region_name=auth_config.region)
 
     # Now we to make the connection and get the token
     connection = AWSSRP(
         username=username,
         password=password,
-        pool_id=auth_config['pool_id'],
-        client_id=auth_config['client_id'],
-        client_secret=auth_config['client_secret'],
+        pool_id=auth_config.pool_id,
+        client_id=auth_config.client_id,
+        client_secret=auth_config.client_secret,
         client=client,
     )
 
@@ -165,11 +163,11 @@ def aws_auth_attach(
     headers: dict[str, str] = {}
 
     # First we need to check which authentication flow is used
-    if auth_config['type'] == AuthAWSType.USER_PASSWORD_AUTH:
+    if auth_config.type == AuthAWSType.USER_PASSWORD_AUTH:
         aws_response = aws_user_password_handler(user, auth_config)
-    elif auth_config['type'] == AuthAWSType.USER_SRP_AUTH:
+    elif auth_config.type == AuthAWSType.USER_SRP_AUTH:
         aws_response = aws_user_srp_handler(user, auth_config)
-    elif auth_config['type'] == AuthAWSType.REFRESH_TOKEN:
+    elif auth_config.type == AuthAWSType.REFRESH_TOKEN:
         if not user.credentials:
             raise AuthenticationError('Configuration file error. Missing credentials')
         if not user.credentials.get('refresh_token'):
@@ -177,26 +175,26 @@ def aws_auth_attach(
         refresh_token = user.credentials['refresh_token']
         return aws_reauthenticator(user, cast(dict, auth_config), refresh_token, parse=False)
     else:
-        return AuthResponse({'tech': AuthTech.AWS, 'headers': {}})
+        return AuthResponse(tech=AuthTech.AWS, headers={})
 
     # Extract the access_token and the refresh token
     access_token: str = aws_response['AuthenticationResult']['AccessToken']
     refresh_token = aws_response['AuthenticationResult']['RefreshToken']
 
     # Now we to have prepare the header
-    if auth_config['param_name'] is not None:
-        headers[auth_config['param_name']] = ''
+    if auth_config.param_name is not None:
+        headers[auth_config.param_name] = ''
     else:
         headers['Authorization'] = ''
 
-    if auth_config['param_prefix'] is not None:
-        headers[next(iter(headers))] += auth_config['param_prefix'] + ' ' + access_token
+    if auth_config.param_prefix is not None:
+        headers[next(iter(headers))] += auth_config.param_prefix + ' ' + access_token
     else:
         headers[next(iter(headers))] += 'Bearer ' + access_token
 
     # Append the optional headers to the header
-    if auth_config['headers'] is not None:
-        for name, value in auth_config['headers'].items():
+    if auth_config.headers is not None:
+        for name, value in auth_config.headers.items():
             # Resolving duplicate keys
             if name in headers:
                 headers[name] += ', ' + value
@@ -204,10 +202,8 @@ def aws_auth_attach(
                 headers[name] = value
 
     auth_response: AuthResponse = AuthResponse(
-        {
-            'tech': AuthTech.AWS,
-            'headers': headers,
-        },
+        tech=AuthTech.AWS,
+        headers=headers,
     )
 
     # Add the token, the refresh token, and the expiry time to the user manager in order
@@ -274,29 +270,30 @@ def aws_reauthenticator(
         auth_config = cast(AuthConfigAWS, schema)
 
     # Now we have to initiate the reauth
-    if auth_config['type'] == AuthAWSType.AWS_SIGNATURE:
+    if auth_config.type == AuthAWSType.AWS_SIGNATURE:
         raise AuthenticationError('The AWS Signature is not handled here')
 
-    client = boto3.client('cognito-idp', region_name=auth_config['region'])
+    client = boto3.client('cognito-idp', region_name=auth_config.region)
 
     # Now we have to create the parameters
     parameters: dict[str, str] = {
         'REFRESH_TOKEN': refresh_token,
     }
 
-    if auth_config['client_secret'] is not None:
+    if auth_config.client_secret is not None:
+        username: str = ''
         if user.credentials:
             if not user.credentials.get('username'):
                 raise AuthenticationError('Please provide the username')
 
-            username: str = user.credentials['username']
+            username = user.credentials['username']
 
-        client_id = cast(str, auth_config['client_id'])
-        parameters['SECRET_HASH'] = get_secret_hash(username, client_id, auth_config['client_secret'])
+        client_id = cast(str, auth_config.client_id)
+        parameters['SECRET_HASH'] = get_secret_hash(username, client_id, auth_config.client_secret)
 
     # Now we have to initiate the connection
     response = client.initiate_auth(
-        ClientId=auth_config['client_id'],
+        ClientId=auth_config.client_id,
         AuthFlow='REFRESH_TOKEN_AUTH',
         AuthParameters=parameters,
     )
@@ -322,19 +319,19 @@ def aws_reauthenticator(
     # Now we to have prepare the header
     headers: dict[str, str] = {}
 
-    if not auth_config['param_name'] is not None:
+    if not auth_config.param_name is not None:
         headers['Authorization'] = ''
     else:
-        headers[auth_config['param_name']] = ''
+        headers[auth_config.param_name] = ''
 
-    if auth_config['param_prefix'] is not None:
-        headers[next(iter(headers))] += auth_config['param_prefix'] + ' ' + access_token
+    if auth_config.param_prefix is not None:
+        headers[next(iter(headers))] += auth_config.param_prefix + ' ' + access_token
     else:
         headers[next(iter(headers))] += 'Bearer ' + access_token
 
     # Append the optional headers to the header
-    if auth_config['headers'] is not None:
-        for name, value in auth_config['headers'].items():
+    if auth_config.headers is not None:
+        for name, value in auth_config.headers.items():
             # Resolving duplicate keys
             if name in headers:
                 headers[name] += ', ' + value
@@ -343,10 +340,8 @@ def aws_reauthenticator(
                 headers[name] = value
 
     auth_response: AuthResponse = AuthResponse(
-        {
-            'tech': AuthTech.AWS,
-            'headers': headers,
-        },
+        tech=AuthTech.AWS,
+        headers=headers,
     )
 
     return auth_response
@@ -404,8 +399,8 @@ def aws_signature(
 
     # Add optional header
     _headers: dict[str, str] = deepcopy(headers)
-    if auth_config['headers'] is not None:
-        for name, value in auth_config['headers'].items():
+    if auth_config.headers is not None:
+        for name, value in auth_config.headers.items():
             # Resolving duplicate keys
             if name in _headers and value not in _headers[name]:
                 _headers[name] += ', ' + value
@@ -437,8 +432,8 @@ def aws_signature(
 
     # Now we have to create the strings to sign
     algorithm = 'AWS4-HMAC-SHA256'
-    region: str = auth_config['region']
-    service: str = cast(str, auth_config['service_name'])
+    region: str = auth_config.region
+    service: str = cast(str, auth_config.service_name)
     credential_scope = date_stamp + '/' + region + '/' + service + '/' + 'aws4_request'
     string_to_sign = (
         algorithm
@@ -474,8 +469,6 @@ def aws_signature(
     _headers['Authorization'] = authorization_header
 
     return AuthResponse(
-        {
-            'tech': AuthTech.AWS,
-            'headers': _headers,
-        },
+        tech=AuthTech.AWS,
+        headers=_headers,
     )

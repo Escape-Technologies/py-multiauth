@@ -1,13 +1,12 @@
 """Custom types of authentication module."""
 
-from typing import (
-    TypedDict,
-)
+
+from pydantic import BaseModel
 
 from multiauth.entities.http import HTTPLocation
 
 
-class AuthConfigApiKey(TypedDict):
+class AuthConfigApiKey(BaseModel):
 
     """Authentication Configuration Parameters of the Api Key Method."""
 

@@ -60,18 +60,14 @@ def extract_oauth_token(
 
     # Initialize the variables
     auth_response = AuthResponse(
-        {
-            'headers': {},
-            'tech': AuthTech.OAUTH,
-        },
+        headers={},
+        tech=AuthTech.OAUTH,
     )
 
     response = AuthOAuthResponse(
-        {
-            'access_token': '',
-            'expires_in': None,
-            'refresh_token': None,
-        },
+        access_token='',
+        expires_in=None,
+        refresh_token=None,
     )
 
     if not oauth_response or not isinstance(oauth_response, dict):
@@ -79,33 +75,33 @@ def extract_oauth_token(
     if not oauth_response.get('access_token'):
         raise AuthenticationError('Invalid OAuth Response')
 
-    response['access_token'] = oauth_response['access_token']
-    response['refresh_token'] = oauth_response.get('refresh_token')
+    response.access_token = oauth_response['access_token']
+    response.refresh_token = oauth_response.get('refresh_token')
 
     # The expire_at field is the amount of seconds to expire. So we need to calculate the UNIX expiry date
     if oauth_response.get('expires_at'):
-        response['expires_in'] = int(oauth_response['expires_at']) + time.time()
+        response.expires_in = int(oauth_response['expires_at'] + time.time())
 
     # Now check the location to know where should add the token (header or body)
-    if auth_config['param_location'] == HTTPLocation.HEADER:
-        auth_response['headers']['authorization'] = auth_config['param_prefix'] + ' ' + response['access_token']
+    if auth_config.param_location == HTTPLocation.HEADER:
+        auth_response.headers['authorization'] = auth_config.param_prefix + ' ' + response.access_token
 
-    elif auth_config['param_location'] == HTTPLocation.QUERY:
+    elif auth_config.param_location == HTTPLocation.QUERY:
         pass
 
     # Add the token, the refresh token, and the expiry time
     # to the user manager in order to be accessed by other parts of the program
-    user.set_token(response['access_token'], response['expires_in'])
-    user.refresh_token = response['refresh_token']
+    user.set_token(response.access_token, response.expires_in)
+    user.refresh_token = response.refresh_token
 
     # Append the optional headers to the header
-    if auth_config['headers'] is not None:
-        for name, value in auth_config['headers'].items():
+    if auth_config.headers is not None:
+        for name, value in auth_config.headers.items():
             # Resolving duplicate keys
-            if name in auth_response['headers']:
-                auth_response['headers'][name] += ', ' + value
+            if name in auth_response.headers:
+                auth_response.headers[name] += ', ' + value
             else:
-                auth_response['headers'][name] = value
+                auth_response.headers[name] = value
 
     return auth_response
 
@@ -132,9 +128,9 @@ def auth_code_session(
     return OAuth2Session(
         client_id,
         client_secret,
-        token_endpoint_auth_method=token_endpoint_auth_method(auth_config['auth_location']),
-        scope=auth_config['scope'],
-        redirect_uri=auth_config['callback_url'],
+        token_endpoint_auth_method=token_endpoint_auth_method(auth_config.auth_location),
+        scope=auth_config.scope,
+        redirect_uri=auth_config.callback_url,
         proxies={'http': proxy, 'https': proxy} if proxy else None,
     )
 
@@ -151,26 +147,26 @@ def auth_code_handler(
 
     # Now after we create the client, we have to create the authentication url
     authentication_url, _ = client.create_authorization_url(
-        auth_config['authentication_endpoint'],
-        state=auth_config['state'],
-        code_verifier=auth_config['code_verifier'],
+        auth_config.authentication_endpoint,
+        state=auth_config.state,
+        code_verifier=auth_config.code_verifier,
     )
 
     authorization_response: str | None = None
     # Now we have to pass the authorization URL and the callback URL to the browser in order to fetch what is necessary
     # The if condition is to simply avoid mypy errors
-    if auth_config['callback_url'] is not None:
+    if auth_config.callback_url is not None:
         authorization_response = authentication_portal(
             authentication_url,
-            auth_config['callback_url'],
-            login_flow=auth_config['login_flow'],
+            auth_config.callback_url,
+            login_flow=auth_config.login_flow,
             proxy=proxy,
         )
     if not authorization_response:
         raise AuthenticationError('Authentication Error. Please complete the authentication')
 
     # Now finally, we have to fetch the access token in order to use it for the applicaiton
-    return client.fetch_token(auth_config['token_endpoint'], authorization_response=authorization_response)
+    return client.fetch_token(auth_config.token_endpoint, authorization_response=authorization_response)
 
 
 def implicit_session(
@@ -191,8 +187,8 @@ def implicit_session(
     # Create an OAuth session using the Authlib library functions
     return OAuth2Session(
         client_id,
-        token_endpoint_auth_method=token_endpoint_auth_method(auth_config['auth_location']),
-        scope=auth_config['scope'],
+        token_endpoint_auth_method=token_endpoint_auth_method(auth_config.auth_location),
+        scope=auth_config.scope,
         proxies={'http': proxy, 'https': proxy} if proxy else None,
     )
 
@@ -208,18 +204,18 @@ def implicit_handler(
     client = implicit_session(user, auth_config, proxy=proxy)
 
     authentication_url, _ = client.create_authorization_url(
-        auth_config['authentication_endpoint'],
-        state=auth_config['state'],
+        auth_config.authentication_endpoint,
+        state=auth_config.state,
     )
 
     authorization_response: str | None = None
     # Now we have to pass the authorization URL and the callback URL to the browser in order to fetch what is necessary
     # The if condition is to simply avoid mypy errors
-    if auth_config['callback_url'] is not None:
+    if auth_config.callback_url is not None:
         authorization_response = authentication_portal(
             authentication_url,
-            auth_config['callback_url'],
-            auth_config['login_flow'],
+            auth_config.callback_url,
+            auth_config.login_flow,
             proxy=proxy,
         )
     if not authorization_response:
@@ -250,8 +246,8 @@ def client_cred_session(
     return OAuth2Session(
         client_id,
         client_secret,
-        token_endpoint_auth_method=token_endpoint_auth_method(auth_config['auth_location']),
-        scope=auth_config['scope'],
+        token_endpoint_auth_method=token_endpoint_auth_method(auth_config.auth_location),
+        scope=auth_config.scope,
         proxies={'http': proxy, 'https': proxy} if proxy else None,
     )
 
@@ -266,7 +262,7 @@ def client_cred_handler(
     # First initiate the OAuth session
     client = client_cred_session(user, auth_config, proxy=proxy)
 
-    return client.fetch_token(auth_config['token_endpoint'])
+    return client.fetch_token(auth_config.token_endpoint)
 
 
 def password_cred_session(
@@ -297,8 +293,8 @@ def password_cred_session(
     client = OAuth2Session(
         client_id,
         client_secret,
-        token_endpoint_auth_method=token_endpoint_auth_method(auth_config['auth_location']),
-        scope=auth_config['scope'],
+        token_endpoint_auth_method=token_endpoint_auth_method(auth_config.auth_location),
+        scope=auth_config.scope,
         proxies={'http': proxy, 'https': proxy} if proxy else None,
     )
 
@@ -314,71 +310,69 @@ def password_cred_handler(
 
     client, client_username, client_password = password_cred_session(user, auth_config, proxy=proxy)
 
-    return client.fetch_token(auth_config['token_endpoint'], username=client_username, password=client_password)
+    return client.fetch_token(auth_config.token_endpoint, username=client_username, password=client_password)
 
 
 def oauth_config_parser(schema: dict) -> AuthConfigOAuth:
     """This function parses the OAuth schema and checks if all necessary fields exist."""
 
     auth_config: AuthConfigOAuth = AuthConfigOAuth(
-        {
-            'grant_type': AuthOAuthGrantType.AUTH_CODE,
-            'authentication_endpoint': None,
-            'token_endpoint': None,
-            'callback_url': None,
-            'scope': '',
-            'param_prefix': 'Bearer',
-            'auth_location': AuthOAuthlocation.BODY,
-            'param_location': HTTPLocation.HEADER,
-            'state': None,
-            'login_flow': [],
-            # 'challenge_method': None,
-            'code_verifier': None,
-            'headers': None,
-        },
+        grant_type=AuthOAuthGrantType.AUTH_CODE,
+        authentication_endpoint=None,
+        token_endpoint=None,
+        callback_url=None,
+        scope='',
+        param_prefix='Bearer',
+        auth_location=AuthOAuthlocation.BODY,
+        param_location=HTTPLocation.HEADER,
+        state=None,
+        login_flow=[],
+        # 'challenge_method': None,
+        code_verifier=None,
+        headers=None,
     )
 
     if not schema.get('grant_type'):
         raise AuthenticationError('Please provide the grant type')
-    auth_config['grant_type'] = AuthOAuthGrantType(schema.get('grant_type'))
+    auth_config.grant_type = AuthOAuthGrantType(schema.get('grant_type', '').upper())
     # USER_MANAGER.set_current_user_auth_type(schema.get('grant_type'))
 
     # Now according to the grant type we will have to check the parser
-    if auth_config['grant_type'] in (AuthOAuthGrantType.AUTH_CODE, AuthOAuthGrantType.IMPLICIT):
+    if auth_config.grant_type in (AuthOAuthGrantType.AUTH_CODE, AuthOAuthGrantType.IMPLICIT):
         if not schema.get('authentication_endpoint'):
             raise AuthenticationError('Please provide an authentication endpoint')
-        auth_config['authentication_endpoint'] = schema.get('authentication_endpoint')
+        auth_config.authentication_endpoint = schema.get('authentication_endpoint')
 
-    if auth_config['grant_type'] != AuthOAuthGrantType.IMPLICIT:
+    if auth_config.grant_type != AuthOAuthGrantType.IMPLICIT:
         if not schema.get('token_endpoint'):
             raise AuthenticationError('Please provide an token endpoint')
-        auth_config['token_endpoint'] = schema.get('token_endpoint')
+        auth_config.token_endpoint = schema.get('token_endpoint')
 
-    if auth_config['grant_type'] in (AuthOAuthGrantType.AUTH_CODE, AuthOAuthGrantType.IMPLICIT):
+    if auth_config.grant_type in (AuthOAuthGrantType.AUTH_CODE, AuthOAuthGrantType.IMPLICIT):
         if not schema.get('callback_url'):
             raise AuthenticationError('Please provide the authenticaiton endpoint')
-        auth_config['callback_url'] = schema.get('callback_url')
+        auth_config.callback_url = schema.get('callback_url')
 
-    auth_config['scope'] = schema.get('scope')
+    auth_config.scope = schema.get('scope')
 
     if schema.get('param_prefix'):
-        auth_config['param_prefix'] = schema['param_prefix']
+        auth_config.param_prefix = schema['param_prefix']
 
     if schema.get('auth_location'):
-        auth_config['auth_location'] = AuthOAuthlocation(schema.get('auth_location'))
+        auth_config.auth_location = AuthOAuthlocation(schema.get('auth_location', '').upper())
 
     if not schema.get('param_location'):
         raise AuthenticationError('Please provide the location')
-    auth_config['param_location'] = HTTPLocation(str(schema.get('param_location')))
+    auth_config.param_location = HTTPLocation(str(schema.get('param_location')))
 
     if schema.get('options', {}).get('login_flow'):
-        auth_config['login_flow'] = [load_selenium_command(ele) for ele in schema['options']['login_flow']]
+        auth_config.login_flow = [load_selenium_command(ele) for ele in schema['options']['login_flow']]
 
     # Options
     if 'options' in schema:
-        auth_config['state'] = schema['options'].get('state')
-        auth_config['code_verifier'] = schema['options'].get('code_verifier')
-        auth_config['headers'] = schema['options'].get('headers')
+        auth_config.state = schema['options'].get('state')
+        auth_config.code_verifier = schema['options'].get('code_verifier')
+        auth_config.headers = schema['options'].get('headers')
 
     return auth_config
 
@@ -392,7 +386,7 @@ def oauth_auth_attach(
     response according to the grant type."""
 
     # First according every grant type, we will create a handler
-    grant_type: AuthOAuthGrantType = auth_config['grant_type']
+    grant_type: AuthOAuthGrantType = auth_config.grant_type
     oauth_response: dict = {}
 
     if grant_type == AuthOAuthGrantType.AUTH_CODE:
@@ -454,24 +448,26 @@ def oauth_reauthenticator(
     # Since authentication requires the existance of an authentication token, Only check the grant type that require
     # an authentication token endpoint as input
 
-    if auth_config['grant_type'] in (AuthOAuthGrantType.AUTH_CODE, AuthOAuthGrantType.REFRESH_TOKEN):
+    client: OAuth2Session | None = None
+
+    if auth_config.grant_type in (AuthOAuthGrantType.AUTH_CODE, AuthOAuthGrantType.REFRESH_TOKEN):
         client = auth_code_session(user, auth_config, proxy=proxy)
 
-    elif auth_config['grant_type'] == AuthOAuthGrantType.CLIENT_CRED:
+    elif auth_config.grant_type == AuthOAuthGrantType.CLIENT_CRED:
         client = client_cred_session(user, auth_config, proxy=proxy)
 
-    elif auth_config['grant_type'] == AuthOAuthGrantType.PASSWORD_CRED:
+    elif auth_config.grant_type == AuthOAuthGrantType.PASSWORD_CRED:
         client, _, _ = password_cred_session(user, auth_config, proxy=proxy)
 
-    elif auth_config['grant_type'] == AuthOAuthGrantType.IMPLICIT:
+    elif auth_config.grant_type == AuthOAuthGrantType.IMPLICIT:
         client = implicit_session(user, auth_config, proxy=proxy)
 
-    if auth_config['token_endpoint']:
-        new_token = client.refresh_token(auth_config['token_endpoint'], refresh_token)
+    if auth_config.token_endpoint and client is not None:
+        new_token = client.refresh_token(auth_config.token_endpoint, refresh_token)
 
         return extract_oauth_token(user, auth_config, new_token)
 
-    if auth_config['grant_type'] == AuthOAuthGrantType.REFRESH_TOKEN and not auth_config['token_endpoint']:
+    if auth_config.grant_type == AuthOAuthGrantType.REFRESH_TOKEN and not auth_config.token_endpoint:
         raise AuthenticationError('Please provide the token endpoint')
 
     return oauth_auth_attach(user, auth_config, proxy=proxy)

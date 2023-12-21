@@ -17,7 +17,7 @@ class User:
     auth_type: AuthType | None
     credentials: dict[str, Any] | None
     expired_token: Token | None
-    expires_in: float | None
+    expires_in: int | None
     headers: dict[str, Any] | None
     refresh_token: Token | None
     token_info: JWTToken | None
@@ -30,7 +30,7 @@ class User:
         auth_type: AuthType | None = None,
         credentials: dict[str, Any] | None = None,
         expired_token: Token | None = None,
-        expires_in: float | None = None,
+        expires_in: int | None = None,
         headers: dict[str, Any] | None = None,
         refresh_token: Token | None = None,
         token_info: JWTToken | None = None,
@@ -58,28 +58,28 @@ class User:
 
             serialized_token = jwt_token_analyzer(token)
             if serialized_token.exp is not None:
-                self.expires_in = float(serialized_token.exp) - time.time()
+                self.expires_in = int(serialized_token.exp - time.time())
                 if self.expires_in < 0:
                     raise ExpiredTokenError('Token expired.')
 
     def reset(self) -> None:
         """Reset user."""
 
-        self.auth_schema: str | None = None
-        self.auth_tech: AuthTech = AuthTech.PUBLIC
-        self.auth_type: AuthType | None = None
-        self.credentials: dict[str, Any] | None = None
-        self.expired_token: Token | None = None
-        self.expires_in: float | None = None
-        self.headers: dict[str, Any] | None = None
-        self.refresh_token: Token | None = None
-        self.token_info: JWTToken | None = None
-        self.token: Token | None = None
+        self.auth_schema = None
+        self.auth_tech = AuthTech.PUBLIC
+        self.auth_type = None
+        self.credentials = None
+        self.expired_token = None
+        self.expires_in = None
+        self.headers = None
+        self.refresh_token = None
+        self.token_info = None
+        self.token = None
 
     def set_token(
         self,
         token: Token | None,
-        expires_in: float | None,
+        expires_in: int | None,
     ) -> None:
         """Set token."""
 

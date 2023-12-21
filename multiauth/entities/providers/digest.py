@@ -1,14 +1,13 @@
 """Custom types of authentication module."""
 
-from enum import Enum, unique
+from enum import StrEnum, unique
 from http import HTTPMethod
-from typing import (
-    TypedDict,
-)
+
+from pydantic import BaseModel
 
 
 @unique
-class AuthHashAlgorithmDigest(str, Enum):
+class AuthHashAlgorithmDigest(StrEnum):
 
     """The Available Hashing algorithms for Digest Authentication."""
 
@@ -20,7 +19,7 @@ class AuthHashAlgorithmDigest(str, Enum):
     SHA_512_256_SESS = 'sha-512-256-sess'
 
 
-class AuthDigestChallenge(TypedDict):
+class AuthDigestChallenge(BaseModel):
 
     """The format of the challenge in a digest authentication schema as specified by the RFC 2617."""
 
@@ -32,7 +31,7 @@ class AuthDigestChallenge(TypedDict):
     qop_options: str | None
 
 
-class AuthConfigDigest(TypedDict):
+class AuthConfigDigest(BaseModel):
 
     """Authentication Configuration Parameters of the Digest Method."""
 

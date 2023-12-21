@@ -41,13 +41,13 @@ def test_basic_authentication(mocker: MockerFixture, user_config: User, auth_sch
 
     auth_response = basic_authenticator(user_config, auth_schema)
 
-    assert auth_response['headers']['Authorization'] == 'Basic cG9zdG1hbjpwYXNzd29yZA=='
+    assert auth_response.headers['Authorization'] == 'Basic cG9zdG1hbjpwYXNzd29yZA=='
 
     mocker.patch('requests.get', return_value=mocker.Mock(text='{"authenticated":true}'))
 
     response = requests.get(
         'http://example.com',
-        headers=auth_response['headers'],
+        headers=auth_response.headers,
         timeout=5,
     )
 

@@ -13,12 +13,10 @@ def apikey_config_parser(schema: dict) -> AuthConfigApiKey:
     """This function parses the API Key schema and checks if all necessary fields exist."""
 
     auth_config = AuthConfigApiKey(
-        {
-            'param_location': HTTPLocation.HEADER,
-            'param_name': '',
-            'param_prefix': None,
-            'headers': None,
-        },
+        param_location=HTTPLocation.HEADER,
+        param_name='',
+        param_prefix=None,
+        headers=None,
     )
 
     if not schema.get('param_name'):
@@ -26,12 +24,12 @@ def apikey_config_parser(schema: dict) -> AuthConfigApiKey:
     if not schema.get('param_location'):
         raise AuthenticationError('Please provide the location to where you want to add the API Key')
 
-    auth_config['param_name'] = cast(str, schema.get('param_name'))
-    auth_config['param_location'] = schema['param_location']
+    auth_config.param_name = cast(str, schema.get('param_name'))
+    auth_config.param_location = schema['param_location']
 
     if 'options' in schema:
-        auth_config['param_prefix'] = schema['options'].get('param_prefix', 'Authorization')
-        auth_config['headers'] = schema['options'].get('headers')
+        auth_config.param_prefix = schema['options'].get('param_prefix', 'Authorization')
+        auth_config.headers = schema['options'].get('headers')
 
     return auth_config
 
@@ -43,10 +41,8 @@ def apikey_auth_attach(
     """This function attaches the user credentials to the schema and generates the proper authentication response."""
 
     auth_response = AuthResponse(
-        {
-            'headers': {},
-            'tech': AuthTech.APIKEY,
-        },
+        headers={},
+        tech=AuthTech.APIKEY,
     )
 
     # First take the credentials from the user
@@ -61,24 +57,24 @@ def apikey_auth_attach(
     user.set_token(api_key, None)
 
     # Implementation with no expression matching in order to work with mypy
-    if auth_config['param_location'] == HTTPLocation.HEADER:
-        if auth_config['param_prefix'] is not None:
-            auth_response['headers'][auth_config['param_name']] = auth_config['param_prefix'] + ' ' + api_key
+    if auth_config.param_location == HTTPLocation.HEADER:
+        if auth_config.param_prefix is not None:
+            auth_response.headers[auth_config.param_name] = auth_config.param_prefix + ' ' + api_key
         else:
-            auth_response['headers'][auth_config['param_name']] = api_key
+            auth_response.headers[auth_config.param_name] = api_key
 
-    if auth_config['param_location'] == HTTPLocation.QUERY:
+    if auth_config.param_location == HTTPLocation.QUERY:
         pass
 
     # Append the optional headers to the header
-    if auth_config['headers'] is not None:
-        for name, value in auth_config['headers'].items():
+    if auth_config.headers is not None:
+        for name, value in auth_config.headers.items():
             # Resolving duplicate keys
-            if name in auth_response['headers']:
-                auth_response['headers'][name] += ', ' + value
+            if name in auth_response.headers:
+                auth_response.headers[name] += ', ' + value
 
             else:
-                auth_response['headers'][name] = value
+                auth_response.headers[name] = value
 
     return auth_response
 

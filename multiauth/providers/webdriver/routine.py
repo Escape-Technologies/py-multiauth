@@ -83,7 +83,7 @@ def webdriver_authenticator(
     logger.info(f'Formatted header: {header_key}')
 
     if auth_config.token_lifetime:
-        user.expires_in = time.time() + timedelta(seconds=auth_config.token_lifetime).total_seconds()
+        user.expires_in = int(time.time() + timedelta(seconds=auth_config.token_lifetime).total_seconds())
 
     return AuthResponse(
         tech=AuthTech.WEBDRIVER,
