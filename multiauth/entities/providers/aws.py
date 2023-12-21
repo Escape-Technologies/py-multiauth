@@ -1,6 +1,6 @@
 """Aws provider."""
 
-from enum import Enum, unique
+from enum import StrEnum, unique
 
 from pydantic import BaseModel
 
@@ -9,7 +9,7 @@ from multiauth.entities.providers.http import HTTPLocation
 
 
 @unique
-class AuthAWSType(str, Enum):
+class AuthAWSType(StrEnum):
 
     """The authentication flow used in the AWS authentication."""
 
@@ -20,7 +20,7 @@ class AuthAWSType(str, Enum):
 
 
 @unique
-class AuthAWSChallengeResponse(str, Enum):
+class AuthAWSChallengeResponse(StrEnum):
 
     """The types of challenge responses."""
 
@@ -29,25 +29,12 @@ class AuthAWSChallengeResponse(str, Enum):
 
 
 @unique
-class AuthHashalgorithmHawkandAWS(str, Enum):
+class AuthHashalgorithmHawkandAWS(StrEnum):
 
     """The Available Hashing algorithm for Hawk authentication."""
 
     SHA_256 = 'sha-256'
     SHA_1 = 'sha-1'
-
-
-class AuthConfigHawk(BaseModel):
-
-    """Authentication Configuration Parameters of the Hawk Method."""
-
-    algorithm: AuthHashalgorithmHawkandAWS
-    user: str | None
-    nonce: str | None
-    ext: str | None
-    app: str | None
-    dig: str | None
-    timestamp: str | None
 
 
 class AuthConfigAWS(BaseModel):

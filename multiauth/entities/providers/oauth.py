@@ -1,16 +1,15 @@
 """Oauth provider."""
 
-from enum import Enum, unique
-from typing import (
-    TypedDict,
-)
+from enum import StrEnum, unique
+
+from pydantic import BaseModel
 
 from multiauth.entities.providers.http import HTTPLocation
 from multiauth.entities.providers.webdriver import SeleniumCommand
 
 
 @unique
-class AuthOAuthlocation(str, Enum):
+class AuthOAuthlocation(StrEnum):
 
     """Where the credentials during the OAuth will be sent."""
 
@@ -19,7 +18,7 @@ class AuthOAuthlocation(str, Enum):
 
 
 @unique
-class AuthOAuthGrantType(str, Enum):
+class AuthOAuthGrantType(StrEnum):
 
     """The grant types of the OAuth."""
 
@@ -37,7 +36,7 @@ class AuthOAuthGrantType(str, Enum):
 #     SHA_256 = 'sha-256'
 
 
-class AuthOAuthResponse(TypedDict):
+class AuthOAuthResponse(BaseModel):
 
     """The format of the OAuth access token response according to the official documentation."""
 
@@ -46,7 +45,7 @@ class AuthOAuthResponse(TypedDict):
     refresh_token: str | None
 
 
-class AuthConfigOAuth(TypedDict):
+class AuthConfigOAuth(BaseModel):
 
     """Authentication Configuration Parameters of the OAuth Method."""
 
