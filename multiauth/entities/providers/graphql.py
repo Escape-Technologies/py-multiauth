@@ -1,6 +1,8 @@
 """Graphql provider."""
 
-from typing import Literal, TypedDict
+from typing import Literal
+
+from pydantic import BaseModel
 
 from multiauth.entities.http import HTTPMethod
 from multiauth.entities.providers.http import HTTPLocation
@@ -8,7 +10,7 @@ from multiauth.entities.providers.http import HTTPLocation
 Operation = Literal['query', 'mutation', 'subscription']
 
 
-class AuthConfigGraphQL(TypedDict):
+class AuthConfigGraphQL(BaseModel):
 
     """Authentication Configuration Parameters of the GraphQL Method."""
 

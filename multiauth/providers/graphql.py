@@ -56,21 +56,21 @@ def generate_authentication_mutation(
         # Here we have to take the case if refresh is true
         graphql_query = ''
         if refresh:
-            if auth_config['refresh_mutation_name'] is None:
+            if auth_config.refresh_mutation_name is None:
                 raise AuthenticationError('Configuration file error. Missing refresh_mutation_name')
 
-            if refresh_field and auth_config['refresh_mutation_name'] is not None:
-                graphql_query = 'mutation {' + auth_config['refresh_mutation_name'] + arguments + '{ \n'
+            if refresh_field and auth_config.refresh_mutation_name is not None:
+                graphql_query = 'mutation {' + auth_config.refresh_mutation_name + arguments + '{ \n'
             else:
-                if auth_config['refresh_mutation_name'] is not None:
-                    graphql_query = 'mutation {' + auth_config['refresh_mutation_name'] + arguments + '\n'
+                if auth_config.refresh_mutation_name is not None:
+                    graphql_query = 'mutation {' + auth_config.refresh_mutation_name + arguments + '\n'
         else:
-            graphql_query = 'mutation {' + auth_config['mutation_name'] + arguments + '{ \n'
-        graphql_query += auth_config['mutation_field'] + '\n'
-        if auth_config['refresh_field_name'] is not None:
-            graphql_query += auth_config['refresh_field_name'] + '\n'
-        if auth_config['headers'] is not None:
-            for header_arg in auth_config['headers'].values():
+            graphql_query = 'mutation {' + auth_config.mutation_name + arguments + '{ \n'
+        graphql_query += auth_config.mutation_field + '\n'
+        if auth_config.refresh_field_name is not None:
+            graphql_query += auth_config.refresh_field_name + '\n'
+        if auth_config.headers is not None:
+            for header_arg in auth_config.headers.values():
                 if '{{' in header_arg and '}}' in header_arg:
                     graphql_query += cast(Match, re.search('{{(.*)}}', header_arg)).group(1) + '\n'
 
@@ -80,7 +80,7 @@ def generate_authentication_mutation(
             graphql_query = graphql_query[:-1] + '}'
 
         return {
-            'http_method': auth_config['method'],
+            'http_method': auth_config.method,
             'graphql_query': graphql_query,
             'graphql_variables': None,
         }
@@ -93,21 +93,19 @@ def graphql_config_parser(schema: dict) -> AuthConfigGraphQL:
     """This function parses the GraphQL schema and checks if all necessary fields exist."""
 
     auth_config = AuthConfigGraphQL(
-        {
-            'url': '',
-            'mutation_name': 'str',
-            'mutation_field': '',
-            'method': HTTPMethod.POST,
-            'operation': 'mutation',
-            'token_name': '',
-            'refresh_mutation_name': None,
-            'refresh_field_name': None,
-            'refresh_field': True,
-            'param_name': None,
-            'param_prefix': None,
-            'param_location': HTTPLocation.HEADER,
-            'headers': None,
-        },
+        url='',
+        mutation_name='str',
+        mutation_field='',
+        method=HTTPMethod.POST,
+        operation='mutation',
+        token_name='',
+        refresh_mutation_name=None,
+        refresh_field_name=None,
+        refresh_field=True,
+        param_name=None,
+        param_prefix=None,
+        param_location=HTTPLocation.HEADER,
+        headers=None,
     )
 
     if not schema.get('url'):
@@ -117,25 +115,25 @@ def graphql_config_parser(schema: dict) -> AuthConfigGraphQL:
     if not schema.get('mutation_field'):
         raise AuthenticationError('Please provide the mutation field in the authentication response')
 
-    auth_config['url'] = schema['url']
-    if not auth_config['url'].startswith('http'):
-        auth_config['url'] = 'https://' + auth_config['url']
+    auth_config.url = schema['url']
+    if not auth_config.url.startswith('http'):
+        auth_config.url = 'https://' + auth_config.url
 
-    auth_config['mutation_name'] = schema['mutation_name']
-    auth_config['mutation_field'] = schema['mutation_field']
+    auth_config.mutation_name = schema['mutation_name']
+    auth_config.mutation_field = schema['mutation_field']
 
     # Options
     if 'options' in schema:
-        auth_config['refresh_mutation_name'] = schema['options'].get('refresh_mutation_name')
-        auth_config['refresh_field_name'] = schema['options'].get('refresh_field_name')
-        auth_config['refresh_field'] = schema['options'].get('refresh_field', True)
-        auth_config['operation'] = schema['options'].get('operation', 'mutation')
-        auth_config['param_location'] = HTTPLocation(schema['options'].get('param_location', 'header').upper())
-        auth_config['param_name'] = schema['options'].get('param_name')
-        auth_config['param_prefix'] = schema['options'].get('param_prefix')
-        auth_config['headers'] = schema['options'].get('headers')
-        auth_config['method'] = HTTPMethod(schema['options'].get('method', 'POST').upper())
-        auth_config['token_name'] = schema['options'].get('token_name')
+        auth_config.refresh_mutation_name = schema['options'].get('refresh_mutation_name')
+        auth_config.refresh_field_name = schema['options'].get('refresh_field_name')
+        auth_config.refresh_field = schema['options'].get('refresh_field', True)
+        auth_config.operation = schema['options'].get('operation', 'mutation')
+        auth_config.param_location = HTTPLocation(schema['options'].get('param_location', 'header').upper())
+        auth_config.param_name = schema['options'].get('param_name')
+        auth_config.param_prefix = schema['options'].get('param_prefix')
+        auth_config.headers = schema['options'].get('headers')
+        auth_config.method = HTTPMethod(schema['options'].get('method', 'POST').upper())
+        auth_config.token_name = schema['options'].get('token_name')
 
     return auth_config
 
@@ -161,11 +159,11 @@ def graphql_auth_attach(
 
     # Now we need to send the request
     response = requests.request(
-        auth_config['method'],
-        auth_config['url'],
+        auth_config.method,
+        auth_config.url,
         json=data,
         timeout=5,
-        headers=auth_config['headers'],
+        headers=auth_config.headers,
         proxies={'http': proxy, 'https': proxy} if proxy else None,
     )
 
@@ -175,7 +173,7 @@ def graphql_auth_attach(
         cookie_header = [f'{name}={value}' for name, value in cookie_header.items()]
         cookie_header = ';'.join(cookie_header)
     else:
-        if auth_config['param_location'] == HTTPLocation.COOKIE:
+        if auth_config.param_location == HTTPLocation.COOKIE:
             raise AuthenticationError('No cookie found in the response')
 
         cookie_header = None
@@ -188,22 +186,20 @@ def graphql_auth_attach(
     # There are two parts
     # 1- If auth cookie is enabled, then we simply search add the cookie to the auth response and that is it
     # 2- If auth cookie is disables, we continue the authentication process
-    if not auth_config['param_location'] == HTTPLocation.COOKIE:
-        if auth_config['param_name'] is None:
+    if not auth_config.param_location == HTTPLocation.COOKIE:
+        if auth_config.param_name is None:
             headers['Authorization'] = ''
         else:
-            headers[auth_config['param_name']] = ''
+            headers[auth_config.param_name] = ''
 
-        if auth_config['param_prefix'] is not None:
-            headers[next(iter(headers))] += (
-                auth_config['param_prefix'] + ' ' + '{{' + auth_config['mutation_field'] + '}}'
-            )
+        if auth_config.param_prefix is not None:
+            headers[next(iter(headers))] += auth_config.param_prefix + ' ' + '{{' + auth_config.mutation_field + '}}'
         else:
-            headers[next(iter(headers))] += 'Bearer {{' + auth_config['mutation_field'] + '}}'
+            headers[next(iter(headers))] += 'Bearer {{' + auth_config.mutation_field + '}}'
 
     # Append the optional headers to the header
-    if auth_config['headers'] is not None:
-        for name, value in auth_config['headers'].items():
+    if auth_config.headers is not None:
+        for name, value in auth_config.headers.items():
             # Resolving duplicate keys
             if name in headers:
                 headers[name] += ', ' + value
@@ -213,7 +209,7 @@ def graphql_auth_attach(
     # Append the cookie header and check if the authentication type is a cookie authentication or no
     if cookie_header:
         headers['cookie'] = cookie_header
-        if auth_config['param_location'] == HTTPLocation.COOKIE:
+        if auth_config.param_location == HTTPLocation.COOKIE:
             return AuthResponse(
                 {
                     'tech': AuthTech.GRAPHQL,
@@ -226,14 +222,14 @@ def graphql_auth_attach(
 
     # Fetching token from the header is priorized
     # TODO(antoine@escape.tech): Add support of optional headers (Previously inserted in `headers`)
-    if auth_config['token_name'] is not None:
-        token_key = auth_config['token_name']
+    if auth_config.token_name is not None:
+        token_key = auth_config.token_name
         token = response.headers.get(token_key) or response.cookies.get(token_key)  # type: ignore[no-untyped-call]
         if token:
-            if auth_config['param_prefix']:
-                token_key = auth_config['param_prefix'] + ' ' + token
+            if auth_config.param_prefix:
+                token_key = auth_config.param_prefix + ' ' + token
 
-            headers = auth_config['headers'] if auth_config['headers'] is not None else {}
+            headers = auth_config.headers if auth_config.headers is not None else {}
             headers[token_key] = token
 
             auth_response = AuthResponse(
@@ -249,7 +245,7 @@ def graphql_auth_attach(
             response,
             AuthTech.REST,
             headers,
-            auth_config['refresh_field_name'],
+            auth_config.refresh_field_name,
         )
 
         token = auth_response['headers'][next(iter(headers))].split(' ')[1]
@@ -306,7 +302,7 @@ def graphql_reauthenticator(
 
     # Now we have to generate the graphQL query that we need to send
     # To do that we have to generate a dictionary
-    credentials: dict = {auth_config['refresh_field_name']: refresh_token}
+    credentials: dict = {auth_config.refresh_field_name: refresh_token}
 
     # Now we do the same thing we do in the function above
     # First we have to generate the graphQL query that we need to send
@@ -315,7 +311,7 @@ def graphql_reauthenticator(
         auth_config,
         credentials,
         refresh=True,
-        refresh_field=auth_config['refresh_field'],
+        refresh_field=auth_config.refresh_field,
     )
     data: dict[Any, Any]
 
@@ -328,8 +324,8 @@ def graphql_reauthenticator(
 
     # Now we need to send the request
     response = requests.request(
-        auth_config['method'],
-        auth_config['url'],
+        auth_config.method,
+        auth_config.url,
         json=data,
         timeout=5,
         proxies={'http': proxy, 'https': proxy} if proxy else None,
@@ -341,7 +337,7 @@ def graphql_reauthenticator(
         cookie_header = [f'{name}={value}' for name, value in cookie_header.items()]
         cookie_header = ';'.join(cookie_header)
     else:
-        if auth_config['param_location'] == HTTPLocation.COOKIE:
+        if auth_config.param_location == HTTPLocation.COOKIE:
             raise AuthenticationError('No cookie found in the response')
 
         cookie_header = None
@@ -354,22 +350,20 @@ def graphql_reauthenticator(
     # There are two parts
     # 1- If auth cookie is enabled, then we simply search add the cookie to the auth response and that is it
     # 2- If auth cookie is disables, we continue the authentication process
-    if not auth_config['param_location'] == HTTPLocation.COOKIE:
-        if auth_config['param_name'] is None:
+    if not auth_config.param_location == HTTPLocation.COOKIE:
+        if auth_config.param_name is None:
             headers['Authorization'] = ''
         else:
-            headers[auth_config['param_name']] = ''
+            headers[auth_config.param_name] = ''
 
-        if auth_config['param_prefix'] is not None:
-            headers[next(iter(headers))] += (
-                auth_config['param_prefix'] + ' ' + '{{' + auth_config['mutation_field'] + '}}'
-            )
+        if auth_config.param_prefix is not None:
+            headers[next(iter(headers))] += auth_config.param_prefix + ' ' + '{{' + auth_config.mutation_field + '}}'
         else:
-            headers[next(iter(headers))] += 'Bearer {{' + auth_config['mutation_field'] + '}}'
+            headers[next(iter(headers))] += 'Bearer {{' + auth_config.mutation_field + '}}'
 
     # Append the optional headers to the header
-    if auth_config['headers'] is not None:
-        for name, value in auth_config['headers'].items():
+    if auth_config.headers is not None:
+        for name, value in auth_config.headers.items():
             # Resolving duplicate keys
             if name in headers:
                 headers[name] += ', ' + value
@@ -380,7 +374,7 @@ def graphql_reauthenticator(
     # Append the cookie header and check if the authentication type is a cookie authentication or no
     if cookie_header:
         headers['cookie'] = cookie_header
-        if auth_config['param_location'] == HTTPLocation.COOKIE:
+        if auth_config.param_location == HTTPLocation.COOKIE:
             return AuthResponse(
                 {
                     'tech': AuthTech.GRAPHQL,
@@ -393,7 +387,7 @@ def graphql_reauthenticator(
         response,
         AuthTech.REST,
         headers,
-        auth_config['refresh_field_name'],
+        auth_config.refresh_field_name,
     )
 
     token = auth_response['headers'][next(iter(headers))].split(' ')[1]
