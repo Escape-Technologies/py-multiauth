@@ -14,8 +14,9 @@ import jwt
 from pycognito.aws_srp import AWSSRP  # type: ignore[import-untyped]
 
 from multiauth.entities.errors import AuthenticationError
-from multiauth.entities.main import AuthAWSType, AuthResponse, AuthTech
-from multiauth.entities.providers.aws import AuthConfigAWS, AuthHashalgorithmHawkandAWS
+from multiauth.entities.http import HTTPHeaders
+from multiauth.entities.main import AuthResponse, AuthTech, Token
+from multiauth.entities.providers.aws import AuthAWSType, AuthConfigAWS, AuthHashalgorithmHawkandAWS
 from multiauth.entities.providers.http import HTTPLocation
 from multiauth.helpers import get_secret_hash
 from multiauth.manager import User
@@ -175,10 +176,10 @@ def aws_auth_attach(
         refresh_token = user.credentials['refresh_token']
         return aws_reauthenticator(user, cast(dict, auth_config), refresh_token, parse=False)
     else:
-        return AuthResponse(tech=AuthTech.AWS, headers={}, cookies={}, body={}, name=user.name)
+        return AuthResponse(tech=AuthTech.AWS, name=user.name)
 
     # Extract the access_token and the refresh token
-    access_token: str = aws_response['AuthenticationResult']['AccessToken']
+    access_token: Token = aws_response['AuthenticationResult']['AccessToken']
     refresh_token = aws_response['AuthenticationResult']['RefreshToken']
 
     # Now we to have prepare the header
@@ -203,8 +204,6 @@ def aws_auth_attach(
 
     auth_response: AuthResponse = AuthResponse(
         tech=AuthTech.AWS,
-        headers=headers,
-        cookies={},
         body={},
         name=user.name,
     )
@@ -302,8 +301,8 @@ def aws_reauthenticator(
     )
 
     # Extract the access_token and the refresh token
-    access_token: str = response['AuthenticationResult']['AccessToken']
-    new_refresh_token: str = response['AuthenticationResult']['RefreshToken']
+    access_token: Token = response['AuthenticationResult']['AccessToken']
+    new_refresh_token: Token = response['AuthenticationResult']['RefreshToken']
 
     try:
         expiry_time = jwt.decode(
@@ -344,9 +343,6 @@ def aws_reauthenticator(
 
     auth_response: AuthResponse = AuthResponse(
         tech=AuthTech.AWS,
-        headers=headers,
-        cookies={},
-        body={},
         name=user.name,
     )
 
@@ -357,7 +353,7 @@ def aws_reauthenticator(
 def aws_signature(
     user: User,
     schema: dict,
-    headers: dict[str, str],
+    headers: HTTPHeaders,
     method: HTTPMethod,
     payload: Any,
     url: str,
@@ -404,7 +400,7 @@ def aws_signature(
     path = parsed_url.path
 
     # Add optional header
-    _headers: dict[str, str] = deepcopy(headers)
+    _headers: HTTPHeaders = deepcopy(headers)
     if auth_config.headers is not None:
         for name, value in auth_config.headers.items():
             # Resolving duplicate keys
@@ -477,7 +473,5 @@ def aws_signature(
     return AuthResponse(
         tech=AuthTech.AWS,
         headers=_headers,
-        cookies={},
-        body={},
         name=user.name,
     )

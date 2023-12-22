@@ -5,6 +5,7 @@ from datetime import timedelta
 import pkg_resources
 
 from multiauth.entities.errors import AuthenticationError
+from multiauth.entities.http import HTTPHeaders
 from multiauth.entities.main import AuthResponse, AuthTech
 from multiauth.entities.providers.webdriver import WebdriverConfig
 from multiauth.manager import User
@@ -87,10 +88,10 @@ def webdriver_authenticator(
 
     return AuthResponse(
         tech=AuthTech.WEBDRIVER,
-        headers={
-            header_key: header_value,
-        },
-        cookies={},
-        body={},
+        headers=HTTPHeaders(
+            {
+                header_key: header_value,
+            },
+        ),
         name=user.name,
     )

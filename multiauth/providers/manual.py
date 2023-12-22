@@ -1,6 +1,5 @@
 """Implementation of the Manual authentication schema."""
 
-from typing import Any, cast
 
 from multiauth.entities.errors import AuthenticationError
 from multiauth.entities.main import AuthResponse, AuthTech
@@ -14,15 +13,12 @@ def manual_authenticator(user: User) -> AuthResponse:
     """
 
     auth_response = AuthResponse(
-        headers={},
         tech=AuthTech.MANUAL,
-        cookies={},
-        body={},
         name=user.name,
     )
 
     headers = user.headers
-    if not headers:
+    if headers is None:
         if not user.credentials:
             raise AuthenticationError('Configuration file error. Missing credentials')
         if 'headers' not in user.credentials:
@@ -30,7 +26,7 @@ def manual_authenticator(user: User) -> AuthResponse:
 
         headers = user.credentials['headers']
 
-    auth_response.headers = cast(dict[str, Any], headers)
+    auth_response.headers = headers
     auth_response.tech = AuthTech.MANUAL
 
     return auth_response

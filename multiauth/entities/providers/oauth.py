@@ -4,6 +4,7 @@ from enum import StrEnum, unique
 
 from pydantic import BaseModel
 
+from multiauth.entities.main import Token
 from multiauth.entities.providers.http import HTTPLocation
 from multiauth.entities.providers.webdriver import SeleniumCommand
 
@@ -40,9 +41,9 @@ class AuthOAuthResponse(BaseModel):
 
     """The format of the OAuth access token response according to the official documentation."""
 
-    access_token: str
+    access_token: Token
     expires_in: int | None
-    refresh_token: str | None
+    refresh_token: Token | None
 
 
 class AuthConfigOAuth(BaseModel):
