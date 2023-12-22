@@ -12,14 +12,13 @@ class User:
 
     """User entity."""
 
-    name: str
-    auth_schema: str | None
+    name: str  # Username
+    auth_schema: str | None  # Name of the auhtenticaton method
     auth_tech: AuthTech
-    auth_type: AuthType | None
+    auth_type: AuthType | None  # For AWS and OAuth2 subptions
     credentials: dict[str, Any] | None
     expired_token: Token | None
     expires_in: int | None
-    headers: dict[str, Any] | None
     refresh_token: Token | None
     token_info: JWTToken | None
     token: Token | None
