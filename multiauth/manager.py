@@ -8,7 +8,7 @@ from multiauth.entities.http import HTTPHeaders
 from multiauth.entities.main import AuthTech, JWTToken, Token
 from multiauth.entities.providers.aws import AuthAWSType
 from multiauth.entities.providers.oauth import AuthOAuthGrantType
-from multiauth.entities.user import UserName
+from multiauth.entities.user import MethodName, UserName
 from multiauth.helpers import jwt_token_analyzer
 
 
@@ -19,7 +19,7 @@ class User:
     def __init__(
         self,
         name: UserName,
-        auth_schema: str | None = None,
+        auth_schema: MethodName | None = None,
         auth_tech: AuthTech = AuthTech.PUBLIC,
         auth_type: AuthAWSType | AuthOAuthGrantType | None = None,
         credentials: dict[str, Any] | None = None,
