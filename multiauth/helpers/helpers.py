@@ -12,7 +12,7 @@ import jwt
 import requests
 
 from multiauth.entities.errors import AuthenticationError
-from multiauth.entities.main import AuthResponse, AuthTech, JWTToken, Token
+from multiauth.entities.main import JWTToken, Token
 from multiauth.entities.providers.digest import AuthHashAlgorithmDigest
 from multiauth.entities.providers.oauth import AuthOAuthlocation
 from multiauth.utils import dict_nested_get
@@ -20,10 +20,9 @@ from multiauth.utils import dict_nested_get
 
 def extract_token(
     response: requests.Response,
-    tech: AuthTech,
     headers: dict[str, str],
     refresh_token_name: str | None = None,
-) -> tuple[AuthResponse, str | None]:
+) -> tuple[dict[str, str], str | None]:
     """This function takes the response and tries to extract the tokens.
 
     This function is mainly a helper function to the REST and the GraphQL authenctication schema.
@@ -79,9 +78,9 @@ def extract_token(
     # Here we are going to retrieve the refresh token from the response
     if refresh_token_name is not None:
         refresh_token: str = _find_token(refresh_token_name.split('.'), response_dict)
-        return AuthResponse(tech=tech, headers=headers_to_add), refresh_token
+        return headers_to_add, refresh_token
 
-    return AuthResponse(tech=tech, headers=headers_to_add), None
+    return headers_to_add, None
 
 
 def hash_calculator(

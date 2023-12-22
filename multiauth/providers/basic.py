@@ -17,8 +17,11 @@ def basic_authenticator(
     """
 
     auth_response = AuthResponse(
-        headers={},
+        name=user.name,
         tech=AuthTech.BASIC,
+        body={},
+        cookies={},
+        headers={},
     )
 
     # Take the username and password from the user in the configuration file

@@ -140,15 +140,17 @@ def rest_auth_attach(
             return AuthResponse(
                 tech=AuthTech.REST,
                 headers=headers,
+                cookies={},
+                body={},
+                name=user.name,
             )
-    auth_response, refresh_token = extract_token(
+    extracted_headers, refresh_token = extract_token(
         response,
-        AuthTech.REST,
         headers,
         auth_config.refresh_token_name,
     )
 
-    token = auth_response.headers[next(iter(headers))].split(' ')[1]
+    token = extracted_headers[next(iter(headers))].split(' ')[1]
 
     # Add the token and the expiry time to the user manager in order to be accessed by other parts of the program
     expiry_time: int | None = None
@@ -167,7 +169,13 @@ def rest_auth_attach(
 
     user.refresh_token = refresh_token
 
-    return auth_response
+    return AuthResponse(
+        tech=AuthTech.REST,
+        headers=extracted_headers,
+        cookies={},
+        body={},
+        name=user.name,
+    )
 
 
 def rest_authenticator(
@@ -270,16 +278,18 @@ def rest_reauthenticator(
             return AuthResponse(
                 tech=AuthTech.REST,
                 headers=headers,
+                cookies={},
+                body={},
+                name=user.name,
             )
 
-    auth_response, refresh_token_result = extract_token(
+    extracted_headers, refresh_token_result = extract_token(
         response,
-        AuthTech.REST,
         headers,
         auth_config.refresh_token_name,
     )
 
-    token = auth_response.headers[next(iter(headers))].split(' ')[1]
+    token = extracted_headers[next(iter(headers))].split(' ')[1]
 
     # Add the token and the expiry time to the user manager in order to be accessed by other parts of the program
     expiry_time: int | None = None
@@ -298,4 +308,10 @@ def rest_reauthenticator(
 
     user.refresh_token = refresh_token_result
 
-    return auth_response
+    return AuthResponse(
+        headers=extracted_headers,
+        cookies={},
+        body={},
+        name=user.name,
+        tech=AuthTech.REST,
+    )

@@ -175,7 +175,7 @@ def aws_auth_attach(
         refresh_token = user.credentials['refresh_token']
         return aws_reauthenticator(user, cast(dict, auth_config), refresh_token, parse=False)
     else:
-        return AuthResponse(tech=AuthTech.AWS, headers={})
+        return AuthResponse(tech=AuthTech.AWS, headers={}, cookies={}, body={}, name=user.name)
 
     # Extract the access_token and the refresh token
     access_token: str = aws_response['AuthenticationResult']['AccessToken']
@@ -204,6 +204,9 @@ def aws_auth_attach(
     auth_response: AuthResponse = AuthResponse(
         tech=AuthTech.AWS,
         headers=headers,
+        cookies={},
+        body={},
+        name=user.name,
     )
 
     # Add the token, the refresh token, and the expiry time to the user manager in order
@@ -342,6 +345,9 @@ def aws_reauthenticator(
     auth_response: AuthResponse = AuthResponse(
         tech=AuthTech.AWS,
         headers=headers,
+        cookies={},
+        body={},
+        name=user.name,
     )
 
     return auth_response
@@ -471,4 +477,7 @@ def aws_signature(
     return AuthResponse(
         tech=AuthTech.AWS,
         headers=_headers,
+        cookies={},
+        body={},
+        name=user.name,
     )

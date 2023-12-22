@@ -8,6 +8,7 @@ from typing import (
 from pydantic import BaseModel
 
 from multiauth.entities.providers.aws import AuthAWSType
+from multiauth.entities.providers.http import Credentials
 from multiauth.entities.providers.oauth import AuthOAuthGrantType
 
 
@@ -30,12 +31,11 @@ class AuthTech(StrEnum):
     WEBDRIVER = 'webdriver'
 
 
-class AuthResponse(BaseModel):
+class AuthResponse(Credentials):
 
     """The Processed Authentication Configuration."""
 
     tech: AuthTech
-    headers: dict[str, str]
 
 
 Token = str

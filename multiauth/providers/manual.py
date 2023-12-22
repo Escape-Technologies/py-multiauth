@@ -16,6 +16,9 @@ def manual_authenticator(user: User) -> AuthResponse:
     auth_response = AuthResponse(
         headers={},
         tech=AuthTech.MANUAL,
+        cookies={},
+        body={},
+        name=user.name,
     )
 
     headers = user.headers

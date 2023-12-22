@@ -211,12 +211,14 @@ def graphql_auth_attach(
         headers['cookie'] = cookie_header
         if auth_config.param_location == HTTPLocation.COOKIE:
             return AuthResponse(
+                name=user.name,
                 tech=AuthTech.GRAPHQL,
                 headers=headers,
+                cookies={},
+                body={},
             )
 
     token: str | None = None
-    auth_response: AuthResponse
     refresh_token: str | None = None
 
     # Fetching token from the header is priorized
@@ -231,21 +233,15 @@ def graphql_auth_attach(
             headers = auth_config.headers if auth_config.headers is not None else {}
             headers[token_key] = token
 
-            auth_response = AuthResponse(
-                tech=AuthTech.REST,
-                headers=headers,
-            )
-
     if not token:
         # Now fetch the token and create the Authentication Response
-        auth_response, refresh_token = extract_token(
+        extracted_headers, refresh_token = extract_token(
             response,
-            AuthTech.REST,
             headers,
             auth_config.refresh_field_name,
         )
 
-        token = auth_response.headers[next(iter(headers))].split(' ')[1]
+        token = extracted_headers[next(iter(headers))].split(' ')[1]
 
     # If the token is not a JWT token, don't add expiry time (No way of knowing if the token is expired or no)
     try:
@@ -375,17 +371,27 @@ def graphql_reauthenticator(
             return AuthResponse(
                 tech=AuthTech.GRAPHQL,
                 headers=headers,
+                cookies={},
+                body={},
+                name=user.name,
             )
 
     # Now fetch the token and create the Authentication Response
-    auth_response, refresh_token_result = extract_token(
+    extracted_headers, refresh_token_result = extract_token(
         response,
-        AuthTech.REST,
         headers,
         auth_config.refresh_field_name,
     )
 
-    token = auth_response.headers[next(iter(headers))].split(' ')[1]
+    auth_response = AuthResponse(
+        name=user.name,
+        tech=AuthTech.GRAPHQL,
+        headers=extracted_headers,
+        cookies={},
+        body={},
+    )
+
+    token = extracted_headers[next(iter(headers))].split(' ')[1]
 
     # If the token is not a JWT token, don't add expiry time (No way of knowing if the token is expired or no)
     try:

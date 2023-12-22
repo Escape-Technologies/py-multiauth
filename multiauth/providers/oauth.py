@@ -62,6 +62,9 @@ def extract_oauth_token(
     auth_response = AuthResponse(
         headers={},
         tech=AuthTech.OAUTH,
+        cookies={},
+        body={},
+        name=user.name,
     )
 
     response = AuthOAuthResponse(

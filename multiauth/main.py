@@ -177,6 +177,7 @@ class MultiAuth:
             del _user_credientials['auth']
 
             _user: User = User(
+                name=user,
                 auth_schema=user_info['auth'],
                 auth_tech=AuthTech.PUBLIC if user_info['auth'] is None else AuthTech(schema['tech']),
                 credentials=_user_credientials,
