@@ -2,7 +2,7 @@
 import datetime
 import enum
 from http import HTTPMethod
-from typing import Any
+from typing import Any, NewType
 
 from pydantic import BaseModel
 
@@ -17,6 +17,12 @@ class HTTPLocation(enum.StrEnum):
 class HTTPScheme(enum.StrEnum):
     HTTP = 'http'
     HTTPS = 'https'
+
+
+JSONSerializable = dict | list | str | int | float | bool
+
+HTTPHeaders = NewType('HTTPHeaders', dict[str, str])
+HTTPCookies = NewType('HTTPCookies', dict[str, str])
 
 
 def parse_method(raw_method: Any) -> HTTPMethod:
@@ -42,9 +48,6 @@ def parse_scheme(raw_scheme: Any) -> HTTPScheme:
     if scheme == HTTPScheme.HTTPS.value:
         return HTTPScheme.HTTPS
     raise ValueError('Input is not cURL command with a valid scheme. Valid schemes are "http" and "https"')
-
-
-JSONSerializable = dict | list | str | int | float | bool
 
 
 class HTTPRequest(BaseModel):

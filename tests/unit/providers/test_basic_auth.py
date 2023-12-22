@@ -8,6 +8,7 @@ import requests
 from pytest_mock import MockerFixture
 
 from multiauth.entities.main import AuthTech
+from multiauth.entities.user import UserName
 from multiauth.manager import User
 from multiauth.providers.basic import basic_authenticator
 
@@ -24,7 +25,7 @@ def user_config() -> User:
     """Test user configuration."""
 
     return User(
-        name='fixture',
+        name=UserName('fixture'),
         auth_schema='schema1',
         auth_tech=AuthTech.BASIC,
         auth_type=None,

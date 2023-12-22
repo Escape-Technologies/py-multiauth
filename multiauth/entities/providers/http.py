@@ -1,9 +1,10 @@
 from http import HTTPMethod
-from typing import Any
+from typing import Any, NewType
 
 from pydantic import BaseModel
 
-from multiauth.entities.http import HTTPLocation
+from multiauth.entities.http import HTTPCookies, HTTPHeaders, HTTPLocation
+from multiauth.entities.user import UserName
 
 ##### Authentications ######
 
@@ -12,8 +13,8 @@ class AuthRequester(BaseModel):
     url: str
     method: HTTPMethod
     body: Any | None
-    headers: dict[str, str]
-    cookies: dict[str, str]
+    headers: HTTPHeaders
+    cookies: HTTPCookies
 
 
 class AuthExtractor(BaseModel):
@@ -43,25 +44,27 @@ class AuthProvider(BaseModel):
 ###### Authentication Extensions ######
 
 
+GraphQLQuery = NewType('GraphQLQuery', str)
+
+
 class GraphQLAuthRequester(AuthRequester):
-    query: str
+    query: GraphQLQuery
+
+
+##### AuthenticatinMethods ####
 
 
 ##### Credentials ####
 
 
 class Credentials(BaseModel):
-    name: str
+    name: UserName
     body: Any | None
-    headers: dict[str, str]
-    cookies: dict[str, str]
+    headers: HTTPHeaders
+    cookies: HTTPCookies
 
 
-class RESTCredentials(Credentials):
-    pass
-
-
-class APICredentials(Credentials):
+class RESTCredentials(BaseModel):
     pass
 
 
@@ -72,3 +75,56 @@ class BasicCredentials(Credentials):
 
 class GraphQLCredentials(Credentials):
     variables: dict[str, str]
+
+
+class DigestCredentials(Credentials):
+    username: str
+    password: str
+
+
+class AWSRefreshCredentials(Credentials):
+    refreshToken: str
+
+
+class AWSSignatureCredentials(Credentials):
+    accessKey: str
+    secretKey: str
+
+
+class AWSPasswordCredentials(Credentials):
+    username: str
+    password: str
+
+
+class AWSSRPCredentials(Credentials):
+    username: str
+    password: str
+
+
+class OAuth2AuthCodeCredentials(Credentials):
+    clientId: str
+    clientSecret: str
+
+
+class OAuth2ClientCredentials(Credentials):
+    clientId: str
+    clientSecret: str
+
+
+class OAuth2PasswordCredentials(Credentials):
+    clientId: str
+    clientSecret: str
+    username: str
+    password: str
+
+
+class OAuth2ImplicitCredentials(Credentials):
+    clientId: str
+
+
+###### CONFIG ######
+
+
+class AuthConfig(BaseModel):
+    users: list[Credentials]
+    methods: list[AuthProvider]

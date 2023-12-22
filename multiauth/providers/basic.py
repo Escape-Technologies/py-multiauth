@@ -2,7 +2,7 @@
 
 import base64
 
-from multiauth.entities.main import AuthResponse, AuthTech
+from multiauth.entities.main import AuthResponse, AuthTech, Token
 from multiauth.manager import User
 
 
@@ -19,9 +19,6 @@ def basic_authenticator(
     auth_response = AuthResponse(
         name=user.name,
         tech=AuthTech.BASIC,
-        body={},
-        cookies={},
-        headers={},
     )
 
     # Take the username and password from the user in the configuration file
@@ -30,7 +27,7 @@ def basic_authenticator(
     value = username + ':' + password
     # Encode base64 the value
     encoded_value = base64.b64encode(value.encode('ascii'))
-    header_value = encoded_value.decode('ascii')
+    header_value = Token(encoded_value.decode('ascii'))
 
     # Add the token to the current user
     user.set_token(header_value, None)

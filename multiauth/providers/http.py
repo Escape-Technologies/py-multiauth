@@ -7,8 +7,9 @@ from urllib.parse import parse_qs, urlencode, urlparse, urlunparse
 import requests
 
 from multiauth.entities.errors import AuthenticationError
-from multiauth.entities.http import HTTPLocation, HTTPRequest, HTTPResponse
+from multiauth.entities.http import HTTPCookies, HTTPHeaders, HTTPLocation, HTTPRequest, HTTPResponse
 from multiauth.entities.providers.http import AuthExtractor, AuthInjector, AuthRequester, Credentials
+from multiauth.entities.user import UserName
 from multiauth.helpers.curl import parse_scheme
 from multiauth.providers.http_parser import parse_config
 from multiauth.utils import deep_merge_data, dict_find_path, dict_nested_get, merge_headers
@@ -119,14 +120,19 @@ def inject_token(injector: AuthInjector, username: str, token: str, set_cookies:
     token_value = f'{injector.prefix.strip()} {token}' if injector.prefix else token
 
     if injector.location == HTTPLocation.HEADER:
-        return Credentials(name=username, headers={injector.key: token_value}, cookies=set_cookies, body={})
+        return Credentials(
+            name=UserName(username),
+            headers=HTTPHeaders({injector.key: token_value}),
+            cookies=HTTPCookies(set_cookies),
+            body=None,
+        )
 
     if injector.location == HTTPLocation.COOKIE:
         return Credentials(
-            name=username,
-            headers={},
-            cookies=merge_headers(set_cookies, {injector.key: token_value}),
-            body={},
+            name=UserName(username),
+            headers=HTTPHeaders({}),
+            body=None,
+            cookies=HTTPCookies(merge_headers(set_cookies, {injector.key: token_value})),
         )
 
     raise AuthenticationError(f'We could not find any key `{injector.key}` nested in the response')

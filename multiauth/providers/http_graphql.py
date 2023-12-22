@@ -2,11 +2,13 @@
 
 
 from multiauth.entities.errors import AuthenticationError
+from multiauth.entities.http import HTTPHeaders
 from multiauth.entities.providers.http import (
     AuthRequester,
     Credentials,
     GraphQLAuthRequester,
     GraphQLCredentials,
+    GraphQLQuery,
 )
 from multiauth.providers.http_parser import parse_credentials, parser_requester
 
@@ -26,13 +28,13 @@ def graphql_parse_requester(schema: dict) -> GraphQLAuthRequester:
         body=requester.body,
         headers=requester.headers,
         cookies=requester.cookies,
-        query=schema['query'],
+        query=GraphQLQuery(schema['query']),
     )
 
 
 def graphql_requester_to_standard(requester: GraphQLAuthRequester) -> AuthRequester:
     body = {'query': requester.query}
-    headers = requester.headers | {'Content-Type': 'application/json'}
+    headers = HTTPHeaders(requester.headers | {'Content-Type': 'application/json'})
 
     return AuthRequester(
         url=requester.url,
