@@ -1,35 +1,18 @@
 """Implementation of the Rest authentication schema."""
 
 
-from multiauth.entities.errors import AuthenticationError
 from multiauth.entities.http import HTTPHeaders
+from multiauth.entities.main import AuthResponse, AuthTech
 from multiauth.entities.providers.http import (
+    AuthExtractor,
+    AuthInjector,
+    AuthProvider,
     AuthRequester,
     Credentials,
     GraphQLAuthRequester,
     GraphQLCredentials,
-    GraphQLQuery,
 )
-from multiauth.providers.http_parser import parse_credentials, parser_requester
-
-
-def graphql_parse_requester(schema: dict) -> GraphQLAuthRequester:
-    requester = parser_requester(schema)
-
-    if 'query' not in schema:
-        raise AuthenticationError('Mandatory `requester.query` key is missing for GraphQLAuthentication')
-
-    if not isinstance(schema['query'], str):
-        raise AuthenticationError('`requester.query` must be a string for GraphQLAuthentication')
-
-    return GraphQLAuthRequester(
-        url=requester.url,
-        method=requester.method,
-        body=requester.body,
-        headers=requester.headers,
-        cookies=requester.cookies,
-        query=GraphQLQuery(schema['query']),
-    )
+from multiauth.providers.http import http_standard_flow
 
 
 def graphql_requester_to_standard(requester: GraphQLAuthRequester) -> AuthRequester:
@@ -45,26 +28,6 @@ def graphql_requester_to_standard(requester: GraphQLAuthRequester) -> AuthReques
     )
 
 
-def graphql_parse_credentials(schema: dict) -> GraphQLCredentials:
-    """Parse a raw dictionary to GraphQLCredentials."""
-
-    credentials = parse_credentials(schema)
-
-    if 'variables' not in schema:
-        raise AuthenticationError('Mandatory `variables` key is missing from GraphQL credentials')
-
-    if not isinstance(schema['variables'], dict):
-        raise AuthenticationError('`variables` must be a dictionary in GraphQL credentials')
-
-    return GraphQLCredentials(
-        name=credentials.name,
-        headers=credentials.headers,
-        cookies=credentials.cookies,
-        body=credentials.body,
-        variables=schema['variables'],
-    )
-
-
 def graphql_credentials_to_standard(credentials: GraphQLCredentials) -> Credentials:
     """Parse a GraphQLCredentials to a standard Credentials."""
 
@@ -74,3 +37,19 @@ def graphql_credentials_to_standard(credentials: GraphQLCredentials) -> Credenti
         cookies=credentials.cookies,
         body={'variables': credentials.variables},
     )
+
+
+def graphql_authenticator(schema: dict, user: dict, proxy: str | None) -> AuthResponse:
+    """Authenticate a user using GraphQL."""
+
+    gql_requester = GraphQLAuthRequester(**schema['requester'])
+    requester = graphql_requester_to_standard(gql_requester)
+    extractor = AuthExtractor(**schema['extractor'])
+    injector = AuthInjector(**schema['injector'])
+
+    provider = AuthProvider(requester=requester, extractor=extractor, injector=injector, refresher=None)
+
+    gql_credentials = GraphQLCredentials(**user)
+    credentials = graphql_credentials_to_standard(gql_credentials)
+
+    return http_standard_flow(provider, AuthTech.GRAPHQL, credentials, proxy)
