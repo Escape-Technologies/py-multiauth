@@ -4,7 +4,7 @@ from typing import Literal
 
 from pydantic import BaseModel
 
-from multiauth.entities.http import HTTPMethod
+from multiauth.entities.http import HTTPHeaders, HTTPMethod
 from multiauth.entities.providers.http import HTTPLocation
 
 Operation = Literal['query', 'mutation', 'subscription']
@@ -26,4 +26,4 @@ class AuthConfigGraphQL(BaseModel):
     param_name: str | None
     param_prefix: str | None
     param_location: HTTPLocation
-    headers: dict[str, str] | None
+    headers: HTTPHeaders | None

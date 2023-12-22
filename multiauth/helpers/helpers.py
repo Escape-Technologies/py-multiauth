@@ -12,6 +12,7 @@ import jwt
 import requests
 
 from multiauth.entities.errors import AuthenticationError
+from multiauth.entities.http import HTTPHeaders
 from multiauth.entities.main import JWTToken, Token
 from multiauth.entities.providers.digest import AuthHashAlgorithmDigest
 from multiauth.entities.providers.oauth import AuthOAuthlocation
@@ -20,9 +21,9 @@ from multiauth.utils import dict_nested_get
 
 def extract_token(
     response: requests.Response,
-    headers: dict[str, str],
+    headers: HTTPHeaders,
     refresh_token_name: str | None = None,
-) -> tuple[dict[str, str], str | None]:
+) -> tuple[HTTPHeaders, Token | None]:
     """This function takes the response and tries to extract the tokens.
 
     This function is mainly a helper function to the REST and the GraphQL authenctication schema.
@@ -51,7 +52,7 @@ def extract_token(
             f'{type(e).__name__}: Response returned by authentication server is invalid: {e}',
         ) from e
 
-    headers_to_add: dict = {}
+    headers_to_add: HTTPHeaders = HTTPHeaders({})
 
     if headers is not None:
         for param_name, header_arg in headers.items():
@@ -77,7 +78,7 @@ def extract_token(
 
     # Here we are going to retrieve the refresh token from the response
     if refresh_token_name is not None:
-        refresh_token: str = _find_token(refresh_token_name.split('.'), response_dict)
+        refresh_token: Token = _find_token(refresh_token_name.split('.'), response_dict)
         return headers_to_add, refresh_token
 
     return headers_to_add, None

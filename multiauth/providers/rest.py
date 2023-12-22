@@ -7,7 +7,8 @@ import jwt
 import requests
 
 from multiauth.entities.errors import AuthenticationError
-from multiauth.entities.main import AuthResponse, AuthTech
+from multiauth.entities.http import HTTPHeaders
+from multiauth.entities.main import AuthResponse, AuthTech, Token
 from multiauth.entities.providers.http import HTTPLocation
 from multiauth.entities.providers.rest import AuthConfigRest, CredentialsEncoding
 from multiauth.helpers import extract_token
@@ -105,7 +106,7 @@ def rest_auth_attach(
 
     # Prepare the header in order to fetch the token
     # We are creating a header for the token because the helper function '_extract_token' works like that
-    headers: dict[str, str] = {}
+    headers: HTTPHeaders = HTTPHeaders({})
 
     # Now we want to append the authentication headers
     # There are two parts
@@ -140,8 +141,6 @@ def rest_auth_attach(
             return AuthResponse(
                 tech=AuthTech.REST,
                 headers=headers,
-                cookies={},
-                body={},
                 name=user.name,
             )
     extracted_headers, refresh_token = extract_token(
@@ -150,7 +149,7 @@ def rest_auth_attach(
         auth_config.refresh_token_name,
     )
 
-    token = extracted_headers[next(iter(headers))].split(' ')[1]
+    token = Token(extracted_headers[next(iter(headers))].split(' ')[1])
 
     # Add the token and the expiry time to the user manager in order to be accessed by other parts of the program
     expiry_time: int | None = None
@@ -172,8 +171,6 @@ def rest_auth_attach(
     return AuthResponse(
         tech=AuthTech.REST,
         headers=extracted_headers,
-        cookies={},
-        body={},
         name=user.name,
     )
 
@@ -243,7 +240,7 @@ def rest_reauthenticator(
 
     # Prepare the header in order to fetch the token
     # We are creating a header for the token because the helper function '_extract_token' works like that
-    headers: dict[str, str] = {}
+    headers: HTTPHeaders = HTTPHeaders({})
 
     # Now we want to append the authentication headers
     # There are two parts
@@ -278,8 +275,6 @@ def rest_reauthenticator(
             return AuthResponse(
                 tech=AuthTech.REST,
                 headers=headers,
-                cookies={},
-                body={},
                 name=user.name,
             )
 
@@ -289,7 +284,7 @@ def rest_reauthenticator(
         auth_config.refresh_token_name,
     )
 
-    token = extracted_headers[next(iter(headers))].split(' ')[1]
+    token = Token(extracted_headers[next(iter(headers))].split(' ')[1])
 
     # Add the token and the expiry time to the user manager in order to be accessed by other parts of the program
     expiry_time: int | None = None
@@ -310,8 +305,6 @@ def rest_reauthenticator(
 
     return AuthResponse(
         headers=extracted_headers,
-        cookies={},
-        body={},
         name=user.name,
         tech=AuthTech.REST,
     )

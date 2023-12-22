@@ -8,11 +8,8 @@ from urllib.parse import urlparse
 import requests
 
 from multiauth.entities.errors import AuthenticationError
-from multiauth.entities.http import HTTPMethod
-from multiauth.entities.main import (
-    AuthResponse,
-    AuthTech,
-)
+from multiauth.entities.http import HTTPHeaders, HTTPMethod
+from multiauth.entities.main import AuthResponse, AuthTech, Token
 from multiauth.entities.providers.digest import AuthConfigDigest, AuthDigestChallenge, AuthHashAlgorithmDigest
 from multiauth.helpers import hash_calculator
 from multiauth.manager import User
@@ -170,10 +167,7 @@ def digest_auth_attach(
     """This function attaches the user credentials to the schema and generates the proper authentication response."""
 
     auth_response = AuthResponse(
-        headers={},
         tech=AuthTech.DIGEST,
-        cookies={},
-        body={},
         name=user.name,
     )
 
@@ -220,9 +214,9 @@ def digest_auth_attach(
         header_value += f', qop="auth", nc="{auth_config.nonce_count}", cnonce="{auth_config.client_nonce}"'
 
     # Add token to the current user
-    user.set_token(header_value, None)
+    user.set_token(Token(header_value), None)
 
-    header = {}
+    header: HTTPHeaders = HTTPHeaders({})
     header['Authorization'] = f'Digest {header_value}'
 
     # Append the optional headers to the header
