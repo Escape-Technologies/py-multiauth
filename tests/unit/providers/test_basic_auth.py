@@ -24,6 +24,7 @@ def user_config() -> User:
     """Test user configuration."""
 
     return User(
+        name='fixture',
         auth_schema='schema1',
         auth_tech=AuthTech.BASIC,
         auth_type=None,

@@ -18,6 +18,7 @@ class HTTPScheme(enum.StrEnum):
     HTTP = 'http'
     HTTPS = 'https'
 
+
 def parse_method(raw_method: Any) -> HTTPMethod:
     if not isinstance(raw_method, str):
         raise ValueError('Provided method is not cURL command with a valid method.')
@@ -30,6 +31,7 @@ def parse_method(raw_method: Any) -> HTTPMethod:
         raise ValueError(
             f'Invalid method {raw_method.upper()}',
         ) from e
+
 
 def parse_scheme(raw_scheme: Any) -> HTTPScheme:
     if not raw_scheme or not isinstance(raw_scheme, str):

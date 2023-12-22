@@ -12,6 +12,7 @@ class User:
 
     """User entity."""
 
+    name: str
     auth_schema: str | None
     auth_tech: AuthTech
     auth_type: AuthType | None
@@ -25,6 +26,7 @@ class User:
 
     def __init__(
         self,
+        name: str,
         auth_schema: str | None = None,
         auth_tech: AuthTech = AuthTech.PUBLIC,
         auth_type: AuthType | None = None,
@@ -40,6 +42,7 @@ class User:
 
         self.reset()
 
+        self.name = name
         self.auth_schema = auth_schema
         self.auth_tech = auth_tech
         self.auth_type = auth_type
