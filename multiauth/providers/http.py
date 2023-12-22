@@ -8,7 +8,8 @@ import requests
 
 from multiauth.entities.errors import AuthenticationError
 from multiauth.entities.http import HTTPCookies, HTTPHeaders, HTTPLocation, HTTPRequest, HTTPResponse
-from multiauth.entities.providers.http import AuthExtractor, AuthInjector, AuthRequester, Credentials
+from multiauth.entities.main import AuthResponse, AuthTech
+from multiauth.entities.providers.http import AuthExtractor, AuthInjector, AuthProvider, AuthRequester, Credentials
 from multiauth.entities.user import UserName
 from multiauth.helpers.curl import parse_scheme
 from multiauth.providers.http_parser import parse_config
@@ -138,11 +139,37 @@ def inject_token(injector: AuthInjector, username: str, token: str, set_cookies:
     raise AuthenticationError(f'We could not find any key `{injector.key}` nested in the response')
 
 
+def http_standard_flow(
+    provider: AuthProvider,
+    tech: AuthTech,
+    credentials: Credentials,
+    proxy: str | None,
+) -> AuthResponse:
+    """This function is a wrapper function that implements the Rest authentication schema.
+
+    It takes the credentials of the user and authenticates them on the authentication URL.
+    After authenticating, it fetches the token and adds the token to the
+    headers along with optional headers in case the user provided them.
+    """
+
+    req, res = send_request(provider.requester, credentials, proxy)
+    token = extract_token(provider.extractor, res)
+    credentials = inject_token(provider.injector, credentials.name, token, res.cookies)
+
+    return AuthResponse(
+        name=credentials.name,
+        headers=credentials.headers,
+        cookies=credentials.cookies,
+        body=credentials.body,
+        tech=tech,
+    )
+
+
 def http_authenticator(
     credentials: Credentials,
     schema: dict,
     proxy: str | None = None,
-) -> Credentials:
+) -> AuthResponse:
     """This funciton is a wrapper function that implements the Rest authentication schema.
 
     It takes the credentials of the user and authenticates them on the authentication URL.
@@ -151,6 +178,4 @@ def http_authenticator(
     """
 
     auth_provider = parse_config(schema)
-    req, res = send_request(auth_provider.requester, credentials, proxy)
-    token = extract_token(auth_provider.extractor, res)
-    return inject_token(auth_provider.injector, credentials.name, token, res.cookies)
+    return http_standard_flow(auth_provider, AuthTech.REST, credentials, proxy)
