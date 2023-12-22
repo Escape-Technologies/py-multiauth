@@ -172,6 +172,9 @@ def digest_auth_attach(
     auth_response = AuthResponse(
         headers={},
         tech=AuthTech.DIGEST,
+        cookies={},
+        body={},
+        name=user.name,
     )
 
     # Response Calculator

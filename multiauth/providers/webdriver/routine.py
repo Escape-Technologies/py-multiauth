@@ -90,4 +90,7 @@ def webdriver_authenticator(
         headers={
             header_key: header_value,
         },
+        cookies={},
+        body={},
+        name=user.name,
     )

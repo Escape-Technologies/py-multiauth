@@ -43,6 +43,9 @@ def apikey_auth_attach(
     auth_response = AuthResponse(
         headers={},
         tech=AuthTech.APIKEY,
+        cookies={},
+        body={},
+        name=user.name,
     )
 
     # First take the credentials from the user
