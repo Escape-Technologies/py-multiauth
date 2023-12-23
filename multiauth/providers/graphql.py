@@ -8,10 +8,9 @@ import jwt
 import requests
 
 from multiauth.entities.errors import AuthenticationError
-from multiauth.entities.http import HTTPHeaders
+from multiauth.entities.http import HTTPHeaders, HTTPLocation
 from multiauth.entities.main import AuthResponse, AuthTech, Token
 from multiauth.entities.providers.graphql import AuthConfigGraphQL
-from multiauth.entities.providers.http import HTTPLocation
 from multiauth.helpers import extract_token
 from multiauth.manager import User
 
