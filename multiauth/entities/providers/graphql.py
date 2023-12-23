@@ -4,8 +4,7 @@ from typing import Literal
 
 from pydantic import BaseModel
 
-from multiauth.entities.http import HTTPHeaders, HTTPMethod
-from multiauth.entities.providers.http import HTTPLocation
+from multiauth.entities.http import HTTPHeaders, HTTPLocation, HTTPMethod
 
 Operation = Literal['query', 'mutation', 'subscription']
 

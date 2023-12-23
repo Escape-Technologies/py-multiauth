@@ -14,10 +14,9 @@ import jwt
 from pycognito.aws_srp import AWSSRP  # type: ignore[import-untyped]
 
 from multiauth.entities.errors import AuthenticationError
-from multiauth.entities.http import HTTPHeaders
+from multiauth.entities.http import HTTPHeaders, HTTPLocation
 from multiauth.entities.main import AuthResponse, AuthTech, Token
 from multiauth.entities.providers.aws import AuthAWSType, AuthConfigAWS, AuthHashalgorithmHawkandAWS
-from multiauth.entities.providers.http import HTTPLocation
 from multiauth.helpers import get_secret_hash
 from multiauth.manager import User
 
