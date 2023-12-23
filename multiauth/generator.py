@@ -2,12 +2,12 @@
 
 import base64
 import json
+from http import HTTPMethod
 from typing import cast
 from urllib.parse import parse_qs
 
 import graphql
 
-from multiauth.entities.http import HTTPMethod
 from multiauth.entities.main import AuthTech, RCFile
 from multiauth.helpers.curl import uncurl
 from multiauth.helpers.logger import setup_logger

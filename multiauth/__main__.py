@@ -1,6 +1,6 @@
 """Entry point for python cli."""
 
-from .cli import cli
+from multiauth.revamp.cli import cli
 
 if __name__ == '__main__':
     cli()

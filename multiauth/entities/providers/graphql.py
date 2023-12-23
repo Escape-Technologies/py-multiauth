@@ -1,10 +1,10 @@
 """Graphql provider."""
 
+from http import HTTPMethod
 from typing import Literal
 
 from pydantic import BaseModel
 
-from multiauth.entities.http import HTTPMethod
 from multiauth.entities.providers.http import HTTPLocation
 
 Operation = Literal['query', 'mutation', 'subscription']

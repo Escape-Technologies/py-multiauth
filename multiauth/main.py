@@ -5,6 +5,7 @@ import logging
 import os
 import time
 from copy import deepcopy
+from http import HTTPMethod
 from importlib import resources
 from typing import Any
 
@@ -12,7 +13,6 @@ import jsonschema
 
 from multiauth import static
 from multiauth.entities.errors import InvalidConfigurationError
-from multiauth.entities.http import HTTPMethod
 from multiauth.entities.main import AuthTech, Token
 from multiauth.handlers import auth_handler, reauth_handler
 from multiauth.helpers.logger import setup_logger

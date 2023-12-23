@@ -1,22 +1,8 @@
-"""Multiauth types related to HTTP protocol."""
-import datetime
-import enum
 from http import HTTPMethod
 from typing import Any
+from urllib.parse import urlparse
 
-from pydantic import BaseModel
-
-
-class HTTPLocation(enum.StrEnum):
-    HEADER = 'header'
-    COOKIE = 'cookie'
-    BODY = 'body'
-    QUERY = 'query'
-
-
-class HTTPScheme(enum.StrEnum):
-    HTTP = 'http'
-    HTTPS = 'https'
+from multiauth.revamp.lib.http_core.entities import HTTPScheme
 
 
 def parse_method(raw_method: Any) -> HTTPMethod:
@@ -44,31 +30,9 @@ def parse_scheme(raw_scheme: Any) -> HTTPScheme:
     raise ValueError('Input is not cURL command with a valid scheme. Valid schemes are "http" and "https"')
 
 
-JSONSerializable = dict | list | str | int | float | bool
+def parse_raw_url(raw_url: Any) -> tuple[HTTPScheme, str, str]:
+    if not raw_url.startswith('http://') and not raw_url.startswith('https://'):
+        raw_url = 'http://' + raw_url
+    url = urlparse(raw_url)
 
-
-class HTTPRequest(BaseModel):
-    method: HTTPMethod
-    host: str
-    scheme: HTTPScheme
-    path: str
-    headers: dict[str, str]
-    username: str | None
-    password: str | None
-    data_json: JSONSerializable | None
-    data_text: str | None
-    query_parameters: dict[str, list[str]]
-    cookies: dict[str, str]
-    proxy: str | None
-    timeout: int = 5
-
-
-class HTTPResponse(BaseModel):
-    url: str
-    status_code: int
-    reason: str
-    headers: dict[str, str]
-    cookies: dict[str, str]
-    data_text: str | None
-    data_json: JSONSerializable | None
-    elapsed: datetime.timedelta
+    return parse_scheme(url.scheme), url.netloc, url.path or '/'

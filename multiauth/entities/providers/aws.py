@@ -1,10 +1,10 @@
 """Aws provider."""
 
 from enum import StrEnum, unique
+from http import HTTPMethod
 
 from pydantic import BaseModel
 
-from multiauth.entities.http import HTTPMethod
 from multiauth.entities.providers.http import HTTPLocation
 
 

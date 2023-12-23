@@ -1,7 +1,8 @@
 """Parse a response to extract auth credentials."""
 
 
-from multiauth.entities.http import HTTPMethod
+from http import HTTPMethod
+
 from multiauth.entities.main import AuthResponse, AuthTech
 from multiauth.manager import User
 from multiauth.providers import (
