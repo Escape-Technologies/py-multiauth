@@ -1,0 +1,527 @@
+{
+  "$defs": {
+    "BaseExtraction": {
+      "properties": {},
+      "title": "BaseExtraction",
+      "type": "object"
+    },
+    "BasicRequestConfiguration": {
+      "properties": {
+        "tech": {
+          "const": "basic",
+          "default": "basic",
+          "title": "Tech"
+        },
+        "parameters": {
+          "$ref": "#/$defs/HTTPRequestParameters"
+        },
+        "extractions": {
+          "items": {
+            "$ref": "#/$defs/BaseExtraction"
+          },
+          "title": "Extractions",
+          "type": "array"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "parameters",
+        "name"
+      ],
+      "title": "BasicRequestConfiguration",
+      "type": "object"
+    },
+    "Credentials": {
+      "properties": {
+        "username": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Username"
+        },
+        "password": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Password"
+        },
+        "headers": {
+          "items": {
+            "$ref": "#/$defs/HTTPHeader"
+          },
+          "title": "Headers",
+          "type": "array"
+        },
+        "cookies": {
+          "items": {
+            "$ref": "#/$defs/HTTPCookie"
+          },
+          "title": "Cookies",
+          "type": "array"
+        },
+        "queryParameters": {
+          "items": {
+            "$ref": "#/$defs/HTTPQueryParameter"
+          },
+          "title": "Queryparameters",
+          "type": "array"
+        },
+        "body": {
+          "anyOf": [
+            {},
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Body"
+        }
+      },
+      "title": "Credentials",
+      "type": "object"
+    },
+    "GraphQLRequestConfiguration": {
+      "properties": {
+        "tech": {
+          "const": "graphql",
+          "default": "graphql",
+          "title": "Tech"
+        },
+        "parameters": {
+          "$ref": "#/$defs/GraphQLRequestParameters"
+        },
+        "extractions": {
+          "items": {
+            "$ref": "#/$defs/HTTPExtraction"
+          },
+          "title": "Extractions",
+          "type": "array"
+        }
+      },
+      "required": [
+        "parameters"
+      ],
+      "title": "GraphQLRequestConfiguration",
+      "type": "object"
+    },
+    "GraphQLRequestParameters": {
+      "properties": {
+        "url": {
+          "title": "Url",
+          "type": "string"
+        },
+        "method": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/HTTPMethod"
+            }
+          ],
+          "default": "POST"
+        },
+        "headers": {
+          "items": {
+            "$ref": "#/$defs/HTTPHeader"
+          },
+          "title": "Headers",
+          "type": "array"
+        },
+        "cookies": {
+          "items": {
+            "$ref": "#/$defs/HTTPCookie"
+          },
+          "title": "Cookies",
+          "type": "array"
+        },
+        "query_parameters": {
+          "items": {
+            "$ref": "#/$defs/HTTPQueryParameter"
+          },
+          "title": "Query Parameters",
+          "type": "array"
+        },
+        "body": {
+          "anyOf": [
+            {},
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Body"
+        },
+        "query": {
+          "title": "Query",
+          "type": "string"
+        },
+        "variables": {
+          "items": {
+            "$ref": "#/$defs/GraphQLVariable"
+          },
+          "title": "Variables",
+          "type": "array"
+        }
+      },
+      "required": [
+        "url",
+        "query"
+      ],
+      "title": "GraphQLRequestParameters",
+      "type": "object"
+    },
+    "GraphQLVariable": {
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "value": {
+          "title": "Value"
+        }
+      },
+      "required": [
+        "name",
+        "value"
+      ],
+      "title": "GraphQLVariable",
+      "type": "object"
+    },
+    "HTTPCookie": {
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "values": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Values",
+          "type": "array"
+        }
+      },
+      "required": [
+        "name",
+        "values"
+      ],
+      "title": "HTTPCookie",
+      "type": "object"
+    },
+    "HTTPExtraction": {
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "location": {
+          "$ref": "#/$defs/HTTPLocation"
+        },
+        "key": {
+          "title": "Key",
+          "type": "string"
+        },
+        "prefix": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Prefix"
+        }
+      },
+      "required": [
+        "name",
+        "location",
+        "key"
+      ],
+      "title": "HTTPExtraction",
+      "type": "object"
+    },
+    "HTTPHeader": {
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "values": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Values",
+          "type": "array"
+        }
+      },
+      "required": [
+        "name",
+        "values"
+      ],
+      "title": "HTTPHeader",
+      "type": "object"
+    },
+    "HTTPLocation": {
+      "enum": [
+        "header",
+        "cookie",
+        "body",
+        "query"
+      ],
+      "title": "HTTPLocation",
+      "type": "string"
+    },
+    "HTTPMethod": {
+      "description": "HTTP methods and descriptions\n\nMethods from the following RFCs are all observed:\n\n    * RFC 7231: Hypertext Transfer Protocol (HTTP/1.1), obsoletes 2616\n    * RFC 5789: PATCH Method for HTTP",
+      "enum": [
+        "CONNECT",
+        "DELETE",
+        "GET",
+        "HEAD",
+        "OPTIONS",
+        "PATCH",
+        "POST",
+        "PUT",
+        "TRACE"
+      ],
+      "title": "HTTPMethod",
+      "type": "string"
+    },
+    "HTTPQueryParameter": {
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "values": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Values",
+          "type": "array"
+        }
+      },
+      "required": [
+        "name",
+        "values"
+      ],
+      "title": "HTTPQueryParameter",
+      "type": "object"
+    },
+    "HTTPRequestConfiguration": {
+      "properties": {
+        "tech": {
+          "const": "http",
+          "default": "http",
+          "title": "Tech"
+        },
+        "parameters": {
+          "$ref": "#/$defs/HTTPRequestParameters"
+        },
+        "extractions": {
+          "items": {
+            "$ref": "#/$defs/HTTPExtraction"
+          },
+          "title": "Extractions",
+          "type": "array"
+        }
+      },
+      "required": [
+        "parameters"
+      ],
+      "title": "HTTPRequestConfiguration",
+      "type": "object"
+    },
+    "HTTPRequestParameters": {
+      "properties": {
+        "url": {
+          "title": "Url",
+          "type": "string"
+        },
+        "method": {
+          "$ref": "#/$defs/HTTPMethod"
+        },
+        "headers": {
+          "items": {
+            "$ref": "#/$defs/HTTPHeader"
+          },
+          "title": "Headers",
+          "type": "array"
+        },
+        "cookies": {
+          "items": {
+            "$ref": "#/$defs/HTTPCookie"
+          },
+          "title": "Cookies",
+          "type": "array"
+        },
+        "query_parameters": {
+          "items": {
+            "$ref": "#/$defs/HTTPQueryParameter"
+          },
+          "title": "Query Parameters",
+          "type": "array"
+        },
+        "body": {
+          "anyOf": [
+            {},
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Body"
+        }
+      },
+      "required": [
+        "url",
+        "method"
+      ],
+      "title": "HTTPRequestParameters",
+      "type": "object"
+    },
+    "ProcedureConfiguration": {
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "requests": {
+          "items": {
+            "discriminator": {
+              "mapping": {
+                "basic": "#/$defs/BasicRequestConfiguration",
+                "graphql": "#/$defs/GraphQLRequestConfiguration",
+                "http": "#/$defs/HTTPRequestConfiguration"
+              },
+              "propertyName": "tech"
+            },
+            "oneOf": [
+              {
+                "$ref": "#/$defs/HTTPRequestConfiguration"
+              },
+              {
+                "$ref": "#/$defs/GraphQLRequestConfiguration"
+              },
+              {
+                "$ref": "#/$defs/BasicRequestConfiguration"
+              }
+            ]
+          },
+          "title": "Requests",
+          "type": "array"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "ProcedureConfiguration",
+      "type": "object"
+    },
+    "TokenInjection": {
+      "properties": {
+        "location": {
+          "$ref": "#/$defs/HTTPLocation"
+        },
+        "key": {
+          "title": "Key",
+          "type": "string"
+        },
+        "prefix": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Prefix"
+        },
+        "variable": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Variable"
+        }
+      },
+      "required": [
+        "location",
+        "key"
+      ],
+      "title": "TokenInjection",
+      "type": "object"
+    },
+    "User": {
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "procedure": {
+          "title": "Procedure",
+          "type": "string"
+        },
+        "credentials": {
+          "$ref": "#/$defs/Credentials"
+        },
+        "injections": {
+          "items": {
+            "$ref": "#/$defs/TokenInjection"
+          },
+          "title": "Injections",
+          "type": "array"
+        }
+      },
+      "required": [
+        "name",
+        "procedure",
+        "credentials",
+        "injections"
+      ],
+      "title": "User",
+      "type": "object"
+    }
+  },
+  "description": "Multiauth configuration model.",
+  "properties": {
+    "procedures": {
+      "items": {
+        "$ref": "#/$defs/ProcedureConfiguration"
+      },
+      "title": "Procedures",
+      "type": "array"
+    },
+    "users": {
+      "items": {
+        "$ref": "#/$defs/User"
+      },
+      "title": "Users",
+      "type": "array"
+    }
+  },
+  "title": "MultiauthConfiguration",
+  "type": "object"
+}

@@ -84,6 +84,7 @@ __pycache__/
 .pytest_cache
 .coverage
 .venv
+venv
 build/
 dist/
 setup.py

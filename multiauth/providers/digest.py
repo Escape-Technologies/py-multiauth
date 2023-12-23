@@ -3,12 +3,12 @@
 import hashlib
 import os
 import time
+from http import HTTPMethod
 from urllib.parse import urlparse
 
 import requests
 
 from multiauth.entities.errors import AuthenticationError
-from multiauth.entities.http import HTTPMethod
 from multiauth.entities.main import (
     AuthResponse,
     AuthTech,

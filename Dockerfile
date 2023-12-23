@@ -1,4 +1,4 @@
-FROM python:3.11.0-slim-bullseye
+FROM python:3.12.1-slim-bullseye
 
 RUN echo "===> Installing system dependencies..." && \
     BUILD_DEPS="curl unzip" && \

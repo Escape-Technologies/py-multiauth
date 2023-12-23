@@ -1,9 +1,9 @@
 """Custom data used in utils."""
 
 
-from pydantic import BaseModel
+from http import HTTPMethod
 
-from multiauth.entities.http import HTTPMethod
+from pydantic import BaseModel
 
 
 class RawCredentials(BaseModel):

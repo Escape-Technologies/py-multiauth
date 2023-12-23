@@ -1,25 +1,18 @@
 {
   "json.schemas": [
     {
-      "fileMatch": [
-        "/**/.escaperc.json",
-        "/.escaperc.json"
-      ],
+      "fileMatch": ["/**/.escaperc.json", "/.escaperc.json"],
       "url": "./scanner/graphql/graphql_cli/common/config/json_schemas/escaperc.schema.json"
     },
     {
-      "fileMatch": [
-        "/**/.authrc.json",
-        "/**/.authrc",
-      ],
+      "fileMatch": ["/**/.authrc.json", "/**/.authrc"],
       "url": "./multiauth/static/auth_schema.json"
-    },
+    }
   ],
   "editor.codeActionsOnSave": {
     "source.organizeImports": "never"
   },
   "editor.formatOnSave": true,
-  "eslint.alwaysShowStatus": true,
   "eslint.format.enable": true,
   "eslint.lintTask.enable": true,
   "typescript.preferences.importModuleSpecifierEnding": "js",
@@ -31,10 +24,8 @@
     "**/.*_cache": true
   },
   // Python settings
-  "mypy.runUsingActiveInterpreter": true,
   "python.analysis.autoImportCompletions": true,
   "python.defaultInterpreterPath": "./.venv/bin/python",
-  "python.formatting.provider": "none",
   "[python]": {
     "editor.defaultFormatter": "ms-python.black-formatter",
     "editor.formatOnSave": true,
@@ -42,31 +33,16 @@
       "source.fixAll": "explicit",
       "source.organizeImports": "explicit"
     },
-    "editor.rulers": [
-      80,
-      120
-    ]
+    "editor.rulers": [80, 120],
+    "editor.tabSize": 4,
+    "editor.indentSize": "tabSize",
+    "editor.detectIndentation": false
   },
-  "ruff.args": [
-    "--config=pyproject.toml"
-  ],
-  "python.formatting.blackArgs": [
-    "--skip-string-normalization",
-    "--line-length",
-    "120"
-  ],
-  "python.testing.pytestArgs": [
-    "-s"
-  ],
+  "ruff.lint.args": ["--config=pyproject.toml"],
+  "python.testing.pytestArgs": ["-s"],
   "python.analysis.typeCheckingMode": "basic",
   "python.testing.unittestEnabled": false,
   "python.testing.pytestEnabled": true,
-  "python.linting.ignorePatterns": [
-    "**/site-packages/**/*.py",
-    ".vscode/*.py",
-    ".venv/**",
-    "*/.venv/**"
-  ],
   "search.exclude": {
     "node_modules": true,
     "dist": true,
@@ -78,5 +54,11 @@
   },
   "[json]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
-  }
+  },
+  "black-formatter.args": [
+    "--skip-string-normalization",
+    "--line-length",
+    "120"
+  ],
+  "python.analysis.ignore": ["*"]
 }

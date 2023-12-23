@@ -1,0 +1,59 @@
+{
+  "procedures": [
+    {
+      "name": "example-procedure",
+      "requests": [
+        {
+          "tech": "http",
+          "extractions": [
+            {
+              "name": "example-extraction",
+              "location": "body",
+              "key": "message"
+            }
+          ],
+          "parameters": {
+            "url": "https://vampi.tools.escape.tech",
+            "method": "GET"
+          }
+        },
+        {
+          "tech": "http",
+          "extractions": [
+            {
+              "name": "example-extraction",
+              "location": "body",
+              "key": "vulnerable"
+            }
+          ],
+          "parameters": {
+            "url": "https://vampi.tools.escape.tech",
+            "method": "GET"
+          }
+        }
+      ]
+    }
+  ],
+  "users": [
+    {
+      "name": "example-user",
+      "procedure": "example-procedure",
+      "credentials": {
+        "headers": [
+          {
+            "name": "X-Example-Header",
+            "values": ["example-value"]
+          }
+        ]
+      },
+      "injections": [
+        {
+          "location": "header",
+          "key": "X-Injected-Header",
+          "prefix": "Prefixed "
+        }
+      ]
+    }
+  ],
+  "$schema": "./multiauth-schema.json"
+}
