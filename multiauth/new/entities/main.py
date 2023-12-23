@@ -1,7 +1,7 @@
 from http import HTTPMethod
 from typing import Any
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from multiauth.entities.http import HTTPCookies, HTTPHeaders, HTTPLocation
 from multiauth.entities.user import UserName
@@ -46,9 +46,9 @@ class AuthProvider(BaseModel):
 
 class Credentials(BaseModel):
     name: UserName
-    body: Any | None
-    headers: HTTPHeaders
-    cookies: HTTPCookies
+    body: Any | None = Field(default=None)
+    headers: HTTPHeaders = Field(default=HTTPHeaders({}))
+    cookies: HTTPCookies = Field(default=HTTPCookies({}))
 
 
 ###### CONFIG ######
