@@ -4,8 +4,7 @@ from enum import StrEnum, unique
 
 from pydantic import BaseModel
 
-from multiauth.entities.http import HTTPMethod
-from multiauth.entities.providers.http import HTTPLocation
+from multiauth.entities.http import HTTPLocation, HTTPMethod
 
 
 @unique

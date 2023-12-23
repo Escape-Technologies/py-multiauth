@@ -5,8 +5,8 @@ import base64
 
 from multiauth.entities.errors import AuthenticationError
 from multiauth.entities.http import HTTPHeaders
-from multiauth.entities.providers.http import BasicCredentials, Credentials
-from multiauth.providers.http_parser import parse_credentials
+from multiauth.new.entities.basic import BasicCredentials, Credentials
+from multiauth.new.parser import parse_credentials
 
 
 def basic_parse_credentials(schema: dict) -> BasicCredentials:

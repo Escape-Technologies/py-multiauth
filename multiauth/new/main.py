@@ -9,10 +9,10 @@ import requests
 from multiauth.entities.errors import AuthenticationError
 from multiauth.entities.http import HTTPCookies, HTTPHeaders, HTTPLocation, HTTPRequest, HTTPResponse
 from multiauth.entities.main import AuthResponse, AuthTech
-from multiauth.entities.providers.http import AuthExtractor, AuthInjector, AuthProvider, AuthRequester, Credentials
 from multiauth.entities.user import UserName
 from multiauth.helpers.curl import parse_scheme
-from multiauth.providers.http_parser import parse_config
+from multiauth.new.entities.main import AuthExtractor, AuthInjector, AuthProvider, AuthRequester, Credentials
+from multiauth.new.parser import parse_config
 from multiauth.utils import deep_merge_data, dict_find_path, dict_nested_get, merge_headers
 
 TIMEOUT = 5

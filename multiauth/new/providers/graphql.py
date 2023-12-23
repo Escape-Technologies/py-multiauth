@@ -3,16 +3,15 @@
 
 from multiauth.entities.http import HTTPHeaders
 from multiauth.entities.main import AuthResponse, AuthTech
-from multiauth.entities.providers.http import (
+from multiauth.new.entities.graphql import GraphQLAuthRequester, GraphQLCredentials
+from multiauth.new.entities.main import (
     AuthExtractor,
     AuthInjector,
     AuthProvider,
     AuthRequester,
     Credentials,
-    GraphQLAuthRequester,
-    GraphQLCredentials,
 )
-from multiauth.providers.http import http_standard_flow
+from multiauth.new.main import http_standard_flow
 
 
 def graphql_requester_to_standard(requester: GraphQLAuthRequester) -> AuthRequester:

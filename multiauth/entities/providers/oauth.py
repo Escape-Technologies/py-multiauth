@@ -4,8 +4,8 @@ from enum import StrEnum, unique
 
 from pydantic import BaseModel
 
+from multiauth.entities.http import HTTPLocation
 from multiauth.entities.main import Token
-from multiauth.entities.providers.http import HTTPLocation
 from multiauth.entities.providers.webdriver import SeleniumCommand
 
 

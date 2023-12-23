@@ -7,8 +7,8 @@ from typing import cast
 from authlib.integrations.requests_client import OAuth2Session  # type: ignore[import-untyped]
 
 from multiauth.entities.errors import AuthenticationError
+from multiauth.entities.http import HTTPLocation
 from multiauth.entities.main import AuthResponse, AuthTech
-from multiauth.entities.providers.http import HTTPLocation
 from multiauth.entities.providers.oauth import AuthConfigOAuth, AuthOAuthGrantType, AuthOAuthlocation, AuthOAuthResponse
 from multiauth.entities.providers.webdriver import SeleniumCommand, SeleniumTest
 from multiauth.helpers import token_endpoint_auth_method
