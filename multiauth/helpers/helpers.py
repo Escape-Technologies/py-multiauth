@@ -14,7 +14,7 @@ import requests
 from multiauth.entities.errors import AuthenticationError
 from multiauth.entities.http import HTTPHeaders
 from multiauth.entities.main import JWTToken, Token
-from multiauth.entities.providers.digest import AuthHashAlgorithmDigest
+from multiauth.entities.providers.digest import DigestHashAlgorithm
 from multiauth.entities.providers.oauth import AuthOAuthlocation
 from multiauth.utils import dict_nested_get
 
@@ -85,22 +85,22 @@ def extract_token(
 
 
 def hash_calculator(
-    hash_type: AuthHashAlgorithmDigest,
+    hash_type: DigestHashAlgorithm,
     input_data: str | bytes,
 ) -> str:
     """This function determines the appropriate hashing function and returns the hashing of the input."""
 
-    if hash_type in (AuthHashAlgorithmDigest.MD5, AuthHashAlgorithmDigest.MD5_SESS):
+    if hash_type in (DigestHashAlgorithm.MD5, DigestHashAlgorithm.MD5_SESS):
         if isinstance(input_data, str):
             input_data = input_data.encode('utf-8')
         return hashlib.md5(input_data).hexdigest()  # noqa: S324
 
-    if hash_type in (AuthHashAlgorithmDigest.SHA_256, AuthHashAlgorithmDigest.SHA_256_SESS):
+    if hash_type in (DigestHashAlgorithm.SHA_256, DigestHashAlgorithm.SHA_256_SESS):
         if isinstance(input_data, str):
             input_data = input_data.encode('utf-8')
         return hashlib.sha256(input_data).hexdigest()
 
-    if hash_type in (AuthHashAlgorithmDigest.SHA_512_256, AuthHashAlgorithmDigest.SHA_512_256_SESS):
+    if hash_type in (DigestHashAlgorithm.SHA_512_256, DigestHashAlgorithm.SHA_512_256_SESS):
         if isinstance(input_data, str):
             input_data = input_data.encode('utf-8')
         return hashlib.sha512(input_data).hexdigest()

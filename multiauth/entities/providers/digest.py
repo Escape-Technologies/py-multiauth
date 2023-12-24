@@ -3,11 +3,11 @@
 from enum import StrEnum, unique
 from http import HTTPMethod
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 @unique
-class AuthHashAlgorithmDigest(StrEnum):
+class DigestHashAlgorithm(StrEnum):
 
     """The Available Hashing algorithms for Digest Authentication."""
 
@@ -27,7 +27,7 @@ class AuthDigestChallenge(BaseModel):
     domain: str | None
     nonce: str | None
     opaque: str | None
-    algorithm: AuthHashAlgorithmDigest | None
+    algorithm: DigestHashAlgorithm | None = Field(default=DigestHashAlgorithm.MD5)
     qop_options: str | None
 
 
@@ -38,7 +38,7 @@ class AuthConfigDigest(BaseModel):
     url: str
     realm: str
     nonce: str
-    algorithm: AuthHashAlgorithmDigest
+    algorithm: DigestHashAlgorithm
     domain: str
     method: HTTPMethod
     qop: str | None
