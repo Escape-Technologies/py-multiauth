@@ -10,7 +10,7 @@ import requests
 from multiauth.entities.errors import AuthenticationError
 from multiauth.entities.http import HTTPHeaders, HTTPMethod
 from multiauth.entities.main import AuthResponse, AuthTech, Token
-from multiauth.entities.providers.digest import AuthConfigDigest, AuthDigestChallenge, AuthHashAlgorithmDigest
+from multiauth.entities.providers.digest import AuthConfigDigest, AuthDigestChallenge, DigestHashAlgorithm
 from multiauth.helpers import hash_calculator
 from multiauth.manager import User
 
@@ -25,7 +25,6 @@ def send_401_request(url: str) -> AuthDigestChallenge:
         domain=None,
         nonce=None,
         opaque=None,
-        algorithm=None,
         qop_options=None,
     )
 
@@ -56,9 +55,7 @@ def send_401_request(url: str) -> AuthDigestChallenge:
         challenge.opaque = parameters.get('opaque')
 
         if parameters.get('algorithm'):
-            challenge.algorithm = AuthHashAlgorithmDigest(parameters.get('algorithm', '').upper())
-        else:
-            challenge.algorithm = AuthHashAlgorithmDigest.MD5
+            challenge.algorithm = DigestHashAlgorithm(parameters.get('algorithm', '').upper())
 
         challenge.qop_options = parameters.get('qop')
 
@@ -73,7 +70,7 @@ def digest_config_parser(schema: dict) -> AuthConfigDigest:
         url='',
         realm='',
         nonce='',
-        algorithm=AuthHashAlgorithmDigest.MD5,
+        algorithm=DigestHashAlgorithm.MD5,
         domain='',
         method=HTTPMethod.POST,
         qop=None,
@@ -113,16 +110,12 @@ def digest_config_parser(schema: dict) -> AuthConfigDigest:
         auth_config.nonce = parameters.nonce
 
     if schema['options'].get('algorithm'):
-        auth_config.algorithm = AuthHashAlgorithmDigest(schema['options'].get('algorithm'))
-    else:
-        if parameters.algorithm is None:
-            raise AuthenticationError('No value for parameters algorithm')
+        auth_config.algorithm = DigestHashAlgorithm(schema['options'].get('algorithm', '').upper())
+    elif parameters.algorithm is not None:
         auth_config.algorithm = parameters.algorithm
 
-    if not schema['options'].get('method'):
-        raise AuthenticationError('Please provide the used method in the API')
-
-    auth_config.method = HTTPMethod(schema['options'].get('method').upper())
+    if schema['options'].get('method'):
+        auth_config.method = HTTPMethod(schema['options'].get('method').upper())
 
     auth_config.qop = schema['options'].get('qop')
     if not auth_config.qop:
@@ -189,9 +182,9 @@ def digest_auth_attach(
     ha2 = hash_calculator(auth_config.algorithm, a2)
 
     if (
-        auth_config.algorithm == AuthHashAlgorithmDigest.MD5_SESS
-        or auth_config.algorithm == AuthHashAlgorithmDigest.SHA_256_SESS
-        or auth_config.algorithm == AuthHashAlgorithmDigest.SHA_512_256_SESS
+        auth_config.algorithm == DigestHashAlgorithm.MD5_SESS
+        or auth_config.algorithm == DigestHashAlgorithm.SHA_256_SESS
+        or auth_config.algorithm == DigestHashAlgorithm.SHA_512_256_SESS
     ):
         ha1 = hash_calculator(auth_config.algorithm, f'{ha1}:{auth_config.nonce}:{auth_config.client_nonce}')
 

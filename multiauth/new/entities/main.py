@@ -3,29 +3,52 @@ from typing import Any
 
 from pydantic import BaseModel, Field
 
-from multiauth.entities.http import HTTPCookies, HTTPHeaders, HTTPLocation
+from multiauth.entities.http import HTTPCookies, HTTPEncoding, HTTPHeaders, HTTPLocation
 from multiauth.entities.user import UserName
 
 ##### Authentications ######
 
 
 class AuthRequester(BaseModel):
-    url: str
-    method: HTTPMethod
-    body: Any | None
-    headers: HTTPHeaders
-    cookies: HTTPCookies
+    """The template of the Authentication request."""
+
+    url: str = Field(description='The URL to of the Authentication request.')
+    method: HTTPMethod = Field(default=HTTPMethod.POST, description='The HTTP method of the Authentication request.')
+    body: Any | None = Field(default=None, description='The body of the Authentication request.')
+    encoding: HTTPEncoding = Field(
+        default=HTTPEncoding.JSON,
+        description='The encoding of the Authentication request body.',
+    )
+    headers: HTTPHeaders = Field(
+        default=HTTPHeaders({}),
+        description='The mandatory headers of the Authentication request that are agnostic for every user.',
+    )
+    cookies: HTTPCookies = Field(
+        default=HTTPCookies({}),
+        description='The mandatory cookies of the Authentication request that are agnostic for every user.',
+    )
 
 
 class AuthExtractor(BaseModel):
-    location: HTTPLocation
-    key: str  # this is use to extract the token from the response in depth in the location
+    """How to extract the token from the response of the Authentication request."""
+
+    location: HTTPLocation = Field(description='The location of the token in the response.')
+    key: str = Field(default='token', description='The key of the token in the response.')
 
 
 class AuthInjector(BaseModel):
-    key: str
-    location: HTTPLocation
-    prefix: str
+    """How to inject the token into the authentified requests."""
+
+    location: HTTPLocation = Field(
+        default=HTTPLocation.HEADER,
+        description='The location in which the token will be injected.',
+    )
+    key: str = Field(default='Authorization', description='The key in which the token will be injected.')
+    prefix: str = Field(description='The prefix concatenated to the token when injected.')
+    encoding: HTTPEncoding = Field(
+        default=HTTPEncoding.JSON,
+        description='The encoding of the token when injected into the body.',
+    )
 
 
 class AuthRefresher(BaseModel):
@@ -35,20 +58,22 @@ class AuthRefresher(BaseModel):
 
 
 class AuthProvider(BaseModel):
-    requester: AuthRequester
-    extractor: AuthExtractor
-    injector: AuthInjector
-    refresher: AuthRefresher | None
+    requester: AuthRequester | None = Field(default=None)
+    extractor: AuthExtractor | None = Field(default=None)
+    injector: AuthInjector | None = Field(default=None)
+    refresher: AuthRefresher | None = Field(default=None)
 
 
 ##### Credentials ####
 
 
 class Credentials(BaseModel):
-    name: UserName
-    body: Any | None = Field(default=None)
-    headers: HTTPHeaders = Field(default=HTTPHeaders({}))
-    cookies: HTTPCookies = Field(default=HTTPCookies({}))
+    """The credentials of a user."""
+
+    name: UserName = Field(description='The arbitrary name given of the user.')
+    body: Any | None = Field(default=None, description='The user-specific body of the Authentication request.')
+    headers: HTTPHeaders = Field(default=HTTPHeaders({}), description='The user-specific headers.')
+    cookies: HTTPCookies = Field(default=HTTPCookies({}), description='The user-specific cookies.')
 
 
 ###### CONFIG ######
