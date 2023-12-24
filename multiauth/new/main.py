@@ -152,6 +152,9 @@ def http_standard_flow(
     headers along with optional headers in case the user provided them.
     """
 
+    if provider.requester is None or provider.extractor is None or provider.injector is None:
+        raise AuthenticationError('The auth provider is not properly configured')
+
     req, res = send_request(provider.requester, credentials, proxy)
     token = extract_token(provider.extractor, res)
     credentials = inject_token(provider.injector, credentials.name, token, res.cookies)

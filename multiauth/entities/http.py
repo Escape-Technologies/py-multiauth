@@ -14,6 +14,11 @@ class HTTPLocation(enum.StrEnum):
     QUERY = 'query'
 
 
+class HTTPEncoding(enum.StrEnum):
+    JSON = 'application/json'
+    FORM = 'application/x-www-form-urlencoded'
+
+
 class HTTPScheme(enum.StrEnum):
     HTTP = 'http'
     HTTPS = 'https'

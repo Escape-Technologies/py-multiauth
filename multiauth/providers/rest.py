@@ -7,9 +7,9 @@ import jwt
 import requests
 
 from multiauth.entities.errors import AuthenticationError
-from multiauth.entities.http import HTTPHeaders, HTTPLocation
+from multiauth.entities.http import HTTPEncoding, HTTPHeaders, HTTPLocation
 from multiauth.entities.main import AuthResponse, AuthTech, Token
-from multiauth.entities.providers.rest import AuthConfigRest, CredentialsEncoding
+from multiauth.entities.providers.rest import AuthConfigRest
 from multiauth.helpers import extract_token
 from multiauth.manager import User
 
@@ -29,7 +29,7 @@ def rest_config_parser(schema: dict) -> AuthConfigRest:
         param_name=None,
         param_prefix=None,
         headers=None,
-        credentials_encoding=CredentialsEncoding.JSON,
+        credentials_encoding=HTTPEncoding.JSON,
     )
 
     if not schema.get('url'):
@@ -54,7 +54,7 @@ def rest_config_parser(schema: dict) -> AuthConfigRest:
         auth_config.headers = schema['options'].get('headers')
 
         if credentials_encoding := schema['options'].get('credentials_encoding'):
-            for encoding in CredentialsEncoding:
+            for encoding in HTTPEncoding:
                 if encoding.value == credentials_encoding:
                     auth_config.credentials_encoding = encoding
                     break
@@ -76,9 +76,9 @@ def rest_auth_attach(
 
     # First we have to take the credentials from the currently working user
     credentials: dict[str, dict] = {}
-    if auth_config.credentials_encoding == CredentialsEncoding.JSON:
+    if auth_config.credentials_encoding == HTTPEncoding.JSON:
         credentials = {'json': user.credentials}
-    elif auth_config.credentials_encoding == CredentialsEncoding.FORM:
+    elif auth_config.credentials_encoding == HTTPEncoding.FORM:
         credentials = {'data': user.credentials}
 
     if auth_config.headers:
@@ -213,9 +213,9 @@ def rest_reauthenticator(
 
     # First we have to take the credentials from the currently working user
     credentials: dict[str, dict] = {}
-    if auth_config.credentials_encoding == CredentialsEncoding.JSON:
+    if auth_config.credentials_encoding == HTTPEncoding.JSON:
         credentials = {'json': payload}
-    elif auth_config.credentials_encoding == CredentialsEncoding.FORM:
+    elif auth_config.credentials_encoding == HTTPEncoding.FORM:
         credentials = {'data': payload}
 
     # Now we have to send the payload

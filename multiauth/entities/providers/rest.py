@@ -1,15 +1,9 @@
 """Rest provider."""
 
-from enum import Enum
 
 from pydantic import BaseModel
 
-from multiauth.entities.http import HTTPLocation, HTTPMethod
-
-
-class CredentialsEncoding(Enum):
-    JSON = 'json'
-    FORM = 'www-form-urlencoded'
+from multiauth.entities.http import HTTPEncoding, HTTPLocation, HTTPMethod
 
 
 class AuthConfigRest(BaseModel):
@@ -25,4 +19,4 @@ class AuthConfigRest(BaseModel):
     param_prefix: str | None
     param_location: HTTPLocation
     headers: dict[str, str] | None
-    credentials_encoding: CredentialsEncoding
+    credentials_encoding: HTTPEncoding
