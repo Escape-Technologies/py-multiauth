@@ -10,7 +10,7 @@ from multiauth.entities.providers.webdriver import SeleniumCommand
 
 
 @unique
-class AuthOAuthlocation(StrEnum):
+class AuthOAuthClientMethod(StrEnum):
 
     """Where the credentials during the OAuth will be sent."""
 
@@ -56,7 +56,7 @@ class AuthConfigOAuth(BaseModel):
     callback_url: str | None
     scope: str | None
     param_prefix: str
-    auth_location: AuthOAuthlocation
+    auth_location: AuthOAuthClientMethod
     param_location: HTTPLocation
     state: str | None
     login_flow: list[SeleniumCommand]
