@@ -4,6 +4,10 @@ from pydantic import Field
 
 from multiauth.new.entities.main import AuthProvider, AuthRequester, Credentials
 
+###########################
+## TODO(maxence@escape, antoine@escape): We should stop doing that and use this method: https://stackoverflow.com/questions/58833462/aws-cognito-authentication-curl-call-generate-token-without-cli-no-clien
+###########################
+
 
 class AWSRegion(enum.StrEnum):
     US_EAST_OHIO = 'us-east-2'
