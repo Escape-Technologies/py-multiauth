@@ -10,7 +10,7 @@ from multiauth.revamp.lib.http_core.entities import (
 from multiauth.revamp.lib.http_core.mergers import merge_bodies, merge_headers
 from multiauth.revamp.lib.runners.base import BaseRequestConfiguration
 from multiauth.revamp.lib.runners.http import (
-    HTTPExtraction,
+    HTTPExtractionType,
     HTTPRequestConfiguration,
     HTTPRequestParameters,
     HTTPRequestRunner,
@@ -31,7 +31,7 @@ class GraphQLRequestParameters(HTTPRequestParameters):
 
 class GraphQLRequestConfiguration(BaseRequestConfiguration):
     tech: Literal['graphql'] = 'graphql'
-    extractions: list[HTTPExtraction] = Field(default_factory=list)
+    extractions: list[HTTPExtractionType] = Field(default_factory=list)
     parameters: GraphQLRequestParameters
 
     def to_http(self) -> HTTPRequestConfiguration:

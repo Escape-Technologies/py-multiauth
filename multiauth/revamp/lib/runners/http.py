@@ -1,13 +1,12 @@
 import json
 from http import HTTPMethod
-from typing import Any, Literal
+from typing import Annotated, Any, Literal, Union
 
 from pydantic import Field
 
 from multiauth.revamp.lib.http_core.entities import (
     HTTPCookie,
     HTTPHeader,
-    HTTPLocation,
     HTTPQueryParameter,
     HTTPRequest,
     HTTPResponse,
@@ -25,16 +24,25 @@ from multiauth.revamp.lib.store.user import User
 from multiauth.revamp.lib.store.variables import AuthenticationVariable, interpolate_string
 
 
-class HTTPExtraction(BaseExtraction):
-    name: str = Field(description='The name that will be used to store the extracted value')
-    location: HTTPLocation = Field(description='The location where to search for the key')
-    key: str = Field(
-        description=(
-            'The key to use to extract the value. Its usage depends on the location. For headers, cookies,'
-            'and query parameters, this key describes the name of the header, cookie or query parameter. For a body '
-            'location, the key is the field where the token should be injected within the request bodies'
-        ),
-    )
+class HTTPHeaderExtraction(BaseExtraction):
+    location: Literal['header'] = 'header'
+    key: str = Field(description=('The name of the header to extract the value from'))
+
+
+class HTTPCookieExtraction(BaseExtraction):
+    location: Literal['cookie'] = 'cookie'
+    key: str = Field(description=('The name of the cookie to extract the value from'))
+
+
+class HTTPBodyExtraction(BaseExtraction):
+    location: Literal['body'] = 'body'
+    key: str = Field(description='The key to extract the value from the body. The key is searched recursively.')
+
+
+HTTPExtractionType = Annotated[
+    Union[HTTPHeaderExtraction, HTTPCookieExtraction, HTTPBodyExtraction],
+    Field(discriminator='location'),
+]
 
 
 class HTTPRequestParameters(BaseRequestParameters):
@@ -48,7 +56,7 @@ class HTTPRequestParameters(BaseRequestParameters):
 
 class HTTPRequestConfiguration(BaseRequestConfiguration):
     tech: Literal['http'] = 'http'
-    extractions: list[HTTPExtraction] = Field(default_factory=list)
+    extractions: list[HTTPExtractionType] = Field(default_factory=list)
     parameters: HTTPRequestParameters
 
     def get_runner(self) -> 'HTTPRequestRunner':
@@ -122,26 +130,27 @@ class HTTPRequestRunner(BaseRequestRunner[HTTPRequestConfiguration]):
         variables: list[AuthenticationVariable] = []
 
         for extraction in extractions:
-            match extraction.location:
-                case HTTPLocation.HEADER.value:
-                    h_findings = [h for h in response.headers if h.name == extraction.key]
-                    if len(h_findings) == 0:
-                        continue
-                    variables.append(AuthenticationVariable(name=extraction.name, value=','.join(h_findings[0].values)))
-                case HTTPLocation.COOKIE.value:
-                    c_findings = [c for c in response.cookies if c.name == extraction.key]
-                    if len(c_findings) == 0:
-                        continue
-                    variables.append(AuthenticationVariable(name=extraction.name, value=','.join(h_findings[0].values)))
-                case HTTPLocation.BODY.value:
-                    if response.data_json is None:
-                        continue
-                    if not isinstance(response.data_json, dict):
-                        continue
-                    result = search_key_in_dict(response.data_json, extraction.key)
-                    if result is None:
-                        continue
-                    result_str = str(result) if not isinstance(result, str) else result
-                    variables.append(AuthenticationVariable(name=extraction.name, value=result_str))
+            if isinstance(extraction, HTTPHeaderExtraction):
+                h_findings = [h for h in response.headers if h.name == extraction]
+                if len(h_findings) == 0:
+                    continue
+                variables.append(AuthenticationVariable(name=extraction.name, value=','.join(h_findings[0].values)))
+
+            if isinstance(extraction, HTTPCookieExtraction):
+                c_findings = [c for c in response.cookies if c.name == extraction.key]
+                if len(c_findings) == 0:
+                    continue
+                variables.append(AuthenticationVariable(name=extraction.name, value=','.join(h_findings[0].values)))
+
+            if isinstance(extraction, HTTPBodyExtraction):
+                if response.data_json is None:
+                    continue
+                if not isinstance(response.data_json, dict):
+                    continue
+                result = search_key_in_dict(response.data_json, extraction.key)
+                if result is None:
+                    continue
+                result_str = str(result) if not isinstance(result, str) else result
+                variables.append(AuthenticationVariable(name=extraction.name, value=result_str))
 
         return variables

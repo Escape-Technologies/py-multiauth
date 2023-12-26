@@ -1,7 +1,16 @@
 {
   "$defs": {
     "BaseExtraction": {
-      "properties": {},
+      "properties": {
+        "name": {
+          "description": "The name of the variable to store the extracted value in",
+          "title": "Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name"
+      ],
       "title": "BaseExtraction",
       "type": "object"
     },
@@ -113,7 +122,25 @@
         },
         "extractions": {
           "items": {
-            "$ref": "#/$defs/HTTPExtraction"
+            "discriminator": {
+              "mapping": {
+                "body": "#/$defs/HTTPBodyExtraction",
+                "cookie": "#/$defs/HTTPCookieExtraction",
+                "header": "#/$defs/HTTPHeaderExtraction"
+              },
+              "propertyName": "location"
+            },
+            "oneOf": [
+              {
+                "$ref": "#/$defs/HTTPHeaderExtraction"
+              },
+              {
+                "$ref": "#/$defs/HTTPCookieExtraction"
+              },
+              {
+                "$ref": "#/$defs/HTTPBodyExtraction"
+              }
+            ]
           },
           "title": "Extractions",
           "type": "array"
@@ -206,6 +233,31 @@
       "title": "GraphQLVariable",
       "type": "object"
     },
+    "HTTPBodyExtraction": {
+      "properties": {
+        "name": {
+          "description": "The name of the variable to store the extracted value in",
+          "title": "Name",
+          "type": "string"
+        },
+        "location": {
+          "const": "body",
+          "default": "body",
+          "title": "Location"
+        },
+        "key": {
+          "description": "The key to extract the value from the body. The key is searched recursively.",
+          "title": "Key",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "key"
+      ],
+      "title": "HTTPBodyExtraction",
+      "type": "object"
+    },
     "HTTPCookie": {
       "properties": {
         "name": {
@@ -227,33 +279,29 @@
       "title": "HTTPCookie",
       "type": "object"
     },
-    "HTTPExtraction": {
+    "HTTPCookieExtraction": {
       "properties": {
         "name": {
-          "description": "The name that will be used to store the extracted value",
+          "description": "The name of the variable to store the extracted value in",
           "title": "Name",
           "type": "string"
         },
         "location": {
-          "allOf": [
-            {
-              "$ref": "#/$defs/HTTPLocation"
-            }
-          ],
-          "description": "The location where to search for the key"
+          "const": "cookie",
+          "default": "cookie",
+          "title": "Location"
         },
         "key": {
-          "description": "The key to use to extract the value. Its usage depends on the location. For headers, cookies,and query parameters, this key describes the name of the header, cookie or query parameter. For a body location, the key is the field where the token should be injected within the request bodies",
+          "description": "The name of the cookie to extract the value from",
           "title": "Key",
           "type": "string"
         }
       },
       "required": [
         "name",
-        "location",
         "key"
       ],
-      "title": "HTTPExtraction",
+      "title": "HTTPCookieExtraction",
       "type": "object"
     },
     "HTTPHeader": {
@@ -275,6 +323,31 @@
         "values"
       ],
       "title": "HTTPHeader",
+      "type": "object"
+    },
+    "HTTPHeaderExtraction": {
+      "properties": {
+        "name": {
+          "description": "The name of the variable to store the extracted value in",
+          "title": "Name",
+          "type": "string"
+        },
+        "location": {
+          "const": "header",
+          "default": "header",
+          "title": "Location"
+        },
+        "key": {
+          "description": "The name of the header to extract the value from",
+          "title": "Key",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "key"
+      ],
+      "title": "HTTPHeaderExtraction",
       "type": "object"
     },
     "HTTPLocation": {
@@ -336,7 +409,25 @@
         },
         "extractions": {
           "items": {
-            "$ref": "#/$defs/HTTPExtraction"
+            "discriminator": {
+              "mapping": {
+                "body": "#/$defs/HTTPBodyExtraction",
+                "cookie": "#/$defs/HTTPCookieExtraction",
+                "header": "#/$defs/HTTPHeaderExtraction"
+              },
+              "propertyName": "location"
+            },
+            "oneOf": [
+              {
+                "$ref": "#/$defs/HTTPHeaderExtraction"
+              },
+              {
+                "$ref": "#/$defs/HTTPCookieExtraction"
+              },
+              {
+                "$ref": "#/$defs/HTTPBodyExtraction"
+              }
+            ]
           },
           "title": "Extractions",
           "type": "array"
@@ -394,6 +485,29 @@
         "method"
       ],
       "title": "HTTPRequestParameters",
+      "type": "object"
+    },
+    "JWTAccessTokenRefreshTokenPreset": {
+      "properties": {
+        "type": {
+          "const": "jwt_access_token_refresh_token",
+          "default": "jwt_access_token_refresh_token",
+          "title": "Type"
+        },
+        "name": {
+          "description": "The name of the preset. Will be the name of the generated procedure.",
+          "title": "Name",
+          "type": "string"
+        },
+        "parameters": {
+          "$ref": "#/$defs/HTTPRequestParameters"
+        }
+      },
+      "required": [
+        "name",
+        "parameters"
+      ],
+      "title": "JWTAccessTokenRefreshTokenPreset",
       "type": "object"
     },
     "ProcedureConfiguration": {
@@ -626,6 +740,24 @@
         "$ref": "#/$defs/ProcedureConfiguration"
       },
       "title": "Procedures",
+      "type": "array"
+    },
+    "presets": {
+      "description": "The list of presets to use",
+      "items": {
+        "discriminator": {
+          "mapping": {
+            "jwt_access_token_refresh_token": "#/$defs/JWTAccessTokenRefreshTokenPreset"
+          },
+          "propertyName": "type"
+        },
+        "oneOf": [
+          {
+            "$ref": "#/$defs/JWTAccessTokenRefreshTokenPreset"
+          }
+        ]
+      },
+      "title": "Presets",
       "type": "array"
     },
     "users": {

@@ -61,6 +61,9 @@ class Multiauth:
 
         self.authentication_store = AuthenticationStore()
 
+        for preset in configuration.presets:
+            preset_procedure_configuration = preset.to_procedure_configuration()
+            self.procedures[preset.name] = Procedure(preset_procedure_configuration)
         for procedure_configuration in configuration.procedures:
             self.procedures[procedure_configuration.name] = Procedure(procedure_configuration)
         for user in configuration.users:
