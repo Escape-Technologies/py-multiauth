@@ -131,6 +131,7 @@ class AuthenticationStore:
 
     def __init__(self) -> None:
         self.__store = {}
+        self.__refresh_counts = {}
 
     def expire(self, user_name: str) -> None:
         """
