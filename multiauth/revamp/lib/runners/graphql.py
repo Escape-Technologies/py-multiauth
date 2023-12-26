@@ -4,17 +4,17 @@ from typing import Any, Literal
 
 from pydantic import BaseModel, Field
 
-from multiauth.revamp.engines.base import BaseRequestConfiguration
-from multiauth.revamp.engines.http import (
+from multiauth.revamp.lib.http_core.entities import (
+    HTTPHeader,
+)
+from multiauth.revamp.lib.http_core.mergers import merge_bodies, merge_headers
+from multiauth.revamp.lib.runners.base import BaseRequestConfiguration
+from multiauth.revamp.lib.runners.http import (
     HTTPExtraction,
     HTTPRequestConfiguration,
     HTTPRequestParameters,
     HTTPRequestRunner,
 )
-from multiauth.revamp.lib.http_core.entities import (
-    HTTPHeader,
-)
-from multiauth.revamp.lib.http_core.mergers import merge_bodies, merge_headers
 
 
 class GraphQLVariable(BaseModel):

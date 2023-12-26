@@ -4,8 +4,8 @@ from typing import Generic, Literal, TypeVar
 from pydantic import BaseModel, Field
 
 from multiauth.revamp.lib.http_core.entities import HTTPRequest, HTTPResponse
-from multiauth.revamp.store.user import User
-from multiauth.revamp.store.variables import AuthenticationVariable
+from multiauth.revamp.lib.store.user import User
+from multiauth.revamp.lib.store.variables import AuthenticationVariable
 
 AuthenticationType = Literal['http', 'basic', 'graphql']
 
