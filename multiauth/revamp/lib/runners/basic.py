@@ -1,20 +1,20 @@
 import base64
 from typing import Literal
 
-from multiauth.revamp.engines.base import BaseRequestConfiguration
-from multiauth.revamp.engines.http import (
-    HTTPRequestConfiguration,
-    HTTPRequestParameters,
-    HTTPRequestRunner,
-)
 from multiauth.revamp.lib.http_core.entities import (
     HTTPHeader,
     HTTPRequest,
     HTTPResponse,
 )
 from multiauth.revamp.lib.http_core.mergers import merge_headers
-from multiauth.revamp.store.user import User
-from multiauth.revamp.store.variables import AuthenticationVariable
+from multiauth.revamp.lib.runners.base import BaseRequestConfiguration
+from multiauth.revamp.lib.runners.http import (
+    HTTPRequestConfiguration,
+    HTTPRequestParameters,
+    HTTPRequestRunner,
+)
+from multiauth.revamp.lib.store.user import User
+from multiauth.revamp.lib.store.variables import AuthenticationVariable
 
 
 class BasicRequestConfiguration(BaseRequestConfiguration):

@@ -4,17 +4,18 @@
       "name": "example-procedure",
       "requests": [
         {
-          "tech": "http",
+          "tech": "graphql",
           "extractions": [
             {
-              "name": "example-extraction",
+              "name": "my-acces-token",
               "location": "body",
-              "key": "message"
+              "key": "access_token"
             }
           ],
           "parameters": {
             "url": "https://vampi.tools.escape.tech",
-            "method": "GET"
+            "method": "POST",
+            "query": "query { login(username: $username, password: $password) { access_token } }"
           }
         },
         {
@@ -49,8 +50,9 @@
       "injections": [
         {
           "location": "header",
-          "key": "X-Injected-Header",
-          "prefix": "Prefixed "
+          "key": "Authorization",
+          "prefix": "Bearer ",
+          "variable": "my-access-token"
         }
       ]
     }

@@ -3,12 +3,12 @@ import json
 from http import HTTPMethod
 
 from multiauth.revamp.configuration import MultiauthConfiguration
-from multiauth.revamp.engines.http import HTTPExtraction, HTTPRequestConfiguration, HTTPRequestParameters
-from multiauth.revamp.engines.procedure import ProcedureConfiguration
 from multiauth.revamp.helpers.logger import setup_logger
 from multiauth.revamp.lib.http_core.entities import HTTPHeader, HTTPLocation
-from multiauth.revamp.store.injection import TokenInjection
-from multiauth.revamp.store.user import Credentials, User
+from multiauth.revamp.lib.procedure import ProcedureConfiguration
+from multiauth.revamp.lib.runners.http import HTTPExtraction, HTTPRequestConfiguration, HTTPRequestParameters
+from multiauth.revamp.lib.store.injection import TokenInjection
+from multiauth.revamp.lib.store.user import Credentials, User, UserAuthentication
 
 
 def init_command(args: argparse.Namespace) -> None:
@@ -42,15 +42,17 @@ def init_command(args: argparse.Namespace) -> None:
         users=[
             User(
                 name='example-user',
-                procedure='example-procedure',
-                injections=[
-                    TokenInjection(
-                        location=HTTPLocation.HEADER,
-                        key='X-Injected-Header',
-                        prefix='Prefixed ',
-                        variable='example-extraction',
-                    ),
-                ],
+                authentication=UserAuthentication(
+                    procedure='example-procedure',
+                    injections=[
+                        TokenInjection(
+                            location=HTTPLocation.HEADER,
+                            key='X-Injected-Header',
+                            prefix='Prefixed ',
+                            variable='example-extraction',
+                        ),
+                    ],
+                ),
                 credentials=Credentials(
                     headers=[HTTPHeader(name='X-Example-Header', values=['example-value'])],
                 ),

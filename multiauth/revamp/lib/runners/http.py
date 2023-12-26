@@ -4,12 +4,6 @@ from typing import Any, Literal
 
 from pydantic import Field
 
-from multiauth.revamp.engines.base import (
-    BaseExtraction,
-    BaseRequestConfiguration,
-    BaseRequestParameters,
-    BaseRequestRunner,
-)
 from multiauth.revamp.lib.http_core.entities import (
     HTTPCookie,
     HTTPHeader,
@@ -21,15 +15,26 @@ from multiauth.revamp.lib.http_core.entities import (
 from multiauth.revamp.lib.http_core.mergers import merge_bodies, merge_cookies, merge_headers, merge_query_parameters
 from multiauth.revamp.lib.http_core.parsers import parse_raw_url
 from multiauth.revamp.lib.http_core.request import send_request
-from multiauth.revamp.store.user import User
-from multiauth.revamp.store.variables import AuthenticationVariable
+from multiauth.revamp.lib.runners.base import (
+    BaseExtraction,
+    BaseRequestConfiguration,
+    BaseRequestParameters,
+    BaseRequestRunner,
+)
+from multiauth.revamp.lib.store.user import User
+from multiauth.revamp.lib.store.variables import AuthenticationVariable
 
 
 class HTTPExtraction(BaseExtraction):
-    name: str
-    location: HTTPLocation
-    key: str
-    prefix: str | None = Field(default=None)
+    name: str = Field(description='The name that will be used to store the extracted value')
+    location: HTTPLocation = Field(description='The location where to search for the key')
+    key: str = Field(
+        description=(
+            'The key to use to extract the value. Its usage depends on the location. For headers, cookies,'
+            'and query parameters, this key describes the name of the header, cookie or query parameter. For a body '
+            'location, the key is the field where the token should be injected within the request bodies'
+        ),
+    )
 
 
 class HTTPRequestParameters(BaseRequestParameters):
