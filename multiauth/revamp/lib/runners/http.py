@@ -52,6 +52,7 @@ class HTTPRequestParameters(BaseRequestParameters):
     cookies: list[HTTPCookie] = Field(default_factory=list)
     query_parameters: list[HTTPQueryParameter] = Field(default_factory=list)
     body: Any | None = Field(default=None)
+    proxy: str | None = Field(default=None)
 
 
 class HTTPRequestConfiguration(BaseRequestConfiguration):
@@ -117,6 +118,7 @@ class HTTPRequestRunner(BaseRequestRunner[HTTPRequestConfiguration]):
             data_json=data_json,
             username=user.credentials.username,
             password=user.credentials.password,
+            proxy=parameters.proxy,
         )
 
         return request, send_request(request)

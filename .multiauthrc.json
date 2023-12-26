@@ -28,25 +28,22 @@
             "method": "GET",
             "headers": [
               {
-                "name": "X-Example-Extracted-Header",
-                "values": ["{{ example-extraction }}"]
+                "name": "X-Example-Header-Extracted",
+                "values": [
+                  "{{ example-extraction }}"
+                ]
               }
             ],
             "cookies": [],
             "query_parameters": [],
             "body": null
           },
-          "extractions": [
-            {
-              "name": "example-extraction",
-              "location": "body",
-              "key": "message"
-            }
-          ]
+          "extractions": []
         }
       ]
     }
   ],
+  "presets": [],
   "users": [
     {
       "name": "example-user",
@@ -56,7 +53,9 @@
         "headers": [
           {
             "name": "X-Example-Header",
-            "values": ["example-value"]
+            "values": [
+              "example-value"
+            ]
           }
         ],
         "cookies": [],

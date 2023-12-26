@@ -41,7 +41,7 @@ def init_command(args: argparse.Namespace) -> None:
                             url='https://vampi.tools.escape.tech',
                             method=HTTPMethod.GET,
                             headers=[
-                                HTTPHeader(name='X-Example-Header-Extracted', values=['{{ example-extraction }}'])
+                                HTTPHeader(name='X-Example-Header-Extracted', values=['{{ example-extraction }}']),
                             ],
                         ),
                         extractions=[],
