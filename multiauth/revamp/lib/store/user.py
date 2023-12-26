@@ -1,4 +1,3 @@
-import datetime
 from typing import Any, Literal
 
 from pydantic import BaseModel, Field
@@ -119,11 +118,11 @@ class User(BaseModel):
     )
 
     @property
-    def session_ttl_seconds(self) -> datetime.datetime | None:
+    def session_ttl_seconds(self) -> int | None:
         ttl_seconds = None
 
         # In case of a user-provided ttl for this user, use it instead of any ttl declared before
-        if self.refresh is not None and self.refresh.session_seconds is not None:
+        if self.refresh is not None:
             ttl_seconds = self.refresh.session_seconds
 
         return ttl_seconds

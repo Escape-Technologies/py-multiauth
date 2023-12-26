@@ -11,7 +11,7 @@ def validate_command(args: argparse.Namespace) -> None:
 
     logger.info(f'Validating credentials for user {args.user}')
 
-    authentication, records = multiauth.authenticate(user_name=args.user)
+    authentication, records, expiration = multiauth.authenticate(user_name=args.user)
 
     for i, record in enumerate(records):
         request, response, variables = record
@@ -32,3 +32,4 @@ def validate_command(args: argparse.Namespace) -> None:
     logger.info('')
     logger.info('Authentication:')
     logger.info(authentication)
+    logger.info(f'Expiration: {expiration}')

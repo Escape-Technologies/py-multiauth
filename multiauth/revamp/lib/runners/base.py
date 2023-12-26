@@ -45,3 +45,7 @@ class BaseRequestRunner(abc.ABC, Generic[T]):
     @abc.abstractmethod
     def extract(self, response: HTTPResponse) -> list[AuthenticationVariable]:
         ...
+
+    @abc.abstractmethod
+    def interpolate(self, variables: list[AuthenticationVariable]) -> 'BaseRequestRunner':
+        ...

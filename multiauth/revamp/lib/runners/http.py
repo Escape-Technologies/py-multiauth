@@ -22,7 +22,7 @@ from multiauth.revamp.lib.runners.base import (
     BaseRequestRunner,
 )
 from multiauth.revamp.lib.store.user import User
-from multiauth.revamp.lib.store.variables import AuthenticationVariable
+from multiauth.revamp.lib.store.variables import AuthenticationVariable, interpolate_string
 
 
 class HTTPExtraction(BaseExtraction):
@@ -73,6 +73,13 @@ def search_key_in_dict(body: dict, key: str) -> Any | None:
 class HTTPRequestRunner(BaseRequestRunner[HTTPRequestConfiguration]):
     def __init__(self, request_configuration: HTTPRequestConfiguration):
         self.request_configuration = request_configuration
+
+    def interpolate(self, variables: list[AuthenticationVariable]) -> 'HTTPRequestRunner':
+        request_configuration_str = self.request_configuration.model_dump_json()
+        request_configuration_str = interpolate_string(request_configuration_str, variables)
+        request_configuration = HTTPRequestConfiguration.model_validate_json(request_configuration_str)
+
+        return HTTPRequestRunner(request_configuration)
 
     def request(self, user: User) -> tuple[HTTPRequest, HTTPResponse] | None:
         parameters = self.request_configuration.parameters
