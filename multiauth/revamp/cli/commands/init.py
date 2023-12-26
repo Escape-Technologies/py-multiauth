@@ -6,7 +6,7 @@ from multiauth.revamp.configuration import MultiauthConfiguration
 from multiauth.revamp.helpers.logger import setup_logger
 from multiauth.revamp.lib.http_core.entities import HTTPHeader, HTTPLocation
 from multiauth.revamp.lib.procedure import ProcedureConfiguration
-from multiauth.revamp.lib.runners.http import HTTPExtraction, HTTPRequestConfiguration, HTTPRequestParameters
+from multiauth.revamp.lib.runners.http import HTTPBodyExtraction, HTTPRequestConfiguration, HTTPRequestParameters
 from multiauth.revamp.lib.store.injection import TokenInjection
 from multiauth.revamp.lib.store.user import Credentials, User, UserAuthentication
 
@@ -33,8 +33,18 @@ def init_command(args: argparse.Namespace) -> None:
                             method=HTTPMethod.GET,
                         ),
                         extractions=[
-                            HTTPExtraction(name='example-extraction', location=HTTPLocation.BODY, key='message'),
+                            HTTPBodyExtraction(name='example-extraction', key='message'),
                         ],
+                    ),
+                    HTTPRequestConfiguration(
+                        parameters=HTTPRequestParameters(
+                            url='https://vampi.tools.escape.tech',
+                            method=HTTPMethod.GET,
+                            headers=[
+                                HTTPHeader(name='X-Example-Header-Extracted', values=['{{ example-extraction }}'])
+                            ],
+                        ),
+                        extractions=[],
                     ),
                 ],
             ),

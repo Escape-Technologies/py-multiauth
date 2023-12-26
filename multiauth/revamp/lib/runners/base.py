@@ -15,7 +15,7 @@ class BaseRequestParameters(BaseModel, abc.ABC):
 
 
 class BaseExtraction(BaseModel, abc.ABC):
-    pass
+    name: str = Field(description=('The name of the variable to store the extracted value in'))
 
 
 ExtractionType = TypeVar('ExtractionType', bound=BaseExtraction)
