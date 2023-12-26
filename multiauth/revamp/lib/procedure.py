@@ -106,7 +106,7 @@ class Procedure:
         records: list[tuple[HTTPRequest, HTTPResponse, list[AuthenticationVariable]]] = []
 
         for runner in self.runners:
-            res = runner.request(user)
+            res = runner.interpolate(list(self.variables.values())).request(user)
             if res is None:
                 break
 

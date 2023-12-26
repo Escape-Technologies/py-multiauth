@@ -15,6 +15,7 @@ from multiauth.revamp.lib.runners.http import (
     HTTPRequestParameters,
     HTTPRequestRunner,
 )
+from multiauth.revamp.lib.store.variables import AuthenticationVariable, interpolate_string
 
 
 class GraphQLVariable(BaseModel):
@@ -70,9 +71,18 @@ class GraphQLRequestConfiguration(BaseRequestConfiguration):
 
 
 class GraphQLRequestRunner(HTTPRequestRunner):
-    graphql_request: GraphQLRequestConfiguration
+    graphql_request_configuration: GraphQLRequestConfiguration
 
-    def __init__(self, request_configuration: GraphQLRequestConfiguration) -> None:
-        self.graphql_request_configuration = request_configuration
-        http_procedure = request_configuration.to_http()
+    def __init__(self, graphql_request_configuration: GraphQLRequestConfiguration) -> None:
+        self.graphql_request_configuration = graphql_request_configuration
+        http_procedure = graphql_request_configuration.to_http()
         super().__init__(http_procedure)
+
+    def interpolate(self, variables: list[AuthenticationVariable]) -> 'GraphQLRequestRunner':
+        graphql_request_configuration_str = self.graphql_request_configuration.model_dump_json()
+        graphql_request_configuration_str = interpolate_string(graphql_request_configuration_str, variables)
+        graphql_request_configuration = GraphQLRequestConfiguration.model_validate_json(
+            graphql_request_configuration_str,
+        )
+
+        return GraphQLRequestRunner(graphql_request_configuration)

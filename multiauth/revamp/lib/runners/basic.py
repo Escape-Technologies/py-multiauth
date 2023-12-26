@@ -14,7 +14,7 @@ from multiauth.revamp.lib.runners.http import (
     HTTPRequestRunner,
 )
 from multiauth.revamp.lib.store.user import User
-from multiauth.revamp.lib.store.variables import AuthenticationVariable
+from multiauth.revamp.lib.store.variables import AuthenticationVariable, interpolate_string
 
 
 class BasicRequestConfiguration(BaseRequestConfiguration):
@@ -60,3 +60,10 @@ class BasicRequestRunner(HTTPRequestRunner):
 
     def extract(self, _response: HTTPResponse | None) -> list[AuthenticationVariable]:
         return []
+
+    def interpolate(self, variables: list[AuthenticationVariable]) -> 'BasicRequestRunner':
+        basic_request_configuration = self.basic_request_configuration.model_dump_json()
+        basic_request_configuration = interpolate_string(basic_request_configuration, variables)
+        graphql_request_configuration = BasicRequestConfiguration.model_validate_json(basic_request_configuration)
+
+        return BasicRequestRunner(graphql_request_configuration)

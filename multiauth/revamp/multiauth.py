@@ -75,17 +75,6 @@ class Multiauth:
             raise MissingUserException(user_name)
         return user
 
-    def _get_authentication_object(self, user_name: str) -> Authentication:
-        try:
-            user = self.authentication_store.get(user_name)
-        except AuthenticationStoreException as e:
-            raise e
-        except Exception as e:
-            raise MultiAuthException(
-                f'Unexpected error when retrieving authentication object of user `{user_name}`.',
-            ) from e
-        return user
-
     def _get_procedure(
         self,
         user_name: str,
@@ -126,7 +115,7 @@ class Multiauth:
     def authenticate(
         self,
         user_name: str,
-    ) -> tuple[Authentication, list[tuple[HTTPRequest, HTTPResponse, list[AuthenticationVariable]]]]:
+    ) -> tuple[Authentication, list[tuple[HTTPRequest, HTTPResponse, list[AuthenticationVariable]]], int]:
         """
         Runs the authentication procedure of the provided user.
 
@@ -147,7 +136,11 @@ class Multiauth:
         expiration = datetime.datetime.now() + datetime.timedelta(seconds=ttl_seconds)
         self.authentication_store.store(user_name, authentication, expiration)
 
-        return authentication, records
+        return (
+            authentication,
+            records,
+            0,
+        )
 
     def should_refresh(self, user_name: str) -> bool:
         """
@@ -175,7 +168,7 @@ class Multiauth:
         """
         user = self._get_user(user_name)
         try:
-            base_authentication = self.authentication_store.get(user_name)
+            base_authentication, _ = self.authentication_store.get(user_name)
         except AuthenticationStoreException:
             # @todo(maxence@escape.tech): Record this event when it occurs
             # If the user is not authenticated already, authenticate it instead
@@ -204,7 +197,7 @@ class Multiauth:
 
         # Store the new authentication object
         self.authentication_store.store(user_name, refreshed_authentication, expiration)
-        refresh_count = self.authentication_store.store(user_name, refreshed_authentication)
+        refresh_count = self.authentication_store.store(user_name, refreshed_authentication, expiration)
 
         return refreshed_authentication, records, refresh_count
 
