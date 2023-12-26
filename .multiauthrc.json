@@ -4,33 +4,22 @@
       "name": "example-procedure",
       "requests": [
         {
-          "tech": "graphql",
-          "extractions": [
-            {
-              "name": "my-acces-token",
-              "location": "body",
-              "key": "access_token"
-            }
-          ],
+          "tech": "http",
           "parameters": {
             "url": "https://vampi.tools.escape.tech",
-            "method": "POST",
-            "query": "query { login(username: $username, password: $password) { access_token } }"
-          }
-        },
-        {
-          "tech": "http",
+            "method": "GET",
+            "headers": [],
+            "cookies": [],
+            "query_parameters": [],
+            "body": null
+          },
           "extractions": [
             {
               "name": "example-extraction",
               "location": "body",
-              "key": "vulnerable"
+              "key": "message"
             }
-          ],
-          "parameters": {
-            "url": "https://vampi.tools.escape.tech",
-            "method": "GET"
-          }
+          ]
         }
       ]
     }
@@ -38,23 +27,33 @@
   "users": [
     {
       "name": "example-user",
-      "procedure": "example-procedure",
       "credentials": {
+        "username": null,
+        "password": null,
         "headers": [
           {
             "name": "X-Example-Header",
-            "values": ["example-value"]
+            "values": [
+              "example-value"
+            ]
+          }
+        ],
+        "cookies": [],
+        "query_parameters": [],
+        "body": null
+      },
+      "authentication": {
+        "procedure": "example-procedure",
+        "injections": [
+          {
+            "location": "header",
+            "key": "X-Injected-Header",
+            "prefix": "Prefixed ",
+            "variable": "example-extraction"
           }
         ]
       },
-      "injections": [
-        {
-          "location": "header",
-          "key": "Authorization",
-          "prefix": "Bearer ",
-          "variable": "my-access-token"
-        }
-      ]
+      "refresh": null
     }
   ],
   "$schema": "./multiauth-schema.json"
