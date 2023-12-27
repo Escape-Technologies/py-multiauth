@@ -22,15 +22,18 @@ def send_request(request: HTTPRequest) -> HTTPResponse:
 
     url = urlunparse((request.scheme.value, request.host, request.path, '', urlencode(query_parameters), ''))
 
-    response = requests.request(
-        request.method.value,
-        url,
-        headers=headers,
-        cookies=cookies,
-        data=request.data_text,
-        timeout=HTTP_REQUEST_TIMEOUT,
-        proxies={'http': request.proxy, 'https': request.proxy} if request.proxy else None,
-    )
+    try:
+        response = requests.request(
+            request.method.value,
+            url,
+            headers=headers,
+            cookies=cookies,
+            data=request.data_text,
+            timeout=HTTP_REQUEST_TIMEOUT,
+            proxies={'http': request.proxy, 'https': request.proxy} if request.proxy else None,
+        )
+    except requests.exceptions.HTTPError as e:
+        response = e.response
 
     data_json = None
     try:

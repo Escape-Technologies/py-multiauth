@@ -1,6 +1,7 @@
 import base64
 from typing import Literal
 
+from multiauth.revamp.lib.audit.events.base import Event
 from multiauth.revamp.lib.http_core.entities import (
     HTTPHeader,
     HTTPRequest,
@@ -44,9 +45,9 @@ class BasicRequestRunner(HTTPRequestRunner):
         self.basic_request_configuration = configuration
         super().__init__(self.basic_request_configuration.to_http())
 
-    def request(self, user: User) -> tuple[HTTPRequest, HTTPResponse] | None:
+    def request(self, user: User) -> tuple[HTTPRequest, HTTPResponse | None, list[Event]]:
         if not user.credentials.username or not user.credentials.password:
-            return None
+            raise ValueError(f'User {user.name} is missing a username or password.')
 
         header = build_basic_headers(user.credentials.username, user.credentials.password)
 
@@ -58,8 +59,8 @@ class BasicRequestRunner(HTTPRequestRunner):
 
         return super().request(basic_user)
 
-    def extract(self, _response: HTTPResponse | None) -> list[AuthenticationVariable]:
-        return []
+    def extract(self, _response: HTTPResponse | None) -> tuple[list[AuthenticationVariable], list[Event]]:
+        return [], []
 
     def interpolate(self, variables: list[AuthenticationVariable]) -> 'BasicRequestRunner':
         basic_request_configuration = self.basic_request_configuration.model_dump_json()

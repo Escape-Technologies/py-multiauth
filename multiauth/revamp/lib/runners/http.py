@@ -2,8 +2,18 @@ import json
 from http import HTTPMethod
 from typing import Annotated, Any, Literal, Union
 
+import requests
 from pydantic import Field
 
+from multiauth.revamp.lib.audit.events.base import (
+    Event,
+)
+from multiauth.revamp.lib.audit.events.events import (
+    ExtractedVariableEvent,
+    HTTPFailureEvent,
+    HTTPRequestEvent,
+    HTTPResponseEvent,
+)
 from multiauth.revamp.lib.http_core.entities import (
     HTTPCookie,
     HTTPHeader,
@@ -81,7 +91,7 @@ def search_key_in_dict(body: dict, key: str) -> Any | None:
 
 class HTTPRequestRunner(BaseRequestRunner[HTTPRequestConfiguration]):
     def __init__(self, request_configuration: HTTPRequestConfiguration):
-        self.request_configuration = request_configuration
+        super().__init__(request_configuration)
 
     def interpolate(self, variables: list[AuthenticationVariable]) -> 'HTTPRequestRunner':
         request_configuration_str = self.request_configuration.model_dump_json()
@@ -90,8 +100,10 @@ class HTTPRequestRunner(BaseRequestRunner[HTTPRequestConfiguration]):
 
         return HTTPRequestRunner(request_configuration)
 
-    def request(self, user: User) -> tuple[HTTPRequest, HTTPResponse] | None:
+    def request(self, user: User) -> tuple[HTTPRequest, HTTPResponse | None, list[Event]]:
         parameters = self.request_configuration.parameters
+
+        events: list[Event] = []
 
         scheme, host, path = parse_raw_url(parameters.url)
         headers = merge_headers(parameters.headers, user.credentials.headers)
@@ -121,13 +133,29 @@ class HTTPRequestRunner(BaseRequestRunner[HTTPRequestConfiguration]):
             proxy=parameters.proxy,
         )
 
-        return request, send_request(request)
+        events.append(HTTPRequestEvent(request=request))
+        response = None
+        try:
+            response = send_request(request)
+            events.append(HTTPResponseEvent(response=response))
+        except requests.exceptions.Timeout as e:
+            events.append(HTTPFailureEvent(reason='timeout', description=str(e)))
+        except requests.exceptions.ConnectionError as e:
+            events.append(HTTPFailureEvent(reason='connection_error', description=str(e)))
+        except requests.exceptions.TooManyRedirects as e:
+            events.append(HTTPFailureEvent(reason='too_many_redirects', description=str(e)))
+        except Exception as e:
+            events.append(HTTPFailureEvent(reason='unknown', description=str(e)))
 
-    def extract(self, response: HTTPResponse | None) -> list[AuthenticationVariable]:
+        return request, response, events
+
+    def extract(self, response: HTTPResponse | None) -> tuple[list[AuthenticationVariable], list[Event]]:
         extractions = self.request_configuration.extractions
 
+        events: list[Event] = []
+
         if response is None:
-            return []
+            return [], []
 
         variables: list[AuthenticationVariable] = []
 
@@ -136,13 +164,17 @@ class HTTPRequestRunner(BaseRequestRunner[HTTPRequestConfiguration]):
                 h_findings = [h for h in response.headers if h.name == extraction]
                 if len(h_findings) == 0:
                     continue
-                variables.append(AuthenticationVariable(name=extraction.name, value=','.join(h_findings[0].values)))
+                variable = AuthenticationVariable(name=extraction.name, value=','.join(h_findings[0].values))
+                events.append(ExtractedVariableEvent(variable=variable))
+                variables.append(variable)
 
             if isinstance(extraction, HTTPCookieExtraction):
                 c_findings = [c for c in response.cookies if c.name == extraction.key]
                 if len(c_findings) == 0:
                     continue
-                variables.append(AuthenticationVariable(name=extraction.name, value=','.join(h_findings[0].values)))
+                variable = AuthenticationVariable(name=extraction.name, value=','.join(h_findings[0].values))
+                events.append(ExtractedVariableEvent(variable=variable))
+                variables.append(variable)
 
             if isinstance(extraction, HTTPBodyExtraction):
                 if response.data_json is None:
@@ -153,6 +185,8 @@ class HTTPRequestRunner(BaseRequestRunner[HTTPRequestConfiguration]):
                 if result is None:
                     continue
                 result_str = str(result) if not isinstance(result, str) else result
-                variables.append(AuthenticationVariable(name=extraction.name, value=result_str))
+                variable = AuthenticationVariable(name=extraction.name, value=result_str)
+                events.append(ExtractedVariableEvent(variable=variable))
+                variables.append(variable)
 
-        return variables
+        return variables, events

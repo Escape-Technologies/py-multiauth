@@ -4,7 +4,10 @@ from multiauth.revamp.version import __version__
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description='MultiAuth - Multi-Authenticator CLI')
+    parser = argparse.ArgumentParser(
+        description='MultiAuth - Multi-Authenticator CLI',
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
     parser.add_argument(
         '-v',
         '--version',
@@ -16,6 +19,24 @@ def build_parser() -> argparse.ArgumentParser:
         '--file',
         type=str,
         help='Configuration file to validate',
+        required=False,
+    )
+    parser.add_argument(
+        '-r',
+        '--reporters',
+        type=str,
+        action='append',
+        choices=['console', 'json', 'raw'],
+        default=['console'],
+        help='How to write the results output',
+        required=False,
+    )
+    parser.add_argument(
+        '-o',
+        '--outputs',
+        type=str,
+        action='append',
+        help='Path of files where to write the results. The file extension will be used to determine the output format',
         required=False,
     )
     parser.add_argument(
