@@ -3,6 +3,7 @@ from typing import Generic, Literal, TypeVar
 
 from pydantic import BaseModel, Field
 
+from multiauth.revamp.lib.audit.events.base import Event
 from multiauth.revamp.lib.http_core.entities import HTTPRequest, HTTPResponse
 from multiauth.revamp.lib.store.user import User
 from multiauth.revamp.lib.store.variables import AuthenticationVariable
@@ -38,12 +39,15 @@ T = TypeVar('T', bound=BaseRequestConfiguration)
 class BaseRequestRunner(abc.ABC, Generic[T]):
     request_configuration: T
 
+    def __init__(self, request_configuration: T) -> None:
+        self.request_configuration = request_configuration
+
     @abc.abstractmethod
-    def request(self, user: User) -> tuple[HTTPRequest, HTTPResponse] | None:
+    def request(self, user: User) -> tuple[HTTPRequest, HTTPResponse | None, list[Event]]:
         ...
 
     @abc.abstractmethod
-    def extract(self, response: HTTPResponse) -> list[AuthenticationVariable]:
+    def extract(self, response: HTTPResponse) -> tuple[list[AuthenticationVariable], list[Event]]:
         ...
 
     @abc.abstractmethod

@@ -3,6 +3,8 @@ import datetime
 
 from pydantic import BaseModel, Field
 
+from multiauth.revamp.lib.audit.events.base import Event
+from multiauth.revamp.lib.audit.events.events import InjectedVariableEvent
 from multiauth.revamp.lib.http_core.entities import HTTPCookie, HTTPHeader, HTTPLocation, HTTPQueryParameter
 from multiauth.revamp.lib.http_core.mergers import merge_cookies, merge_headers, merge_query_parameters
 from multiauth.revamp.lib.store.injection import TokenInjection
@@ -22,11 +24,12 @@ class Authentication(BaseModel):
     def inject(
         injection: TokenInjection,
         variables: list[AuthenticationVariable],
-    ) -> 'Authentication':
+    ) -> tuple['Authentication', list[Event]]:
         authentication = Authentication.empty()
+        events: list[Event] = []
 
         if len(variables) == 0:
-            return authentication
+            return authentication, events
 
         variable: AuthenticationVariable | None = None
         if injection.variable is None:
@@ -35,31 +38,30 @@ class Authentication(BaseModel):
             variable = next((v for v in variables if v.name == injection.variable), None)
 
         if variable is None:
-            return authentication
+            return authentication, events
 
         if injection.location == HTTPLocation.HEADER:
-            authentication.headers.append(
-                HTTPHeader(
-                    name=injection.key,
-                    values=[f'{injection.prefix or ""}{variable.value}'],
-                ),
+            header = HTTPHeader(
+                name=injection.key,
+                values=[f'{injection.prefix or ""}{variable.value}'],
             )
+            authentication.headers.append(header)
+            events.append(InjectedVariableEvent(variable=variable, location=HTTPLocation.HEADER, target=injection.key))
         elif injection.location == HTTPLocation.COOKIE:
-            authentication.cookies.append(
-                HTTPCookie(
-                    name=injection.key,
-                    values=[f'{injection.prefix or ""}{variable.value}'],
-                ),
+            cookie = HTTPCookie(
+                name=injection.key,
+                values=[f'{injection.prefix or ""}{variable.value}'],
             )
+            authentication.cookies.append(cookie)
+            events.append(InjectedVariableEvent(variable=variable, location=HTTPLocation.COOKIE, target=injection.key))
         elif injection.location == HTTPLocation.QUERY:
-            authentication.query_parameters.append(
-                HTTPQueryParameter(
-                    name=injection.key,
-                    values=[f'{injection.prefix or ""}{variable.value}'],
-                ),
+            query_parameter = HTTPQueryParameter(
+                name=injection.key,
+                values=[f'{injection.prefix or ""}{variable.value}'],
             )
-
-        return authentication
+            authentication.query_parameters.append(query_parameter)
+            events.append(InjectedVariableEvent(variable=variable, location=HTTPLocation.QUERY, target=injection.key))
+        return authentication, events
 
     def __str__(self) -> str:
         authentication_str = ''

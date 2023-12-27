@@ -5,6 +5,8 @@ from typing import Any
 from multiauth.revamp.configuration import (
     MultiauthConfiguration,
 )
+from multiauth.revamp.exceptions import MissingProcedureException, MissingUserException, MultiAuthException
+from multiauth.revamp.lib.audit.events.base import Event
 from multiauth.revamp.lib.http_core.entities import HTTPRequest, HTTPResponse
 from multiauth.revamp.lib.procedure import Procedure
 from multiauth.revamp.lib.store.authentication import Authentication, AuthenticationStore, AuthenticationStoreException
@@ -12,30 +14,6 @@ from multiauth.revamp.lib.store.user import User
 from multiauth.revamp.lib.store.variables import AuthenticationVariable
 
 DEFAULT_TTL_SECONDS = 10 * 24 * 60 * 60  # Default session ttl is 10 days
-
-
-class MultiAuthException(Exception):
-    pass
-
-
-class MissingUserException(MultiAuthException):
-    user_name: str
-
-    def __init__(self, user_name: str) -> None:
-        self.user_name = user_name
-
-    def __str__(self) -> str:
-        return f'Invalid user name. User `{self.user_name}` not registered in users list.'
-
-
-class MissingProcedureException(MultiAuthException):
-    procedure_name: str
-
-    def __init__(self, procedure_name: str) -> None:
-        self.procedure_name = procedure_name
-
-    def __str__(self) -> str:
-        return f'Invalid procedure name. Procedure `{self.procedure_name}` not registered in procedures list.'
 
 
 class Multiauth:
@@ -92,7 +70,11 @@ class Multiauth:
 
         return procedure
 
-    def get_http_response(self, user_name: str, step: int) -> tuple[HTTPRequest, HTTPResponse] | None:
+    def get_http_response(
+        self,
+        user_name: str,
+        step: int,
+    ) -> tuple[HTTPRequest, HTTPResponse | None, list[Event]]:
         """
         Runs the HTTP request declared at the given step of the procedure of the provided user.
 
@@ -104,7 +86,12 @@ class Multiauth:
         procedure = self._get_procedure(user_name)
         return procedure.request(user, step)
 
-    def extract_variables(self, user_name: str, response: HTTPResponse, step: int) -> list[AuthenticationVariable]:
+    def extract_variables(
+        self,
+        user_name: str,
+        response: HTTPResponse,
+        step: int,
+    ) -> tuple[list[AuthenticationVariable], list[Event]]:
         """
         Runs the extractions declared at the given step of the procedure of the provided user,
         from the provided HTTP response.
@@ -118,7 +105,7 @@ class Multiauth:
     def authenticate(
         self,
         user_name: str,
-    ) -> tuple[Authentication, list[tuple[HTTPRequest, HTTPResponse, list[AuthenticationVariable]]], int]:
+    ) -> tuple[Authentication, list[Event], int]:
         """
         Runs the authentication procedure of the provided user.
 
@@ -129,7 +116,7 @@ class Multiauth:
         user = self._get_user(user_name)
         procedure = self._get_procedure(user_name)
 
-        authentication, records = procedure.authenticate(user)
+        authentication, events = procedure.authenticate(user)
 
         # @todo(maxence@escape): implement automated expiration detection from the authentication content
         detected_ttl_seconds: int | None = None
@@ -141,7 +128,7 @@ class Multiauth:
 
         return (
             authentication,
-            records,
+            events,
             0,
         )
 
@@ -156,7 +143,7 @@ class Multiauth:
     def refresh(
         self,
         user_name: str,
-    ) -> tuple[Authentication, list[tuple[HTTPRequest, HTTPResponse, list[AuthenticationVariable]]], int]:
+    ) -> tuple[Authentication, list[Event], int]:
         """
         Refresh the authentication object of a given user.
 
@@ -185,7 +172,7 @@ class Multiauth:
             refresh_procedure = self._get_procedure(user.refresh.procedure)
 
         # Run the procedure
-        refreshed_authentication, records = refresh_procedure.authenticate(user)
+        refreshed_authentication, events = refresh_procedure.authenticate(user)
 
         # If the user has a refresh procedure, and the `keep` flag is enabled, merge the current authentication object
         if user.refresh is not None and user.refresh.keep:
@@ -199,10 +186,9 @@ class Multiauth:
         expiration = datetime.datetime.now() + datetime.timedelta(seconds=ttl_seconds)
 
         # Store the new authentication object
-        self.authentication_store.store(user_name, refreshed_authentication, expiration)
         refresh_count = self.authentication_store.store(user_name, refreshed_authentication, expiration)
 
-        return refreshed_authentication, records, refresh_count
+        return refreshed_authentication, events, refresh_count
 
     @staticmethod
     def from_json_string(raw_configuration_string: str) -> 'Multiauth':

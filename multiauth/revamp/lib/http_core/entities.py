@@ -5,7 +5,7 @@ import json
 from http import HTTPMethod
 from urllib.parse import quote
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_serializer
 
 
 class HTTPLocation(enum.StrEnum):
@@ -92,9 +92,6 @@ class HTTPRequest(BaseModel):
 
         return document
 
-    def __str__(self) -> str:
-        return self.__to_http_document()
-
 
 class HTTPResponse(BaseModel):
     url: str
@@ -105,6 +102,10 @@ class HTTPResponse(BaseModel):
     cookies: list[HTTPCookie] = Field(default_factory=list)
     data_text: str | None = Field(default=None)
     data_json: JSONSerializable | None = Field(default=None)
+
+    @field_serializer('elapsed')
+    def serialize_elapsed(self, elapsed: datetime.timedelta) -> float:
+        return elapsed.total_seconds()
 
     def __to_http_document(self) -> str:
         document = f'{self.status_code} {self.reason} ({self.elapsed}s)\n'
@@ -131,6 +132,3 @@ class HTTPResponse(BaseModel):
             document += '\n'
 
         return document
-
-    def __str__(self) -> str:
-        return self.__to_http_document()

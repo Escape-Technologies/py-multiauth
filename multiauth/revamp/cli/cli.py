@@ -41,10 +41,10 @@ __________          _____        .__   __  .__   _____          __  .__
 
     args = parser.parse_args()
 
-    if args.command == 'init':
-        init_command(args)
-
     match args.command:
+        case 'init':
+            init_command(args)
+
         case 'lint':
             lint_command(args)
 
@@ -53,3 +53,7 @@ __________          _____        .__   __  .__   _____          __  .__
 
         case 'validate':
             validate_command(args)
+
+
+if __name__ == '__main__':
+    cli()

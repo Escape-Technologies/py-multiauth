@@ -2,10 +2,14 @@ import sys
 from argparse import Namespace
 
 from multiauth.revamp.helpers.logger import setup_logger
+from multiauth.revamp.lib.audit.reporters.base import BaseEventsReporter
+from multiauth.revamp.lib.audit.reporters.console import ConsoleEventsReporter
+from multiauth.revamp.lib.audit.reporters.json import JSONEventsReporter
+from multiauth.revamp.lib.audit.reporters.raw import RawEventsReporter
 from multiauth.revamp.multiauth import Multiauth
 
 
-def load_mulitauth(args: Namespace) -> Multiauth:
+def load_mulitauth(args: Namespace) -> tuple[Multiauth, list[BaseEventsReporter]]:
     logger = setup_logger()
 
     if args.file:
@@ -20,4 +24,32 @@ def load_mulitauth(args: Namespace) -> Multiauth:
         logger.error('No configuration provided.')
         sys.exit(1)
 
-    return multiauth
+    reporters: list[BaseEventsReporter] = []
+
+    if args.reporters:
+        reporter_names = set(args.reporters)
+        for reporter_name in reporter_names:
+            match reporter_name:
+                case 'json':
+                    reporters.append(JSONEventsReporter())
+                case 'console':
+                    reporters.append(ConsoleEventsReporter())
+                case 'raw':
+                    reporters.append(RawEventsReporter())
+                case _:
+                    logger.error(f'Unknown reporter will be skipped: {reporter_name}')
+
+    if args.outputs:
+        outputs = set(args.outputs)
+        for output in outputs:
+            if not isinstance(output, str):
+                logger.error(f'Unknown output type will be skipped: {output}')
+                continue
+            if output.endswith('.json'):
+                reporters.append(JSONEventsReporter(output_path=output))
+            if output.endswith('.txt'):
+                reporters.append(RawEventsReporter(output_path=output))
+            else:
+                logger.error(f'Unknown output type will be skipped: {output}')
+
+    return multiauth, reporters
