@@ -5,7 +5,7 @@ from http import HTTPMethod
 
 from pydantic import BaseModel
 
-from multiauth.entities.providers.http import HTTPLocation
+from multiauth.entities.http import HTTPEncoding, HTTPLocation
 
 
 class CredentialsEncoding(Enum):
@@ -26,4 +26,4 @@ class AuthConfigRest(BaseModel):
     param_prefix: str | None
     param_location: HTTPLocation
     headers: dict[str, str] | None
-    credentials_encoding: CredentialsEncoding
+    credentials_encoding: HTTPEncoding

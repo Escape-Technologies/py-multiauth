@@ -3,12 +3,13 @@
 from enum import StrEnum, unique
 from typing import (
     Any,
+    NewType,
 )
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
-from multiauth.entities.providers.aws import AuthAWSType
-from multiauth.entities.providers.oauth import AuthOAuthGrantType
+from multiauth.entities.http import HTTPCookies, HTTPHeaders
+from multiauth.new.entities.main import Credentials
 
 
 # The Authentication Schemas can be found below
@@ -30,15 +31,17 @@ class AuthTech(StrEnum):
     WEBDRIVER = 'webdriver'
 
 
-class AuthResponse(BaseModel):
+class AuthResponse(Credentials):
 
     """The Processed Authentication Configuration."""
 
+    cookies: HTTPCookies = Field(default=HTTPCookies({}))
+    headers: HTTPHeaders = Field(default=HTTPHeaders({}))
+    body: Any = Field(default=None)
     tech: AuthTech
-    headers: dict[str, str]
 
 
-Token = str
+Token = NewType('Token', str)
 
 
 class RCFile(BaseModel):
@@ -74,7 +77,3 @@ class JWTToken(BaseModel):
     iat: int | None
     jti: str | None
     other: dict[Any, Any]
-
-
-# Helper Entities
-AuthType = AuthAWSType | AuthOAuthGrantType
