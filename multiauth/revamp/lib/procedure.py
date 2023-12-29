@@ -3,6 +3,7 @@ from typing import Annotated, Union
 
 from pydantic import BaseModel, Field
 
+from multiauth.entities.user import ProcedureName
 from multiauth.revamp.exceptions import MissingProcedureException
 from multiauth.revamp.lib.audit.events.base import Event
 from multiauth.revamp.lib.audit.events.events import (
@@ -17,7 +18,7 @@ from multiauth.revamp.lib.runners.graphql import GraphQLRequestConfiguration
 from multiauth.revamp.lib.runners.http import HTTPRequestConfiguration
 from multiauth.revamp.lib.store.authentication import Authentication
 from multiauth.revamp.lib.store.user import User
-from multiauth.revamp.lib.store.variables import AuthenticationVariable
+from multiauth.revamp.lib.store.variables import AuthenticationVariable, VariableName
 
 RequestConfigurationType = Annotated[
     Union[HTTPRequestConfiguration, GraphQLRequestConfiguration, BasicRequestConfiguration],
@@ -26,7 +27,7 @@ RequestConfigurationType = Annotated[
 
 
 class ProcedureConfiguration(BaseModel, abc.ABC):
-    name: str = Field(description='The name of the procedure.')
+    name: ProcedureName = Field(description='The name of the procedure.')
     requests: list[RequestConfigurationType] = Field(default_factory=list)
 
 
@@ -40,7 +41,7 @@ class Procedure:
     events: list[Event]
 
     # The dictionnary where the extracted variables are stored
-    variables: dict[str, AuthenticationVariable]
+    variables: dict[VariableName, AuthenticationVariable]
 
     def __init__(self, configuration: ProcedureConfiguration):
         self.configuration = configuration

@@ -1,8 +1,12 @@
+from typing import NewType
+
 from pydantic import BaseModel
+
+VariableName = NewType('VariableName', str)
 
 
 class AuthenticationVariable(BaseModel):
-    name: str
+    name: VariableName
     value: str
 
 

@@ -2,7 +2,7 @@ import argparse
 import json
 from http import HTTPMethod
 
-from multiauth.entities.user import UserName
+from multiauth.entities.user import ProcedureName, UserName
 from multiauth.revamp.configuration import MultiauthConfiguration
 from multiauth.revamp.helpers.logger import setup_logger
 from multiauth.revamp.lib.http_core.entities import HTTPHeader, HTTPLocation
@@ -10,6 +10,7 @@ from multiauth.revamp.lib.procedure import ProcedureConfiguration
 from multiauth.revamp.lib.runners.http import HTTPBodyExtraction, HTTPRequestConfiguration, HTTPRequestParameters
 from multiauth.revamp.lib.store.injection import TokenInjection
 from multiauth.revamp.lib.store.user import Credentials, User, UserAuthentication
+from multiauth.revamp.lib.store.variables import VariableName
 
 
 def init_command(args: argparse.Namespace) -> None:
@@ -26,7 +27,7 @@ def init_command(args: argparse.Namespace) -> None:
     configuration = MultiauthConfiguration(
         procedures=[
             ProcedureConfiguration(
-                name='example-procedure',
+                name=ProcedureName('example-procedure'),
                 requests=[
                     HTTPRequestConfiguration(
                         parameters=HTTPRequestParameters(
@@ -34,7 +35,7 @@ def init_command(args: argparse.Namespace) -> None:
                             method=HTTPMethod.GET,
                         ),
                         extractions=[
-                            HTTPBodyExtraction(name='example-extraction', key='message'),
+                            HTTPBodyExtraction(name=VariableName('example-extraction'), key='message'),
                         ],
                     ),
                     HTTPRequestConfiguration(
@@ -42,7 +43,10 @@ def init_command(args: argparse.Namespace) -> None:
                             url='https://vampi.tools.escape.tech',
                             method=HTTPMethod.GET,
                             headers=[
-                                HTTPHeader(name='X-Example-Header-Extracted', values=['{{ example-extraction }}']),
+                                HTTPHeader(
+                                    name=VariableName('X-Example-Header-Extracted'),
+                                    values=['{{ example-extraction }}'],
+                                ),
                             ],
                         ),
                         extractions=[],
