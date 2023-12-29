@@ -1,8 +1,10 @@
 from typing import Literal
 
+from multiauth.entities.user import ProcedureName
 from multiauth.revamp.lib.presets.base import BasePreset
 from multiauth.revamp.lib.procedure import ProcedureConfiguration
 from multiauth.revamp.lib.runners.http import HTTPBodyExtraction, HTTPRequestConfiguration, HTTPRequestParameters
+from multiauth.revamp.lib.store.variables import VariableName
 
 
 class JWTAccessTokenRefreshTokenPreset(BasePreset):
@@ -11,17 +13,17 @@ class JWTAccessTokenRefreshTokenPreset(BasePreset):
 
     def to_procedure_configuration(self) -> ProcedureConfiguration:
         return ProcedureConfiguration(
-            name=self.name,
+            name=ProcedureName(self.name),
             requests=[
                 HTTPRequestConfiguration(
                     parameters=self.parameters,
                     extractions=[
                         HTTPBodyExtraction(
-                            name='access_token',
+                            name=VariableName('access_token'),
                             key='access_token',
                         ),
                         HTTPBodyExtraction(
-                            name='refresh_token',
+                            name=VariableName('refresh_token'),
                             key='refresh_token',
                         ),
                     ],

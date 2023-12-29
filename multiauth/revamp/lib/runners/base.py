@@ -6,7 +6,7 @@ from pydantic import BaseModel, Field
 from multiauth.revamp.lib.audit.events.base import Event
 from multiauth.revamp.lib.http_core.entities import HTTPRequest, HTTPResponse
 from multiauth.revamp.lib.store.user import User
-from multiauth.revamp.lib.store.variables import AuthenticationVariable
+from multiauth.revamp.lib.store.variables import AuthenticationVariable, VariableName
 
 AuthenticationType = Literal['http', 'basic', 'graphql']
 
@@ -16,7 +16,7 @@ class BaseRequestParameters(BaseModel, abc.ABC):
 
 
 class BaseExtraction(BaseModel, abc.ABC):
-    name: str = Field(description=('The name of the variable to store the extracted value in'))
+    name: VariableName = Field(description=('The name of the variable to store the extracted value in'))
 
 
 ExtractionType = TypeVar('ExtractionType', bound=BaseExtraction)
