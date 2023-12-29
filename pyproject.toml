@@ -21,7 +21,7 @@ readme = "README.md"
 multiauth = 'multiauth:cli'
 
 [tool.poetry.group.dev.dependencies]
-mypy = "^1.7.1"
+mypy = "^1.8.0"
 
 [tool.coverage.run]
 parallel = true
