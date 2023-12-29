@@ -1,6 +1,6 @@
 from pydantic import Field
 
-from multiauth.new.entities.main import AuthProvider, Credentials
+from multiauth.revamp.lib.presets.main import AuthProvider, Credentials
 
 
 class BasicCredentials(Credentials):

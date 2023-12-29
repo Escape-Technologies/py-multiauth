@@ -2,7 +2,7 @@ from pydantic import Field
 
 from multiauth.entities.providers.oauth import AuthOAuthClientMethod
 from multiauth.entities.providers.webdriver import SeleniumCommand
-from multiauth.new.entities.main import AuthProvider, AuthRequester, Credentials
+from multiauth.revamp.lib.presets.main import AuthProvider, AuthRequester, Credentials
 
 ###########################
 ###### TODO(maxence@escape.tech, antoine@escape.tech): We should stop doing that a

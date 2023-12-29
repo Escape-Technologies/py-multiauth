@@ -9,7 +9,7 @@ from typing import (
 from pydantic import BaseModel, Field
 
 from multiauth.entities.http import HTTPCookies, HTTPHeaders
-from multiauth.new.entities.main import Credentials
+from multiauth.revamp.lib.presets.main import Credentials
 
 
 # The Authentication Schemas can be found below

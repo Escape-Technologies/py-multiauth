@@ -5,7 +5,7 @@ from http import HTTPMethod
 from multiauth.entities.errors import AuthenticationError
 from multiauth.entities.http import HTTPCookies, HTTPHeaders
 from multiauth.entities.user import UserName
-from multiauth.new.entities.main import (
+from multiauth.revamp.lib.presets.main import (
     AuthExtractor,
     AuthInjector,
     AuthProvider,

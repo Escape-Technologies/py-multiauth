@@ -2,6 +2,7 @@ import datetime
 import json
 from typing import Any
 
+from multiauth.entities.user import UserName
 from multiauth.revamp.configuration import (
     MultiauthConfiguration,
 )
@@ -50,15 +51,15 @@ class Multiauth:
         for procedure in self.procedures.values():
             procedure.load_responses(seed)
 
-    def _get_user(self, user_name: str) -> User:
+    def _get_user(self, user_name: UserName) -> User:
         user = self.users.get(user_name)
         if not user:
             raise MissingUserException(user_name)
         return user
 
-    def _get_procedure(
+    def _get_authentication_procedure(
         self,
-        user_name: str,
+        user_name: UserName,
     ) -> Procedure:
         user = self._get_user(user_name)
 
@@ -70,9 +71,29 @@ class Multiauth:
 
         return procedure
 
+    def _get_refresh_procedure(
+        self,
+        user_name: UserName,
+    ) -> Procedure | None:
+        user = self._get_user(user_name)
+
+        if user.refresh is None:
+            return None
+
+        if user.refresh.procedure is None:
+            return None
+
+        procedure_name = user.refresh.procedure
+        procedure = self.procedures.get(procedure_name)
+
+        if not procedure:
+            raise MissingProcedureException(procedure_name)
+
+        return procedure
+
     def get_http_response(
         self,
-        user_name: str,
+        user_name: UserName,
         step: int,
     ) -> tuple[HTTPRequest, HTTPResponse | None, list[Event]]:
         """
@@ -83,12 +104,12 @@ class Multiauth:
         is not declared in the multiauth configuration.
         """
         user = self._get_user(user_name)
-        procedure = self._get_procedure(user_name)
+        procedure = self._get_authentication_procedure(user_name)
         return procedure.request(user, step)
 
     def extract_variables(
         self,
-        user_name: str,
+        user_name: UserName,
         response: HTTPResponse,
         step: int,
     ) -> tuple[list[AuthenticationVariable], list[Event]]:
@@ -99,12 +120,12 @@ class Multiauth:
         - Raises a `MissingProcedureException` if the provided user relies on a procedure that
         is not declared in the multiauth configuration.
         """
-        procedure = self._get_procedure(user_name)
+        procedure = self._get_authentication_procedure(user_name)
         return procedure.extract(response, step)
 
     def authenticate(
         self,
-        user_name: str,
+        user_name: UserName,
     ) -> tuple[Authentication, list[Event], int]:
         """
         Runs the authentication procedure of the provided user.
@@ -114,7 +135,7 @@ class Multiauth:
         is not declared in the multiauth configuration.
         """
         user = self._get_user(user_name)
-        procedure = self._get_procedure(user_name)
+        procedure = self._get_authentication_procedure(user_name)
 
         authentication, events = procedure.authenticate(user)
 
@@ -132,7 +153,7 @@ class Multiauth:
             0,
         )
 
-    def should_refresh(self, user_name: str) -> bool:
+    def should_refresh(self, user_name: UserName) -> bool:
         """
         Assess the expiration status of an user.
 
@@ -142,7 +163,7 @@ class Multiauth:
 
     def refresh(
         self,
-        user_name: str,
+        user_name: UserName,
     ) -> tuple[Authentication, list[Event], int]:
         """
         Refresh the authentication object of a given user.
@@ -165,11 +186,11 @@ class Multiauth:
             return self.authenticate(user_name)
 
         # Default to the authentication procedure
-        refresh_procedure = self._get_procedure(user_name)
+        refresh_procedure = self._get_authentication_procedure(user_name)
 
-        # If the user has a refresh procedure, use it instead of the authentication procedure
-        if user.refresh is not None and user.refresh.procedure is not None:
-            refresh_procedure = self._get_procedure(user.refresh.procedure)
+        # Else go for the specific refresh procedure
+        if (rp := self._get_refresh_procedure(user_name)) is not None:
+            refresh_procedure = rp
 
         # Run the procedure
         refreshed_authentication, events = refresh_procedure.authenticate(user)

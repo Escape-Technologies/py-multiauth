@@ -1,7 +1,7 @@
 from pydantic import Field
 
 from multiauth.entities.providers.digest import DigestHashAlgorithm
-from multiauth.new.entities.main import AuthInjector, AuthProvider, AuthRequester, Credentials
+from multiauth.revamp.lib.presets.main import AuthInjector, AuthProvider, AuthRequester, Credentials
 
 
 class DigestCredentials(Credentials):

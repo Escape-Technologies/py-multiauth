@@ -2,7 +2,7 @@ from typing import Any
 
 from pydantic import Field
 
-from multiauth.new.entities.main import (
+from multiauth.revamp.lib.presets.main import (
     AuthExtractor,
     AuthInjector,
     AuthProvider,

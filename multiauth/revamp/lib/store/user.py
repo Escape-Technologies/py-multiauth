@@ -2,6 +2,7 @@ from typing import Any, Literal
 
 from pydantic import BaseModel, Field
 
+from multiauth.entities.user import UserName
 from multiauth.revamp.lib.http_core.entities import (
     HTTPCookie,
     HTTPHeader,
@@ -104,7 +105,7 @@ class UserAuthentication(BaseModel):
 
 
 class User(BaseModel):
-    name: str = Field(description='The name of the user')
+    name: UserName = Field(description='The name of the user')
     credentials: Credentials = Field(description='The parameters use to customize requests sent for the user')
     authentication: UserAuthentication = Field(
         description=(
