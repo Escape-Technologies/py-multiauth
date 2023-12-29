@@ -15,7 +15,7 @@ from multiauth.entities.errors import AuthenticationError
 from multiauth.entities.http import HTTPHeaders
 from multiauth.entities.main import JWTToken, Token
 from multiauth.entities.providers.digest import DigestHashAlgorithm
-from multiauth.entities.providers.oauth import AuthOAuthlocation
+from multiauth.entities.providers.oauth import AuthOAuthClientMethod
 from multiauth.utils import dict_nested_get
 
 
@@ -108,13 +108,13 @@ def hash_calculator(
     return ''
 
 
-def token_endpoint_auth_method(auth_location: AuthOAuthlocation) -> str:
+def token_endpoint_auth_method(auth_location: AuthOAuthClientMethod) -> str:
     """This function takes the authorization location that is provided in the configuration
     and determines which token endpoint authentication method should be used by the session."""
 
-    if auth_location == AuthOAuthlocation.BODY:
+    if auth_location == AuthOAuthClientMethod.BODY:
         return 'client_secret_post'
-    if auth_location == AuthOAuthlocation.BASIC:
+    if auth_location == AuthOAuthClientMethod.BASIC:
         return 'client_secret_basic'
 
     return ''  # type: ignore[unreachable]

@@ -9,7 +9,12 @@ from authlib.integrations.requests_client import OAuth2Session  # type: ignore[i
 from multiauth.entities.errors import AuthenticationError
 from multiauth.entities.http import HTTPLocation
 from multiauth.entities.main import AuthResponse, AuthTech
-from multiauth.entities.providers.oauth import AuthConfigOAuth, AuthOAuthGrantType, AuthOAuthlocation, AuthOAuthResponse
+from multiauth.entities.providers.oauth import (
+    AuthConfigOAuth,
+    AuthOAuthClientMethod,
+    AuthOAuthGrantType,
+    AuthOAuthResponse,
+)
 from multiauth.entities.providers.webdriver import SeleniumCommand, SeleniumTest
 from multiauth.helpers import token_endpoint_auth_method
 from multiauth.manager import User
@@ -321,7 +326,7 @@ def oauth_config_parser(schema: dict) -> AuthConfigOAuth:
         callback_url=None,
         scope='',
         param_prefix='Bearer',
-        auth_location=AuthOAuthlocation.BODY,
+        auth_location=AuthOAuthClientMethod.BODY,
         param_location=HTTPLocation.HEADER,
         state=None,
         login_flow=[],
@@ -357,7 +362,7 @@ def oauth_config_parser(schema: dict) -> AuthConfigOAuth:
         auth_config.param_prefix = schema['param_prefix']
 
     if schema.get('auth_location'):
-        auth_config.auth_location = AuthOAuthlocation(schema.get('auth_location', '').upper())
+        auth_config.auth_location = AuthOAuthClientMethod(schema.get('auth_location', '').upper())
 
     if not schema.get('param_location'):
         raise AuthenticationError('Please provide the location')
