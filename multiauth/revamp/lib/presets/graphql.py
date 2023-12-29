@@ -3,7 +3,7 @@ from typing import NewType
 from pydantic import Field
 
 from multiauth.entities.http import HTTPLocation
-from multiauth.new.entities.main import (
+from multiauth.revamp.lib.presets.main import (
     AuthExtractor,
     AuthInjector,
     AuthProvider,

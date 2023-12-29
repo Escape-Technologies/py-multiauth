@@ -11,8 +11,8 @@ from multiauth.entities.http import HTTPCookies, HTTPHeaders, HTTPLocation, HTTP
 from multiauth.entities.main import AuthResponse, AuthTech
 from multiauth.entities.user import UserName
 from multiauth.helpers.curl import parse_scheme
-from multiauth.new.entities.main import AuthExtractor, AuthInjector, AuthProvider, AuthRequester, Credentials
 from multiauth.new.parser import parse_config
+from multiauth.revamp.lib.presets.main import AuthExtractor, AuthInjector, AuthProvider, AuthRequester, Credentials
 from multiauth.utils import deep_merge_data, dict_find_path, dict_nested_get, merge_headers
 
 TIMEOUT = 5

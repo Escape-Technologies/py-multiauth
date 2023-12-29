@@ -1,6 +1,6 @@
 from pydantic import Field
 
-from multiauth.new.entities.main import AuthInjector, AuthProvider, Credentials
+from multiauth.revamp.lib.presets.main import AuthInjector, AuthProvider, Credentials
 
 
 class APIKeyCredentials(Credentials):

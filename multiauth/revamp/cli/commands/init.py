@@ -2,6 +2,7 @@ import argparse
 import json
 from http import HTTPMethod
 
+from multiauth.entities.user import UserName
 from multiauth.revamp.configuration import MultiauthConfiguration
 from multiauth.revamp.helpers.logger import setup_logger
 from multiauth.revamp.lib.http_core.entities import HTTPHeader, HTTPLocation
@@ -51,7 +52,7 @@ def init_command(args: argparse.Namespace) -> None:
         ],
         users=[
             User(
-                name='example-user',
+                name=UserName('example-user'),
                 authentication=UserAuthentication(
                     procedure='example-procedure',
                     injections=[
