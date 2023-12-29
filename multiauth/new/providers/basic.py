@@ -4,8 +4,9 @@
 import base64
 
 from multiauth.entities.errors import AuthenticationError
-from multiauth.entities.providers.http import BasicCredentials, Credentials
-from multiauth.providers.http_parser import parse_credentials
+from multiauth.entities.http import HTTPHeaders
+from multiauth.new.entities.basic import BasicCredentials, Credentials
+from multiauth.new.parser import parse_credentials
 
 
 def basic_parse_credentials(schema: dict) -> BasicCredentials:
@@ -46,7 +47,7 @@ def basic_to_standard_crendentials(credentials: BasicCredentials) -> Credentials
 
     return Credentials(
         name=credentials.name,
-        headers=credentials.headers | {'Authorization': 'Basic ' + header_value},
+        headers=HTTPHeaders(credentials.headers | {'Authorization': 'Basic ' + header_value}),
         cookies=credentials.cookies,
         body=credentials.body,
     )

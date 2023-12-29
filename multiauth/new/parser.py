@@ -3,7 +3,9 @@
 from http import HTTPMethod
 
 from multiauth.entities.errors import AuthenticationError
-from multiauth.entities.providers.http import (
+from multiauth.entities.http import HTTPCookies, HTTPHeaders
+from multiauth.entities.user import UserName
+from multiauth.new.entities.main import (
     AuthExtractor,
     AuthInjector,
     AuthProvider,
@@ -170,8 +172,8 @@ def parse_credentials(schema: dict) -> Credentials:
         raise AuthenticationError('`body` must be a dictionary in credentials')
 
     return Credentials(
-        name=schema['name'],
-        headers=schema['headers'],
-        cookies=schema['cookies'],
+        name=UserName(schema['name']),
+        headers=HTTPHeaders(schema['headers']),
+        cookies=HTTPCookies(schema['cookies']),
         body=schema['body'],
     )

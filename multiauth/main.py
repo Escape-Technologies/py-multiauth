@@ -13,6 +13,7 @@ import jsonschema
 
 from multiauth import static
 from multiauth.entities.errors import InvalidConfigurationError
+from multiauth.entities.http import HTTPHeaders
 from multiauth.entities.main import AuthTech, Token
 from multiauth.handlers import auth_handler, reauth_handler
 from multiauth.helpers.logger import setup_logger
@@ -177,6 +178,7 @@ class MultiAuth:
             del _user_credientials['auth']
 
             _user: User = User(
+                name=user,
                 auth_schema=user_info['auth'],
                 auth_tech=AuthTech.PUBLIC if user_info['auth'] is None else AuthTech(schema['tech']),
                 credentials=_user_credientials,
@@ -191,7 +193,7 @@ class MultiAuth:
         url: str,
         username: str,
         method: HTTPMethod,
-        headers: dict[str, str],
+        headers: HTTPHeaders,
         formatted_payload: Any,
     ) -> dict[str, str]:
         """Sign a payload before sending it.

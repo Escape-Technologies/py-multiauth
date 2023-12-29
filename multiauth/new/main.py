@@ -7,10 +7,12 @@ from urllib.parse import parse_qs, urlencode, urlparse, urlunparse
 import requests
 
 from multiauth.entities.errors import AuthenticationError
-from multiauth.entities.http import HTTPLocation, HTTPRequest, HTTPResponse
-from multiauth.entities.providers.http import AuthExtractor, AuthInjector, AuthRequester, Credentials
+from multiauth.entities.http import HTTPCookies, HTTPHeaders, HTTPLocation, HTTPRequest, HTTPResponse
+from multiauth.entities.main import AuthResponse, AuthTech
+from multiauth.entities.user import UserName
 from multiauth.helpers.curl import parse_scheme
-from multiauth.providers.http_parser import parse_config
+from multiauth.new.entities.main import AuthExtractor, AuthInjector, AuthProvider, AuthRequester, Credentials
+from multiauth.new.parser import parse_config
 from multiauth.utils import deep_merge_data, dict_find_path, dict_nested_get, merge_headers
 
 TIMEOUT = 5
@@ -119,24 +121,58 @@ def inject_token(injector: AuthInjector, username: str, token: str, set_cookies:
     token_value = f'{injector.prefix.strip()} {token}' if injector.prefix else token
 
     if injector.location == HTTPLocation.HEADER:
-        return Credentials(name=username, headers={injector.key: token_value}, cookies=set_cookies, body={})
+        return Credentials(
+            name=UserName(username),
+            headers=HTTPHeaders({injector.key: token_value}),
+            cookies=HTTPCookies(set_cookies),
+            body=None,
+        )
 
     if injector.location == HTTPLocation.COOKIE:
         return Credentials(
-            name=username,
-            headers={},
-            cookies=merge_headers(set_cookies, {injector.key: token_value}),
-            body={},
+            name=UserName(username),
+            headers=HTTPHeaders({}),
+            body=None,
+            cookies=HTTPCookies(merge_headers(set_cookies, {injector.key: token_value})),
         )
 
     raise AuthenticationError(f'We could not find any key `{injector.key}` nested in the response')
+
+
+def http_standard_flow(
+    provider: AuthProvider,
+    tech: AuthTech,
+    credentials: Credentials,
+    proxy: str | None,
+) -> AuthResponse:
+    """This function is a wrapper function that implements the Rest authentication schema.
+
+    It takes the credentials of the user and authenticates them on the authentication URL.
+    After authenticating, it fetches the token and adds the token to the
+    headers along with optional headers in case the user provided them.
+    """
+
+    if provider.requester is None or provider.extractor is None or provider.injector is None:
+        raise AuthenticationError('The auth provider is not properly configured')
+
+    req, res = send_request(provider.requester, credentials, proxy)
+    token = extract_token(provider.extractor, res)
+    credentials = inject_token(provider.injector, credentials.name, token, res.cookies)
+
+    return AuthResponse(
+        name=credentials.name,
+        headers=credentials.headers,
+        cookies=credentials.cookies,
+        body=credentials.body,
+        tech=tech,
+    )
 
 
 def http_authenticator(
     credentials: Credentials,
     schema: dict,
     proxy: str | None = None,
-) -> Credentials:
+) -> AuthResponse:
     """This funciton is a wrapper function that implements the Rest authentication schema.
 
     It takes the credentials of the user and authenticates them on the authentication URL.
@@ -145,6 +181,4 @@ def http_authenticator(
     """
 
     auth_provider = parse_config(schema)
-    req, res = send_request(auth_provider.requester, credentials, proxy)
-    token = extract_token(auth_provider.extractor, res)
-    return inject_token(auth_provider.injector, credentials.name, token, res.cookies)
+    return http_standard_flow(auth_provider, AuthTech.REST, credentials, proxy)

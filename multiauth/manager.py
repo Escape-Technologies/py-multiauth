@@ -4,7 +4,11 @@ import time
 from typing import Any
 
 from multiauth.entities.errors import AuthenticationError, ExpiredTokenError
-from multiauth.entities.main import AuthTech, AuthType, JWTToken, Token
+from multiauth.entities.http import HTTPHeaders
+from multiauth.entities.main import AuthTech, JWTToken, Token
+from multiauth.entities.providers.aws import AuthAWSType
+from multiauth.entities.providers.oauth import AuthOAuthGrantType
+from multiauth.entities.user import MethodName, UserName
 from multiauth.helpers import jwt_token_analyzer
 
 
@@ -12,26 +16,16 @@ class User:
 
     """User entity."""
 
-    auth_schema: str | None
-    auth_tech: AuthTech
-    auth_type: AuthType | None
-    credentials: dict[str, Any] | None
-    expired_token: Token | None
-    expires_in: int | None
-    headers: dict[str, Any] | None
-    refresh_token: Token | None
-    token_info: JWTToken | None
-    token: Token | None
-
     def __init__(
         self,
-        auth_schema: str | None = None,
+        name: UserName,
+        auth_schema: MethodName | None = None,
         auth_tech: AuthTech = AuthTech.PUBLIC,
-        auth_type: AuthType | None = None,
+        auth_type: AuthAWSType | AuthOAuthGrantType | None = None,
         credentials: dict[str, Any] | None = None,
         expired_token: Token | None = None,
         expires_in: int | None = None,
-        headers: dict[str, Any] | None = None,
+        headers: HTTPHeaders | None = None,
         refresh_token: Token | None = None,
         token_info: JWTToken | None = None,
         token: Token | None = None,
@@ -40,6 +34,7 @@ class User:
 
         self.reset()
 
+        self.name = name
         self.auth_schema = auth_schema
         self.auth_tech = auth_tech
         self.auth_type = auth_type

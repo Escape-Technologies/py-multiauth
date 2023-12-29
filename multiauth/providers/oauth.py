@@ -7,9 +7,14 @@ from typing import cast
 from authlib.integrations.requests_client import OAuth2Session  # type: ignore[import-untyped]
 
 from multiauth.entities.errors import AuthenticationError
+from multiauth.entities.http import HTTPLocation
 from multiauth.entities.main import AuthResponse, AuthTech
-from multiauth.entities.providers.http import HTTPLocation
-from multiauth.entities.providers.oauth import AuthConfigOAuth, AuthOAuthGrantType, AuthOAuthlocation, AuthOAuthResponse
+from multiauth.entities.providers.oauth import (
+    AuthConfigOAuth,
+    AuthOAuthClientMethod,
+    AuthOAuthGrantType,
+    AuthOAuthResponse,
+)
 from multiauth.entities.providers.webdriver import SeleniumCommand, SeleniumTest
 from multiauth.helpers import token_endpoint_auth_method
 from multiauth.manager import User
@@ -60,14 +65,8 @@ def extract_oauth_token(
 
     # Initialize the variables
     auth_response = AuthResponse(
-        headers={},
         tech=AuthTech.OAUTH,
-    )
-
-    response = AuthOAuthResponse(
-        access_token='',
-        expires_in=None,
-        refresh_token=None,
+        name=user.name,
     )
 
     if not oauth_response or not isinstance(oauth_response, dict):
@@ -75,16 +74,20 @@ def extract_oauth_token(
     if not oauth_response.get('access_token'):
         raise AuthenticationError('Invalid OAuth Response')
 
-    response.access_token = oauth_response['access_token']
-    response.refresh_token = oauth_response.get('refresh_token')
-
+    expires_in: int | None = None
     # The expire_at field is the amount of seconds to expire. So we need to calculate the UNIX expiry date
     if oauth_response.get('expires_at'):
-        response.expires_in = int(oauth_response['expires_at'] + time.time())
+        expires_in = int(oauth_response['expires_at'] + time.time())
+
+    response = AuthOAuthResponse(
+        access_token=oauth_response['access_token'],
+        expires_in=expires_in,
+        refresh_token=oauth_response.get('refresh_token'),
+    )
 
     # Now check the location to know where should add the token (header or body)
     if auth_config.param_location == HTTPLocation.HEADER:
-        auth_response.headers['authorization'] = auth_config.param_prefix + ' ' + response.access_token
+        auth_response.headers['authorization'] = f'{auth_config.param_prefix} {response.access_token}'
 
     elif auth_config.param_location == HTTPLocation.QUERY:
         pass
@@ -323,7 +326,7 @@ def oauth_config_parser(schema: dict) -> AuthConfigOAuth:
         callback_url=None,
         scope='',
         param_prefix='Bearer',
-        auth_location=AuthOAuthlocation.BODY,
+        auth_location=AuthOAuthClientMethod.BODY,
         param_location=HTTPLocation.HEADER,
         state=None,
         login_flow=[],
@@ -359,7 +362,7 @@ def oauth_config_parser(schema: dict) -> AuthConfigOAuth:
         auth_config.param_prefix = schema['param_prefix']
 
     if schema.get('auth_location'):
-        auth_config.auth_location = AuthOAuthlocation(schema.get('auth_location', '').upper())
+        auth_config.auth_location = AuthOAuthClientMethod(schema.get('auth_location', '').upper())
 
     if not schema.get('param_location'):
         raise AuthenticationError('Please provide the location')

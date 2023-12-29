@@ -12,18 +12,18 @@ import jwt
 import requests
 
 from multiauth.entities.errors import AuthenticationError
-from multiauth.entities.main import AuthResponse, AuthTech, JWTToken, Token
-from multiauth.entities.providers.digest import AuthHashAlgorithmDigest
-from multiauth.entities.providers.oauth import AuthOAuthlocation
+from multiauth.entities.http import HTTPHeaders
+from multiauth.entities.main import JWTToken, Token
+from multiauth.entities.providers.digest import DigestHashAlgorithm
+from multiauth.entities.providers.oauth import AuthOAuthClientMethod
 from multiauth.utils import dict_nested_get
 
 
 def extract_token(
     response: requests.Response,
-    tech: AuthTech,
-    headers: dict[str, str],
+    headers: HTTPHeaders,
     refresh_token_name: str | None = None,
-) -> tuple[AuthResponse, str | None]:
+) -> tuple[HTTPHeaders, Token | None]:
     """This function takes the response and tries to extract the tokens.
 
     This function is mainly a helper function to the REST and the GraphQL authenctication schema.
@@ -52,7 +52,7 @@ def extract_token(
             f'{type(e).__name__}: Response returned by authentication server is invalid: {e}',
         ) from e
 
-    headers_to_add: dict = {}
+    headers_to_add: HTTPHeaders = HTTPHeaders({})
 
     if headers is not None:
         for param_name, header_arg in headers.items():
@@ -78,29 +78,29 @@ def extract_token(
 
     # Here we are going to retrieve the refresh token from the response
     if refresh_token_name is not None:
-        refresh_token: str = _find_token(refresh_token_name.split('.'), response_dict)
-        return AuthResponse(tech=tech, headers=headers_to_add), refresh_token
+        refresh_token: Token = _find_token(refresh_token_name.split('.'), response_dict)
+        return headers_to_add, refresh_token
 
-    return AuthResponse(tech=tech, headers=headers_to_add), None
+    return headers_to_add, None
 
 
 def hash_calculator(
-    hash_type: AuthHashAlgorithmDigest,
+    hash_type: DigestHashAlgorithm,
     input_data: str | bytes,
 ) -> str:
     """This function determines the appropriate hashing function and returns the hashing of the input."""
 
-    if hash_type in (AuthHashAlgorithmDigest.MD5, AuthHashAlgorithmDigest.MD5_SESS):
+    if hash_type in (DigestHashAlgorithm.MD5, DigestHashAlgorithm.MD5_SESS):
         if isinstance(input_data, str):
             input_data = input_data.encode('utf-8')
         return hashlib.md5(input_data).hexdigest()  # noqa: S324
 
-    if hash_type in (AuthHashAlgorithmDigest.SHA_256, AuthHashAlgorithmDigest.SHA_256_SESS):
+    if hash_type in (DigestHashAlgorithm.SHA_256, DigestHashAlgorithm.SHA_256_SESS):
         if isinstance(input_data, str):
             input_data = input_data.encode('utf-8')
         return hashlib.sha256(input_data).hexdigest()
 
-    if hash_type in (AuthHashAlgorithmDigest.SHA_512_256, AuthHashAlgorithmDigest.SHA_512_256_SESS):
+    if hash_type in (DigestHashAlgorithm.SHA_512_256, DigestHashAlgorithm.SHA_512_256_SESS):
         if isinstance(input_data, str):
             input_data = input_data.encode('utf-8')
         return hashlib.sha512(input_data).hexdigest()
@@ -108,13 +108,13 @@ def hash_calculator(
     return ''
 
 
-def token_endpoint_auth_method(auth_location: AuthOAuthlocation) -> str:
+def token_endpoint_auth_method(auth_location: AuthOAuthClientMethod) -> str:
     """This function takes the authorization location that is provided in the configuration
     and determines which token endpoint authentication method should be used by the session."""
 
-    if auth_location == AuthOAuthlocation.BODY:
+    if auth_location == AuthOAuthClientMethod.BODY:
         return 'client_secret_post'
-    if auth_location == AuthOAuthlocation.BASIC:
+    if auth_location == AuthOAuthClientMethod.BASIC:
         return 'client_secret_basic'
 
     return ''  # type: ignore[unreachable]

@@ -8,9 +8,9 @@ import jwt
 import requests
 
 from multiauth.entities.errors import AuthenticationError
-from multiauth.entities.main import AuthResponse, AuthTech
+from multiauth.entities.http import HTTPHeaders, HTTPLocation
+from multiauth.entities.main import AuthResponse, AuthTech, Token
 from multiauth.entities.providers.graphql import AuthConfigGraphQL
-from multiauth.entities.providers.http import HTTPLocation
 from multiauth.helpers import extract_token
 from multiauth.manager import User
 
@@ -180,7 +180,7 @@ def graphql_auth_attach(
 
     # Prepare the header in order to fetch the token
     # We are creating a header for the token because the helper function '_extract_token' works like that
-    headers: dict[str, str] = {}
+    headers: HTTPHeaders = HTTPHeaders({})
 
     # Now we want to append the authentication headers
     # There are two parts
@@ -211,41 +211,35 @@ def graphql_auth_attach(
         headers['cookie'] = cookie_header
         if auth_config.param_location == HTTPLocation.COOKIE:
             return AuthResponse(
+                name=user.name,
                 tech=AuthTech.GRAPHQL,
                 headers=headers,
             )
 
-    token: str | None = None
-    auth_response: AuthResponse
-    refresh_token: str | None = None
+    token: Token | None = None
+    refresh_token: Token | None = None
 
     # Fetching token from the header is priorized
     # TODO(antoine@escape.tech): Add support of optional headers (Previously inserted in `headers`)
     if auth_config.token_name is not None:
         token_key = auth_config.token_name
-        token = response.headers.get(token_key) or response.cookies.get(token_key)  # type: ignore[no-untyped-call]
+        token = Token(response.headers.get(token_key) or response.cookies.get(token_key))  # type: ignore[no-untyped-call]
         if token:
             if auth_config.param_prefix:
                 token_key = auth_config.param_prefix + ' ' + token
 
-            headers = auth_config.headers if auth_config.headers is not None else {}
+            headers = auth_config.headers if auth_config.headers is not None else HTTPHeaders({})
             headers[token_key] = token
-
-            auth_response = AuthResponse(
-                tech=AuthTech.REST,
-                headers=headers,
-            )
 
     if not token:
         # Now fetch the token and create the Authentication Response
-        auth_response, refresh_token = extract_token(
+        extracted_headers, refresh_token = extract_token(
             response,
-            AuthTech.REST,
             headers,
             auth_config.refresh_field_name,
         )
 
-        token = auth_response.headers[next(iter(headers))].split(' ')[1]
+        token = Token(extracted_headers[next(iter(headers))].split(' ')[1])
 
     # If the token is not a JWT token, don't add expiry time (No way of knowing if the token is expired or no)
     try:
@@ -341,7 +335,7 @@ def graphql_reauthenticator(
 
     # Prepare the header in order to fetch the token
     # We are creating a header for the token because the helper function '_extract_token' works like that
-    headers: dict[str, str] = {}
+    headers: HTTPHeaders = HTTPHeaders({})
 
     # Now we want to append the authentication headers
     # There are two parts
@@ -375,17 +369,23 @@ def graphql_reauthenticator(
             return AuthResponse(
                 tech=AuthTech.GRAPHQL,
                 headers=headers,
+                name=user.name,
             )
 
     # Now fetch the token and create the Authentication Response
-    auth_response, refresh_token_result = extract_token(
+    extracted_headers, refresh_token_result = extract_token(
         response,
-        AuthTech.REST,
         headers,
         auth_config.refresh_field_name,
     )
 
-    token = auth_response.headers[next(iter(headers))].split(' ')[1]
+    auth_response = AuthResponse(
+        name=user.name,
+        tech=AuthTech.GRAPHQL,
+        headers=extracted_headers,
+    )
+
+    token = Token(extracted_headers[next(iter(headers))].split(' ')[1])
 
     # If the token is not a JWT token, don't add expiry time (No way of knowing if the token is expired or no)
     try:

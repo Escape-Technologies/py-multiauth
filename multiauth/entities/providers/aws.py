@@ -5,7 +5,7 @@ from http import HTTPMethod
 
 from pydantic import BaseModel
 
-from multiauth.entities.providers.http import HTTPLocation
+from multiauth.entities.http import HTTPLocation
 
 
 @unique

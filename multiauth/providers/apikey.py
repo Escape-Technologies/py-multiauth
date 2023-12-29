@@ -3,9 +3,9 @@
 from typing import cast
 
 from multiauth.entities.errors import AuthenticationError
-from multiauth.entities.main import AuthResponse, AuthTech
+from multiauth.entities.http import HTTPLocation
+from multiauth.entities.main import AuthResponse, AuthTech, Token
 from multiauth.entities.providers.apikey import AuthConfigApiKey
-from multiauth.entities.providers.http import HTTPLocation
 from multiauth.manager import User
 
 
@@ -41,8 +41,8 @@ def apikey_auth_attach(
     """This function attaches the user credentials to the schema and generates the proper authentication response."""
 
     auth_response = AuthResponse(
-        headers={},
         tech=AuthTech.APIKEY,
+        name=user.name,
     )
 
     # First take the credentials from the user
@@ -51,7 +51,7 @@ def apikey_auth_attach(
     if not user.credentials.get('api_key'):
         raise AuthenticationError("Failed to fetch user's API Key")
 
-    api_key: str = user.credentials['api_key']
+    api_key: Token = user.credentials['api_key']
 
     # Add the token to the current user
     user.set_token(api_key, None)

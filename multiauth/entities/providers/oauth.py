@@ -4,12 +4,13 @@ from enum import StrEnum, unique
 
 from pydantic import BaseModel
 
-from multiauth.entities.providers.http import HTTPLocation
+from multiauth.entities.http import HTTPLocation
+from multiauth.entities.main import Token
 from multiauth.entities.providers.webdriver import SeleniumCommand
 
 
 @unique
-class AuthOAuthlocation(StrEnum):
+class AuthOAuthClientMethod(StrEnum):
 
     """Where the credentials during the OAuth will be sent."""
 
@@ -40,9 +41,9 @@ class AuthOAuthResponse(BaseModel):
 
     """The format of the OAuth access token response according to the official documentation."""
 
-    access_token: str
+    access_token: Token
     expires_in: int | None
-    refresh_token: str | None
+    refresh_token: Token | None
 
 
 class AuthConfigOAuth(BaseModel):
@@ -55,7 +56,7 @@ class AuthConfigOAuth(BaseModel):
     callback_url: str | None
     scope: str | None
     param_prefix: str
-    auth_location: AuthOAuthlocation
+    auth_location: AuthOAuthClientMethod
     param_location: HTTPLocation
     state: str | None
     login_flow: list[SeleniumCommand]
