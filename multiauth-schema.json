@@ -576,22 +576,29 @@
           "title": "Client Secret",
           "type": "string"
         },
-        "username": {
-          "title": "Username",
-          "type": "string"
-        },
-        "password": {
-          "title": "Password",
-          "type": "string"
+        "users": {
+          "items": {
+            "maxItems": 2,
+            "minItems": 2,
+            "prefixItems": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "type": "array"
+          },
+          "title": "Users",
+          "type": "array"
         }
       },
       "required": [
         "name",
         "server_url",
         "client_id",
-        "client_secret",
-        "username",
-        "password"
+        "client_secret"
       ],
       "title": "OAuthUserpassPreset",
       "type": "object"
