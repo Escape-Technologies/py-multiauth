@@ -110,6 +110,7 @@ crash_report.txt
 
 # Revamp
 .multiauthrc.json
+results.json
 
 # Docs
 site/
