@@ -133,7 +133,7 @@ class Procedure:
 
         return authentication, events
 
-    def authenticate(
+    def run(
         self,
         user: User,
     ) -> tuple[Authentication, list[Event]]:
@@ -147,7 +147,9 @@ class Procedure:
         events: list[Event] = [ProcedureStartedEvent(user_name=user.name, procedure_name=self.configuration.name)]
 
         for i, runner in enumerate(self.runners):
-            request, response, http_events = runner.interpolate(list(self.variables.values())).request(user)
+            variables = list(reversed(list(self.variables.values()) + user.variables))
+
+            request, response, http_events = runner.interpolate(variables).request(user)
 
             for event in http_events:
                 events.append(event)

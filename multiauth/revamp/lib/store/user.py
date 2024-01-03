@@ -9,6 +9,7 @@ from multiauth.revamp.lib.http_core.entities import (
     HTTPQueryParameter,
 )
 from multiauth.revamp.lib.store.injection import TokenInjection
+from multiauth.revamp.lib.store.variables import AuthenticationVariable
 
 
 class Credentials(BaseModel):
@@ -89,6 +90,13 @@ class UserRefresh(BaseModel):
             'Credentials to use to refresh the authentication. If not provided, the user credentials will be used.'
         ),
     )
+    variables: list[AuthenticationVariable] | None = Field(
+        default=None,
+        description=(
+            "List of variables that will be injected at the beginning of the user's"
+            "refresh procedure. If not provided, the user's variables will be used instead."
+        ),
+    )
 
 
 class UserAuthentication(BaseModel):
@@ -113,6 +121,10 @@ class User(BaseModel):
             'and the description of how retrieved tokens should be injected in the user authentication result'
         ),
     )
+    variables: list[AuthenticationVariable] = Field(
+        default_factory=list,
+        description="List of variables that will be injected at the beginning of the user's authentication procedure",
+    )
     refresh: UserRefresh | None = Field(
         default=None,
         description='An optional refresh procedure to follow for the user',
@@ -128,11 +140,35 @@ class User(BaseModel):
 
         return ttl_seconds
 
+    @property
+    def refresh_variables(self) -> list[AuthenticationVariable]:
+        if self.refresh is None:
+            return self.variables
+        return self.refresh.variables or self.variables
+
+    @property
+    def refresh_credentials(self) -> Credentials:
+        if self.refresh is None:
+            return self.credentials
+        return self.refresh.credentials or self.credentials
+
+    @property
+    def refresh_user(self) -> 'User':
+        refresh_user = User.from_user(self)
+
+        if self.refresh is not None:
+            refresh_user.authentication.injections = self.refresh.injections
+            refresh_user.variables = self.refresh_variables or self.variables
+            refresh_user.credentials = self.refresh_credentials or self.credentials
+
+        return refresh_user
+
     @staticmethod
     def from_user(user: 'User') -> 'User':
         return User(
             name=user.name,
             credentials=Credentials.from_credentials(user.credentials),
             authentication=user.authentication,
+            variables=user.variables,
             refresh=user.refresh,
         )
