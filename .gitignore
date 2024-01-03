@@ -107,3 +107,6 @@ package-lock.json
 .authrc
 .stats/*
 crash_report.txt
+
+# Docs
+site/
