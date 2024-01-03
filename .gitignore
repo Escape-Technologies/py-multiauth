@@ -108,5 +108,8 @@ package-lock.json
 .stats/*
 crash_report.txt
 
+# Revamp
+.multiauthrc.json
+
 # Docs
 site/
