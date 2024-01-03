@@ -137,7 +137,7 @@ class Multiauth:
         user = self._get_user(user_name)
         procedure = self._get_authentication_procedure(user_name)
 
-        authentication, events = procedure.authenticate(user)
+        authentication, events = procedure.run(user)
 
         # @todo(maxence@escape): implement automated expiration detection from the authentication content
         detected_ttl_seconds: int | None = None
@@ -193,7 +193,7 @@ class Multiauth:
             refresh_procedure = rp
 
         # Run the procedure
-        refreshed_authentication, events = refresh_procedure.authenticate(user)
+        refreshed_authentication, events = refresh_procedure.run(user.refresh_user)
 
         # If the user has a refresh procedure, and the `keep` flag is enabled, merge the current authentication object
         if user.refresh is not None and user.refresh.keep:
