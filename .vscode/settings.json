@@ -55,6 +55,10 @@
   "[json]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
+  "[markdown]": {
+    "editor.tabSize": 4,
+    "editor.wordWrap": "on"
+  },
   "black-formatter.args": [
     "--skip-string-normalization",
     "--line-length",

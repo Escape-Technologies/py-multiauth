@@ -7,11 +7,7 @@
           "tech": "http",
           "parameters": {
             "url": "https://vampi.tools.escape.tech",
-            "method": "GET",
-            "headers": [],
-            "cookies": [],
-            "query_parameters": [],
-            "body": null
+            "method": "GET"
           },
           "extractions": [
             {
@@ -29,21 +25,15 @@
             "headers": [
               {
                 "name": "X-Example-Header-Extracted",
-                "values": [
-                  "{{ example-extraction }}"
-                ]
+                "values": ["{{ example-extraction }}"]
               }
             ],
-            "cookies": [],
-            "query_parameters": [],
             "body": null
-          },
-          "extractions": []
+          }
         }
       ]
     }
   ],
-  "presets": [],
   "users": [
     {
       "name": "example-user",
@@ -53,13 +43,9 @@
         "headers": [
           {
             "name": "X-Example-Header",
-            "values": [
-              "example-value"
-            ]
+            "values": ["example-value"]
           }
         ],
-        "cookies": [],
-        "query_parameters": [],
         "body": null
       },
       "authentication": {
