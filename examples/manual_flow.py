@@ -1,3 +1,4 @@
+# noqa: INP001
 """Manual flow example."""
 
 from multiauth import MultiAuth, User
@@ -8,19 +9,21 @@ schemas = {
     },
 }
 users = {
-    'user_lambda': User({
-        'auth_schema': 'manual_headers',
-        'headers': {
-            'Authorization': 'Bearer 12345',
+    'user_lambda': User(
+        {
+            'auth_schema': 'manual_headers',
+            'headers': {
+                'Authorization': 'Bearer 12345',
+            },
         },
-    }),
+    ),
 }
 
 instance = MultiAuth(schemas, users)
 
 instance.authenticate_users()
 
-assert instance.headers['user_lambda']['Authorization'] == 'Bearer 12345'
+assert instance.headers['user_lambda']['Authorization'] == 'Bearer 12345'  # noqa: S101
 
 headers, username = instance.authenticate('user_lambda')
-assert headers['Authorization'] == 'Bearer 12345'
+assert headers['Authorization'] == 'Bearer 12345'  # noqa: S101
