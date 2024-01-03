@@ -1,5 +1,23 @@
 {
   "$defs": {
+    "AuthenticationVariable": {
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "value": {
+          "title": "Value",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "value"
+      ],
+      "title": "AuthenticationVariable",
+      "type": "object"
+    },
     "BaseExtraction": {
       "properties": {
         "name": {
@@ -196,6 +214,18 @@
           ],
           "default": null,
           "title": "Body"
+        },
+        "proxy": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Proxy"
         },
         "query": {
           "title": "Query",
@@ -478,6 +508,18 @@
           ],
           "default": null,
           "title": "Body"
+        },
+        "proxy": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Proxy"
         }
       },
       "required": [
@@ -508,6 +550,50 @@
         "parameters"
       ],
       "title": "JWTAccessTokenRefreshTokenPreset",
+      "type": "object"
+    },
+    "OAuthUserpassPreset": {
+      "properties": {
+        "type": {
+          "const": "oauth_userpass",
+          "default": "oauth_userpass",
+          "title": "Type"
+        },
+        "name": {
+          "description": "The name of the preset. Will be the name of the generated procedure.",
+          "title": "Name",
+          "type": "string"
+        },
+        "server_url": {
+          "title": "Server Url",
+          "type": "string"
+        },
+        "client_id": {
+          "title": "Client Id",
+          "type": "string"
+        },
+        "client_secret": {
+          "title": "Client Secret",
+          "type": "string"
+        },
+        "username": {
+          "title": "Username",
+          "type": "string"
+        },
+        "password": {
+          "title": "Password",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "server_url",
+        "client_id",
+        "client_secret",
+        "username",
+        "password"
+      ],
+      "title": "OAuthUserpassPreset",
       "type": "object"
     },
     "ProcedureConfiguration": {
@@ -629,6 +715,14 @@
           ],
           "description": "The authentication parameters of the user, including the authentication procedure to followand the description of how retrieved tokens should be injected in the user authentication result"
         },
+        "variables": {
+          "description": "List of variables that will be injected at the beginning of the user's authentication procedure",
+          "items": {
+            "$ref": "#/$defs/AuthenticationVariable"
+          },
+          "title": "Variables",
+          "type": "array"
+        },
         "refresh": {
           "anyOf": [
             {
@@ -726,6 +820,22 @@
           ],
           "default": null,
           "description": "Credentials to use to refresh the authentication. If not provided, the user credentials will be used."
+        },
+        "variables": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/AuthenticationVariable"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "List of variables that will be injected at the beginning of the user'srefresh procedure. If not provided, the user's variables will be used instead.",
+          "title": "Variables"
         }
       },
       "title": "UserRefresh",
@@ -747,13 +857,17 @@
       "items": {
         "discriminator": {
           "mapping": {
-            "jwt_access_token_refresh_token": "#/$defs/JWTAccessTokenRefreshTokenPreset"
+            "jwt_access_token_refresh_token": "#/$defs/JWTAccessTokenRefreshTokenPreset",
+            "oauth_userpass": "#/$defs/OAuthUserpassPreset"
           },
           "propertyName": "type"
         },
         "oneOf": [
           {
             "$ref": "#/$defs/JWTAccessTokenRefreshTokenPreset"
+          },
+          {
+            "$ref": "#/$defs/OAuthUserpassPreset"
           }
         ]
       },
