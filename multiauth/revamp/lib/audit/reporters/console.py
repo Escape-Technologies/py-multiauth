@@ -56,7 +56,7 @@ class ConsoleEventsReporter(BaseEventsReporter):
         if isinstance(event, HTTPResponseEvent):
             msg += (
                 f' {event.response.status_code} {event.response.reason} '
-                'in {event.response.elapsed.microseconds//1000}ms'
+                f'in {event.response.elapsed.microseconds//1000}ms'
             )
 
         if isinstance(event, InjectedVariableEvent):
