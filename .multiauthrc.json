@@ -6,14 +6,12 @@
         {
           "tech": "http",
           "parameters": {
-            "url": "https://vampi.tools.escape.tech",
+            "url": "http://localhost:8080/auth/realms/test/.well-known/openid-configuration",
             "method": "GET",
             "headers": [
               {
-                "name": "X-Example-Header-From-User-Variable",
-                "values": [
-                  "{{ example-user-variable }}"
-                ]
+                "name": "accept",
+                "values": ["application/json"]
               }
             ],
             "cookies": [],
@@ -23,31 +21,74 @@
           },
           "extractions": [
             {
-              "name": "example-extraction",
+              "name": "token_endpoint",
               "location": "body",
-              "key": "message"
+              "key": "token_endpoint"
             }
           ]
         },
         {
           "tech": "http",
           "parameters": {
-            "url": "https://vampi.tools.escape.tech",
-            "method": "GET",
+            "url": "{{ token_endpoint }}",
+            "method": "POST",
             "headers": [
               {
-                "name": "X-Example-Header-Extracted",
-                "values": [
-                  "{{ example-extraction }}"
-                ]
+                "name": "content-type",
+                "values": ["application/x-www-form-urlencoded"]
+              },
+              {
+                "name": "accept",
+                "values": ["application/json"]
               }
             ],
             "cookies": [],
             "query_parameters": [],
-            "body": null,
+            "body": "grant_type=password&username={{ username }}&password={{ password }}&client_id={{ client_id }}&client_secret={{ client_secret }}",
             "proxy": null
           },
-          "extractions": []
+          "extractions": [
+            {
+              "name": "access_token",
+              "location": "body",
+              "key": "access_token"
+            },
+            {
+              "name": "expires_in",
+              "location": "body",
+              "key": "expires_in"
+            },
+            {
+              "name": "refresh_expires_in",
+              "location": "body",
+              "key": "refresh_expires_in"
+            },
+            {
+              "name": "refresh_token",
+              "location": "body",
+              "key": "refresh_token"
+            },
+            {
+              "name": "token_type",
+              "location": "body",
+              "key": "token_type"
+            },
+            {
+              "name": "not-before-policy",
+              "location": "body",
+              "key": "not-before-policy"
+            },
+            {
+              "name": "session_state",
+              "location": "body",
+              "key": "session_state"
+            },
+            {
+              "name": "scope",
+              "location": "body",
+              "key": "scope"
+            }
+          ]
         }
       ]
     }
@@ -56,31 +97,36 @@
   "users": [
     {
       "name": "example-user",
-      "credentials": {
-        "username": null,
-        "password": null,
-        "headers": [],
-        "cookies": [],
-        "query_parameters": [],
-        "body": null
-      },
+      "credentials": {},
+      "variables": [
+        {
+          "name": "username",
+          "value": "user1"
+        },
+        {
+          "name": "password",
+          "value": "user1"
+        },
+        {
+          "name": "client_id",
+          "value": "server1"
+        },
+        {
+          "name": "client_secret",
+          "value": "secret"
+        }
+      ],
       "authentication": {
         "procedure": "example-procedure",
         "injections": [
           {
             "location": "header",
-            "key": "X-Injected-Header",
-            "prefix": "Prefixed ",
-            "variable": "example-extraction"
+            "key": "Authorization",
+            "prefix": "Bearer ",
+            "variable": "access_token"
           }
         ]
       },
-      "variables": [
-        {
-          "name": "example-user-variable",
-          "value": "example-user-value"
-        }
-      ],
       "refresh": null
     }
   ],

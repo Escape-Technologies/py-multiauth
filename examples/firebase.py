@@ -1,3 +1,4 @@
+# noqa: INP001
 """Manual flow example."""
 import os
 
