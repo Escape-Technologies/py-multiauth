@@ -48,31 +48,31 @@ def yellow(str: str) -> str:
 
 class ConsoleEventsReporter(BaseEventsReporter):
     def format(self, event: Event) -> tuple[str, EventSeverity]:
-        str = f'{event.timestamp} {event.type:<18} {event.severity or event.default_severity:<8}'
+        msg = f'{event.timestamp} {event.type:<18} {event.severity or event.default_severity:<8}'
 
         if isinstance(event, HTTPRequestEvent):
-            str += f' {event.request.method} {event.request.scheme}://{event.request.host}{event.request.path}'
+            msg += f' {event.request.method} {event.request.scheme}://{event.request.host}{event.request.path}'
 
         if isinstance(event, HTTPResponseEvent):
-            str += f' {event.response.status_code} {event.response.reason}'
+            msg += f' {event.response.status_code} {event.response.reason} in {event.response.elapsed.microseconds//1000}ms'
 
         if isinstance(event, InjectedVariableEvent):
-            str += f' {event.variable.value} in {event.location} {event.target}'
+            msg += f' {event.variable.value} in {event.location} {event.target}'
 
         if isinstance(event, ExtractedVariableEvent):
-            str += f' name="{event.variable.name}" value="{event.variable.value}"'
+            msg += f' name="{event.variable.name}" value="{event.variable.value}"'
 
         match (event.severity or event.default_severity):
             case 'info':
-                return str, 'info'
+                return msg, 'info'
             case 'warning':
-                return yellow(str), 'warning'
+                return yellow(msg), 'warning'
             case 'error':
-                return red(str), 'error'
+                return red(msg), 'error'
             case 'success':
-                return green(str), 'success'
+                return green(msg), 'success'
             case _:
-                return str, 'info'
+                return msg, 'info'
 
     def report(self, events: list[Event]) -> None:
         logger = setup_logger()
