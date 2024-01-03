@@ -10,7 +10,7 @@ from multiauth.revamp.lib.procedure import ProcedureConfiguration
 from multiauth.revamp.lib.runners.http import HTTPBodyExtraction, HTTPRequestConfiguration, HTTPRequestParameters
 from multiauth.revamp.lib.store.injection import TokenInjection
 from multiauth.revamp.lib.store.user import Credentials, User, UserAuthentication
-from multiauth.revamp.lib.store.variables import VariableName
+from multiauth.revamp.lib.store.variables import AuthenticationVariable, VariableName
 
 
 def init_command(args: argparse.Namespace) -> None:
@@ -33,6 +33,12 @@ def init_command(args: argparse.Namespace) -> None:
                         parameters=HTTPRequestParameters(
                             url='https://vampi.tools.escape.tech',
                             method=HTTPMethod.GET,
+                            headers=[
+                                HTTPHeader(
+                                    name='X-Example-Header-From-User-Variable',
+                                    values=['{{ example-user-variable }}'],
+                                ),
+                            ],
                         ),
                         extractions=[
                             HTTPBodyExtraction(name=VariableName('example-extraction'), key='message'),
@@ -68,9 +74,13 @@ def init_command(args: argparse.Namespace) -> None:
                         ),
                     ],
                 ),
-                credentials=Credentials(
-                    headers=[HTTPHeader(name='X-Example-Header', values=['example-value'])],
-                ),
+                variables=[
+                    AuthenticationVariable(
+                        name=VariableName('example-user-variable'),
+                        value='example-user-value',
+                    ),
+                ],
+                credentials=Credentials(),
             ),
         ],
     )
