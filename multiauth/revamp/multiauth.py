@@ -43,6 +43,10 @@ class Multiauth:
         for preset in configuration.presets:
             preset_procedure_configuration = preset.to_procedure_configuration()
             self.procedures[preset.name] = Procedure(preset_procedure_configuration)
+            users = preset.to_users()
+            for user in users:
+                self.users[f'{preset.name}_{user.name}'] = user
+
         for procedure_configuration in configuration.procedures:
             self.procedures[procedure_configuration.name] = Procedure(procedure_configuration)
         for user in configuration.users:

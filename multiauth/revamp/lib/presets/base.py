@@ -5,6 +5,7 @@ from pydantic import BaseModel, Field
 
 from multiauth.entities.user import ProcedureName
 from multiauth.revamp.lib.procedure import ProcedureConfiguration
+from multiauth.revamp.lib.store.user import User
 
 PresetType = Literal['jwt_access_token_refresh_token', 'oauth_userpass']
 
@@ -15,4 +16,8 @@ class BasePreset(BaseModel, abc.ABC):
 
     @abc.abstractmethod
     def to_procedure_configuration(self) -> ProcedureConfiguration:
+        ...
+
+    @abc.abstractmethod
+    def to_users(self) -> list[User]:
         ...

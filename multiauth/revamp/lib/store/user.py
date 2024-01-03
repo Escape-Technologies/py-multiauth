@@ -1,8 +1,7 @@
-from typing import Any, Literal
+from typing import Any, Literal, NewType
 
 from pydantic import BaseModel, Field
 
-from multiauth.entities.user import UserName
 from multiauth.revamp.lib.http_core.entities import (
     HTTPCookie,
     HTTPHeader,
@@ -10,6 +9,8 @@ from multiauth.revamp.lib.http_core.entities import (
 )
 from multiauth.revamp.lib.store.injection import TokenInjection
 from multiauth.revamp.lib.store.variables import AuthenticationVariable
+
+UserName = NewType('UserName', str)
 
 
 class Credentials(BaseModel):
