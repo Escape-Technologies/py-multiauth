@@ -6,12 +6,12 @@
         {
           "tech": "http",
           "parameters": {
-            "url": "http://localhost:8080/auth/realms/test/.well-known/openid-configuration",
+            "url": "https://vampi.tools.escape.tech",
             "method": "GET",
             "headers": [
               {
-                "name": "accept",
-                "values": ["application/json"]
+                "name": "X-Example-Header-From-User-Variable",
+                "values": ["{{ example-user-variable }}"]
               }
             ],
             "cookies": [],
@@ -21,74 +21,29 @@
           },
           "extractions": [
             {
-              "name": "token_endpoint",
+              "name": "example-extraction",
               "location": "body",
-              "key": "token_endpoint"
+              "key": "message"
             }
           ]
         },
         {
           "tech": "http",
           "parameters": {
-            "url": "{{ token_endpoint }}",
-            "method": "POST",
+            "url": "https://vampi.tools.escape.tech",
+            "method": "GET",
             "headers": [
               {
-                "name": "content-type",
-                "values": ["application/x-www-form-urlencoded"]
-              },
-              {
-                "name": "accept",
-                "values": ["application/json"]
+                "name": "X-Example-Header-Extracted",
+                "values": ["{{ example-extraction }}"]
               }
             ],
             "cookies": [],
             "query_parameters": [],
-            "body": "grant_type=password&username={{ username }}&password={{ password }}&client_id={{ client_id }}&client_secret={{ client_secret }}",
+            "body": null,
             "proxy": null
           },
-          "extractions": [
-            {
-              "name": "access_token",
-              "location": "body",
-              "key": "access_token"
-            },
-            {
-              "name": "expires_in",
-              "location": "body",
-              "key": "expires_in"
-            },
-            {
-              "name": "refresh_expires_in",
-              "location": "body",
-              "key": "refresh_expires_in"
-            },
-            {
-              "name": "refresh_token",
-              "location": "body",
-              "key": "refresh_token"
-            },
-            {
-              "name": "token_type",
-              "location": "body",
-              "key": "token_type"
-            },
-            {
-              "name": "not-before-policy",
-              "location": "body",
-              "key": "not-before-policy"
-            },
-            {
-              "name": "session_state",
-              "location": "body",
-              "key": "session_state"
-            },
-            {
-              "name": "scope",
-              "location": "body",
-              "key": "scope"
-            }
-          ]
+          "extractions": []
         }
       ]
     }
@@ -97,36 +52,31 @@
   "users": [
     {
       "name": "example-user",
-      "credentials": {},
-      "variables": [
-        {
-          "name": "username",
-          "value": "user1"
-        },
-        {
-          "name": "password",
-          "value": "user1"
-        },
-        {
-          "name": "client_id",
-          "value": "server1"
-        },
-        {
-          "name": "client_secret",
-          "value": "secret"
-        }
-      ],
+      "credentials": {
+        "username": null,
+        "password": null,
+        "headers": [],
+        "cookies": [],
+        "query_parameters": [],
+        "body": null
+      },
       "authentication": {
         "procedure": "example-procedure",
         "injections": [
           {
             "location": "header",
-            "key": "Authorization",
-            "prefix": "Bearer ",
-            "variable": "access_token"
+            "key": "X-Injected-Header",
+            "prefix": "Prefixed ",
+            "variable": "example-extraction"
           }
         ]
       },
+      "variables": [
+        {
+          "name": "example-user-variable",
+          "value": "example-user-value"
+        }
+      ],
       "refresh": null
     }
   ],
