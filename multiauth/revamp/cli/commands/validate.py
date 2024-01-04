@@ -16,5 +16,5 @@ def validate_command(args: argparse.Namespace) -> None:
     for reporter in reporters:
         reporter.report(events)
 
-    logger.info(f'Authentication successful for user {args.user}')
+    logger.info(f'Executed procedure for user {args.user}')
     logger.info(authentication)

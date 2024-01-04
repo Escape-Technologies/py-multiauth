@@ -8,12 +8,12 @@ from multiauth.revamp.lib.http_core.entities import (
     HTTPHeader,
 )
 from multiauth.revamp.lib.http_core.mergers import merge_bodies, merge_headers
-from multiauth.revamp.lib.runners.base import BaseRequestConfiguration
+from multiauth.revamp.lib.runners.base import BaseRunnerConfiguration
 from multiauth.revamp.lib.runners.http import (
     HTTPExtractionType,
-    HTTPRequestConfiguration,
     HTTPRequestParameters,
     HTTPRequestRunner,
+    HTTPRunnerConfiguration,
 )
 from multiauth.revamp.lib.store.variables import AuthenticationVariable, interpolate_string
 
@@ -29,12 +29,12 @@ class GraphQLRequestParameters(HTTPRequestParameters):
     method: HTTPMethod = Field(default=HTTPMethod.POST)
 
 
-class GraphQLRequestConfiguration(BaseRequestConfiguration):
+class GraphQLRunnerConfiguration(BaseRunnerConfiguration):
     tech: Literal['graphql'] = 'graphql'
     extractions: list[HTTPExtractionType] = Field(default_factory=list)
     parameters: GraphQLRequestParameters
 
-    def to_http(self) -> HTTPRequestConfiguration:
+    def to_http(self) -> HTTPRunnerConfiguration:
         body = {}
         if self.parameters.body is not None:
             try:
@@ -51,7 +51,7 @@ class GraphQLRequestConfiguration(BaseRequestConfiguration):
 
         body = merge_bodies(body, graphql_body)
 
-        return HTTPRequestConfiguration(
+        return HTTPRunnerConfiguration(
             extractions=self.extractions,
             parameters=HTTPRequestParameters(
                 url=self.parameters.url,
@@ -71,9 +71,9 @@ class GraphQLRequestConfiguration(BaseRequestConfiguration):
 
 
 class GraphQLRequestRunner(HTTPRequestRunner):
-    graphql_request_configuration: GraphQLRequestConfiguration
+    graphql_request_configuration: GraphQLRunnerConfiguration
 
-    def __init__(self, graphql_request_configuration: GraphQLRequestConfiguration) -> None:
+    def __init__(self, graphql_request_configuration: GraphQLRunnerConfiguration) -> None:
         self.graphql_request_configuration = graphql_request_configuration
         http_procedure = graphql_request_configuration.to_http()
         super().__init__(http_procedure)
@@ -81,7 +81,7 @@ class GraphQLRequestRunner(HTTPRequestRunner):
     def interpolate(self, variables: list[AuthenticationVariable]) -> 'GraphQLRequestRunner':
         graphql_request_configuration_str = self.graphql_request_configuration.model_dump_json()
         graphql_request_configuration_str = interpolate_string(graphql_request_configuration_str, variables)
-        graphql_request_configuration = GraphQLRequestConfiguration.model_validate_json(
+        graphql_request_configuration = GraphQLRunnerConfiguration.model_validate_json(
             graphql_request_configuration_str,
         )
 

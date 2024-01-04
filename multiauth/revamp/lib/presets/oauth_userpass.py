@@ -3,11 +3,10 @@ from typing import Literal
 
 from pydantic import Field
 
-from multiauth.entities.user import ProcedureName
 from multiauth.revamp.lib.http_core.entities import HTTPHeader, HTTPLocation
 from multiauth.revamp.lib.presets.base import BasePreset
-from multiauth.revamp.lib.procedure import ProcedureConfiguration
-from multiauth.revamp.lib.runners.http import HTTPBodyExtraction, HTTPRequestConfiguration, HTTPRequestParameters
+from multiauth.revamp.lib.procedure import ProcedureConfiguration, ProcedureName
+from multiauth.revamp.lib.runners.http import HTTPBodyExtraction, HTTPRequestParameters, HTTPRunnerConfiguration
 from multiauth.revamp.lib.store.injection import TokenInjection
 from multiauth.revamp.lib.store.user import Credentials, User, UserAuthentication, UserName
 from multiauth.revamp.lib.store.variables import AuthenticationVariable, VariableName
@@ -27,7 +26,7 @@ class OAuthUserpassPreset(BasePreset):
         return ProcedureConfiguration(
             name=ProcedureName(self.name),
             requests=[
-                HTTPRequestConfiguration(
+                HTTPRunnerConfiguration(
                     parameters=HTTPRequestParameters(
                         url=self.server_url,
                         method=HTTPMethod.POST,

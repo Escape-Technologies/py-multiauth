@@ -8,11 +8,9 @@ from multiauth.revamp.configuration import (
 )
 from multiauth.revamp.exceptions import MissingProcedureException, MissingUserException, MultiAuthException
 from multiauth.revamp.lib.audit.events.base import Event
-from multiauth.revamp.lib.http_core.entities import HTTPRequest, HTTPResponse
 from multiauth.revamp.lib.procedure import Procedure
 from multiauth.revamp.lib.store.authentication import Authentication, AuthenticationStore, AuthenticationStoreException
 from multiauth.revamp.lib.store.user import User
-from multiauth.revamp.lib.store.variables import AuthenticationVariable
 
 DEFAULT_TTL_SECONDS = 10 * 24 * 60 * 60  # Default session ttl is 10 days
 
@@ -30,9 +28,7 @@ class Multiauth:
 
     authentication_store: AuthenticationStore
 
-    def __init__(self, configuration: MultiauthConfiguration, seed: list[HTTPResponse] | None = None) -> None:
-        seed = seed or []
-
+    def __init__(self, configuration: MultiauthConfiguration) -> None:
         self.configuration = configuration
 
         self.procedures = {}
@@ -51,9 +47,6 @@ class Multiauth:
             self.procedures[procedure_configuration.name] = Procedure(procedure_configuration)
         for user in configuration.users:
             self.users[user.name] = user
-
-        for procedure in self.procedures.values():
-            procedure.load_responses(seed)
 
     def _get_user(self, user_name: UserName) -> User:
         user = self.users.get(user_name)
@@ -94,38 +87,6 @@ class Multiauth:
             raise MissingProcedureException(procedure_name)
 
         return procedure
-
-    def get_http_response(
-        self,
-        user_name: UserName,
-        step: int,
-    ) -> tuple[HTTPRequest, HTTPResponse | None, list[Event]]:
-        """
-        Runs the HTTP request declared at the given step of the procedure of the provided user.
-
-        - Raises a `MissingUserException` if the provided user_name is not declared in the multiauth configuration
-        - Raises a `MissingProcedureException` if the provided user relies on a procedure that
-        is not declared in the multiauth configuration.
-        """
-        user = self._get_user(user_name)
-        procedure = self._get_authentication_procedure(user_name)
-        return procedure.request(user, step)
-
-    def extract_variables(
-        self,
-        user_name: UserName,
-        response: HTTPResponse,
-        step: int,
-    ) -> tuple[list[AuthenticationVariable], list[Event]]:
-        """
-        Runs the extractions declared at the given step of the procedure of the provided user,
-        from the provided HTTP response.
-
-        - Raises a `MissingProcedureException` if the provided user relies on a procedure that
-        is not declared in the multiauth configuration.
-        """
-        procedure = self._get_authentication_procedure(user_name)
-        return procedure.extract(response, step)
 
     def authenticate(
         self,

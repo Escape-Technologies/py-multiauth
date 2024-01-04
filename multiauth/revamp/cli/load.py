@@ -47,7 +47,7 @@ def load_mulitauth(args: Namespace) -> tuple[Multiauth, list[BaseEventsReporter]
                 continue
             if output.endswith('.json'):
                 reporters.append(JSONEventsReporter(output_path=output))
-            if output.endswith('.txt'):
+            elif output.endswith('.txt'):
                 reporters.append(RawEventsReporter(output_path=output))
             else:
                 logger.error(f'Unknown output type will be skipped: {output}')

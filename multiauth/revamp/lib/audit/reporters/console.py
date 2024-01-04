@@ -5,6 +5,8 @@ from multiauth.revamp.lib.audit.events.events import (
     HTTPRequestEvent,
     HTTPResponseEvent,
     InjectedVariableEvent,
+    SeleniumScriptErrorEvent,
+    SeleniumScriptLogEvent,
 )
 from multiauth.revamp.lib.audit.reporters.base import BaseEventsReporter
 
@@ -64,6 +66,12 @@ class ConsoleEventsReporter(BaseEventsReporter):
 
         if isinstance(event, ExtractedVariableEvent):
             msg += f' name="{event.variable.name}" value="{event.variable.value}"'
+
+        if isinstance(event, SeleniumScriptLogEvent):
+            msg += event.message
+
+        if isinstance(event, SeleniumScriptErrorEvent):
+            msg += f'{event.message}: {event.from_exception}'
 
         match (event.severity or event.default_severity):
             case 'info':

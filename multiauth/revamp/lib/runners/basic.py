@@ -8,23 +8,23 @@ from multiauth.revamp.lib.http_core.entities import (
     HTTPResponse,
 )
 from multiauth.revamp.lib.http_core.mergers import merge_headers
-from multiauth.revamp.lib.runners.base import BaseRequestConfiguration
+from multiauth.revamp.lib.runners.base import BaseRunnerConfiguration
 from multiauth.revamp.lib.runners.http import (
-    HTTPRequestConfiguration,
     HTTPRequestParameters,
     HTTPRequestRunner,
+    HTTPRunnerConfiguration,
 )
 from multiauth.revamp.lib.store.user import User
 from multiauth.revamp.lib.store.variables import AuthenticationVariable, interpolate_string
 
 
-class BasicRequestConfiguration(BaseRequestConfiguration):
+class BasicRunnerConfiguration(BaseRunnerConfiguration):
     name: str
     tech: Literal['basic'] = 'basic'
     parameters: HTTPRequestParameters
 
-    def to_http(self) -> HTTPRequestConfiguration:
-        return HTTPRequestConfiguration(
+    def to_http(self) -> HTTPRunnerConfiguration:
+        return HTTPRunnerConfiguration(
             extractions=[],
             parameters=self.parameters,
         )
@@ -39,9 +39,9 @@ def build_basic_headers(username: str, password: str) -> HTTPHeader:
 
 
 class BasicRequestRunner(HTTPRequestRunner):
-    basic_request_configuration: BasicRequestConfiguration
+    basic_request_configuration: BasicRunnerConfiguration
 
-    def __init__(self, configuration: BasicRequestConfiguration) -> None:
+    def __init__(self, configuration: BasicRunnerConfiguration) -> None:
         self.basic_request_configuration = configuration
         super().__init__(self.basic_request_configuration.to_http())
 
@@ -65,6 +65,6 @@ class BasicRequestRunner(HTTPRequestRunner):
     def interpolate(self, variables: list[AuthenticationVariable]) -> 'BasicRequestRunner':
         basic_request_configuration = self.basic_request_configuration.model_dump_json()
         basic_request_configuration = interpolate_string(basic_request_configuration, variables)
-        graphql_request_configuration = BasicRequestConfiguration.model_validate_json(basic_request_configuration)
+        graphql_request_configuration = BasicRunnerConfiguration.model_validate_json(basic_request_configuration)
 
         return BasicRequestRunner(graphql_request_configuration)

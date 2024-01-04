@@ -69,23 +69,6 @@ def build_parser() -> argparse.ArgumentParser:
         required=False,
     )
 
-    request_parser = subparsers.add_parser('request', help='Execute an authentication request and display the response')
-    request_parser.add_argument(
-        '-u',
-        '--user',
-        type=str,
-        help='The name of the credentials in the config to use when executing the request',
-        required=True,
-    )
-    request_parser.add_argument(
-        '-s',
-        '--step',
-        type=int,
-        help='If multiple requests are defined in the procedure, execute the request at the given step',
-        required=False,
-        default=0,
-    )
-
     validate_parser = subparsers.add_parser(
         'validate',
         help='Validate a multiauth configuration and display the generated authentications',

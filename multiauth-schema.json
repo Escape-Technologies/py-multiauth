@@ -32,7 +32,7 @@
       "title": "BaseExtraction",
       "type": "object"
     },
-    "BasicRequestConfiguration": {
+    "BasicRunnerConfiguration": {
       "properties": {
         "tech": {
           "const": "basic",
@@ -58,7 +58,7 @@
         "parameters",
         "name"
       ],
-      "title": "BasicRequestConfiguration",
+      "title": "BasicRunnerConfiguration",
       "type": "object"
     },
     "Credentials": {
@@ -126,48 +126,6 @@
         }
       },
       "title": "Credentials",
-      "type": "object"
-    },
-    "GraphQLRequestConfiguration": {
-      "properties": {
-        "tech": {
-          "const": "graphql",
-          "default": "graphql",
-          "title": "Tech"
-        },
-        "parameters": {
-          "$ref": "#/$defs/GraphQLRequestParameters"
-        },
-        "extractions": {
-          "items": {
-            "discriminator": {
-              "mapping": {
-                "body": "#/$defs/HTTPBodyExtraction",
-                "cookie": "#/$defs/HTTPCookieExtraction",
-                "header": "#/$defs/HTTPHeaderExtraction"
-              },
-              "propertyName": "location"
-            },
-            "oneOf": [
-              {
-                "$ref": "#/$defs/HTTPHeaderExtraction"
-              },
-              {
-                "$ref": "#/$defs/HTTPCookieExtraction"
-              },
-              {
-                "$ref": "#/$defs/HTTPBodyExtraction"
-              }
-            ]
-          },
-          "title": "Extractions",
-          "type": "array"
-        }
-      },
-      "required": [
-        "parameters"
-      ],
-      "title": "GraphQLRequestConfiguration",
       "type": "object"
     },
     "GraphQLRequestParameters": {
@@ -244,6 +202,48 @@
         "query"
       ],
       "title": "GraphQLRequestParameters",
+      "type": "object"
+    },
+    "GraphQLRunnerConfiguration": {
+      "properties": {
+        "tech": {
+          "const": "graphql",
+          "default": "graphql",
+          "title": "Tech"
+        },
+        "parameters": {
+          "$ref": "#/$defs/GraphQLRequestParameters"
+        },
+        "extractions": {
+          "items": {
+            "discriminator": {
+              "mapping": {
+                "body": "#/$defs/HTTPBodyExtraction",
+                "cookie": "#/$defs/HTTPCookieExtraction",
+                "header": "#/$defs/HTTPHeaderExtraction"
+              },
+              "propertyName": "location"
+            },
+            "oneOf": [
+              {
+                "$ref": "#/$defs/HTTPHeaderExtraction"
+              },
+              {
+                "$ref": "#/$defs/HTTPCookieExtraction"
+              },
+              {
+                "$ref": "#/$defs/HTTPBodyExtraction"
+              }
+            ]
+          },
+          "title": "Extractions",
+          "type": "array"
+        }
+      },
+      "required": [
+        "parameters"
+      ],
+      "title": "GraphQLRunnerConfiguration",
       "type": "object"
     },
     "GraphQLVariable": {
@@ -427,48 +427,6 @@
       "title": "HTTPQueryParameter",
       "type": "object"
     },
-    "HTTPRequestConfiguration": {
-      "properties": {
-        "tech": {
-          "const": "http",
-          "default": "http",
-          "title": "Tech"
-        },
-        "parameters": {
-          "$ref": "#/$defs/HTTPRequestParameters"
-        },
-        "extractions": {
-          "items": {
-            "discriminator": {
-              "mapping": {
-                "body": "#/$defs/HTTPBodyExtraction",
-                "cookie": "#/$defs/HTTPCookieExtraction",
-                "header": "#/$defs/HTTPHeaderExtraction"
-              },
-              "propertyName": "location"
-            },
-            "oneOf": [
-              {
-                "$ref": "#/$defs/HTTPHeaderExtraction"
-              },
-              {
-                "$ref": "#/$defs/HTTPCookieExtraction"
-              },
-              {
-                "$ref": "#/$defs/HTTPBodyExtraction"
-              }
-            ]
-          },
-          "title": "Extractions",
-          "type": "array"
-        }
-      },
-      "required": [
-        "parameters"
-      ],
-      "title": "HTTPRequestConfiguration",
-      "type": "object"
-    },
     "HTTPRequestParameters": {
       "properties": {
         "url": {
@@ -529,6 +487,48 @@
       "title": "HTTPRequestParameters",
       "type": "object"
     },
+    "HTTPRunnerConfiguration": {
+      "properties": {
+        "tech": {
+          "const": "http",
+          "default": "http",
+          "title": "Tech"
+        },
+        "parameters": {
+          "$ref": "#/$defs/HTTPRequestParameters"
+        },
+        "extractions": {
+          "items": {
+            "discriminator": {
+              "mapping": {
+                "body": "#/$defs/HTTPBodyExtraction",
+                "cookie": "#/$defs/HTTPCookieExtraction",
+                "header": "#/$defs/HTTPHeaderExtraction"
+              },
+              "propertyName": "location"
+            },
+            "oneOf": [
+              {
+                "$ref": "#/$defs/HTTPHeaderExtraction"
+              },
+              {
+                "$ref": "#/$defs/HTTPCookieExtraction"
+              },
+              {
+                "$ref": "#/$defs/HTTPBodyExtraction"
+              }
+            ]
+          },
+          "title": "Extractions",
+          "type": "array"
+        }
+      },
+      "required": [
+        "parameters"
+      ],
+      "title": "HTTPRunnerConfiguration",
+      "type": "object"
+    },
     "JWTAccessTokenRefreshTokenPreset": {
       "properties": {
         "type": {
@@ -565,18 +565,22 @@
           "type": "string"
         },
         "server_url": {
+          "description": "The URL of the token endpoint of the OpenIDConnect server",
           "title": "Server Url",
           "type": "string"
         },
         "client_id": {
+          "description": "The client ID to use for the OAuth requests",
           "title": "Client Id",
           "type": "string"
         },
         "client_secret": {
+          "description": "The client secret to use for the OAuth requests",
           "title": "Client Secret",
           "type": "string"
         },
         "users": {
+          "description": "A list of users to create",
           "items": {
             "maxItems": 2,
             "minItems": 2,
@@ -614,21 +618,25 @@
           "items": {
             "discriminator": {
               "mapping": {
-                "basic": "#/$defs/BasicRequestConfiguration",
-                "graphql": "#/$defs/GraphQLRequestConfiguration",
-                "http": "#/$defs/HTTPRequestConfiguration"
+                "basic": "#/$defs/BasicRunnerConfiguration",
+                "graphql": "#/$defs/GraphQLRunnerConfiguration",
+                "http": "#/$defs/HTTPRunnerConfiguration",
+                "selenium": "#/$defs/SeleniumRunnerConfiguration"
               },
               "propertyName": "tech"
             },
             "oneOf": [
               {
-                "$ref": "#/$defs/HTTPRequestConfiguration"
+                "$ref": "#/$defs/HTTPRunnerConfiguration"
               },
               {
-                "$ref": "#/$defs/GraphQLRequestConfiguration"
+                "$ref": "#/$defs/GraphQLRunnerConfiguration"
               },
               {
-                "$ref": "#/$defs/BasicRequestConfiguration"
+                "$ref": "#/$defs/BasicRunnerConfiguration"
+              },
+              {
+                "$ref": "#/$defs/SeleniumRunnerConfiguration"
               }
             ]
           },
@@ -640,6 +648,202 @@
         "name"
       ],
       "title": "ProcedureConfiguration",
+      "type": "object"
+    },
+    "SeleniumCommand": {
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "command": {
+          "title": "Command",
+          "type": "string"
+        },
+        "target": {
+          "title": "Target",
+          "type": "string"
+        },
+        "targets": {
+          "items": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "title": "Targets",
+          "type": "array"
+        },
+        "value": {
+          "title": "Value",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "command",
+        "target",
+        "targets",
+        "value"
+      ],
+      "title": "SeleniumCommand",
+      "type": "object"
+    },
+    "SeleniumExtraction": {
+      "properties": {
+        "name": {
+          "description": "The name of the variable to store the extracted value in",
+          "title": "Name",
+          "type": "string"
+        },
+        "extract_location": {
+          "enum": [
+            "RequestURL",
+            "RequestHeader",
+            "RequestBody",
+            "ResponseHeader",
+            "ResponseBody"
+          ],
+          "title": "Extract Location",
+          "type": "string"
+        },
+        "extract_regex": {
+          "title": "Extract Regex",
+          "type": "string"
+        },
+        "extract_match_index": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Extract Match Index"
+        }
+      },
+      "required": [
+        "name",
+        "extract_location",
+        "extract_regex"
+      ],
+      "title": "SeleniumExtraction",
+      "type": "object"
+    },
+    "SeleniumProject": {
+      "properties": {
+        "tests": {
+          "items": {
+            "$ref": "#/$defs/SeleniumTest"
+          },
+          "title": "Tests",
+          "type": "array"
+        }
+      },
+      "required": [
+        "tests"
+      ],
+      "title": "SeleniumProject",
+      "type": "object"
+    },
+    "SeleniumRunnerConfiguration": {
+      "properties": {
+        "tech": {
+          "const": "selenium",
+          "default": "selenium",
+          "title": "Tech"
+        },
+        "parameters": {
+          "$ref": "#/$defs/SeleniumScriptParameters"
+        },
+        "extractions": {
+          "items": {
+            "$ref": "#/$defs/SeleniumExtraction"
+          },
+          "title": "Extractions",
+          "type": "array"
+        }
+      },
+      "required": [
+        "parameters",
+        "extractions"
+      ],
+      "title": "SeleniumRunnerConfiguration",
+      "type": "object"
+    },
+    "SeleniumScriptOptions": {
+      "properties": {
+        "token_lifetime": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Token Lifetime"
+        },
+        "proxy": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Proxy"
+        }
+      },
+      "title": "SeleniumScriptOptions",
+      "type": "object"
+    },
+    "SeleniumScriptParameters": {
+      "description": "SeleniumScriptParameters(*, project: multiauth.revamp.lib.runners.webdriver.configuration.SeleniumProject, options: multiauth.revamp.lib.runners.webdriver.runner.SeleniumScriptOptions)",
+      "properties": {
+        "project": {
+          "$ref": "#/$defs/SeleniumProject"
+        },
+        "options": {
+          "$ref": "#/$defs/SeleniumScriptOptions"
+        }
+      },
+      "required": [
+        "project",
+        "options"
+      ],
+      "title": "SeleniumScriptParameters",
+      "type": "object"
+    },
+    "SeleniumTest": {
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "commands": {
+          "items": {
+            "$ref": "#/$defs/SeleniumCommand"
+          },
+          "title": "Commands",
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "commands"
+      ],
+      "title": "SeleniumTest",
       "type": "object"
     },
     "TokenInjection": {

@@ -14,9 +14,11 @@ EventType = Literal[
     'procedure_aborted',
     'procedure_finished',
     'procedure_started',
+    'selenium_log',
+    'selenium_error',
 ]
 
-EventSeverity = Literal['info', 'warning', 'error', 'success']
+EventSeverity = Literal['info', 'warning', 'error', 'success', 'debug']
 
 
 class Event(BaseModel, abc.ABC):

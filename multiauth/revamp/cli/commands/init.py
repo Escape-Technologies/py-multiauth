@@ -2,14 +2,13 @@ import argparse
 import json
 from http import HTTPMethod
 
-from multiauth.entities.user import ProcedureName, UserName
 from multiauth.revamp.configuration import MultiauthConfiguration
 from multiauth.revamp.helpers.logger import setup_logger
 from multiauth.revamp.lib.http_core.entities import HTTPHeader, HTTPLocation
-from multiauth.revamp.lib.procedure import ProcedureConfiguration
-from multiauth.revamp.lib.runners.http import HTTPBodyExtraction, HTTPRequestConfiguration, HTTPRequestParameters
+from multiauth.revamp.lib.procedure import ProcedureConfiguration, ProcedureName
+from multiauth.revamp.lib.runners.http import HTTPBodyExtraction, HTTPRequestParameters, HTTPRunnerConfiguration
 from multiauth.revamp.lib.store.injection import TokenInjection
-from multiauth.revamp.lib.store.user import Credentials, User, UserAuthentication
+from multiauth.revamp.lib.store.user import Credentials, User, UserAuthentication, UserName
 from multiauth.revamp.lib.store.variables import AuthenticationVariable, VariableName
 
 
@@ -29,7 +28,7 @@ def init_command(args: argparse.Namespace) -> None:
             ProcedureConfiguration(
                 name=ProcedureName('example-procedure'),
                 requests=[
-                    HTTPRequestConfiguration(
+                    HTTPRunnerConfiguration(
                         parameters=HTTPRequestParameters(
                             url='https://vampi.tools.escape.tech',
                             method=HTTPMethod.GET,
@@ -44,7 +43,7 @@ def init_command(args: argparse.Namespace) -> None:
                             HTTPBodyExtraction(name=VariableName('example-extraction'), key='message'),
                         ],
                     ),
-                    HTTPRequestConfiguration(
+                    HTTPRunnerConfiguration(
                         parameters=HTTPRequestParameters(
                             url='https://vampi.tools.escape.tech',
                             method=HTTPMethod.GET,

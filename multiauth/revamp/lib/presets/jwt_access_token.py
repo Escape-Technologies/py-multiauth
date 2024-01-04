@@ -1,9 +1,8 @@
 from typing import Literal
 
-from multiauth.entities.user import ProcedureName
 from multiauth.revamp.lib.presets.base import BasePreset
-from multiauth.revamp.lib.procedure import ProcedureConfiguration
-from multiauth.revamp.lib.runners.http import HTTPBodyExtraction, HTTPRequestConfiguration, HTTPRequestParameters
+from multiauth.revamp.lib.procedure import ProcedureConfiguration, ProcedureName
+from multiauth.revamp.lib.runners.http import HTTPBodyExtraction, HTTPRequestParameters, HTTPRunnerConfiguration
 from multiauth.revamp.lib.store.variables import VariableName
 
 
@@ -15,7 +14,7 @@ class JWTAccessTokenRefreshTokenPreset(BasePreset):
         return ProcedureConfiguration(
             name=ProcedureName(self.name),
             requests=[
-                HTTPRequestConfiguration(
+                HTTPRunnerConfiguration(
                     parameters=self.parameters,
                     extractions=[
                         HTTPBodyExtraction(

@@ -16,7 +16,7 @@ class JSONEventsReporter(BaseEventsReporter):
         logger = setup_logger()
 
         if self.output_path:
-            with open(self.output_path, 'a') as f:
+            with open(self.output_path, 'w') as f:
                 events_json = [event.model_dump() for event in events]
                 f.write(json.dumps(events_json, indent=2))
             return

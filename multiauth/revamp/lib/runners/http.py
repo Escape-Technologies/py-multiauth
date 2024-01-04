@@ -26,9 +26,10 @@ from multiauth.revamp.lib.http_core.parsers import parse_raw_url
 from multiauth.revamp.lib.http_core.request import send_request
 from multiauth.revamp.lib.runners.base import (
     BaseExtraction,
-    BaseRequestConfiguration,
-    BaseRequestParameters,
-    BaseRequestRunner,
+    BaseRunner,
+    BaseRunnerConfiguration,
+    BaseRunnerParameters,
+    RunnerException,
 )
 from multiauth.revamp.lib.store.user import User
 from multiauth.revamp.lib.store.variables import AuthenticationVariable, interpolate_string
@@ -55,7 +56,7 @@ HTTPExtractionType = Annotated[
 ]
 
 
-class HTTPRequestParameters(BaseRequestParameters):
+class HTTPRequestParameters(BaseRunnerParameters):
     url: str
     method: HTTPMethod
     headers: list[HTTPHeader] = Field(default_factory=list)
@@ -65,7 +66,7 @@ class HTTPRequestParameters(BaseRequestParameters):
     proxy: str | None = Field(default=None)
 
 
-class HTTPRequestConfiguration(BaseRequestConfiguration):
+class HTTPRunnerConfiguration(BaseRunnerConfiguration):
     tech: Literal['http'] = 'http'
     extractions: list[HTTPExtractionType] = Field(default_factory=list)
     parameters: HTTPRequestParameters
@@ -89,14 +90,14 @@ def search_key_in_dict(body: dict, key: str) -> Any | None:
     return None
 
 
-class HTTPRequestRunner(BaseRequestRunner[HTTPRequestConfiguration]):
-    def __init__(self, request_configuration: HTTPRequestConfiguration):
+class HTTPRequestRunner(BaseRunner[HTTPRunnerConfiguration]):
+    def __init__(self, request_configuration: HTTPRunnerConfiguration):
         super().__init__(request_configuration)
 
     def interpolate(self, variables: list[AuthenticationVariable]) -> 'HTTPRequestRunner':
         request_configuration_str = self.request_configuration.model_dump_json()
         request_configuration_str = interpolate_string(request_configuration_str, variables)
-        request_configuration = HTTPRequestConfiguration.model_validate_json(request_configuration_str)
+        request_configuration = HTTPRunnerConfiguration.model_validate_json(request_configuration_str)
 
         return HTTPRequestRunner(request_configuration)
 
@@ -190,3 +191,19 @@ class HTTPRequestRunner(BaseRequestRunner[HTTPRequestConfiguration]):
                 variables.append(variable)
 
         return variables, events
+
+    def run(self, user: User) -> tuple[list[AuthenticationVariable], list[Event], RunnerException | None]:
+        request, response, events = self.request(user)
+
+        if response is None:
+            return [], events, RunnerException('No response received.')
+
+        if response.status_code >= 400:
+            event = HTTPFailureEvent(reason='http_error', description=f'HTTP error {response.status_code}')
+            events.append(event)
+            return [], events, RunnerException(event.description)
+
+        variables, extraction_events = self.extract(response)
+        events.extend(extraction_events)
+
+        return variables, events, None

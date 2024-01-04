@@ -14,8 +14,21 @@ class HTTPRequestEvent(Event):
 class HTTPFailureEvent(Event):
     type: Literal['http_failure'] = 'http_failure'
     default_severity: Literal['error'] = 'error'
-    reason: Literal['timeout', 'connection_error', 'too_many_redirects', 'unknown']
+    reason: Literal['timeout', 'connection_error', 'too_many_redirects', 'unknown', 'http_error']
     description: str
+
+
+class SeleniumScriptLogEvent(Event):
+    type: Literal['selenium_log'] = 'selenium_log'
+    default_severity: Literal['info'] = 'info'
+    message: str
+
+
+class SeleniumScriptErrorEvent(Event):
+    type: Literal['selenium_error'] = 'selenium_error'
+    default_severity: Literal['error'] = 'error'
+    message: str
+    from_exception: str | None = None
 
 
 class ProcedureStartedEvent(Event):
@@ -28,7 +41,7 @@ class ProcedureStartedEvent(Event):
 class ProcedureAbortedEvent(Event):
     type: Literal['procedure_aborted'] = 'procedure_aborted'
     default_severity: Literal['error'] = 'error'
-    reason: Literal['http_error', 'unknown']
+    reason: Literal['runner_error', 'unknown']
     description: str
 
 

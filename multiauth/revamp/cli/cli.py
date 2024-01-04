@@ -9,7 +9,6 @@ import pkg_resources
 from multiauth.revamp.cli.commands.init import init_command
 from multiauth.revamp.cli.commands.lint import lint_command
 from multiauth.revamp.cli.commands.parser import build_parser
-from multiauth.revamp.cli.commands.request import request_command
 from multiauth.revamp.cli.commands.validate import validate_command
 
 __version__ = pkg_resources.get_distribution('py-multiauth').version
@@ -47,9 +46,6 @@ __________          _____        .__   __  .__   _____          __  .__
 
         case 'lint':
             lint_command(args)
-
-        case 'request':
-            request_command(args)
 
         case 'validate':
             validate_command(args)

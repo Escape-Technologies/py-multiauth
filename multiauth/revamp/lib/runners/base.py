@@ -4,14 +4,13 @@ from typing import Generic, Literal, TypeVar
 from pydantic import BaseModel, Field
 
 from multiauth.revamp.lib.audit.events.base import Event
-from multiauth.revamp.lib.http_core.entities import HTTPRequest, HTTPResponse
 from multiauth.revamp.lib.store.user import User
 from multiauth.revamp.lib.store.variables import AuthenticationVariable, VariableName
 
-AuthenticationType = Literal['http', 'basic', 'graphql']
+RunnerType = Literal['http', 'basic', 'graphql', 'selenium']
 
 
-class BaseRequestParameters(BaseModel, abc.ABC):
+class BaseRunnerParameters(BaseModel, abc.ABC):
     pass
 
 
@@ -20,36 +19,36 @@ class BaseExtraction(BaseModel, abc.ABC):
 
 
 ExtractionType = TypeVar('ExtractionType', bound=BaseExtraction)
-RequestParameterType = TypeVar('RequestParameterType', bound=BaseRequestParameters)
+RunnerParametersType = TypeVar('RunnerParametersType', bound=BaseRunnerParameters)
 
 
-class BaseRequestConfiguration(BaseModel, abc.ABC, Generic[ExtractionType, RequestParameterType]):
-    tech: AuthenticationType
-    parameters: RequestParameterType
+class BaseRunnerConfiguration(BaseModel, abc.ABC, Generic[ExtractionType, RunnerParametersType]):
+    tech: RunnerType
+    parameters: RunnerParametersType
     extractions: list[ExtractionType] = Field(default_factory=list)
 
     @abc.abstractmethod
-    def get_runner(self) -> 'BaseRequestRunner':
+    def get_runner(self) -> 'BaseRunner':
         ...
 
 
-T = TypeVar('T', bound=BaseRequestConfiguration)
+T = TypeVar('T', bound=BaseRunnerConfiguration)
 
 
-class BaseRequestRunner(abc.ABC, Generic[T]):
+class RunnerException(Exception):
+    pass
+
+
+class BaseRunner(abc.ABC, Generic[T]):
     request_configuration: T
 
     def __init__(self, request_configuration: T) -> None:
         self.request_configuration = request_configuration
 
     @abc.abstractmethod
-    def request(self, user: User) -> tuple[HTTPRequest, HTTPResponse | None, list[Event]]:
+    def run(self, user: User) -> tuple[list[AuthenticationVariable], list[Event], RunnerException | None]:
         ...
 
     @abc.abstractmethod
-    def extract(self, response: HTTPResponse) -> tuple[list[AuthenticationVariable], list[Event]]:
-        ...
-
-    @abc.abstractmethod
-    def interpolate(self, variables: list[AuthenticationVariable]) -> 'BaseRequestRunner':
+    def interpolate(self, variables: list[AuthenticationVariable]) -> 'BaseRunner':
         ...
