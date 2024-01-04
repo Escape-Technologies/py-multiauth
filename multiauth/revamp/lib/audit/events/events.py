@@ -10,6 +10,10 @@ class HTTPRequestEvent(Event):
     default_severity: Literal['info'] = 'info'
     request: HTTPRequest
 
+    @property
+    def logline(self) -> str:
+        return f' {self.request.method} {self.request.scheme}://{self.request.host}{self.request.path}'
+
 
 class HTTPFailureEvent(Event):
     type: Literal['http_failure'] = 'http_failure'
@@ -17,11 +21,29 @@ class HTTPFailureEvent(Event):
     reason: Literal['timeout', 'connection_error', 'too_many_redirects', 'unknown', 'http_error']
     description: str
 
+    @property
+    def logline(self) -> str:
+        return f'{self.reason} {self.description}'
+
+
+class HTTPResponseEvent(Event):
+    type: Literal['http_response'] = 'http_response'
+    default_severity: Literal['success'] = 'success'
+    response: HTTPResponse
+
+    @property
+    def logline(self) -> str:
+        return f' {self.response.status_code} {self.response.reason} in {self.response.elapsed.microseconds//1000}ms'
+
 
 class SeleniumScriptLogEvent(Event):
     type: Literal['selenium_log'] = 'selenium_log'
     default_severity: Literal['info'] = 'info'
     message: str
+
+    @property
+    def logline(self) -> str:
+        return self.message
 
 
 class SeleniumScriptErrorEvent(Event):
@@ -30,12 +52,20 @@ class SeleniumScriptErrorEvent(Event):
     message: str
     from_exception: str | None = None
 
+    @property
+    def logline(self) -> str:
+        return f'{self.message}: {self.from_exception}'
+
 
 class ProcedureStartedEvent(Event):
     type: Literal['procedure_started'] = 'procedure_started'
     default_severity: Literal['info'] = 'info'
     procedure_name: str
     user_name: str
+
+    @property
+    def logline(self) -> str:
+        return f'{self.procedure_name} started for user {self.user_name}'
 
 
 class ProcedureAbortedEvent(Event):
@@ -44,17 +74,19 @@ class ProcedureAbortedEvent(Event):
     reason: Literal['runner_error', 'unknown']
     description: str
 
-
-class HTTPResponseEvent(Event):
-    type: Literal['http_response'] = 'http_response'
-    default_severity: Literal['success'] = 'success'
-    response: HTTPResponse
+    @property
+    def logline(self) -> str:
+        return f'{self.reason} {self.description}'
 
 
 class ExtractedVariableEvent(Event):
     type: Literal['extraction'] = 'extraction'
     default_severity: Literal['info'] = 'info'
     variable: AuthenticationVariable
+
+    @property
+    def logline(self) -> str:
+        return f'{self.variable.name}={self.variable.value}'
 
 
 class InjectedVariableEvent(Event):
@@ -63,11 +95,17 @@ class InjectedVariableEvent(Event):
     location: HTTPLocation
     target: str
     variable: AuthenticationVariable
-    # authentication: Authentication
+
+    @property
+    def logline(self) -> str:
+        return f'{self.variable.value} in {self.location} {self.target}'
 
 
 class ProcedureEndedEvent(Event):
     type: Literal['procedure_finished'] = 'procedure_finished'
     default_severity: Literal['info'] = 'info'
     user_name: str
-    # authentication: Authentication
+
+    @property
+    def logline(self) -> str:
+        return f'procedure ended for user {self.user_name}'

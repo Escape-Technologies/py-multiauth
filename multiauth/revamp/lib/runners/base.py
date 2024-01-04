@@ -3,7 +3,7 @@ from typing import Generic, Literal, TypeVar
 
 from pydantic import BaseModel, Field
 
-from multiauth.revamp.lib.audit.events.base import Event
+from multiauth.revamp.lib.audit.events.base import EventsList
 from multiauth.revamp.lib.store.user import User
 from multiauth.revamp.lib.store.variables import AuthenticationVariable, VariableName
 
@@ -46,7 +46,7 @@ class BaseRunner(abc.ABC, Generic[T]):
         self.request_configuration = request_configuration
 
     @abc.abstractmethod
-    def run(self, user: User) -> tuple[list[AuthenticationVariable], list[Event], RunnerException | None]:
+    def run(self, user: User) -> tuple[list[AuthenticationVariable], EventsList, RunnerException | None]:
         ...
 
     @abc.abstractmethod

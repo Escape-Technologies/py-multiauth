@@ -3,7 +3,7 @@ from typing import Annotated, NewType, Union
 
 from pydantic import BaseModel, Field
 
-from multiauth.revamp.lib.audit.events.base import Event
+from multiauth.revamp.lib.audit.events.base import EventsList
 from multiauth.revamp.lib.audit.events.events import (
     ProcedureAbortedEvent,
     ProcedureEndedEvent,
@@ -43,7 +43,7 @@ class Procedure:
 
     configuration: ProcedureConfiguration
     runners: list[BaseRunner]
-    events: list[Event]
+    events: EventsList
 
     # The dictionnary where the extracted variables are stored
     variables: dict[VariableName, AuthenticationVariable]
@@ -53,17 +53,17 @@ class Procedure:
 
         self.runners = []
         self.variables = {}
-        self.events = []
+        self.events = EventsList()
 
         for request in self.configuration.requests:
             self.runners.append(request.get_runner())
 
-    def inject(self, user: User) -> tuple[Authentication, list[Event]]:
+    def inject(self, user: User) -> tuple[Authentication, EventsList]:
         """
         Inject the variables extracted from the procedure into the user's authentication. Injections are performed
         using the stored variables, so the procedure requests must have been run before calling this method.
         """
-        events: list[Event] = []
+        events = EventsList()
         authentication = Authentication.empty()
 
         for injection in user.authentication.injections:
@@ -80,7 +80,7 @@ class Procedure:
     def run(
         self,
         user: User,
-    ) -> tuple[Authentication, list[Event]]:
+    ) -> tuple[Authentication, EventsList]:
         """
         Execute the full procedure for the given user, including extractions, and return the resulting authentication
         and the list of request/response/variables tuples that were generated during the procedure.
@@ -88,7 +88,8 @@ class Procedure:
         up to that request.
         """
 
-        events: list[Event] = [ProcedureStartedEvent(user_name=user.name, procedure_name=self.configuration.name)]
+        events = EventsList()
+        events.append(ProcedureStartedEvent(user_name=user.name, procedure_name=self.configuration.name))
 
         for i, runner in enumerate(self.runners):
             variables = list(reversed(list(self.variables.values()) + user.variables))

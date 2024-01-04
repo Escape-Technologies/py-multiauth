@@ -7,14 +7,14 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from seleniumwire import webdriver  # type: ignore[import-untyped]
 
-from multiauth.revamp.lib.audit.events.base import Event
-from multiauth.revamp.lib.audit.events.events import (  # type: ignore[import-untyped]
+from multiauth.revamp.lib.audit.events.base import EventsList
+from multiauth.revamp.lib.audit.events.events import (
     SeleniumScriptErrorEvent,
     SeleniumScriptLogEvent,
 )
 from multiauth.revamp.lib.runners.base import RunnerException
 from multiauth.revamp.lib.runners.webdriver.configuration import SeleniumCommand
-from multiauth.revamp.lib.runners.webdriver.transformers import (  # type: ignore[import-untyped]
+from multiauth.revamp.lib.runners.webdriver.transformers import (
     target_to_selector_value,
     target_to_value,
 )
@@ -39,7 +39,7 @@ class SeleniumCommandHandler:
         self.wait_for_seconds = 5
         self.pooling_interval = 0.5
 
-    def run_command(self, command: SeleniumCommand) -> tuple[list[Event], SeleniumCommandException | None]:
+    def run_command(self, command: SeleniumCommand) -> tuple[EventsList, SeleniumCommandException | None]:
         match command.command:
             case 'open':
                 return self.open(command)
@@ -60,62 +60,69 @@ class SeleniumCommandHandler:
 
         message = f'Unhandled command `{command.command}`'
         error = SeleniumCommandException(message=message)
-        event = SeleniumScriptErrorEvent(message=message, from_exception=str(error))
-        return [event], error
+        events = EventsList(SeleniumScriptErrorEvent(message=message, from_exception=str(error)))
+        return events, error
 
     def find_element(self, selector: str, value: str) -> WebElement:
         wait = WebDriverWait(self.driver, self.wait_for_seconds)
         return wait.until(EC.presence_of_element_located((selector, value)))
 
-    def safe_click(self, selector: str, value: str) -> tuple[list[Event], SeleniumCommandException | None]:
+    def safe_click(self, selector: str, value: str) -> tuple[EventsList, SeleniumCommandException | None]:
         tries = 0
-        events: list[Event] = []
-        for _ in range(10):
+        events = EventsList()
+        for _ in range(2):
             try:
                 tries += 1
+                events.append(
+                    SeleniumScriptLogEvent(
+                        message=f'Clicking on element with selector `{selector}` and value `{value}`',
+                    ),
+                )
                 self.find_element(selector, value).click()
                 events.append(
                     SeleniumScriptLogEvent(
-                        severity='info',
-                        message=f'Clicked `{selector}`.`{value}` after {tries} tries',
+                        message=(
+                            f'Clicked on element with selector `{selector}` and value `{value}` after {tries} tries'
+                        ),
                     ),
                 )
                 return events, None
             except Exception as e:
+                events.append(
+                    SeleniumScriptErrorEvent(
+                        message=f'Failed to click on element with `{selector}` and value `{value}` after {tries} tries',
+                    ),
+                )
                 time.sleep(1)
                 last_error = e
 
-        events.append(
-            SeleniumScriptErrorEvent(
-                severity='error',
-                message=f'Failed to click element `{selector}` after {tries} tries',
-                from_exception=str(last_error),
-            ),
-        )
-        return events, SeleniumCommandException(
-            f'Failed to click element `{selector}` after {tries} tries',
-            base_exception=last_error,
-        )
+        error_message = f'Failed to click on element `{selector}` after {tries} tries'
+        events.append(SeleniumScriptErrorEvent(severity='error', message=error_message, from_exception=str(last_error)))
+        return events, SeleniumCommandException(error_message, base_exception=last_error)
 
-    def safe_switch_to_frame(self, selector: int | str) -> tuple[list[Event], SeleniumCommandException | None]:
+    def safe_switch_to_frame(self, selector: int | str) -> tuple[EventsList, SeleniumCommandException | None]:
         tries = 0
-        events: list[Event] = []
-        for _ in range(10):
+        events = EventsList()
+        for _ in range(2):
             try:
                 tries += 1
+                events.append(SeleniumScriptLogEvent(message=f'Switching to frame with selector `{selector}`'))
                 self.driver.switch_to.frame(selector)
                 events.append(
-                    SeleniumScriptLogEvent(
-                        severity='info',
-                        message=f'Switched to frame `{selector}`',
-                    ),
+                    SeleniumScriptLogEvent(severity='info', message=f'Switched to frame with selector `{selector}`'),
                 )
                 return events, None
             except Exception as e:
                 time.sleep(1)
+                events.append(
+                    SeleniumScriptLogEvent(
+                        severity='warning',
+                        message=f'Failed to switch to frame with selector `{selector}`, retrying...',
+                    ),
+                )
                 last_error = e
 
-        message = f'Failed to switch to frame `{selector}` after {tries} retries'
+        message = f'Failed to switch to frame with `{selector}` after {tries} retries'
         error = SeleniumCommandException(
             message,
             base_exception=last_error,
@@ -129,8 +136,8 @@ class SeleniumCommandHandler:
         )
         return events, error
 
-    def open(self, command: SeleniumCommand) -> tuple[list[Event], SeleniumCommandException | None]:
-        events: list[Event] = []
+    def open(self, command: SeleniumCommand) -> tuple[EventsList, SeleniumCommandException | None]:
+        events = EventsList()
         url = command.target
         try:
             self.driver.get(url)
@@ -140,8 +147,8 @@ class SeleniumCommandHandler:
             events.append(SeleniumScriptErrorEvent(message=f'Failed to open URL `{url}`', from_exception=str(e)))
             return events, SeleniumCommandException(f'Failed to open URL `{url}`: {e}', base_exception=e)
 
-    def set_window_size(self, command: SeleniumCommand) -> tuple[list[Event], SeleniumCommandException | None]:
-        events: list[Event] = []
+    def set_window_size(self, command: SeleniumCommand) -> tuple[EventsList, SeleniumCommandException | None]:
+        events = EventsList()
 
         width, height = command.target.split('x')
 
@@ -158,8 +165,8 @@ class SeleniumCommandHandler:
         self,
         command: SeleniumCommand,
         retries: int | None = None,
-    ) -> tuple[list[Event], SeleniumCommandException | None]:
-        events: list[Event] = []
+    ) -> tuple[EventsList, SeleniumCommandException | None]:
+        events = EventsList()
         exception: Exception | None = None
 
         for target_pair in command.targets:
@@ -182,8 +189,8 @@ class SeleniumCommandHandler:
 
         return events, SeleniumCommandException(f'Failed to execute click `{command.id}`', base_exception=exception)
 
-    def select_frame(self, command: SeleniumCommand) -> tuple[list[Event], SeleniumCommandException | None]:
-        events: list[Event] = []
+    def select_frame(self, command: SeleniumCommand) -> tuple[EventsList, SeleniumCommandException | None]:
+        events = EventsList()
         target = command.target
         exception: SeleniumCommandException | None = None
 
@@ -205,12 +212,13 @@ class SeleniumCommandHandler:
 
         except Exception as e:
             message = f'Failed to execute type `{command.id}`.`{target}`'
+            events.append(SeleniumScriptErrorEvent(message=message, from_exception=str(e)))
             exception = SeleniumCommandException(message=message, base_exception=e)
 
         return events, exception
 
-    def type(self, command: SeleniumCommand) -> tuple[list[Event], SeleniumCommandException | None]:
-        events: list[Event] = []
+    def type(self, command: SeleniumCommand) -> tuple[EventsList, SeleniumCommandException | None]:
+        events = EventsList()
         exception: SeleniumCommandException | None = None
 
         for target_pair in command.targets:
@@ -225,8 +233,8 @@ class SeleniumCommandHandler:
 
         return events, exception
 
-    def mouse_over(self, command: SeleniumCommand) -> tuple[list[Event], SeleniumCommandException | None]:
-        events: list[Event] = []
+    def mouse_over(self, command: SeleniumCommand) -> tuple[EventsList, SeleniumCommandException | None]:
+        events = EventsList()
         exception: SeleniumCommandException | None = None
 
         for target_pair in command.targets:
@@ -243,8 +251,8 @@ class SeleniumCommandHandler:
 
         return events, exception
 
-    def mouse_out(self, command: SeleniumCommand) -> tuple[list[Event], SeleniumCommandException | None]:
-        events: list[Event] = []
+    def mouse_out(self, command: SeleniumCommand) -> tuple[EventsList, SeleniumCommandException | None]:
+        events = EventsList()
         exception: SeleniumCommandException | None = None
 
         for target_pair in command.targets:
@@ -262,8 +270,8 @@ class SeleniumCommandHandler:
 
         return events, exception
 
-    def wait(self, command: SeleniumCommand) -> tuple[list[Event], SeleniumCommandException | None]:
-        events: list[Event] = []
+    def wait(self, command: SeleniumCommand) -> tuple[EventsList, SeleniumCommandException | None]:
+        events = EventsList()
         exception: SeleniumCommandException | None = None
 
         if command.target:
@@ -277,8 +285,8 @@ class SeleniumCommandHandler:
         events.append(SeleniumScriptLogEvent(message=f'Waited for {command.value} seconds'))
         return events, None
 
-    def wait_for_request_url_contains(self, regex: str) -> tuple[list[Event], SeleniumCommandException | None]:
-        events: list[Event] = []
+    def wait_for_request_url_contains(self, regex: str) -> tuple[EventsList, SeleniumCommandException | None]:
+        events = EventsList()
 
         started_at = time.time()
         while started_at + self.wait_for_seconds > time.time():

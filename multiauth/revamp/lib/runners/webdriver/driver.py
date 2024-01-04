@@ -3,7 +3,7 @@ import os
 from selenium.webdriver import firefox
 from seleniumwire import webdriver  # type: ignore[import-untyped]
 
-from multiauth.revamp.lib.runners.webdriver.configuration import SeleniumScriptOptions  # type: ignore[import-untyped]
+from multiauth.revamp.lib.runners.webdriver.runner import SeleniumScriptOptions
 
 
 def setup_driver(options: SeleniumScriptOptions) -> webdriver.Firefox:

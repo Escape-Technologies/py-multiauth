@@ -7,7 +7,7 @@ from multiauth.revamp.configuration import (
     MultiauthConfiguration,
 )
 from multiauth.revamp.exceptions import MissingProcedureException, MissingUserException, MultiAuthException
-from multiauth.revamp.lib.audit.events.base import Event
+from multiauth.revamp.lib.audit.events.base import EventsList
 from multiauth.revamp.lib.procedure import Procedure
 from multiauth.revamp.lib.store.authentication import Authentication, AuthenticationStore, AuthenticationStoreException
 from multiauth.revamp.lib.store.user import User
@@ -91,7 +91,7 @@ class Multiauth:
     def authenticate(
         self,
         user_name: UserName,
-    ) -> tuple[Authentication, list[Event], int]:
+    ) -> tuple[Authentication, EventsList, int]:
         """
         Runs the authentication procedure of the provided user.
 
@@ -129,7 +129,7 @@ class Multiauth:
     def refresh(
         self,
         user_name: UserName,
-    ) -> tuple[Authentication, list[Event], int]:
+    ) -> tuple[Authentication, EventsList, int]:
         """
         Refresh the authentication object of a given user.
 

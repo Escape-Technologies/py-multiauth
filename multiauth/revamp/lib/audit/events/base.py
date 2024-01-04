@@ -1,4 +1,5 @@
 import abc
+import os
 from datetime import datetime
 from typing import Literal
 
@@ -30,3 +31,28 @@ class Event(BaseModel, abc.ABC):
     @field_serializer('timestamp')
     def serialize_dt(self, timestamp: datetime) -> str:
         return timestamp.isoformat()
+
+    @abc.abstractproperty
+    def logline(self) -> str:
+        ...
+
+
+class EventsList(list[Event]):
+    name: str
+    log_enabled: bool
+
+    def __init__(self, *args: Event) -> None:
+        self.log_enabled = os.getenv('MH_DEBUG') == '1'
+        super().__init__(args)
+
+    def append(self, event: Event) -> None:
+        if self.log_enabled:
+            msg = f'{event.timestamp} {event.severity or event.default_severity:<8} {event.type:<18} {event.logline}'
+            print(msg)  # noqa: T201
+        super().append(event)
+
+    # def extend(self, other):
+    #     if isinstance(other, type(self)):
+    #         super().extend(other)
+    #     else:
+    #         super().extend(str(item) for item in other)

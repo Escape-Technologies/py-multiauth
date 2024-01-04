@@ -1,13 +1,5 @@
 from multiauth.revamp.helpers.logger import setup_logger
-from multiauth.revamp.lib.audit.events.base import Event, EventSeverity
-from multiauth.revamp.lib.audit.events.events import (
-    ExtractedVariableEvent,
-    HTTPRequestEvent,
-    HTTPResponseEvent,
-    InjectedVariableEvent,
-    SeleniumScriptErrorEvent,
-    SeleniumScriptLogEvent,
-)
+from multiauth.revamp.lib.audit.events.base import Event, EventSeverity, EventsList
 from multiauth.revamp.lib.audit.reporters.base import BaseEventsReporter
 
 
@@ -50,28 +42,7 @@ def yellow(str: str) -> str:
 
 class ConsoleEventsReporter(BaseEventsReporter):
     def format(self, event: Event) -> tuple[str, EventSeverity]:
-        msg = f'{event.timestamp} {event.type:<18} {event.severity or event.default_severity:<8}'
-
-        if isinstance(event, HTTPRequestEvent):
-            msg += f' {event.request.method} {event.request.scheme}://{event.request.host}{event.request.path}'
-
-        if isinstance(event, HTTPResponseEvent):
-            msg += (
-                f' {event.response.status_code} {event.response.reason} '
-                f'in {event.response.elapsed.microseconds//1000}ms'
-            )
-
-        if isinstance(event, InjectedVariableEvent):
-            msg += f' {event.variable.value} in {event.location} {event.target}'
-
-        if isinstance(event, ExtractedVariableEvent):
-            msg += f' name="{event.variable.name}" value="{event.variable.value}"'
-
-        if isinstance(event, SeleniumScriptLogEvent):
-            msg += event.message
-
-        if isinstance(event, SeleniumScriptErrorEvent):
-            msg += f'{event.message}: {event.from_exception}'
+        msg = f'{event.timestamp} {event.type:<18} {event.severity or event.default_severity:<8} {event.logline}'
 
         match (event.severity or event.default_severity):
             case 'info':
@@ -85,7 +56,7 @@ class ConsoleEventsReporter(BaseEventsReporter):
             case _:
                 return msg, 'info'
 
-    def report(self, events: list[Event]) -> None:
+    def report(self, events: EventsList) -> None:
         logger = setup_logger()
         logger.info('')
         for event in events:

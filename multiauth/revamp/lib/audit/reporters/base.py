@@ -2,7 +2,7 @@ import abc
 import logging
 
 from multiauth.revamp.helpers import logger
-from multiauth.revamp.lib.audit.events.base import Event, EventSeverity
+from multiauth.revamp.lib.audit.events.base import Event, EventSeverity, EventsList
 
 
 class BaseEventsReporter(abc.ABC):
@@ -15,7 +15,7 @@ class BaseEventsReporter(abc.ABC):
     def format(self, event: Event) -> tuple[str, EventSeverity]:
         ...
 
-    def report(self, events: list[Event]) -> None:
+    def report(self, events: EventsList) -> None:
         for event in events:
             msg, severity = self.format(event)
             match severity:

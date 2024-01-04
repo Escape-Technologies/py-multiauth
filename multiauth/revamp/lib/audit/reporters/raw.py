@@ -1,7 +1,7 @@
 from typing import Any
 
 from multiauth.revamp.helpers.logger import setup_logger
-from multiauth.revamp.lib.audit.events.base import Event
+from multiauth.revamp.lib.audit.events.base import Event, EventsList
 from multiauth.revamp.lib.audit.reporters.base import BaseEventsReporter, EventSeverity
 
 
@@ -35,7 +35,7 @@ class RawEventsReporter(BaseEventsReporter):
     def format(self, event: Event) -> tuple[str, EventSeverity]:
         return ' '.join(logfmt_from_dict(event.model_dump(exclude_none=True))), 'info'
 
-    def report(self, events: list[Event]) -> None:
+    def report(self, events: EventsList) -> None:
         logger = setup_logger()
 
         raw_events = [self.format(event) for event in events]

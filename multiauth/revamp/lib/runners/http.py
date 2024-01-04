@@ -6,7 +6,7 @@ import requests
 from pydantic import Field
 
 from multiauth.revamp.lib.audit.events.base import (
-    Event,
+    EventsList,
 )
 from multiauth.revamp.lib.audit.events.events import (
     ExtractedVariableEvent,
@@ -101,10 +101,10 @@ class HTTPRequestRunner(BaseRunner[HTTPRunnerConfiguration]):
 
         return HTTPRequestRunner(request_configuration)
 
-    def request(self, user: User) -> tuple[HTTPRequest, HTTPResponse | None, list[Event]]:
+    def request(self, user: User) -> tuple[HTTPRequest, HTTPResponse | None, EventsList]:
         parameters = self.request_configuration.parameters
 
-        events: list[Event] = []
+        events = EventsList()
 
         scheme, host, path = parse_raw_url(parameters.url)
         headers = merge_headers(parameters.headers, user.credentials.headers)
@@ -150,13 +150,13 @@ class HTTPRequestRunner(BaseRunner[HTTPRunnerConfiguration]):
 
         return request, response, events
 
-    def extract(self, response: HTTPResponse | None) -> tuple[list[AuthenticationVariable], list[Event]]:
+    def extract(self, response: HTTPResponse | None) -> tuple[list[AuthenticationVariable], EventsList]:
         extractions = self.request_configuration.extractions
 
-        events: list[Event] = []
+        events = EventsList()
 
         if response is None:
-            return [], []
+            return [], events
 
         variables: list[AuthenticationVariable] = []
 
@@ -192,7 +192,7 @@ class HTTPRequestRunner(BaseRunner[HTTPRunnerConfiguration]):
 
         return variables, events
 
-    def run(self, user: User) -> tuple[list[AuthenticationVariable], list[Event], RunnerException | None]:
+    def run(self, user: User) -> tuple[list[AuthenticationVariable], EventsList, RunnerException | None]:
         request, response, events = self.request(user)
 
         if response is None:

@@ -6,7 +6,7 @@ from pydantic import BaseModel, Field
 from selenium.webdriver import firefox
 from seleniumwire import webdriver  # type: ignore[import-untyped]
 
-from multiauth.revamp.lib.audit.events.base import Event
+from multiauth.revamp.lib.audit.events.base import EventsList
 from multiauth.revamp.lib.audit.events.events import (
     ExtractedVariableEvent,
     SeleniumScriptErrorEvent,
@@ -62,9 +62,9 @@ class SeleniumRunner(BaseRunner[SeleniumRunnerConfiguration]):
         self.selenium_configuration = configuration
         super().__init__(configuration)
 
-    def run(self, _user: User) -> tuple[list[AuthenticationVariable], list[Event], RunnerException | None]:
+    def run(self, _user: User) -> tuple[list[AuthenticationVariable], EventsList, RunnerException | None]:
         driver = self.setup_driver()
-        events: list[Event] = []
+        events = EventsList()
 
         for test in self.selenium_configuration.parameters.project.tests:
             events.append(SeleniumScriptLogEvent(message=f'Running test `{test.name}`'))

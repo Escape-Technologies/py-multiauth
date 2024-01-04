@@ -3,7 +3,7 @@ import datetime
 
 from pydantic import BaseModel, Field
 
-from multiauth.revamp.lib.audit.events.base import Event
+from multiauth.revamp.lib.audit.events.base import EventsList
 from multiauth.revamp.lib.audit.events.events import InjectedVariableEvent
 from multiauth.revamp.lib.http_core.entities import HTTPCookie, HTTPHeader, HTTPLocation, HTTPQueryParameter
 from multiauth.revamp.lib.http_core.mergers import merge_cookies, merge_headers, merge_query_parameters
@@ -24,9 +24,9 @@ class Authentication(BaseModel):
     def inject(
         injection: TokenInjection,
         variables: list[AuthenticationVariable],
-    ) -> tuple['Authentication', list[Event]]:
+    ) -> tuple['Authentication', EventsList]:
         authentication = Authentication.empty()
-        events: list[Event] = []
+        events = EventsList()
 
         if len(variables) == 0:
             return authentication, events
