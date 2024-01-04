@@ -4,18 +4,16 @@ from typing import Literal
 from multiauth.revamp.lib.audit.events.base import Event
 from multiauth.revamp.lib.http_core.entities import (
     HTTPHeader,
-    HTTPRequest,
-    HTTPResponse,
 )
 from multiauth.revamp.lib.http_core.mergers import merge_headers
-from multiauth.revamp.lib.runners.base import BaseRunnerConfiguration
+from multiauth.revamp.lib.runners.base import BaseRunnerConfiguration, RunnerException
 from multiauth.revamp.lib.runners.http import (
     HTTPRequestParameters,
     HTTPRequestRunner,
     HTTPRunnerConfiguration,
 )
 from multiauth.revamp.lib.store.user import User
-from multiauth.revamp.lib.store.variables import AuthenticationVariable, interpolate_string
+from multiauth.revamp.lib.store.variables import AuthenticationVariable, VariableName, interpolate_string
 
 
 class BasicRunnerConfiguration(BaseRunnerConfiguration):
@@ -45,7 +43,7 @@ class BasicRequestRunner(HTTPRequestRunner):
         self.basic_request_configuration = configuration
         super().__init__(self.basic_request_configuration.to_http())
 
-    def request(self, user: User) -> tuple[HTTPRequest, HTTPResponse | None, list[Event]]:
+    def run(self, user: User) -> tuple[list[AuthenticationVariable], list[Event], RunnerException | None]:
         if not user.credentials.username or not user.credentials.password:
             raise ValueError(f'User {user.name} is missing a username or password.')
 
@@ -57,10 +55,10 @@ class BasicRequestRunner(HTTPRequestRunner):
             [header],
         )
 
-        return super().request(basic_user)
+        variables, events, exception = super().run(basic_user)
+        variables.append(AuthenticationVariable(name=VariableName('basic-header-value'), value=header.values[0]))
 
-    def extract(self, _response: HTTPResponse | None) -> tuple[list[AuthenticationVariable], list[Event]]:
-        return [], []
+        return variables, events, exception
 
     def interpolate(self, variables: list[AuthenticationVariable]) -> 'BasicRequestRunner':
         basic_request_configuration = self.basic_request_configuration.model_dump_json()
