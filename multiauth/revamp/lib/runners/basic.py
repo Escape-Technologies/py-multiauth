@@ -61,8 +61,8 @@ class BasicRequestRunner(HTTPRequestRunner):
         return variables, events, exception
 
     def interpolate(self, variables: list[AuthenticationVariable]) -> 'BasicRequestRunner':
-        basic_request_configuration = self.basic_request_configuration.model_dump_json()
-        basic_request_configuration = interpolate_string(basic_request_configuration, variables)
-        graphql_request_configuration = BasicRunnerConfiguration.model_validate_json(basic_request_configuration)
+        basic_request_configuration_str = self.basic_request_configuration.model_dump_json()
+        basic_request_configuration_str = interpolate_string(basic_request_configuration_str, variables)
+        basic_request_configuration = BasicRunnerConfiguration.model_validate_json(basic_request_configuration_str)
 
-        return BasicRequestRunner(graphql_request_configuration)
+        return BasicRequestRunner(basic_request_configuration)

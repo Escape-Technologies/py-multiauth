@@ -7,7 +7,7 @@ from multiauth.revamp.lib.audit.events.base import EventsList
 from multiauth.revamp.lib.store.user import User
 from multiauth.revamp.lib.store.variables import AuthenticationVariable, VariableName
 
-RunnerType = Literal['http', 'basic', 'graphql', 'selenium']
+RunnerType = Literal['http', 'basic', 'graphql', 'selenium', 'digest']
 
 
 class BaseRunnerParameters(BaseModel, abc.ABC):

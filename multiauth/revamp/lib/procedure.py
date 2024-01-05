@@ -11,6 +11,7 @@ from multiauth.revamp.lib.audit.events.events import (
 )
 from multiauth.revamp.lib.runners.base import BaseRunner
 from multiauth.revamp.lib.runners.basic import BasicRunnerConfiguration
+from multiauth.revamp.lib.runners.digest import DigestRunnerConfiguration
 from multiauth.revamp.lib.runners.graphql import GraphQLRunnerConfiguration
 from multiauth.revamp.lib.runners.http import HTTPRunnerConfiguration
 from multiauth.revamp.lib.runners.webdriver.runner import SeleniumRunnerConfiguration
@@ -24,6 +25,7 @@ RequestConfigurationType = Annotated[
         GraphQLRunnerConfiguration,
         BasicRunnerConfiguration,
         SeleniumRunnerConfiguration,
+        DigestRunnerConfiguration,
     ],
     Field(discriminator='tech'),
 ]
