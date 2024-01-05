@@ -3,11 +3,15 @@ from typing import Annotated, Union
 from pydantic import BaseModel, Field
 
 from multiauth.revamp.lib.presets.jwt_access_token import JWTAccessTokenRefreshTokenPreset
+from multiauth.revamp.lib.presets.oauth_client_credentials import OAuthClientCredentialsPreset
 from multiauth.revamp.lib.presets.oauth_userpass import OAuthUserpassPreset
 from multiauth.revamp.lib.procedure import ProcedureConfiguration
 from multiauth.revamp.lib.store.user import User
 
-PresetType = Annotated[Union[JWTAccessTokenRefreshTokenPreset, OAuthUserpassPreset], Field(discriminator='type')]
+PresetType = Annotated[
+    Union[JWTAccessTokenRefreshTokenPreset, OAuthUserpassPreset, OAuthClientCredentialsPreset],
+    Field(discriminator='type'),
+]
 
 
 class MultiauthConfiguration(BaseModel):
