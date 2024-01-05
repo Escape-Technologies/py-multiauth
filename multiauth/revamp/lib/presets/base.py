@@ -6,7 +6,7 @@ from pydantic import BaseModel, Field
 from multiauth.revamp.lib.procedure import ProcedureConfiguration, ProcedureName
 from multiauth.revamp.lib.store.user import User
 
-PresetType = Literal['jwt_access_token_refresh_token', 'oauth_userpass', 'oauth_client_credentials']
+PresetType = Literal['jwt_access_token_refresh_token', 'oauth_userpass', 'oauth_client_credentials', 'oauth_refresh']
 
 
 class BasePreset(BaseModel, abc.ABC):
