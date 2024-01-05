@@ -35,27 +35,6 @@ class OAuthRefreshPreset(BasePreset):
                             HTTPHeader(name='Accept', values=['application/json']),
                         ],
                         body=(
-                            'grant_type=password&username={{ username }}&password={{ password }}'
-                            f'&client_id={self.client_id}'
-                            f'&client_secret={self.client_secret}'
-                        ),
-                    ),
-                    extractions=[
-                        HTTPBodyExtraction(
-                            name=VariableName('refresh_token'),
-                            key='refresh_token',
-                        ),
-                    ],
-                ),
-                HTTPRunnerConfiguration(
-                    parameters=HTTPRequestParameters(
-                        url=self.server_url,
-                        method=HTTPMethod.POST,
-                        headers=[
-                            HTTPHeader(name='Content-Type', values=['application/x-www-form-urlencoded']),
-                            HTTPHeader(name='Accept', values=['application/json']),
-                        ],
-                        body=(
                             'grant_type=refresh_token&refresh_token={{ refresh_token }}'
                             f'&client_id={self.client_id}'
                             f'&client_secret={self.client_secret}'
