@@ -81,7 +81,7 @@ class DigestRunner(HTTPRequestRunner):
         return DigestRunner(digest_configuration)
 
     def run(self, user: User) -> tuple[list[AuthenticationVariable], EventsList, RunnerException | None]:
-        events: EventsList = []
+        events = EventsList()
         variables: list[AuthenticationVariable] = []
 
         if not user.credentials.username or not user.credentials.password:
