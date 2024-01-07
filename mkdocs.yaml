@@ -67,6 +67,7 @@ nav:
       - CLI interface: "reference/cli.md"
       - Programmatic interface: "reference/programmatic.md"
       - Configuration: "reference/configuration.md"
+      - Reference: reference/reference.md
   - Help: "help.md"
   - Versioning: "versioning.md"
   - Changelog: "changelog.md"
