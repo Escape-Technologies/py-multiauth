@@ -13,14 +13,25 @@ def process_schema(schema: dict) -> list:
     for def_name, def_properties in schema['$defs'].items():
         properties = []
         for prop_name, prop_details in def_properties.get('properties', {}).items():
+            item_ref = prop_details.get('items', {}).get('$ref', '').split('/')[-1]
+            # Determine if the property is an array
+            if prop_details.get('type') == 'array':
+                # Extract the type of items in the array
+                prop_type = f'{item_ref}[]' if item_ref else 'array'
+            else:
+                prop_type = prop_details.get('type', 'N/A')
+
             prop_info = {
                 'name': prop_name,
-                'type': prop_details.get('type', 'N/A'),
+                'type': prop_type,
                 'required': prop_name in def_properties.get('required', []),
                 'description': prop_details.get('description', ''),
-                'reference': prop_details.get('$ref', '').split('/')[-1] if '$ref' in prop_details else '',
+                'reference': item_ref if item_ref else '',
             }
             properties.append(prop_info)
+
+        # Sort properties so that those with references come last
+        properties.sort(key=lambda x: (not x['required'], x['reference'] != '', x['name'].lower()))
 
         definition_info = {
             'name': def_name,
