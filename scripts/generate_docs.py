@@ -7,12 +7,12 @@ with open('multiauth-schema.json', 'r') as file:
     json_schema = json.load(file)
 
 # Load the Jinja template (assuming the above template is saved as 'schema_template.md.jinja')
-with open('scripts/templates/schema-definition-template.md.jinja', 'r') as file:
+with open('scripts/templates/schema-property.md.jinja', 'r') as file:
     template = Template(file.read())
 
 # Render the template with the schema
 rendered_markdown = template.render(schema=json_schema)
 
 # You can then save this Markdown or display it as needed
-with open('rendered_schema.md', 'w') as file:
+with open('docs/reference/reference.md', 'w') as file:
     file.write(rendered_markdown)
