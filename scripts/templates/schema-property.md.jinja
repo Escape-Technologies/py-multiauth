@@ -1,1 +1,13 @@
-#### {{ name }}
+{% for definition in definitions %}
+## <a id="{{ definition.anchor }}"></a>{{ definition.name }}
+
+Description: {{ definition.description }}
+
+Type: {{ definition.type }}
+
+| Field Name | Type | Required | Description | Reference |
+|------------|------|----------|-------------|-----------|
+{% for property in definition.properties -%}
+| {{ property.name }} | `{{ property.type }}` | `{{ property.required }}` | {{ property.description }} | {% if property.reference %}[{{ property.reference }}](#{{ property.reference }}){% endif %} |
+{% endfor %}
+{% endfor %}
