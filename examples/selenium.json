@@ -1,0 +1,9 @@
+{
+  "procedures": [
+    {
+      "name": "example-procedure",
+      "requests": []
+    }
+  ],
+  "$schema": "../multiauth-schema.json"
+}

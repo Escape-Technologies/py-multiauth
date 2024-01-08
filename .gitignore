@@ -84,6 +84,7 @@ __pycache__/
 .pytest_cache
 .coverage
 .venv
+venv
 build/
 dist/
 setup.py
@@ -106,3 +107,10 @@ package-lock.json
 .authrc
 .stats/*
 crash_report.txt
+
+# Revamp
+.multiauthrc.json
+results.json
+
+# Docs
+site/

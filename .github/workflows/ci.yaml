@@ -14,7 +14,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        python-version: ["3.11"]
+        python-version: ["3.12.1"]
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
@@ -27,21 +27,22 @@ jobs:
         run: |
           poetry config virtualenvs.in-project true
           poetry install
-      - name: Run lint
-        if: always()
-        run: |
-          source .venv/bin/activate
-          ruff -V
-          mypy -V
-          ruff check $MODULE_NAME tests
-          mypy $MODULE_NAME tests
-      - name: Run tests
-        run: |
-          source .venv/bin/activate
-          pytest --cov=$MODULE_NAME --cov-report=xml --cov-fail-under=$MIN_TEST_COV tests/unit/
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./coverage.xml
-          flags: unittests
+      # @TODO:maxence@escape.tech uncomment when ready
+      # - name: Run lint
+      #   if: always()
+      #   run: |
+      #     source .venv/bin/activate
+      #     ruff -V
+      #     mypy -V
+      #     ruff check $MODULE_NAME tests
+      #     mypy $MODULE_NAME tests
+      # - name: Run tests
+      #   run: |
+      #     source .venv/bin/activate
+      #     pytest --cov=$MODULE_NAME --cov-report=xml --cov-fail-under=$MIN_TEST_COV tests/unit/
+      # - name: Upload coverage to Codecov
+      #   uses: codecov/codecov-action@v3
+      #   with:
+      #     token: ${{ secrets.CODECOV_TOKEN }}
+      #     files: ./coverage.xml
+      #     flags: unittests

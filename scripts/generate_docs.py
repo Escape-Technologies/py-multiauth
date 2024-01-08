@@ -1,305 +1,81 @@
-"""Generate Docs in Check."""
-
 import json
-from copy import deepcopy
-from importlib.resources import files
-from typing import Any, TypedDict, cast
 
-from jinja2 import Environment, FileSystemLoader, select_autoescape
+from jinja2 import Environment, FileSystemLoader
 
-from multiauth import static
-from multiauth.entities.main import RCFile
-
-env = Environment(loader=FileSystemLoader('scripts/templates'), autoescape=select_autoescape())
+# Load your JSON schema into a Python dictionary
+with open('multiauth-schema.json', 'r') as file:
+    json_schema = json.load(file)
 
 
-class AuthProperty(TypedDict):
-
-    """The dictionary that contains all necessary information to document everything."""
-
-    name: str
-    optional: bool
-    type: str
-    description: str
-    value: str | None
-    enum: list[str] | None
+import re
+from urllib.parse import urlparse
 
 
-AuthName = str
-ParameterName = str
-AuthParameter = dict[ParameterName, AuthProperty]
-AuthSchema = dict[AuthName, list[dict[AuthName, AuthParameter]]]
-SubSchema = dict[AuthName, AuthParameter]
+def process_schema(schema: dict) -> list:
+    url_pattern = re.compile(r'https?://[^\s]+')
 
+    def format_url(url: str) -> str:
+        parsed_url = urlparse(url)
+        domain = parsed_url.netloc
+        # Remove 'www.' if it exists in the domain name
+        if domain.startswith('www.'):
+            domain = domain[4:]
+        return f'[{domain}]({url})'
 
-def get_example(schema: dict) -> Any:
-    """From the schema of a parameter find an example."""
+    def replace_urls(text: str) -> str:
+        return url_pattern.sub(lambda match: format_url(match.group(0)), text)
 
-    if 'enum' in schema:
-        return schema['enum'][0]
-    if schema['type'] in ['number', 'string']:
-        return '**value**'
-    if schema['type'] == 'object':
-        example = {}
-        if 'additionalProperties' in schema and isinstance(schema['additionalProperties'], dict):
-            example['**value**'] = get_example(schema['additionalProperties'])
-        for field_name, field in schema['properties'].items():
-            example[field_name] = get_example(field)
-        return example
-    if schema['type'] == 'array':
-        return [get_example(schema['items'])]
-
-    raise Exception(f'The type {schema["type"]} is not handled by the script')
-
-
-# pylint: disable=too-many-statements, too-many-locals, too-many-branches
-def generate_auth_docs() -> None:  # noqa: C901
-    """Generates authentication schemas documentation."""
-
-    # Load the templeate
-    template = env.get_template('docs_auth_template.md')
-
-    # Load the json schema from static
-    with (files(static) / 'auth_schema.json').open() as f:
-        json_schema = json.load(f)
-
-    # The schema layout
-    auth_schemas: AuthSchema = {}
-
-    # A list which shows which authentication techniques have an optional parameter
-    has_optional: list[bool] = [False for _ in json_schema]
-
-    # The JSON schema for every authentication scheme
-    jsonschema = RCFile(
-        users={'user1': {'auth': 'schema1'}},
-        methods={'schema1': {}},
-    ).model_dump()
-
-    # All the JSON schemas
-    jsonschemas: list[dict[str, str]] = []
-
-    # A counter to fill the lists
-    count = 0
-
-    # Now we have to build the data structure to use to render the template
-    for auth_schema in json_schema.values():
-        # The subschemas
-        sub_schema: SubSchema = {}
-
-        auth_name = cast(AuthName, auth_schema['_escapeUI']['label'])
-        auth_schemas.setdefault(auth_name, [{auth_name: {}}])
-
-        whitelist = {}
-        if 'oneOf' in auth_schema['authSchema']:
-            # here we are in the oauth case
-            # we want to create a subschema for each possible values of the grant_type
-            # and store in the whitelist{grant_type: required_fields}
-            for todo in auth_schema['authSchema']['oneOf']:
-                property_name = next(iter(todo['properties'].keys()))
-                property_value = todo['properties'][property_name]['const']
-                schema_name = auth_name + ' (' + property_name + ' : ' + property_value + ')'
-                sub_schema.setdefault(schema_name, {})
-                whitelist[schema_name] = todo['required']
-                sub_schema[schema_name].setdefault(
-                    property_name,
-                    AuthProperty(
-                        {
-                            'name': property_name,
-                            'optional': False,
-                            'type': 'string',
-                            'description': '',
-                            'value': property_value,
-                            'enum': [],
-                        },
-                    ),
-                )
-
-        for name, auth_property in auth_schema['authSchema']['properties'].items():
-            if name == 'options':
-                has_optional[count] = True
-                for optional_name, optional_property in auth_property['properties'].items():
-                    property_name = cast(ParameterName, optional_property['_escapeUI']['label'])
-                    auth_schemas[auth_name][0][auth_name].setdefault(
-                        optional_name,
-                        AuthProperty(
-                            {
-                                'name': property_name,
-                                'optional': True,
-                                'type': '',
-                                'description': '',
-                                'value': None,
-                                'enum': None,
-                            },
-                        ),
-                    )
-                    auth_schemas[auth_name][0][auth_name][optional_name]['type'] = optional_property['type']
-                    auth_schemas[auth_name][0][auth_name][optional_name]['description'] = optional_property[
-                        'description'
-                    ]
-                    if optional_property.get('enum') is not None:
-                        auth_schemas[auth_name][0][auth_name][optional_name]['enum'] = optional_property['enum']
-
-            elif name == 'allOf':
-                for condition in auth_schema['authSchema']['properties'][name]:
-                    property_name = next(iter(condition['if']['properties']))
-                    property_value = condition['if']['properties'][property_name]['const']
-                    schema_name = auth_name + ' (' + property_name + ' : ' + property_value + ')'
-                    sub_schema.setdefault(schema_name, {})
-
-                    # Now we have to create the subschema
-                    # First we have to create the parameter we have now
-                    sub_schema[schema_name].setdefault(
-                        property_name,
-                        AuthProperty(
-                            {
-                                'name': auth_schemas[auth_name][0][auth_name][property_name]['name'],
-                                'optional': auth_schemas[auth_name][0][auth_name][property_name]['optional'],
-                                'type': auth_schemas[auth_name][0][auth_name][property_name]['type'],
-                                'description': auth_schemas[auth_name][0][auth_name][property_name]['description'],
-                                'value': property_value,
-                                'enum': auth_schemas[auth_name][0][auth_name][property_name]['enum'],
-                            },
-                        ),
-                    )
-
-                    for sub_name, sub_auth_property in condition['then']['properties'].items():
-                        property_name = cast(ParameterName, sub_auth_property['_escapeUI']['label'])
-                        sub_schema[schema_name].setdefault(
-                            sub_name,
-                            AuthProperty(
-                                {
-                                    'name': property_name,
-                                    'optional': False,
-                                    'type': '',
-                                    'description': '',
-                                    'value': None,
-                                    'enum': None,
-                                },
-                            ),
-                        )
-
-                        sub_schema[schema_name][sub_name]['type'] = sub_auth_property['type']
-                        sub_schema[schema_name][sub_name]['description'] = sub_auth_property['description']
-                        if sub_auth_property.get('enum') is not None:
-                            sub_schema[schema_name][sub_name]['enum'] = sub_auth_property['enum']
-
-                        if sub_auth_property.get('title') is not None:
-                            sub_schema[schema_name][sub_name]['value'] = sub_auth_property['title']
-
+    definitions = []
+    for def_name, def_properties in schema['$defs'].items():
+        properties = []
+        for prop_name, prop_details in def_properties.get('properties', {}).items():
+            item_ref = prop_details.get('items', {}).get('$ref', '').split('/')[-1]
+            # Determine if the property is an array
+            if prop_details.get('type') == 'array':
+                # Extract the type of items in the array
+                prop_type = f'{item_ref}[]' if item_ref else 'array'
             else:
-                property_name = cast(ParameterName, auth_property['_escapeUI']['label'])
-                auth_schemas[auth_name][0][auth_name].setdefault(
-                    name,
-                    AuthProperty(
-                        {
-                            'name': property_name,
-                            'optional': False,
-                            'type': '',
-                            'description': '',
-                            'value': None,
-                            'enum': None,
-                        },
-                    ),
-                )
-                auth_schemas[auth_name][0][auth_name][name]['type'] = auth_property['type']
-                auth_schemas[auth_name][0][auth_name][name]['description'] = auth_property['description']
-                if auth_property.get('enum') is not None:
-                    auth_schemas[auth_name][0][auth_name][name]['enum'] = auth_property['enum']
+                prop_type = prop_details.get('type', 'N/A')
 
-                if auth_property.get('title') is not None:
-                    auth_schemas[auth_name][0][auth_name][name]['value'] = auth_property['title']
+            is_required = prop_name in def_properties.get('required', [])
+            description = replace_urls(prop_details.get('description', ''))
 
-        the_temp: dict = {}
-        for schema_name, schema_properties in sub_schema.items():
-            original_schema = deepcopy(auth_schemas[auth_name][0][auth_name])
-            if 'oneOf' in auth_schema['authSchema']:
-                # handle oneOf to only write the required properties
-                original_schema = {
-                    k: v for k, v in original_schema.items() if k in whitelist[schema_name] or v.get('optional')
-                }
-            for schema_property_name, schema_property_value in schema_properties.items():
-                if schema_property_name in original_schema:
-                    original_schema[schema_property_name] = schema_property_value
-                else:
-                    original_schema.setdefault(schema_property_name, schema_property_value)
-                    the_temp.setdefault(schema_property_name, schema_property_value)
+            prop_info = {
+                'name': prop_name,
+                'type': prop_type,
+                'required': is_required,
+                'description': description,
+                'reference': item_ref if item_ref else '',
+            }
+            properties.append(prop_info)
 
-            auth_schemas[auth_name].append({schema_name: original_schema})
+        # Sort properties: required first, non-referenced second, then alphabetically
+        properties.sort(key=lambda x: (not x['required'], x['reference'] != '', x['name'].lower()))
 
-        auth_schemas[auth_name][0][auth_name].update(the_temp)
-
-        # Now we have to build the json schema for every one of the authentication techniques
-        _json_schema = deepcopy(jsonschema)
-
-        # First we have to build the user part of the schema
-        if auth_name == 'Public':
-            user_name = 'public'
-            _json_schema['users'][user_name] = _json_schema['users']['user1']
-            del _json_schema['users']['user1']
-        else:
-            user_name = 'user1'
-
-        for name, auth_property in auth_schema['userSchema']['properties'].items():
-            if name == 'auth':
-                continue
-            if auth_property['type'] == 'object':
-                _json_schema['users'][user_name][name] = {'**name**': '**value**'}
-            else:
-                _json_schema['users'][user_name][name] = '**' + auth_property['type'] + '**'
-
-        if auth_schema['userSchema'].get('additionalProperties'):
-            _json_schema['users'][user_name]['**username**'] = '**admin**'
-            _json_schema['users'][user_name]['**password**'] = '**1234**'
-
-        # Now we will build the auth part of the schema
-        temp: dict = {}
-
-        if has_optional[count]:
-            _json_schema['methods']['schema1']['options'] = {}
-        for schema in auth_schemas[auth_name]:
-            for schema_name, properties in schema.items():
-                _new_json_schema = deepcopy(_json_schema)
-                for name, auth_property in properties.items():
-                    if not auth_property['optional']:
-                        if auth_property['value'] is not None:
-                            _new_json_schema['methods']['schema1'][name] = auth_property['value']
-                        else:
-                            _new_json_schema['methods']['schema1'][name] = '**' + auth_property['type'] + '**'
-
-                    else:
-                        if auth_property['value'] is not None:
-                            _new_json_schema['methods']['schema1']['options'][name] = auth_property['value']
-                        elif auth_property['type'] == 'object':
-                            _new_json_schema['methods']['schema1']['options'][name] = {'**name**': '**value**'}
-                        else:
-                            _new_json_schema['methods']['schema1']['options'][name] = (
-                                '**' + auth_property['type'] + '**'
-                            )
-                # This is simply to rearange the dict (althought there is no order) so that options is at the end
-                if _new_json_schema['methods']['schema1'].get('options') is not None:
-                    _temp = deepcopy(_new_json_schema['methods']['schema1']['options'])
-                    del _new_json_schema['methods']['schema1']['options']
-                    _new_json_schema['methods']['schema1']['options'] = _temp
-                temp[schema_name] = json.dumps(_new_json_schema, indent=4, sort_keys=False)
-
-        # Add the manual shorthand
-        if auth_name == 'Manual':
-            shorthand = {'headers': {'**name**': '**value**'}}
-            temp['Manual (shorthand)'] = json.dumps(shorthand, indent=4, sort_keys=False)
-            temp['Manual (standard)'] = temp['Manual']
-
-        jsonschemas.append(temp)
-        count += 1
-
-    auth_documentation = template.render(
-        auth_schema=auth_schemas,
-        optional=has_optional,
-        json_schema=jsonschemas,
-    )
-
-    with open('docs/index.md', 'w+', encoding='utf-8') as f:
-        f.write(auth_documentation)
+        description = replace_urls(def_properties.get('description', 'No Description.'))
+        definition_info = {
+            'name': def_name,
+            'anchor': def_name,
+            'description': description,
+            'type': def_properties.get('type', 'N/A'),
+            'properties': properties,
+        }
+        definitions.append(definition_info)
+    return definitions
 
 
-if __name__ == '__main__':
-    generate_auth_docs()
+processed_data = process_schema(json_schema)
+
+
+processed_data = process_schema(json_schema)
+
+# Set up the Jinja environment and load the template
+env = Environment(loader=FileSystemLoader('scripts/templates'), autoescape=True)
+template = env.get_template('schema-property.md.jinja')
+
+# Render the template with the processed data
+rendered_markdown = template.render(definitions=processed_data)
+
+# Save the rendered Markdown
+with open('docs/reference/entities.md', 'w') as file:
+    file.write(rendered_markdown)

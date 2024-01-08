@@ -3,70 +3,7 @@
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/py-multiauth)
 ![PyPI - Downloads](https://img.shields.io/pypi/dm/py-multiauth)
 
-## Installation
-
-```bash
-pip install py-multiauth
-```
-
-## Supported methods
-
-|Name     |Authenticate|Refresh|Extra    |Proxy support|
-|---------|:----------:|:-----:|---------|:-----------:|
-|`API_KEY`|✓           |       |         |✓            |
-|`AWS`    |✓           |✓      |Signature|             |
-|`BASIC`  |✓           |       |         |✓            |
-|`REST`   |✓           |✓      |         |✓            |
-|`DIGEST` |✓           |       |         |✓            |
-|`GRAPHQL`|✓           |       |         |✓            |
-|`HAWK`   |✓           |       |         |✓            |
-|`MANUAL` |✓           |       |         |✓            |
-|`OAUTH`  |✓           |✓      |         |✓            |
-
-## Usage
-
-## Local CLI
-
-Take a look at the documentation to fill you `.authrc.json` and run:
-
-```
-multiauth validate -f .authrc.json
-```
-
-### Loading a configuration file
-
-Currently, we support 4 way of loading a configuration file.
-
-```python
-
-# Using constructor argument
-MultiAuth(authrc_file='path.json')
-
-# Using environment variable
-os.environ['AUTHRC'] = 'path.json'
-
-# Using autodection
-os.paths.exists('.authrc')?
-
-# Using autodection from user home directory
-os.path.exists(os.path.expanduser('~/.multiauth/.authrc'))?
-```
-
-### Managing authentication flow
-
-**MultiAuth supports context singleton.
-From that, you can instanciate MultiAuth and re-use the same class in another package as far it is sharing the same context.**
-
-```python
-auth = MultiAuth(auths=.., users=.., authrc=.., logger=..)
-
-# Sending the requests to get the correct headers
-auth.authenticate_users()
-
-# Getting the header before sending a HTTP request
-auth_headers = auth.reauthenticate(username=.., additional_headers=.., public=..)
-r = requests.get('https://example.com', headers=auth_headers[0])
-```
+@TODO(maxence@escape.tech): Write README + link to docs
 
 ## Contributing
 
