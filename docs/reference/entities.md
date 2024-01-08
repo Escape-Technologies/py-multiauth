@@ -52,6 +52,43 @@ Type: object
 | query_parameters | `HTTPQueryParameter[]` | `False` | A list of query parameters to attach to every HTTP requests sent for this user | [HTTPQueryParameter](#HTTPQueryParameter) |
 
 
+## <a id="DigestRequestSequenceConfiguration"></a>DigestRequestSequenceConfiguration
+
+Description: No Description.
+
+Type: object
+
+| Field Name | Type | Required | Description | Reference |
+|------------|------|----------|-------------|-----------|
+| first_request | `N/A` | `True` |  |  |
+| second_request | `N/A` | `False` |  |  |
+
+
+## <a id="DigestRunnerConfiguration"></a>DigestRunnerConfiguration
+
+Description: No Description.
+
+Type: object
+
+| Field Name | Type | Required | Description | Reference |
+|------------|------|----------|-------------|-----------|
+| parameters | `N/A` | `True` |  |  |
+| tech | `N/A` | `False` |  |  |
+| extractions | `BaseExtraction[]` | `False` |  | [BaseExtraction](#BaseExtraction) |
+
+
+## <a id="DigestSecondRequestConfiguration"></a>DigestSecondRequestConfiguration
+
+Description: No Description.
+
+Type: object
+
+| Field Name | Type | Required | Description | Reference |
+|------------|------|----------|-------------|-----------|
+| method | `N/A` | `False` |  |  |
+| path | `N/A` | `False` |  |  |
+
+
 ## <a id="GraphQLRequestParameters"></a>GraphQLRequestParameters
 
 Description: No Description.
@@ -239,6 +276,38 @@ Type: object
 | type | `N/A` | `False` |  |  |
 
 
+## <a id="OAuthClientCredentialsPreset"></a>OAuthClientCredentialsPreset
+
+Description: No Description.
+
+Type: object
+
+| Field Name | Type | Required | Description | Reference |
+|------------|------|----------|-------------|-----------|
+| client_id | `string` | `True` | The client ID to use for the OAuth requests |  |
+| client_secret | `string` | `True` | The client secret to use for the OAuth requests |  |
+| name | `string` | `True` | The name of the preset. Will be the name of the generated procedure. |  |
+| server_url | `string` | `True` | The URL of the token endpoint of the OpenIDConnect server |  |
+| type | `N/A` | `False` |  |  |
+| users | `array` | `False` | A list of users to create |  |
+
+
+## <a id="OAuthRefreshPreset"></a>OAuthRefreshPreset
+
+Description: No Description.
+
+Type: object
+
+| Field Name | Type | Required | Description | Reference |
+|------------|------|----------|-------------|-----------|
+| client_id | `string` | `True` | The client ID to use for the OAuth requests |  |
+| client_secret | `string` | `True` | The client secret to use for the OAuth requests |  |
+| name | `string` | `True` | The name of the preset. Will be the name of the generated procedure. |  |
+| server_url | `string` | `True` | The URL of the token endpoint of the OpenIDConnect server |  |
+| type | `N/A` | `False` |  |  |
+| users | `array` | `False` | A list of users to create |  |
+
+
 ## <a id="OAuthUserpassPreset"></a>OAuthUserpassPreset
 
 Description: No Description.
@@ -334,7 +403,7 @@ Type: object
 
 ## <a id="SeleniumScriptParameters"></a>SeleniumScriptParameters
 
-Description: SeleniumScriptParameters(*, project: multiauth.revamp.lib.runners.webdriver.configuration.SeleniumProject, options: multiauth.revamp.lib.runners.webdriver.runner.SeleniumScriptOptions)
+Description: SeleniumScriptParameters(*, project: multiauth.lib.runners.webdriver.configuration.SeleniumProject, options: multiauth.lib.runners.webdriver.runner.SeleniumScriptOptions)
 
 Type: object
 

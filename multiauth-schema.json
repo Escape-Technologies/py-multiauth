@@ -128,6 +128,82 @@
       "title": "Credentials",
       "type": "object"
     },
+    "DigestRequestSequenceConfiguration": {
+      "properties": {
+        "first_request": {
+          "$ref": "#/$defs/HTTPRequestParameters"
+        },
+        "second_request": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/DigestSecondRequestConfiguration"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "first_request"
+      ],
+      "title": "DigestRequestSequenceConfiguration",
+      "type": "object"
+    },
+    "DigestRunnerConfiguration": {
+      "properties": {
+        "tech": {
+          "const": "digest",
+          "default": "digest",
+          "title": "Tech"
+        },
+        "parameters": {
+          "$ref": "#/$defs/DigestRequestSequenceConfiguration"
+        },
+        "extractions": {
+          "items": {
+            "$ref": "#/$defs/BaseExtraction"
+          },
+          "title": "Extractions",
+          "type": "array"
+        }
+      },
+      "required": [
+        "parameters"
+      ],
+      "title": "DigestRunnerConfiguration",
+      "type": "object"
+    },
+    "DigestSecondRequestConfiguration": {
+      "properties": {
+        "path": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Path"
+        },
+        "method": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/HTTPMethod"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "title": "DigestSecondRequestConfiguration",
+      "type": "object"
+    },
     "GraphQLRequestParameters": {
       "properties": {
         "url": {
@@ -552,6 +628,116 @@
       "title": "JWTAccessTokenRefreshTokenPreset",
       "type": "object"
     },
+    "OAuthClientCredentialsPreset": {
+      "properties": {
+        "type": {
+          "const": "oauth_client_credentials",
+          "default": "oauth_client_credentials",
+          "title": "Type"
+        },
+        "name": {
+          "description": "The name of the preset. Will be the name of the generated procedure.",
+          "title": "Name",
+          "type": "string"
+        },
+        "server_url": {
+          "description": "The URL of the token endpoint of the OpenIDConnect server",
+          "title": "Server Url",
+          "type": "string"
+        },
+        "client_id": {
+          "description": "The client ID to use for the OAuth requests",
+          "title": "Client Id",
+          "type": "string"
+        },
+        "client_secret": {
+          "description": "The client secret to use for the OAuth requests",
+          "title": "Client Secret",
+          "type": "string"
+        },
+        "users": {
+          "description": "A list of users to create",
+          "items": {
+            "maxItems": 2,
+            "minItems": 2,
+            "prefixItems": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "type": "array"
+          },
+          "title": "Users",
+          "type": "array"
+        }
+      },
+      "required": [
+        "name",
+        "server_url",
+        "client_id",
+        "client_secret"
+      ],
+      "title": "OAuthClientCredentialsPreset",
+      "type": "object"
+    },
+    "OAuthRefreshPreset": {
+      "properties": {
+        "type": {
+          "const": "oauth_refresh",
+          "default": "oauth_refresh",
+          "title": "Type"
+        },
+        "name": {
+          "description": "The name of the preset. Will be the name of the generated procedure.",
+          "title": "Name",
+          "type": "string"
+        },
+        "server_url": {
+          "description": "The URL of the token endpoint of the OpenIDConnect server",
+          "title": "Server Url",
+          "type": "string"
+        },
+        "client_id": {
+          "description": "The client ID to use for the OAuth requests",
+          "title": "Client Id",
+          "type": "string"
+        },
+        "client_secret": {
+          "description": "The client secret to use for the OAuth requests",
+          "title": "Client Secret",
+          "type": "string"
+        },
+        "users": {
+          "description": "A list of users to create",
+          "items": {
+            "maxItems": 2,
+            "minItems": 2,
+            "prefixItems": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "type": "array"
+          },
+          "title": "Users",
+          "type": "array"
+        }
+      },
+      "required": [
+        "name",
+        "server_url",
+        "client_id",
+        "client_secret"
+      ],
+      "title": "OAuthRefreshPreset",
+      "type": "object"
+    },
     "OAuthUserpassPreset": {
       "properties": {
         "type": {
@@ -619,6 +805,7 @@
             "discriminator": {
               "mapping": {
                 "basic": "#/$defs/BasicRunnerConfiguration",
+                "digest": "#/$defs/DigestRunnerConfiguration",
                 "graphql": "#/$defs/GraphQLRunnerConfiguration",
                 "http": "#/$defs/HTTPRunnerConfiguration",
                 "selenium": "#/$defs/SeleniumRunnerConfiguration"
@@ -637,6 +824,9 @@
               },
               {
                 "$ref": "#/$defs/SeleniumRunnerConfiguration"
+              },
+              {
+                "$ref": "#/$defs/DigestRunnerConfiguration"
               }
             ]
           },
@@ -804,7 +994,7 @@
       "type": "object"
     },
     "SeleniumScriptParameters": {
-      "description": "SeleniumScriptParameters(*, project: multiauth.revamp.lib.runners.webdriver.configuration.SeleniumProject, options: multiauth.revamp.lib.runners.webdriver.runner.SeleniumScriptOptions)",
+      "description": "SeleniumScriptParameters(*, project: multiauth.lib.runners.webdriver.configuration.SeleniumProject, options: multiauth.lib.runners.webdriver.runner.SeleniumScriptOptions)",
       "properties": {
         "project": {
           "$ref": "#/$defs/SeleniumProject"
@@ -1069,6 +1259,8 @@
         "discriminator": {
           "mapping": {
             "jwt_access_token_refresh_token": "#/$defs/JWTAccessTokenRefreshTokenPreset",
+            "oauth_client_credentials": "#/$defs/OAuthClientCredentialsPreset",
+            "oauth_refresh": "#/$defs/OAuthRefreshPreset",
             "oauth_userpass": "#/$defs/OAuthUserpassPreset"
           },
           "propertyName": "type"
@@ -1079,6 +1271,12 @@
           },
           {
             "$ref": "#/$defs/OAuthUserpassPreset"
+          },
+          {
+            "$ref": "#/$defs/OAuthClientCredentialsPreset"
+          },
+          {
+            "$ref": "#/$defs/OAuthRefreshPreset"
           }
         ]
       },
