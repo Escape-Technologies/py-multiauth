@@ -113,6 +113,7 @@ files = [
 [package.dependencies]
 botocore-stubs = "*"
 types-s3transfer = "*"
+typing-extensions = {version = ">=4.1.0", markers = "python_version < \"3.12\""}
 
 [package.extras]
 accessanalyzer = ["mypy-boto3-accessanalyzer (>=1.34.0,<1.35.0)"]
@@ -2559,5 +2560,5 @@ cffi = ["cffi (>=1.11)"]
 
 [metadata]
 lock-version = "2.0"
-python-versions = "^3.12"
-content-hash = "154d93cfd9317c116916430dc4c72f585ad4cd98bb52eeac8ee4471e084c7897"
+python-versions = "^3.11"
+content-hash = "daf9d814b66d6bef02b3c24ac1ff7411355125297529e475ae22f510af2d6e21"
