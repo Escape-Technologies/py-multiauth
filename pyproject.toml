@@ -38,14 +38,7 @@ filterwarnings = [
 
 
 [tool.poetry.dependencies]
-Authlib = "^1.2.1"
-graphql-core = "^3.2.3"
-pycognito = "^2022.12.0"
-pydash = "^7.0.6"
-PyJWT = "^2.8.0"
 python = "^3.12"
-jsonschema = "^4.19.1"
-urllib3 = "<2"
 selenium = "^4.12.0"
 selenium-wire = "^5.1.0"
 pydantic = "^2.5.2"
