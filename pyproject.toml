@@ -18,7 +18,7 @@ readme = "README.md"
 "Bug Tracker" = "https://github.com/Escape-Technologies/py-multiauth/issues"
 
 [tool.poetry.scripts]
-mh = 'multiauth.revamp.cli.cli:cli'
+mh = 'multiauth.cli.cli:cli'
 multiauth = 'multiauth:cli'
 
 [tool.poetry.group.dev.dependencies]

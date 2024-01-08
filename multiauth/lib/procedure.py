@@ -19,7 +19,7 @@ from multiauth.lib.store.authentication import Authentication
 from multiauth.lib.store.user import User
 from multiauth.lib.store.variables import AuthenticationVariable, VariableName
 
-RequestConfigurationType = Annotated[
+OperationConfigurationType = Annotated[
     Union[
         HTTPRunnerConfiguration,
         GraphQLRunnerConfiguration,
@@ -35,7 +35,7 @@ ProcedureName = NewType('ProcedureName', str)
 
 class ProcedureConfiguration(BaseModel, abc.ABC):
     name: ProcedureName = Field(description='The name of the procedure.')
-    requests: list[RequestConfigurationType] = Field(default_factory=list)
+    operations: list[OperationConfigurationType] = Field(default_factory=list)
 
 
 class Procedure:
@@ -57,7 +57,7 @@ class Procedure:
         self.variables = {}
         self.events = EventsList()
 
-        for request in self.configuration.requests:
+        for request in self.configuration.operations:
             self.runners.append(request.get_runner())
 
     def inject(self, user: User) -> tuple[Authentication, EventsList]:

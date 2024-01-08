@@ -333,7 +333,7 @@ Type: object
 | Field Name | Type | Required | Description | Reference |
 |------------|------|----------|-------------|-----------|
 | name | `string` | `True` | The name of the procedure. |  |
-| requests | `array` | `False` |  |  |
+| operations | `array` | `False` |  |  |
 
 
 ## <a id="SeleniumCommand"></a>SeleniumCommand

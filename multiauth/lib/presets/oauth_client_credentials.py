@@ -25,7 +25,7 @@ class OAuthClientCredentialsPreset(BasePreset):
     def to_procedure_configuration(self) -> ProcedureConfiguration:
         return ProcedureConfiguration(
             name=ProcedureName(self.name),
-            requests=[
+            operations=[
                 HTTPRunnerConfiguration(
                     parameters=HTTPRequestParameters(
                         url=self.server_url,

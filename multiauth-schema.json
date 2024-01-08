@@ -800,7 +800,7 @@
           "title": "Name",
           "type": "string"
         },
-        "requests": {
+        "operations": {
           "items": {
             "discriminator": {
               "mapping": {
@@ -830,7 +830,7 @@
               }
             ]
           },
-          "title": "Requests",
+          "title": "Operations",
           "type": "array"
         }
       },

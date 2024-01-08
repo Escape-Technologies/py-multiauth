@@ -13,7 +13,7 @@ class JWTAccessTokenRefreshTokenPreset(BasePreset):
     def to_procedure_configuration(self) -> ProcedureConfiguration:
         return ProcedureConfiguration(
             name=ProcedureName(self.name),
-            requests=[
+            operations=[
                 HTTPRunnerConfiguration(
                     parameters=self.parameters,
                     extractions=[

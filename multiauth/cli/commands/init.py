@@ -27,7 +27,7 @@ def init_command(args: argparse.Namespace) -> None:
         procedures=[
             ProcedureConfiguration(
                 name=ProcedureName('example-procedure'),
-                requests=[
+                operations=[
                     HTTPRunnerConfiguration(
                         parameters=HTTPRequestParameters(
                             url='https://vampi.tools.escape.tech',
