@@ -1,19 +1,24 @@
 {
-    "steps": [
-        {
-            "from": "py-black"
-        },
-        {
-            "from": "py-mypy"
-        },
-        {
-            "from": "py-pytest"
-        },
-        {
-            "from": "py-ruff"
-        },
-        {
-            "from": "py-yamllint"
-        }
-    ]
+  "steps": [
+    {
+      "name": "Generate schema",
+      "command": "poetry run python ./scripts/generate_docs.py",
+      "serial": true
+    },
+    {
+      "name": "Generate models references",
+      "command": "poetry run python ./scripts/generate_docs.py",
+      "serial": true
+    },
+    {
+      "name": "Verify docs examples",
+      "command": "poetry run python ./scripts/verify_examples_conformance.py",
+      "serial": true
+    },
+    {
+      "name": "Build documentation",
+      "command": "poetry run mkdocs build",
+      "serial": true
+    }
+  ]
 }

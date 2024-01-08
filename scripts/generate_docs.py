@@ -77,5 +77,5 @@ template = env.get_template('schema-property.md.jinja')
 rendered_markdown = template.render(definitions=processed_data)
 
 # Save the rendered Markdown
-with open('docs/reference/reference.md', 'w') as file:
+with open('docs/reference/entities.md', 'w') as file:
     file.write(rendered_markdown)

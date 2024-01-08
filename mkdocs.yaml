@@ -64,10 +64,8 @@ nav:
       - Adding a user: "first-procedure/adding-user.md"
       - Authenticating: "first-procedure/authenticating.md"
   - API Reference:
-      - CLI interface: "reference/cli.md"
-      - Programmatic interface: "reference/programmatic.md"
       - Configuration: "reference/configuration.md"
-      - Reference: reference/reference.md
+      - Entities: reference/entities.md
   - Help: "help.md"
   - Versioning: "versioning.md"
   - Changelog: "changelog.md"

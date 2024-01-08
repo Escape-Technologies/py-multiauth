@@ -1,0 +1,34 @@
+{
+  "procedures": [
+    {
+      "name": "example-procedure",
+      "requests": [
+        {
+          "tech": "http",
+          "parameters": {
+            "url": "https://vampi.tools.escape.tech",
+            "method": "GET",
+            "headers": [
+              {
+                "name": "X-Example-Header-From-User-Variable",
+                "values": ["{{ example-user-variable }}"]
+              }
+            ],
+            "cookies": [],
+            "query_parameters": [],
+            "body": null,
+            "proxy": null
+          },
+          "extractions": [
+            {
+              "name": "example-extraction",
+              "location": "body",
+              "key": "message"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "$schema": "../multiauth-schema.json"
+}
