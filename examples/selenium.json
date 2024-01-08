@@ -2,7 +2,7 @@
   "procedures": [
     {
       "name": "example-procedure",
-      "requests": []
+      "operations": []
     }
   ],
   "$schema": "../multiauth-schema.json"
