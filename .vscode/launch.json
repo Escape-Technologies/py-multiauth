@@ -8,16 +8,6 @@
       "program": "scripts/generate_docs.py",
       "console": "integratedTerminal",
       "justMyCode": true
-    },
-    {
-      "name": "Validate",
-      "type": "python",
-      "request": "launch",
-      "cwd": "${workspaceFolder}",
-      "module": "multiauth.revamp.cli.cli",
-      "args": ["-f ./.multiauthrc.json", "validate", "-u example-user"],
-      "console": "integratedTerminal",
-      "justMyCode": true
     }
   ]
 }

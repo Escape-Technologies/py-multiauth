@@ -214,7 +214,7 @@ warn_unused_ignores = true
 warn_unused_configs = true
 namespace_packages = true
 pretty = true
-files = ["multiauth", "tests"]
+files = ["multiauth"]
 exclude = [
     ".venv",
     ".git",

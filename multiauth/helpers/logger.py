@@ -9,7 +9,7 @@ def install_logger(logger: logging.Logger) -> None:
 
     handler = logging.StreamHandler()
 
-    formatter = os.getenv('LOG_FMT') or '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    formatter = os.getenv('LOG_FMT') or ''
     handler.setFormatter(logging.Formatter(formatter))
 
     logger.addHandler(handler)

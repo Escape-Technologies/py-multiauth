@@ -1,6 +1,6 @@
 import os
 
-from multiauth.revamp.multiauth import Multiauth
+from multiauth.multiauth import Multiauth
 
 for file in os.listdir('examples'):
     if file.endswith('.json'):

@@ -1,6 +1,6 @@
 import json
 
-from multiauth.revamp.configuration import MultiauthConfiguration
+from multiauth.configuration import MultiauthConfiguration
 
 if __name__ == '__main__':
     with open('multiauth-schema.json', 'w') as f:
