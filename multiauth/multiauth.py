@@ -96,6 +96,12 @@ class Multiauth:
 
         return procedure
 
+    def authenticate_users(self) -> dict[UserName, tuple[Authentication, EventsList, int]]:
+        """
+        Runs the authentication for all users in the configuration.
+        """
+        return {user_name: self.authenticate(user_name) for user_name in self.users.keys()}
+
     def authenticate(
         self,
         user_name: UserName,
