@@ -167,3 +167,14 @@ class User(BaseModel):
             variables=user.variables,
             refresh=user.refresh,
         )
+
+    @staticmethod
+    def public() -> 'User':
+        return User(
+            name=UserName('public'),
+            credentials=Credentials(),
+            procedure=None,
+            injections=[],
+            variables=[],
+            refresh=None,
+        )

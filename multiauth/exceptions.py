@@ -2,6 +2,15 @@ class MultiAuthException(Exception):
     pass
 
 
+class InvalidAuthenticationException(MultiAuthException):
+    pass
+
+
+class InvalidConfigurationException(MultiAuthException):
+    message: str
+    path: str
+
+
 class MissingUserException(MultiAuthException):
     user_name: str
 

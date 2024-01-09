@@ -98,9 +98,16 @@ class Multiauth:
 
     def authenticate_users(self) -> dict[UserName, tuple[Authentication, EventsList, int]]:
         """
-        Runs the authentication for all users in the configuration.
+        Runs the authentication for all users in the configuration. Retrocompatibility purposes with MultiAuth v2.
         """
         return {user_name: self.authenticate(user_name) for user_name in self.users.keys()}
+
+    @property
+    def headers_by_user(self) -> dict[UserName, dict[str, str]]:
+        """
+        Returns a dictionary of headers by user name. Used for retrocompatibility purposes with MultiAuth v2.
+        """
+        return {user: self.authentication_store.get(user)[0].all_headers for user in self.users}
 
     def authenticate(
         self,

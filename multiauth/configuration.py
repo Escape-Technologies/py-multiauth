@@ -27,3 +27,16 @@ class MultiauthConfiguration(BaseModel):
     presets: list[PresetType] = Field(default_factory=list, description='The list of presets to use')
     users: list[User] = Field(default_factory=list, description='List of users that can be used in procedures')
     proxy: str | None = Field(default=None, description='Global proxy to use for all requests')
+
+    @staticmethod
+    def public() -> 'MultiauthConfiguration':
+        """
+        Return a public configuration.
+        """
+
+        return MultiauthConfiguration(
+            procedures=[],
+            presets=[],
+            users=[User.public()],
+            proxy=None,
+        )
