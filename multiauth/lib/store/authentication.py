@@ -8,7 +8,7 @@ from multiauth.lib.audit.events.events import InjectedVariableEvent
 from multiauth.lib.http_core.entities import HTTPCookie, HTTPHeader, HTTPLocation, HTTPQueryParameter
 from multiauth.lib.http_core.mergers import merge_cookies, merge_headers, merge_query_parameters
 from multiauth.lib.store.injection import TokenInjection
-from multiauth.lib.store.user import Credentials
+from multiauth.lib.store.user import Credentials, UserName
 from multiauth.lib.store.variables import AuthenticationVariable
 
 
@@ -138,14 +138,14 @@ class AuthenticationStore:
     Store for user authentication objects.
     """
 
-    __store: dict[str, tuple[Authentication, datetime.datetime]]
-    __refresh_counts: dict[str, int]
+    __store: dict[UserName, tuple[Authentication, datetime.datetime]]
+    __refresh_counts: dict[UserName, int]
 
     def __init__(self) -> None:
         self.__store = {}
         self.__refresh_counts = {}
 
-    def expire(self, user_name: str) -> None:
+    def expire(self, user_name: UserName) -> None:
         """
         Mark the user as immediately expired.
 
@@ -155,7 +155,7 @@ class AuthenticationStore:
         authentication, _expiration = self.get(user_name)
         self.__store[user_name] = (authentication, datetime.datetime.now())
 
-    def is_expired(self, user_name: str) -> bool:
+    def is_expired(self, user_name: UserName) -> bool:
         """
         Assess the expiration status of an user.
 
@@ -164,7 +164,7 @@ class AuthenticationStore:
         _, expiration = self.get(user_name)
         return expiration < datetime.datetime.now()
 
-    def get(self, user_name: str) -> tuple[Authentication, datetime.datetime]:
+    def get(self, user_name: UserName) -> tuple[Authentication, datetime.datetime]:
         """
         Retrive the authentication object of an user, with its expiration datetime.
 
@@ -177,7 +177,7 @@ class AuthenticationStore:
 
         return authentication, expiration
 
-    def store(self, user_name: str, authentication: Authentication, expiration: datetime.datetime) -> int:
+    def store(self, user_name: UserName, authentication: Authentication, expiration: datetime.datetime) -> int:
         """
         Store an authentication object with an expiration time for the provided user_name.
         Return an integer describing the number of authentication objects that have already been store for this user.
