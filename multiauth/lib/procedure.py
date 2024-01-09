@@ -68,7 +68,7 @@ class Procedure:
         events = EventsList()
         authentication = Authentication.empty()
 
-        for injection in user.authentication.injections:
+        for injection in user.injections:
             new_authentication, injection_events = Authentication.inject(injection, list(self.variables.values()))
             for event in injection_events:
                 events.append(event)

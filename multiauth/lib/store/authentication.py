@@ -8,6 +8,7 @@ from multiauth.lib.audit.events.events import InjectedVariableEvent
 from multiauth.lib.http_core.entities import HTTPCookie, HTTPHeader, HTTPLocation, HTTPQueryParameter
 from multiauth.lib.http_core.mergers import merge_cookies, merge_headers, merge_query_parameters
 from multiauth.lib.store.injection import TokenInjection
+from multiauth.lib.store.user import Credentials
 from multiauth.lib.store.variables import AuthenticationVariable
 
 
@@ -19,6 +20,15 @@ class Authentication(BaseModel):
     @staticmethod
     def empty() -> 'Authentication':
         return Authentication()
+
+    @staticmethod
+    def from_credentials(credentials: Credentials) -> 'Authentication':
+        authentication = Authentication.empty()
+        authentication.headers = credentials.headers
+        authentication.cookies = credentials.cookies
+        authentication.query_parameters = credentials.query_parameters
+
+        return authentication
 
     @staticmethod
     def inject(

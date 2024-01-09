@@ -7,6 +7,7 @@ from multiauth.configuration import (
 )
 from multiauth.exceptions import MissingProcedureException, MissingUserException, MultiAuthException
 from multiauth.lib.audit.events.base import EventsList
+from multiauth.lib.audit.events.events import ProcedureSkippedEvent
 from multiauth.lib.procedure import Procedure
 from multiauth.lib.store.authentication import Authentication, AuthenticationStore, AuthenticationStoreException
 from multiauth.lib.store.user import User, UserName
@@ -59,7 +60,10 @@ class Multiauth:
     ) -> Procedure:
         user = self._get_user(user_name)
 
-        procedure_name = user.authentication.procedure
+        procedure_name = user.procedure
+        if procedure_name is None:
+            raise MissingProcedureException('No procedure name provided for user `{user_name}`')
+
         procedure = self.procedures.get(procedure_name)
 
         if not procedure:
@@ -99,9 +103,14 @@ class Multiauth:
         is not declared in the multiauth configuration.
         """
         user = self._get_user(user_name)
-        procedure = self._get_authentication_procedure(user_name)
+        authentication = Authentication.from_credentials(user.credentials)
 
-        authentication, events = procedure.run(user)
+        if user.procedure is not None:
+            procedure = self._get_authentication_procedure(user_name)
+            procedure_authentication, events = procedure.run(user)
+            authentication = Authentication.merge(authentication, procedure_authentication)
+        else:
+            events = EventsList(ProcedureSkippedEvent(user_name=user_name))
 
         # @todo(maxence@escape): implement automated expiration detection from the authentication content
         detected_ttl_seconds: int | None = None

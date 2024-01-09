@@ -100,8 +100,10 @@ class UserRefresh(BaseModel):
     )
 
 
-class UserAuthentication(BaseModel):
-    procedure: str = Field(
+class User(BaseModel):
+    name: UserName = Field(description='The name of the user')
+    credentials: Credentials = Field(description='The parameters use to customize requests sent for the user')
+    procedure: str | None = Field(
         description=(
             'The name of the procedure to use to authenticate the user.'
             'This name MUST match the `name` field of a procedure in the `procedures` list in the '
@@ -110,17 +112,6 @@ class UserAuthentication(BaseModel):
     )
     injections: list[TokenInjection] = Field(
         description='List of variables injections to perform to create the authentication.',
-    )
-
-
-class User(BaseModel):
-    name: UserName = Field(description='The name of the user')
-    credentials: Credentials = Field(description='The parameters use to customize requests sent for the user')
-    authentication: UserAuthentication = Field(
-        description=(
-            'The authentication parameters of the user, including the authentication procedure to follow'
-            'and the description of how retrieved tokens should be injected in the user authentication result'
-        ),
     )
     variables: list[AuthenticationVariable] = Field(
         default_factory=list,
@@ -158,9 +149,10 @@ class User(BaseModel):
         refresh_user = User.from_user(self)
 
         if self.refresh is not None:
-            refresh_user.authentication.injections = self.refresh.injections
             refresh_user.variables = self.refresh_variables or self.variables
             refresh_user.credentials = self.refresh_credentials or self.credentials
+            refresh_user.procedure = self.refresh.procedure or self.procedure
+            refresh_user.injections = self.refresh.injections or self.injections
 
         return refresh_user
 
@@ -169,7 +161,8 @@ class User(BaseModel):
         return User(
             name=user.name,
             credentials=Credentials.from_credentials(user.credentials),
-            authentication=user.authentication,
+            procedure=user.procedure,
+            injections=user.injections,
             variables=user.variables,
             refresh=user.refresh,
         )

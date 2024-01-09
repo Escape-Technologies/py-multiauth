@@ -101,6 +101,16 @@ class InjectedVariableEvent(Event):
         return f'{self.variable.value} in {self.location} {self.target}'
 
 
+class ProcedureSkippedEvent(Event):
+    type: Literal['procedure_skipped'] = 'procedure_skipped'
+    default_severity: Literal['info'] = 'info'
+    user_name: str
+
+    @property
+    def logline(self) -> str:
+        return f'Procedures skipped for user {self.user_name}'
+
+
 class ProcedureEndedEvent(Event):
     type: Literal['procedure_finished'] = 'procedure_finished'
     default_severity: Literal['info'] = 'info'
