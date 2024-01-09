@@ -17,6 +17,12 @@ class Authentication(BaseModel):
     cookies: list[HTTPCookie] = Field(default_factory=list)
     query_parameters: list[HTTPQueryParameter] = Field(default_factory=list)
 
+    @property
+    def all_headers(self) -> dict[str, str]:
+        return {header.name: header.str_value for header in self.headers} | {
+            'Cookies': HTTPCookie.serialize(self.cookies),
+        }
+
     @staticmethod
     def empty() -> 'Authentication':
         return Authentication()

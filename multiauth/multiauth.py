@@ -195,6 +195,17 @@ class Multiauth:
 
         return refreshed_authentication, events, refresh_count
 
+    def sign(*args: Any, **kwargs: Any) -> dict[str, str]:
+        """
+        Used for AWS Signature.
+        @todo(antoine@escape.tech): Implement this
+        """
+        if args:
+            return {}
+        if kwargs:
+            return {}
+        return {}
+
     @staticmethod
     def from_json_string(raw_configuration_string: str) -> 'Multiauth':
         """

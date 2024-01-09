@@ -40,6 +40,10 @@ class HTTPCookie(BaseModel):
     def str_value(self) -> str:
         return quote(','.join(self.values))
 
+    @staticmethod
+    def serialize(cookies: list['HTTPCookie']) -> str:
+        return '; '.join(f'{cookie.name}={cookie.str_value}' for cookie in cookies)
+
 
 class HTTPQueryParameter(BaseModel):
     name: str
