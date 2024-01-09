@@ -7,6 +7,7 @@ from multiauth.lib.http_core.entities import (
     HTTPHeader,
     HTTPQueryParameter,
 )
+from multiauth.lib.procedure import ProcedureName
 from multiauth.lib.store.injection import TokenInjection
 from multiauth.lib.store.variables import AuthenticationVariable
 
@@ -55,7 +56,7 @@ InvalidSessionDetectionStrategy = Literal['status_code']
 
 
 class UserRefresh(BaseModel):
-    procedure: str | None = Field(
+    procedure: ProcedureName | None = Field(
         default=None,
         description=(
             'Procedure to use to refresh the authentication.Defaults to the user procedure if not provided. '
@@ -103,7 +104,7 @@ class UserRefresh(BaseModel):
 class User(BaseModel):
     name: UserName = Field(description='The name of the user')
     credentials: Credentials = Field(description='The parameters use to customize requests sent for the user')
-    procedure: str | None = Field(
+    procedure: ProcedureName | None = Field(
         description=(
             'The name of the procedure to use to authenticate the user.'
             'This name MUST match the `name` field of a procedure in the `procedures` list in the '

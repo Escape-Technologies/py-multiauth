@@ -8,7 +8,7 @@ from multiauth.configuration import (
 from multiauth.exceptions import MissingProcedureException, MissingUserException, MultiAuthException
 from multiauth.lib.audit.events.base import EventsList
 from multiauth.lib.audit.events.events import ProcedureSkippedEvent
-from multiauth.lib.procedure import Procedure
+from multiauth.lib.procedure import Procedure, ProcedureName
 from multiauth.lib.store.authentication import Authentication, AuthenticationStore, AuthenticationStoreException
 from multiauth.lib.store.user import User, UserName
 
@@ -23,8 +23,8 @@ class Multiauth:
 
     configuration: MultiauthConfiguration
 
-    procedures: dict[str, Procedure]
-    users: dict[str, User]
+    procedures: dict[ProcedureName, Procedure]
+    users: dict[UserName, User]
 
     authentication_store: AuthenticationStore
 
@@ -36,12 +36,17 @@ class Multiauth:
 
         self.authentication_store = AuthenticationStore()
 
+        if configuration.proxy is not None:
+            for procedure in configuration.procedures:
+                for operation in procedure.operations:
+                    operation.parameters.proxy = configuration.proxy
+
         for preset in configuration.presets:
             preset_procedure_configuration = preset.to_procedure_configuration()
             self.procedures[preset.name] = Procedure(preset_procedure_configuration)
             users = preset.to_users()
             for user in users:
-                self.users[f'{preset.name}_{user.name}'] = user
+                self.users[user.name] = user
 
         for procedure_configuration in configuration.procedures:
             self.procedures[procedure_configuration.name] = Procedure(procedure_configuration)
