@@ -11,7 +11,10 @@
           "type": "string"
         }
       },
-      "required": ["name", "value"],
+      "required": [
+        "name",
+        "value"
+      ],
       "title": "AuthenticationVariable",
       "type": "object"
     },
@@ -23,7 +26,9 @@
           "type": "string"
         }
       },
-      "required": ["name"],
+      "required": [
+        "name"
+      ],
       "title": "BaseExtraction",
       "type": "object"
     },
@@ -49,7 +54,10 @@
           "type": "string"
         }
       },
-      "required": ["parameters", "name"],
+      "required": [
+        "parameters",
+        "name"
+      ],
       "title": "BasicRunnerConfiguration",
       "type": "object"
     },
@@ -137,7 +145,9 @@
           "default": null
         }
       },
-      "required": ["first_request"],
+      "required": [
+        "first_request"
+      ],
       "title": "DigestRequestSequenceConfiguration",
       "type": "object"
     },
@@ -159,7 +169,9 @@
           "type": "array"
         }
       },
-      "required": ["parameters"],
+      "required": [
+        "parameters"
+      ],
       "title": "DigestRunnerConfiguration",
       "type": "object"
     },
@@ -261,7 +273,10 @@
           "type": "array"
         }
       },
-      "required": ["url", "query"],
+      "required": [
+        "url",
+        "query"
+      ],
       "title": "GraphQLRequestParameters",
       "type": "object"
     },
@@ -301,7 +316,9 @@
           "type": "array"
         }
       },
-      "required": ["parameters"],
+      "required": [
+        "parameters"
+      ],
       "title": "GraphQLRunnerConfiguration",
       "type": "object"
     },
@@ -315,7 +332,10 @@
           "title": "Value"
         }
       },
-      "required": ["name", "value"],
+      "required": [
+        "name",
+        "value"
+      ],
       "title": "GraphQLVariable",
       "type": "object"
     },
@@ -337,7 +357,10 @@
           "type": "string"
         }
       },
-      "required": ["name", "key"],
+      "required": [
+        "name",
+        "key"
+      ],
       "title": "HTTPBodyExtraction",
       "type": "object"
     },
@@ -355,7 +378,10 @@
           "type": "array"
         }
       },
-      "required": ["name", "values"],
+      "required": [
+        "name",
+        "values"
+      ],
       "title": "HTTPCookie",
       "type": "object"
     },
@@ -377,7 +403,10 @@
           "type": "string"
         }
       },
-      "required": ["name", "key"],
+      "required": [
+        "name",
+        "key"
+      ],
       "title": "HTTPCookieExtraction",
       "type": "object"
     },
@@ -395,7 +424,10 @@
           "type": "array"
         }
       },
-      "required": ["name", "values"],
+      "required": [
+        "name",
+        "values"
+      ],
       "title": "HTTPHeader",
       "type": "object"
     },
@@ -417,12 +449,20 @@
           "type": "string"
         }
       },
-      "required": ["name", "key"],
+      "required": [
+        "name",
+        "key"
+      ],
       "title": "HTTPHeaderExtraction",
       "type": "object"
     },
     "HTTPLocation": {
-      "enum": ["header", "cookie", "body", "query"],
+      "enum": [
+        "header",
+        "cookie",
+        "body",
+        "query"
+      ],
       "title": "HTTPLocation",
       "type": "string"
     },
@@ -456,7 +496,10 @@
           "type": "array"
         }
       },
-      "required": ["name", "values"],
+      "required": [
+        "name",
+        "values"
+      ],
       "title": "HTTPQueryParameter",
       "type": "object"
     },
@@ -513,7 +556,10 @@
           "title": "Proxy"
         }
       },
-      "required": ["url", "method"],
+      "required": [
+        "url",
+        "method"
+      ],
       "title": "HTTPRequestParameters",
       "type": "object"
     },
@@ -553,7 +599,9 @@
           "type": "array"
         }
       },
-      "required": ["parameters"],
+      "required": [
+        "parameters"
+      ],
       "title": "HTTPRunnerConfiguration",
       "type": "object"
     },
@@ -573,7 +621,10 @@
           "$ref": "#/$defs/HTTPRequestParameters"
         }
       },
-      "required": ["name", "parameters"],
+      "required": [
+        "name",
+        "parameters"
+      ],
       "title": "JWTAccessTokenRefreshTokenPreset",
       "type": "object"
     },
@@ -623,7 +674,12 @@
           "type": "array"
         }
       },
-      "required": ["name", "server_url", "client_id", "client_secret"],
+      "required": [
+        "name",
+        "server_url",
+        "client_id",
+        "client_secret"
+      ],
       "title": "OAuthClientCredentialsPreset",
       "type": "object"
     },
@@ -673,7 +729,12 @@
           "type": "array"
         }
       },
-      "required": ["name", "server_url", "client_id", "client_secret"],
+      "required": [
+        "name",
+        "server_url",
+        "client_id",
+        "client_secret"
+      ],
       "title": "OAuthRefreshPreset",
       "type": "object"
     },
@@ -723,7 +784,12 @@
           "type": "array"
         }
       },
-      "required": ["name", "server_url", "client_id", "client_secret"],
+      "required": [
+        "name",
+        "server_url",
+        "client_id",
+        "client_secret"
+      ],
       "title": "OAuthUserpassPreset",
       "type": "object"
     },
@@ -768,7 +834,9 @@
           "type": "array"
         }
       },
-      "required": ["name"],
+      "required": [
+        "name"
+      ],
       "title": "ProcedureConfiguration",
       "type": "object"
     },
@@ -801,7 +869,13 @@
           "type": "string"
         }
       },
-      "required": ["id", "command", "target", "targets", "value"],
+      "required": [
+        "id",
+        "command",
+        "target",
+        "targets",
+        "value"
+      ],
       "title": "SeleniumCommand",
       "type": "object"
     },
@@ -840,7 +914,11 @@
           "title": "Extract Match Index"
         }
       },
-      "required": ["name", "extract_location", "extract_regex"],
+      "required": [
+        "name",
+        "extract_location",
+        "extract_regex"
+      ],
       "title": "SeleniumExtraction",
       "type": "object"
     },
@@ -854,7 +932,9 @@
           "type": "array"
         }
       },
-      "required": ["tests"],
+      "required": [
+        "tests"
+      ],
       "title": "SeleniumProject",
       "type": "object"
     },
@@ -876,7 +956,10 @@
           "type": "array"
         }
       },
-      "required": ["parameters", "extractions"],
+      "required": [
+        "parameters",
+        "extractions"
+      ],
       "title": "SeleniumRunnerConfiguration",
       "type": "object"
     },
@@ -920,7 +1003,10 @@
           "$ref": "#/$defs/SeleniumScriptOptions"
         }
       },
-      "required": ["project", "options"],
+      "required": [
+        "project",
+        "options"
+      ],
       "title": "SeleniumScriptParameters",
       "type": "object"
     },
@@ -942,7 +1028,11 @@
           "type": "array"
         }
       },
-      "required": ["id", "name", "commands"],
+      "required": [
+        "id",
+        "name",
+        "commands"
+      ],
       "title": "SeleniumTest",
       "type": "object"
     },
@@ -958,7 +1048,11 @@
         },
         "key": {
           "description": "The key to use for the injected token. Its usage depends on the location. For headers, cookies,and query parameters, this key describes the name of the header, cookie or query parameter. For a body location, the key is the field where the token should be injected within the request bodies",
-          "examples": ["Authorization", "sessionId", "access_token"],
+          "examples": [
+            "Authorization",
+            "sessionId",
+            "access_token"
+          ],
           "title": "Key",
           "type": "string"
         },
@@ -973,7 +1067,9 @@
           ],
           "default": null,
           "description": "A prefix to prepend to the token before it is injected",
-          "examples": ["Bearer "],
+          "examples": [
+            "Bearer "
+          ],
           "title": "Prefix"
         },
         "variable": {
@@ -990,7 +1086,10 @@
           "title": "Variable"
         }
       },
-      "required": ["location", "key"],
+      "required": [
+        "location",
+        "key"
+      ],
       "title": "TokenInjection",
       "type": "object"
     },
@@ -1009,13 +1108,25 @@
           ],
           "description": "The parameters use to customize requests sent for the user"
         },
-        "authentication": {
-          "allOf": [
+        "procedure": {
+          "anyOf": [
             {
-              "$ref": "#/$defs/UserAuthentication"
+              "type": "string"
+            },
+            {
+              "type": "null"
             }
           ],
-          "description": "The authentication parameters of the user, including the authentication procedure to followand the description of how retrieved tokens should be injected in the user authentication result"
+          "description": "The name of the procedure to use to authenticate the user.This name MUST match the `name` field of a procedure in the `procedures` list in the multiauth configuration.",
+          "title": "Procedure"
+        },
+        "injections": {
+          "description": "List of variables injections to perform to create the authentication.",
+          "items": {
+            "$ref": "#/$defs/TokenInjection"
+          },
+          "title": "Injections",
+          "type": "array"
         },
         "variables": {
           "description": "List of variables that will be injected at the beginning of the user's authentication procedure",
@@ -1038,28 +1149,13 @@
           "description": "An optional refresh procedure to follow for the user"
         }
       },
-      "required": ["name", "credentials", "authentication"],
+      "required": [
+        "name",
+        "credentials",
+        "procedure",
+        "injections"
+      ],
       "title": "User",
-      "type": "object"
-    },
-    "UserAuthentication": {
-      "properties": {
-        "procedure": {
-          "description": "The name of the procedure to use to authenticate the user.This name MUST match the `name` field of a procedure in the `procedures` list in the multiauth configuration.",
-          "title": "Procedure",
-          "type": "string"
-        },
-        "injections": {
-          "description": "List of variables injections to perform to create the authentication.",
-          "items": {
-            "$ref": "#/$defs/TokenInjection"
-          },
-          "title": "Injections",
-          "type": "array"
-        }
-      },
-      "required": ["procedure", "injections"],
-      "title": "UserAuthentication",
       "type": "object"
     },
     "UserRefresh": {
@@ -1184,6 +1280,12 @@
       },
       "title": "Users",
       "type": "array"
+    },
+    "proxy": {
+      "default": null,
+      "description": "Global proxy to use for all requests",
+      "title": "Proxy",
+      "type": "string"
     }
   },
   "title": "MultiauthConfiguration",

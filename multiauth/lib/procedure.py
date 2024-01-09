@@ -1,8 +1,9 @@
 import abc
-from typing import Annotated, NewType, Union
+from typing import Annotated, Union
 
 from pydantic import BaseModel, Field
 
+from multiauth.lib import ProcedureName
 from multiauth.lib.audit.events.base import EventsList
 from multiauth.lib.audit.events.events import (
     ProcedureAbortedEvent,
@@ -29,8 +30,6 @@ OperationConfigurationType = Annotated[
     ],
     Field(discriminator='tech'),
 ]
-
-ProcedureName = NewType('ProcedureName', str)
 
 
 class ProcedureConfiguration(BaseModel, abc.ABC):

@@ -1,3 +1,6 @@
+"""
+poetry run python scripts/generate_schema.py
+"""
 import json
 
 from multiauth.configuration import MultiauthConfiguration

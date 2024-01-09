@@ -1,3 +1,6 @@
+"""
+poetry run python scripts/generate_docs.py
+"""
 import json
 
 from jinja2 import Environment, FileSystemLoader
