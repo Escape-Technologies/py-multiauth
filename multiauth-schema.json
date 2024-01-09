@@ -1282,10 +1282,17 @@
       "type": "array"
     },
     "proxy": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
       "default": null,
       "description": "Global proxy to use for all requests",
-      "title": "Proxy",
-      "type": "string"
+      "title": "Proxy"
     }
   },
   "title": "MultiauthConfiguration",
