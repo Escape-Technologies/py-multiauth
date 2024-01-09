@@ -2,7 +2,7 @@
   "steps": [
     {
       "name": "Generate schema",
-      "command": "poetry run python ./scripts/generate_docs.py",
+      "command": "poetry run python ./scripts/generate_schema.py",
       "serial": true
     },
     {
