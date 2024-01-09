@@ -144,7 +144,7 @@ class AuthenticationStore:
     Store for user authentication objects.
     """
 
-    __store: dict[UserName, tuple[Authentication, datetime.datetime]]
+    __store: dict[UserName, list[tuple[Authentication, datetime.datetime]]]  # list is for history
     __refresh_counts: dict[UserName, int]
 
     def __init__(self) -> None:
@@ -159,7 +159,7 @@ class AuthenticationStore:
         """
 
         authentication, _expiration = self.get(user_name)
-        self.__store[user_name] = (authentication, datetime.datetime.now())
+        self.__store[user_name].append((authentication, datetime.datetime.now()))
 
     def is_expired(self, user_name: UserName) -> bool:
         """
@@ -179,7 +179,7 @@ class AuthenticationStore:
         record = self.__store.get(user_name)
         if not record:
             raise UnauthenticatedUserException(user_name)
-        authentication, expiration = record
+        authentication, expiration = record[-1]  # last record is the current one
 
         return authentication, expiration
 
@@ -193,5 +193,5 @@ class AuthenticationStore:
         else:
             self.__refresh_counts[user_name] = 0
 
-        self.__store[user_name] = (authentication, expiration)
+        self.__store[user_name].append((authentication, expiration))
         return self.__refresh_counts[user_name]
