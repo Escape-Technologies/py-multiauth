@@ -62,7 +62,7 @@ def init_command(args: argparse.Namespace) -> None:
         users=[
             User(
                 name=UserName('example-user'),
-                procedure='example-procedure',
+                procedure=ProcedureName('example-procedure'),
                 injections=[
                     TokenInjection(
                         location=HTTPLocation.HEADER,
@@ -83,7 +83,7 @@ def init_command(args: argparse.Namespace) -> None:
     )
 
     with open('.multiauthrc.json', 'w') as f:
-        data = configuration.dict()
+        data = configuration.dict(exclude_none=True)
         if schema_path:
             data['$schema'] = schema_path
         f.write(json.dumps(data, indent=2))
