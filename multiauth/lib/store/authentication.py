@@ -170,18 +170,22 @@ class AuthenticationStore:
         _, expiration = self.get(user_name)
         return expiration < datetime.datetime.now()
 
+    def get_history(self, user_name: UserName) -> list[tuple[Authentication, datetime.datetime]]:
+        """
+        Retrive all the authentication objects of an user.
+        """
+        records = self.__store.get(user_name)
+        if not records:
+            raise UnauthenticatedUserException(user_name)
+        return records
+
     def get(self, user_name: UserName) -> tuple[Authentication, datetime.datetime]:
         """
         Retrive the authentication object of an user, with its expiration datetime.
 
         - Raises an `UnauthenticatedUserException` if no authentication object has been provided yet for this user
         """
-        record = self.__store.get(user_name)
-        if not record:
-            raise UnauthenticatedUserException(user_name)
-        authentication, expiration = record[-1]  # last record is the current one
-
-        return authentication, expiration
+        return self.get_history(user_name)[-1]  # last record is the current one
 
     def store(self, user_name: UserName, authentication: Authentication, expiration: datetime.datetime) -> int:
         """

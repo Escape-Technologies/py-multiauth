@@ -242,6 +242,8 @@ class Multiauth:
         into a validated Multiauth object.
         """
         try:
+            if raw_configuration is None:
+                return Multiauth(MultiauthConfiguration.public())
             return Multiauth.from_json_string(json.dumps(raw_configuration))
         except Exception as e:
             raise MultiAuthException('Could not serialized configuration object') from e
