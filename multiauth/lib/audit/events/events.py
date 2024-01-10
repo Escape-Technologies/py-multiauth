@@ -12,7 +12,7 @@ class HTTPRequestEvent(Event):
 
     @property
     def logline(self) -> str:
-        return f' {self.request.method} {self.request.scheme}://{self.request.host}{self.request.path}'
+        return f' {self.request.method} {self.request.scheme}://{self.request.host}{self.request.path}\n{self.request.data_text}'
 
 
 class HTTPFailureEvent(Event):
@@ -33,7 +33,7 @@ class HTTPResponseEvent(Event):
 
     @property
     def logline(self) -> str:
-        return f' {self.response.status_code} {self.response.reason} in {self.response.elapsed.microseconds//1000}ms'
+        return f' {self.response.status_code} {self.response.reason} in {self.response.elapsed.microseconds//1000}ms\n{self.response.data_text}'
 
 
 class SeleniumScriptLogEvent(Event):
