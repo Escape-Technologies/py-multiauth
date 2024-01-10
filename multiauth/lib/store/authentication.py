@@ -197,5 +197,8 @@ class AuthenticationStore:
         else:
             self.__refresh_counts[user_name] = 0
 
+        if user_name not in self.__store:
+            self.__store[user_name] = []
+
         self.__store[user_name].append((authentication, expiration))
         return self.__refresh_counts[user_name]
