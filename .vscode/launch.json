@@ -8,6 +8,21 @@
       "program": "scripts/generate_docs.py",
       "console": "integratedTerminal",
       "justMyCode": true
+    },
+    {
+      "name": "Validate local config",
+      "type": "python",
+      "request": "launch",
+      "module": "multiauth.cli.cli",
+      "args": [
+        "-f",
+        ".multiauthrc.json",
+        "validate",
+        "-u",
+        "user",
+      ],
+      "console": "integratedTerminal",
+      "justMyCode": true
     }
   ]
 }
