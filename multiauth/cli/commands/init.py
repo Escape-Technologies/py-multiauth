@@ -86,5 +86,9 @@ def init_command(args: argparse.Namespace) -> None:
         data = configuration.dict(exclude_none=True)
         if schema_path:
             data['$schema'] = schema_path
+        else:
+            data[
+                '$schema'
+            ] = 'https://raw.githubusercontent.com/Escape-Technologies/py-multiauth/main/multiauth-schema.json'
         f.write(json.dumps(data, indent=2))
         logger.info(f'Configuration file written at {output_path}')

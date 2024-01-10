@@ -10,7 +10,7 @@ from multiauth.lib.audit.events.events import (
     ProcedureEndedEvent,
     ProcedureStartedEvent,
 )
-from multiauth.lib.runners.base import BaseRunner
+from multiauth.lib.runners.base import BaseRunner, RunnerException
 from multiauth.lib.runners.basic import BasicRunnerConfiguration
 from multiauth.lib.runners.digest import DigestRunnerConfiguration
 from multiauth.lib.runners.graphql import GraphQLRunnerConfiguration
@@ -81,7 +81,7 @@ class Procedure:
     def run(
         self,
         user: User,
-    ) -> tuple[Authentication, EventsList]:
+    ) -> tuple[Authentication, EventsList, RunnerException | None]:
         """
         Execute the full procedure for the given user, including extractions, and return the resulting authentication
         and the list of request/response/variables tuples that were generated during the procedure.
@@ -108,7 +108,7 @@ class Procedure:
                         description=f'Runner error at step {i} of procedure: {error}',
                     ),
                 )
-                return Authentication.empty(), events
+                return Authentication.empty(), events, error
 
         authentication, injection_events = self.inject(user)
         for event in injection_events:
@@ -118,4 +118,4 @@ class Procedure:
         for event in events:
             self.events.append(event)
 
-        return authentication, events
+        return authentication, events, None
