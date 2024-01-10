@@ -48,15 +48,10 @@
           },
           "title": "Extractions",
           "type": "array"
-        },
-        "name": {
-          "title": "Name",
-          "type": "string"
         }
       },
       "required": [
-        "parameters",
-        "name"
+        "parameters"
       ],
       "title": "BasicRunnerConfiguration",
       "type": "object"

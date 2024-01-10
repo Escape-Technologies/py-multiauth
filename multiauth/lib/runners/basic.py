@@ -17,7 +17,6 @@ from multiauth.lib.store.variables import AuthenticationVariable, VariableName, 
 
 
 class BasicRunnerConfiguration(BaseRunnerConfiguration):
-    name: str
     tech: Literal['basic'] = 'basic'
     parameters: HTTPRequestParameters
 

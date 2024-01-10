@@ -30,7 +30,6 @@ Type: object
 
 | Field Name | Type | Required | Description | Reference |
 |------------|------|----------|-------------|-----------|
-| name | `string` | `True` |  |  |
 | parameters | `N/A` | `True` |  |  |
 | tech | `N/A` | `False` |  |  |
 | extractions | `BaseExtraction[]` | `False` |  | [BaseExtraction](#BaseExtraction) |
