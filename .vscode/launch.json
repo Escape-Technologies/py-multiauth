@@ -13,7 +13,7 @@
       "name": "Validate local config",
       "type": "python",
       "request": "launch",
-      "module": "multiauth.cli.cli",
+      "module": "multiauth",
       "args": [
         "-f",
         ".multiauthrc.json",

@@ -12,7 +12,16 @@ class HTTPRequestEvent(Event):
 
     @property
     def logline(self) -> str:
-        return f' {self.request.method} {self.request.scheme}://{self.request.host}{self.request.path}\n{self.request.data_text}'
+        txt = f' {self.request.method} {self.request.scheme}://{self.request.host}{self.request.path}\n'
+        for header in self.request.headers:
+            for v in header.values:
+                txt += f'H> {header.name}: {v}\n'
+        for cookie in self.request.cookies:
+            for v in cookie.values:
+                txt += f'C> {cookie.name}: {v}\n'
+        txt += f'{self.request.data_text}'
+
+        return txt
 
 
 class HTTPFailureEvent(Event):
@@ -33,7 +42,16 @@ class HTTPResponseEvent(Event):
 
     @property
     def logline(self) -> str:
-        return f' {self.response.status_code} {self.response.reason} in {self.response.elapsed.microseconds//1000}ms\n{self.response.data_text}'
+        txt = f' {self.response.status_code} {self.response.reason} in {self.response.elapsed.microseconds//1000}ms\n'
+        for header in self.response.headers:
+            for v in header.values:
+                txt += f'H< {header.name}: {v}\n'
+        for cookie in self.response.cookies:
+            for v in cookie.values:
+                txt += f'C< {cookie.name}: {v}\n'
+        txt += f'{self.response.data_text}'
+
+        return txt
 
 
 class SeleniumScriptLogEvent(Event):

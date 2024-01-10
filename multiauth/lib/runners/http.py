@@ -173,7 +173,7 @@ class HTTPRequestRunner(BaseRunner[HTTPRunnerConfiguration]):
                 c_findings = [c for c in response.cookies if c.name == extraction.key]
                 if len(c_findings) == 0:
                     continue
-                variable = AuthenticationVariable(name=extraction.name, value=','.join(h_findings[0].values))
+                variable = AuthenticationVariable(name=extraction.name, value=','.join(c_findings[0].values))
                 events.append(ExtractedVariableEvent(variable=variable))
                 variables.append(variable)
 
