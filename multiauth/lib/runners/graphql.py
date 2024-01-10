@@ -62,7 +62,7 @@ class GraphQLRunnerConfiguration(BaseRunnerConfiguration):
                 ),
                 cookies=self.parameters.cookies,
                 query_parameters=self.parameters.query_parameters,
-                body=self.parameters.body,
+                body=body,
             ),
         )
 
