@@ -1,34 +1,50 @@
 {
   "procedures": [
     {
-      "name": "example-procedure",
+      "name": "graphql",
       "operations": [
         {
-          "tech": "http",
+          "tech": "graphql",
           "parameters": {
-            "url": "https://vampi.tools.escape.tech",
-            "method": "GET",
-            "headers": [
-              {
-                "name": "X-Example-Header-From-User-Variable",
-                "values": ["{{ example-user-variable }}"]
-              }
-            ],
-            "cookies": [],
-            "query_parameters": [],
-            "body": null,
-            "proxy": null
+            "url": "https://gontoz.escape.tech/",
+            "method": "POST",
+            "query": "mutation { authentification(username: \"{{username}}\", password: \"{{password}}\") { token } }",
+            "variables": []
           },
           "extractions": [
             {
-              "name": "example-extraction",
+              "name": "token",
               "location": "body",
-              "key": "message"
+              "key": "token"
             }
           ]
         }
       ]
     }
   ],
-  "$schema": "../multiauth-schema.json"
+  "users": [
+    {
+      "name": "user",
+      "credentials": {},
+      "procedure": "graphql",
+      "injections": [
+        {
+          "location": "header",
+          "key": "Authorization",
+          "value": "Bearer {{token}}"
+        }
+      ],
+      "variables": [
+        {
+          "name": "username",
+          "value": "john"
+        },
+        {
+          "name": "password",
+          "value": "P4ss"
+        }
+      ]
+    }
+  ],
+  "$schema": "./multiauth-schema.json"
 }
