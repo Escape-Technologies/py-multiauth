@@ -274,22 +274,36 @@ class SeleniumCommandHandler:
         events = EventsList()
         exception: SeleniumCommandException | None = None
 
+        try:
+            max_wait_time = int(command.value)
+        except ValueError:
+            events.append(
+                SeleniumScriptErrorEvent(
+                    message=f'Invalid wait value `{command.value}`, fall back to {self.wait_for_seconds}',
+                ),
+            )
+            max_wait_time = self.wait_for_seconds
+
         if command.target:
             cmd, value = command.target.split('=')
             if cmd == 'request_url_contains':
-                wait_events, exception = self.wait_for_request_url_contains(value)
+                wait_events, exception = self.wait_for_request_url_contains(value, max_wait_time)
                 events.extend(wait_events)
             return events, exception
 
-        time.sleep(int(command.value))
-        events.append(SeleniumScriptLogEvent(message=f'Waited for {command.value} seconds'))
+        time.sleep(max_wait_time)
+        events.append(SeleniumScriptLogEvent(message=f'Waited for {max_wait_time} seconds'))
         return events, None
 
-    def wait_for_request_url_contains(self, regex: str) -> tuple[EventsList, SeleniumCommandException | None]:
+    def wait_for_request_url_contains(
+        self,
+        regex: str,
+        max_wait_time: int,
+    ) -> tuple[EventsList, SeleniumCommandException | None]:
         events = EventsList()
 
         started_at = time.time()
-        while started_at + self.wait_for_seconds > time.time():
+        while started_at + max_wait_time > time.time():
             for request in self.driver.requests:
                 if re.search(regex, request.url):
                     events.append(SeleniumScriptLogEvent(message=f'Found request url {request.url} matching `{regex}`'))
