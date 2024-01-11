@@ -18,14 +18,13 @@ def validate_command(args: argparse.Namespace) -> None:
 
     try:
         authentication, events, error = multiauth.authenticate(user_name=args.user)
+        for reporter in reporters:
+            reporter.report(events)
     except Exception as e:
         exit_with_error(f'Error while authenticating user {args.user}: {e}')
 
     if error is not None:
         exit_with_error(f'Error while authenticating user {args.user}: {error}')
-
-    for reporter in reporters:
-        reporter.report(events)
 
     logger.info(f'Executed procedure for user {args.user}')
     logger.info(authentication)
