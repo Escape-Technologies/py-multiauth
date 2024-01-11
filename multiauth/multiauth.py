@@ -1,6 +1,6 @@
 import datetime
 import json
-from typing import Any
+from typing import Any, NewType
 
 from multiauth.configuration import (
     MultiauthConfiguration,
@@ -13,6 +13,14 @@ from multiauth.lib.store.authentication import Authentication, AuthenticationSto
 from multiauth.lib.store.user import User, UserName
 
 DEFAULT_TTL_SECONDS = 10 * 24 * 60 * 60  # Default session ttl is 10 days
+
+ISOExpirationTimestamp = NewType('ISOExpirationTimestamp', str)
+
+
+def default_expiration_date() -> ISOExpirationTimestamp:
+    return ISOExpirationTimestamp(
+        (datetime.datetime.now() + datetime.timedelta(seconds=DEFAULT_TTL_SECONDS)).isoformat(),
+    )
 
 
 class Multiauth:
@@ -97,7 +105,9 @@ class Multiauth:
 
         return procedure
 
-    def authenticate_users(self) -> dict[UserName, tuple[Authentication, EventsList, Exception | None]]:
+    def authenticate_users(
+        self,
+    ) -> dict[UserName, tuple[Authentication, EventsList, ISOExpirationTimestamp, Exception | None]]:
         """
         Runs the authentication for all users in the configuration. Retrocompatibility purposes with MultiAuth v2.
         """
@@ -113,7 +123,7 @@ class Multiauth:
     def authenticate(
         self,
         user_name: UserName,
-    ) -> tuple[Authentication, EventsList, Exception | None]:
+    ) -> tuple[Authentication, EventsList, ISOExpirationTimestamp, Exception | None]:
         """
         Runs the authentication procedure of the provided user.
 
@@ -150,6 +160,7 @@ class Multiauth:
         return (
             authentication,
             events,
+            ISOExpirationTimestamp(expiration.isoformat()),
             error,
         )
 
@@ -164,7 +175,7 @@ class Multiauth:
     def refresh(
         self,
         user_name: UserName,
-    ) -> tuple[Authentication, EventsList, Exception | None]:
+    ) -> tuple[Authentication, EventsList, ISOExpirationTimestamp, Exception | None]:
         """
         Refresh the authentication object of a given user.
 
@@ -191,7 +202,12 @@ class Multiauth:
 
         if refresh_procedure is None:
             # If the user has no procedure at all (no base and no refresh procedures), return the base authentication
-            return base_authentication, EventsList(ProcedureSkippedEvent(user_name=user_name)), None
+            return (
+                base_authentication,
+                EventsList(ProcedureSkippedEvent(user_name=user_name)),
+                default_expiration_date(),
+                None,
+            )
 
         refreshed_authentication = Authentication.empty()
         # Run the procedure
@@ -215,7 +231,7 @@ class Multiauth:
         # Store the new authentication object
         self.authentication_store.store(user_name, refreshed_authentication, expiration)
 
-        return refreshed_authentication, events, error
+        return refreshed_authentication, events, ISOExpirationTimestamp(expiration.isoformat()), error
 
     def sign(*args: Any, **kwargs: Any) -> dict[str, str]:
         """

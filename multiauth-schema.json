@@ -1112,6 +1112,7 @@
               "type": "null"
             }
           ],
+          "default": null,
           "description": "The name of the procedure to use to authenticate the user.This name MUST match the `name` field of a procedure in the `procedures` list in the multiauth configuration.",
           "title": "Procedure"
         },
@@ -1145,10 +1146,7 @@
         }
       },
       "required": [
-        "name",
-        "credentials",
-        "procedure",
-        "injections"
+        "name"
       ],
       "title": "User",
       "type": "object"

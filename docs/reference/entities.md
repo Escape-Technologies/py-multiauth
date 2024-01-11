@@ -447,11 +447,11 @@ Type: object
 
 | Field Name | Type | Required | Description | Reference |
 |------------|------|----------|-------------|-----------|
-| credentials | `N/A` | `True` | The parameters use to customize requests sent for the user |  |
 | name | `string` | `True` | The name of the user |  |
-| procedure | `N/A` | `True` | The name of the procedure to use to authenticate the user.This name MUST match the `name` field of a procedure in the `procedures` list in the multiauth configuration. |  |
-| injections | `TokenInjection[]` | `True` | List of variables injections to perform to create the authentication. | [TokenInjection](#TokenInjection) |
+| credentials | `N/A` | `False` | The parameters use to customize requests sent for the user |  |
+| procedure | `N/A` | `False` | The name of the procedure to use to authenticate the user.This name MUST match the `name` field of a procedure in the `procedures` list in the multiauth configuration. |  |
 | refresh | `N/A` | `False` | An optional refresh procedure to follow for the user |  |
+| injections | `TokenInjection[]` | `False` | List of variables injections to perform to create the authentication. | [TokenInjection](#TokenInjection) |
 | variables | `AuthenticationVariable[]` | `False` | List of variables that will be injected at the beginning of the user&#39;s authentication procedure | [AuthenticationVariable](#AuthenticationVariable) |
 
 

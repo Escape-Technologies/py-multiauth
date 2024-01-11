@@ -103,16 +103,21 @@ class UserRefresh(BaseModel):
 
 class User(BaseModel):
     name: UserName = Field(description='The name of the user')
-    credentials: Credentials = Field(description='The parameters use to customize requests sent for the user')
+    credentials: Credentials = Field(
+        description='The parameters use to customize requests sent for the user',
+        default_factory=Credentials,
+    )
     procedure: ProcedureName | None = Field(
         description=(
             'The name of the procedure to use to authenticate the user.'
             'This name MUST match the `name` field of a procedure in the `procedures` list in the '
             'multiauth configuration.'
         ),
+        default=None,
     )
     injections: list[TokenInjection] = Field(
         description='List of variables injections to perform to create the authentication.',
+        default_factory=list,
     )
     variables: list[AuthenticationVariable] = Field(
         default_factory=list,
