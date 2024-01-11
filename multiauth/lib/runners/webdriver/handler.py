@@ -167,15 +167,14 @@ class SeleniumCommandHandler:
         retries: int | None = None,
     ) -> tuple[EventsList, SeleniumCommandException | None]:
         events = EventsList()
-        exception: Exception | None = None
 
         for target_pair in command.targets:
             try:
                 selector, value = target_to_selector_value(target_pair)
                 click_events, exception = self.safe_click(selector, value)
                 events.extend(click_events)
-                if exception is not None:
-                    return events, exception
+                if exception is None:
+                    return events, None
             except Exception as e:
                 message = f'Failed to execute click `{command.id}`.`{target_pair}`'
                 events.append(
@@ -226,6 +225,7 @@ class SeleniumCommandHandler:
                 selector, value = target_to_selector_value(target_pair)
                 self.find_element(selector, value).send_keys(command.value)
                 events.append(SeleniumScriptLogEvent(message=f'Typed `{command.value}` into `{target_pair}`'))
+                return events, None
             except Exception as e:
                 message = f'Failed to execute type `{command.id}`.`{target_pair}`'
                 events.append(SeleniumScriptErrorEvent(message=message, from_exception=str(e)))
