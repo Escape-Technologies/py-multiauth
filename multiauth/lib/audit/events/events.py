@@ -1,6 +1,7 @@
 from typing import Literal
 
 from multiauth.lib.audit.events.base import Event
+from multiauth.lib.helpers import Token
 from multiauth.lib.http_core.entities import HTTPLocation, HTTPRequest, HTTPResponse
 from multiauth.lib.store.variables import AuthenticationVariable
 
@@ -140,3 +141,13 @@ class ProcedureEndedEvent(Event):
     @property
     def logline(self) -> str:
         return f'procedure ended for user {self.user_name}'
+
+
+class TokenParsedEvent(Event):
+    type: Literal['token_parsed'] = 'token_parsed'
+    default_severity: Literal['info'] = 'info'
+    token: Token
+
+    @property
+    def logline(self) -> str:
+        return f'{self.token.type} token parsed: {self.token.raw}. Expiration: {self.token.expiration}'

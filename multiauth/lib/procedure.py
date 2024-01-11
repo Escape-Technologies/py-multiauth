@@ -10,7 +10,9 @@ from multiauth.lib.audit.events.events import (
     ProcedureAbortedEvent,
     ProcedureEndedEvent,
     ProcedureStartedEvent,
+    TokenParsedEvent,
 )
+from multiauth.lib.helpers import parse_token
 from multiauth.lib.runners.base import BaseRunner, RunnerException
 from multiauth.lib.runners.basic import BasicRunnerConfiguration
 from multiauth.lib.runners.digest import DigestRunnerConfiguration
@@ -86,12 +88,22 @@ class Procedure:
 
         self.events.extend(events)
 
-        # @todo(maxence@escape): implement automated expiration detection from the authentication content
-        detected_ttl_seconds: int | None = None
-        # In case of a user-provided ttl for this user, use it instead of any ttl declared before
-        ttl_seconds = detected_ttl_seconds or user.session_ttl_seconds or DEFAULT_TTL_SECONDS
+        # If the user has a session_ttl_seconds set, use it to compute the expiration date
+        if user.session_ttl_seconds is not None:
+            expiration = datetime.now() + timedelta(seconds=user.session_ttl_seconds)
+        else:  # Otherwise, infer the expiration date of the first expiring token
+            expirations: list[datetime] = []
+            for variable in self.variables.values():
+                token = parse_token(variable.value)
+                if token is None:
+                    continue
 
-        expiration = datetime.now() + timedelta(seconds=ttl_seconds)
+                self.events.append(TokenParsedEvent(token=token))
+                if token.expiration is not None:
+                    expirations.append(token.expiration)
+
+            # Fall back to default expiration date if no token has an expiration date
+            expiration = min(expirations) if len(expirations) > 0 else default_expiration_date()
 
         return (
             authentication,

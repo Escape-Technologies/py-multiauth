@@ -18,6 +18,7 @@ EventType = Literal[
     'selenium_log',
     'selenium_error',
     'procedure_skipped',
+    'token_parsed',
 ]
 
 EventSeverity = Literal['info', 'warning', 'error', 'success', 'debug']

@@ -5,12 +5,14 @@ from datetime import datetime
 from enum import StrEnum
 from http.cookies import SimpleCookie
 
+import requests
 from pydantic import BaseModel
 
 
 class TokenType(StrEnum):
     JWT = 'JWT'
     SAML = 'SAML'
+    OAUTH = 'OAUTH'
 
 
 class Token(BaseModel):
@@ -18,6 +20,7 @@ class Token(BaseModel):
 
     raw: str
     type: TokenType
+    expiration: datetime | None
 
 
 class JWTToken(Token):
@@ -54,6 +57,22 @@ class SAMLToken(Token):
     notOnOrAfter: datetime | None = None
     attributes: dict[str, str] = {}
     authnContext: str | None = None
+
+
+class OAuthToken(Token):
+    active: bool = False
+    scope: str | None = None
+    client_id: str | None = None
+    username: str | None = None
+    token_type: str | None = None
+    exp: int | None = None
+    iat: int | None = None
+    nbf: int | None = None
+    sub: str | None = None
+    aud: str | None = None
+    iss: str | None = None
+    jti: str | None = None
+    # Add other fields as needed based on your OAuth server's response
 
 
 def extract_token(string: str) -> str:
@@ -99,6 +118,12 @@ def parse_saml_token(token: str) -> SAMLToken | None:
 
         authn_context = root.find('.//saml:AuthnContextClassRef', namespace)
 
+        expiration = (
+            datetime.strptime(conditions.get('NotBefore', ''), '%Y-%m-%dT%H:%M:%SZ')
+            if conditions is not None and conditions.get('NotBefore')
+            else None
+        )
+
         return SAMLToken(
             raw=token,
             type=TokenType.SAML,
@@ -107,9 +132,8 @@ def parse_saml_token(token: str) -> SAMLToken | None:
             notBefore=datetime.strptime(conditions.get('NotBefore', ''), '%Y-%m-%dT%H:%M:%SZ')
             if conditions is not None and conditions.get('NotBefore')
             else None,
-            notOnOrAfter=datetime.strptime(conditions.get('NotOnOrAfter', ''), '%Y-%m-%dT%H:%M:%SZ')
-            if conditions is not None and conditions.get('NotOnOrAfter')
-            else None,
+            notOnOrAfter=expiration,
+            expiration=expiration,
             attributes=attributes,
             authnContext=authn_context.text if authn_context is not None else None,
         )
@@ -134,6 +158,8 @@ def parse_jwt_token(token: str) -> JWTToken | None:
         header = json.loads(base64.urlsafe_b64decode(token_header + '=' * (-len(token_header) % 4)))
         payload = json.loads(base64.urlsafe_b64decode(token_payload + '=' * (-len(token_payload) % 4)))
 
+        expiration = payload.pop('exp', None)
+
         return JWTToken(
             raw=token,
             type=TokenType.JWT,
@@ -141,13 +167,53 @@ def parse_jwt_token(token: str) -> JWTToken | None:
             iss=payload.pop('iss', None),
             sub=payload.pop('sub', None),
             aud=payload.pop('aud', None),
-            exp=payload.pop('exp', None),
+            exp=expiration,
             nbf=payload.pop('nbf', None),
             iat=payload.pop('iat', None),
             jti=payload.pop('jti', None),
+            expiration=datetime.fromtimestamp(expiration) if expiration is not None else None,
             other=header | payload,
         )
     except Exception:
+        return None
+
+
+def parse_oauth_token(token: str, introspection_url: str, client_id: str, client_secret: str) -> OAuthToken | None:
+    """Parses an opaque OAuth 2.0 Access Token using introspection endpoint."""
+    token = extract_token(token)
+
+    data = {
+        'token': token,
+        'client_id': client_id,
+        'client_secret': client_secret,
+    }
+
+    try:
+        response = requests.post(introspection_url, data=data, timeout=5)
+        response.raise_for_status()
+        token_data = response.json()
+
+        expiration = token_data.get('exp', None)
+
+        return OAuthToken(
+            raw=token,
+            type=TokenType.OAUTH,
+            active=token_data.get('active', False),
+            scope=token_data.get('scope'),
+            client_id=token_data.get('client_id'),
+            username=token_data.get('username'),
+            token_type=token_data.get('token_type'),
+            exp=token_data.get('exp'),
+            iat=token_data.get('iat'),
+            nbf=token_data.get('nbf'),
+            sub=token_data.get('sub'),
+            aud=token_data.get('aud'),
+            iss=token_data.get('iss'),
+            jti=token_data.get('jti'),
+            expiration=datetime.fromtimestamp(expiration) if expiration is not None else None,
+            # Map other fields as required
+        )
+    except requests.RequestException:
         return None
 
 
@@ -162,16 +228,12 @@ def parse_token(token: str) -> Token | None:
     res = parse_saml_token(token)
     if res is not None:
         return res
-
-    return None
-
-
-def extract_expiration_date(token: JWTToken | SAMLToken) -> int | None:
-    """Extracts the expiration date from a JWT token."""
-
-    if isinstance(token, JWTToken):
-        return token.exp
-    if isinstance(token, SAMLToken):
-        return int(token.notOnOrAfter.timestamp()) if token.notOnOrAfter is not None else None
-
+    res = parse_oauth_token(
+        token,
+        '',
+        '',
+        '',
+    )  # TODO(antoine@escape.tech): add support fot missing arguments
+    if res is not None:
+        return res
     return None
