@@ -972,6 +972,11 @@
           "default": null,
           "title": "Token Lifetime"
         },
+        "wait_for_seconds": {
+          "default": 5,
+          "title": "Wait For Seconds",
+          "type": "integer"
+        },
         "proxy": {
           "anyOf": [
             {

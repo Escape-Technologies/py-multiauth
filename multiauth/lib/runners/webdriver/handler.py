@@ -34,9 +34,9 @@ class SeleniumCommandHandler:
     wait_for_seconds: int
     pooling_interval: float
 
-    def __init__(self, driver: webdriver.Firefox) -> None:
+    def __init__(self, driver: webdriver.Firefox, wait_for_seconds: int = 5) -> None:
         self.driver = driver
-        self.wait_for_seconds = 5
+        self.wait_for_seconds = wait_for_seconds
         self.pooling_interval = 0.5
 
     def run_command(self, command: SeleniumCommand) -> tuple[EventsList, SeleniumCommandException | None]:
@@ -291,7 +291,7 @@ class SeleniumCommandHandler:
         started_at = time.time()
         while started_at + self.wait_for_seconds > time.time():
             for request in self.driver.requests:
-                if re.match(regex, request.url):
+                if re.search(regex, request.url):
                     events.append(SeleniumScriptLogEvent(message=f'Found request url {request.url} matching `{regex}`'))
                     return events, None
 

@@ -398,6 +398,7 @@ Type: object
 |------------|------|----------|-------------|-----------|
 | proxy | `N/A` | `False` |  |  |
 | token_lifetime | `N/A` | `False` |  |  |
+| wait_for_seconds | `integer` | `False` |  |  |
 
 
 ## <a id="SeleniumScriptParameters"></a>SeleniumScriptParameters

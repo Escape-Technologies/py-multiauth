@@ -1,4 +1,5 @@
 import os
+from copy import deepcopy
 from dataclasses import dataclass
 from typing import Literal
 
@@ -30,6 +31,7 @@ from multiauth.lib.store.variables import AuthenticationVariable, interpolate_st
 
 class SeleniumScriptOptions(BaseModel):
     token_lifetime: int | None = Field(default=None)
+    wait_for_seconds: int = Field(default=5)
 
     proxy: str | None = None
 
@@ -68,7 +70,7 @@ class SeleniumRunner(BaseRunner[SeleniumRunnerConfiguration]):
 
         for test in self.selenium_configuration.parameters.project.tests:
             events.append(SeleniumScriptLogEvent(message=f'Running test `{test.name}`'))
-            handler = SeleniumCommandHandler(driver)
+            handler = SeleniumCommandHandler(driver, self.selenium_configuration.parameters.options.wait_for_seconds)
 
             for command in test.commands:
                 command_events, exception = handler.run_command(command)
@@ -77,6 +79,7 @@ class SeleniumRunner(BaseRunner[SeleniumRunnerConfiguration]):
                     events.append(SeleniumScriptErrorEvent(message='Aborting test due to an exception'))
                     break
 
+        requests = deepcopy(driver.requests)
         driver.quit()
 
         variables: list[AuthenticationVariable] = []
@@ -87,7 +90,7 @@ class SeleniumRunner(BaseRunner[SeleniumRunnerConfiguration]):
                     extraction.extract_location,
                     extraction.extract_regex,
                     extraction.extract_match_index,
-                    driver.requests,
+                    requests,
                 )
                 variable = AuthenticationVariable(name=extraction.name, value=token)
                 events.append(ExtractedVariableEvent(variable=variable))
