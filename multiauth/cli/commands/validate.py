@@ -17,7 +17,7 @@ def validate_command(args: argparse.Namespace) -> None:
     logger.info(f'Validating credentials for user {args.user}')
 
     try:
-        authentication, events, _, error = multiauth.authenticate(user_name=args.user)
+        authentication, events, expiration, error = multiauth.authenticate(user_name=args.user)
         for reporter in reporters:
             reporter.report(events)
     except Exception as e:

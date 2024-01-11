@@ -1,5 +1,6 @@
 import abc
-from typing import Annotated, Union
+from datetime import datetime, timedelta
+from typing import Annotated, NewType, Union
 
 from pydantic import BaseModel, Field
 
@@ -20,6 +21,15 @@ from multiauth.lib.store.authentication import Authentication
 from multiauth.lib.store.user import User
 from multiauth.lib.store.variables import AuthenticationVariable, VariableName
 
+ISOExpirationTimestamp = NewType('ISOExpirationTimestamp', str)
+
+DEFAULT_TTL_SECONDS = 10 * 24 * 60 * 60  # Default
+
+
+def default_expiration_date() -> datetime:
+    return datetime.now() + timedelta(seconds=DEFAULT_TTL_SECONDS)
+
+
 OperationConfigurationType = Annotated[
     Union[
         HTTPRunnerConfiguration,
@@ -30,6 +40,8 @@ OperationConfigurationType = Annotated[
     ],
     Field(discriminator='tech'),
 ]
+
+DEFAULT_TTL_SECONDS = 10 * 24 * 60 * 60  # Default session ttl is 10 days
 
 
 class ProcedureConfiguration(BaseModel, abc.ABC):
@@ -59,7 +71,7 @@ class Procedure:
         for request in self.configuration.operations:
             self.runners.append(request.get_runner())
 
-    def inject(self, user: User) -> tuple[Authentication, EventsList]:
+    def inject(self, user: User) -> tuple[Authentication, EventsList, datetime]:
         """
         Inject the variables extracted from the procedure into the user's authentication. Injections are performed
         using the stored variables, so the procedure requests must have been run before calling this method.
@@ -69,19 +81,28 @@ class Procedure:
 
         for injection in user.injections:
             new_authentication, injection_events = Authentication.inject(injection, list(self.variables.values()))
-            for event in injection_events:
-                events.append(event)
+            events.extend(injection_events)
             authentication = Authentication.merge(authentication, new_authentication)
 
-        for event in events:
-            self.events.append(event)
+        self.events.extend(events)
 
-        return authentication, events
+        # @todo(maxence@escape): implement automated expiration detection from the authentication content
+        detected_ttl_seconds: int | None = None
+        # In case of a user-provided ttl for this user, use it instead of any ttl declared before
+        ttl_seconds = detected_ttl_seconds or user.session_ttl_seconds or DEFAULT_TTL_SECONDS
+
+        expiration = datetime.now() + timedelta(seconds=ttl_seconds)
+
+        return (
+            authentication,
+            events,
+            expiration,
+        )
 
     def run(
         self,
         user: User,
-    ) -> tuple[Authentication, EventsList, RunnerException | None]:
+    ) -> tuple[Authentication, EventsList, datetime, RunnerException | None]:
         """
         Execute the full procedure for the given user, including extractions, and return the resulting authentication
         and the list of request/response/variables tuples that were generated during the procedure.
@@ -108,9 +129,9 @@ class Procedure:
                         description=f'Runner error at step {i} of procedure: {error}',
                     ),
                 )
-                return Authentication.empty(), events, error
+                return Authentication.empty(), events, default_expiration_date(), error
 
-        authentication, injection_events = self.inject(user)
+        authentication, injection_events, expiration = self.inject(user)
         for event in injection_events:
             events.append(event)
 
@@ -118,4 +139,4 @@ class Procedure:
         for event in events:
             self.events.append(event)
 
-        return authentication, events, None
+        return authentication, events, expiration, None

@@ -1,6 +1,5 @@
-import datetime
 import json
-from typing import Any, NewType
+from typing import Any
 
 from multiauth.configuration import (
     MultiauthConfiguration,
@@ -8,19 +7,9 @@ from multiauth.configuration import (
 from multiauth.exceptions import MissingProcedureException, MissingUserException, MultiAuthException
 from multiauth.lib.audit.events.base import EventsList
 from multiauth.lib.audit.events.events import ProcedureAbortedEvent, ProcedureSkippedEvent
-from multiauth.lib.procedure import Procedure, ProcedureName
+from multiauth.lib.procedure import ISOExpirationTimestamp, Procedure, ProcedureName, default_expiration_date
 from multiauth.lib.store.authentication import Authentication, AuthenticationStore, AuthenticationStoreException
 from multiauth.lib.store.user import User, UserName
-
-DEFAULT_TTL_SECONDS = 10 * 24 * 60 * 60  # Default session ttl is 10 days
-
-ISOExpirationTimestamp = NewType('ISOExpirationTimestamp', str)
-
-
-def default_expiration_date() -> ISOExpirationTimestamp:
-    return ISOExpirationTimestamp(
-        (datetime.datetime.now() + datetime.timedelta(seconds=DEFAULT_TTL_SECONDS)).isoformat(),
-    )
 
 
 class Multiauth:
@@ -140,21 +129,16 @@ class Multiauth:
         if user.procedure is not None:
             procedure = self._get_authentication_procedure(user_name)
             try:
-                procedure_authentication, procedure_events, error = procedure.run(user)
+                procedure_authentication, procedure_events, expiration, error = procedure.run(user)
                 events.extend(procedure_events)
                 authentication = Authentication.merge(authentication, procedure_authentication)
             except Exception as e:
                 events.append(ProcedureAbortedEvent(reason='unknown', description=f'Unknown error: {e}'))
                 error = e
+                expiration = default_expiration_date()
         else:
             events.append(ProcedureSkippedEvent(user_name=user_name))
 
-        # @todo(maxence@escape): implement automated expiration detection from the authentication content
-        detected_ttl_seconds: int | None = None
-        # In case of a user-provided ttl for this user, use it instead of any ttl declared before
-        ttl_seconds = detected_ttl_seconds or user.session_ttl_seconds or DEFAULT_TTL_SECONDS
-
-        expiration = datetime.datetime.now() + datetime.timedelta(seconds=ttl_seconds)
         self.authentication_store.store(user_name, authentication, expiration)
 
         return (
@@ -205,28 +189,22 @@ class Multiauth:
             return (
                 base_authentication,
                 EventsList(ProcedureSkippedEvent(user_name=user_name)),
-                default_expiration_date(),
+                ISOExpirationTimestamp(default_expiration_date().isoformat()),
                 None,
             )
 
         refreshed_authentication = Authentication.empty()
         # Run the procedure
         try:
-            refreshed_authentication, events, error = refresh_procedure.run(user.refresh_user)
+            refreshed_authentication, events, expiration, error = refresh_procedure.run(user.refresh_user)
         except Exception as e:
             events.append(ProcedureAbortedEvent(reason='unknown', description=f'Unexpected: {e}'))
             error = e
+            expiration = default_expiration_date()
 
         # If the user has a refresh procedure, and the `keep` flag is enabled, merge the current authentication object
         if user.refresh is not None and user.refresh.keep:
             refreshed_authentication = Authentication.merge(base_authentication, refreshed_authentication)
-
-        # @todo(maxence@escape): implement automated expiration detection from the authentication content
-        detected_ttl_seconds: int | None = None
-        # In case of a user-provided ttl for this user, use it instead of any ttl declared before
-        ttl_seconds = detected_ttl_seconds or user.session_ttl_seconds or DEFAULT_TTL_SECONDS
-
-        expiration = datetime.datetime.now() + datetime.timedelta(seconds=ttl_seconds)
 
         # Store the new authentication object
         self.authentication_store.store(user_name, refreshed_authentication, expiration)
