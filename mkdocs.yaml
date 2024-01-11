@@ -45,32 +45,6 @@ theme:
     repo: fontawesome/brands/github
   copyright: Copyright &copy; 2022 - 2024 Escape
 
-nav:
-  - Getting Started:
-      - Welcome to Multiauth: "index.md"
-      - Installation: "installation.md"
-      - What is Multiauth: "about.md"
-      - Migration from V2: "migrating.md"
-  - Concepts:
-      - Authentication: "concepts/authentication.md"
-      - Procedures: "concepts/procedures.md"
-      - Variables: "concepts/variables.md"
-      - Users: "concepts/users.md"
-      - Presets: "concepts/presets.md"
-  - Your first procedure:
-      - Introduction: "first-procedure/introduction.md"
-      - Creating a procedure: "first-procedure/first-procedure.md"
-      - Declaring variables: "first-procedure/declaring-variables.md"
-      - Adding a user: "first-procedure/adding-user.md"
-      - Authenticating: "first-procedure/authenticating.md"
-  - API Reference:
-      - Configuration: "reference/configuration.md"
-      - Entities: reference/entities.md
-  - Help: "help.md"
-  - Versioning: "versioning.md"
-  - Changelog: "changelog.md"
-  - Contributing: "contributing.md"
-
 repo_name: Escape-Technologies/py-multiauth
 repo_url: https://github.com/Escape-Technologies/py-multiauth
 edit_uri: edit/main/revamp/docs/
