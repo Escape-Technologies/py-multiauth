@@ -1,8 +1,7 @@
 import base64
 import json
-from typing import Dict
+from http.cookies import SimpleCookie
 
-import jwt
 from pydantic import BaseModel
 
 
@@ -26,29 +25,49 @@ class JWTToken(BaseModel):
     iss: str | None
     sub: str | None
     aud: str | None
-    exp: str | None
-    nbf: str | None
-    iat: str | None
+    exp: int | None
+    nbf: int | None
+    iat: int | None
     jti: str | None
     other: dict
+
+
+def extract_token(string: str) -> str:
+    """Extracts a token from a string that could be an authorization header or a cookie."""
+    # Handling Bearer tokens
+
+    if string.lower().startswith('bearer '):
+        return string[7:]
+
+    # Handling Cookie headers using SimpleCookie
+    try:
+        cookie: SimpleCookie = SimpleCookie()
+        cookie.load(string)
+        for key, morsel in cookie.items():
+            if 'token' in key.lower():
+                return morsel.value
+    except Exception:
+        return string
+
+    # Assuming the string is a token if no other format is recognized
+    return string
 
 
 def jwt_token_analyzer(token: str) -> JWTToken:
     """This function transforms a JWT token into a defined datatype."""
 
-    # First verify the JWT signature
-    try:
-        _ = jwt.decode(token, options={'verify_signature': False, 'verify_exp': False})
-    except Exception as e:
-        raise ValueError('The token provided is not a JWT token') from e
+    token = extract_token(token)
 
-    # First of all we need to decrypt the token
-    separated_token = token.split('.')
-    token_header: str = separated_token[0]
-    token_payload: str = separated_token[1]
+    # Step 2: Base64 Decode (JWT specific)
+    parts = token.split('.')
+    if len(parts) != 3:
+        raise ValueError('Invalid JWT token format')
 
-    header: Dict = json.loads(base64.urlsafe_b64decode(token_header + '=' * (-len(token_header) % 4)))
-    payload: Dict = json.loads(base64.urlsafe_b64decode(token_payload + '=' * (-len(token_payload) % 4)))
+    token_header: str = parts[0]
+    token_payload: str = parts[1]
+
+    header = json.loads(base64.urlsafe_b64decode(token_header + '=' * (-len(token_header) % 4)))
+    payload = json.loads(base64.urlsafe_b64decode(token_payload + '=' * (-len(token_payload) % 4)))
 
     return JWTToken(
         sig=header['alg'],
@@ -59,5 +78,5 @@ def jwt_token_analyzer(token: str) -> JWTToken:
         nbf=payload.pop('nbf', None),
         iat=payload.pop('iat', None),
         jti=payload.pop('jti', None),
-        other=payload,
+        other=header | payload,
     )
