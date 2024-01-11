@@ -1,6 +1,6 @@
 import pytest
 
-from multiauth.lib.helpers import JWTToken, extract_token, jwt_token_analyzer
+from multiauth.lib.helpers import JWTToken, SAMLToken, TokenType, extract_token, parse_jwt_token, parse_saml_token
 
 
 # Fixture for valid JWT token
@@ -35,7 +35,7 @@ def test_extract_token_non_bearer() -> None:
 
 # Tests for jwt_token_analyzer function
 def test_jwt_token_analyzer_valid(valid_jwt_token: str) -> None:
-    jwt_info = jwt_token_analyzer(valid_jwt_token)
+    jwt_info = parse_jwt_token(valid_jwt_token)
     assert isinstance(jwt_info, JWTToken)
     assert jwt_info.iss == 'testIssuer'
     assert jwt_info.sub == '1234567890'
@@ -44,7 +44,44 @@ def test_jwt_token_analyzer_valid(valid_jwt_token: str) -> None:
 
 def test_jwt_token_analyzer_invalid(invalid_jwt_token: str) -> None:
     with pytest.raises(ValueError):
-        jwt_token_analyzer(invalid_jwt_token)
+        parse_jwt_token(invalid_jwt_token)
 
 
-# Additional tests can be added for edge cases and error handling
+# Fixture for valid JWT token
+@pytest.fixture()
+def valid_sample_token() -> str:
+    # Sample SAML token for testing (this should be a string representation of a SAML XML)
+    token = """
+    <saml:Assertion xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion">
+        <saml:Issuer>SampleIssuer</saml:Issuer>
+        <saml:Subject>
+            <saml:NameID>SampleSubject</saml:NameID>
+        </saml:Subject>
+        <saml:Conditions NotBefore="2021-01-01T00:00:00Z" NotOnOrAfter="2021-01-02T00:00:00Z"/>
+        <saml:AttributeStatement>
+            <saml:Attribute Name="SampleAttribute">
+                <saml:AttributeValue>SampleValue</saml:AttributeValue>
+            </saml:Attribute>
+        </saml:AttributeStatement>
+        <saml:AuthnStatement>
+            <saml:AuthnContext>
+                <saml:AuthnContextClassRef>SampleAuthnContext</saml:AuthnContextClassRef>
+            </saml:AuthnContext>
+        </saml:AuthnStatement>
+    </saml:Assertion>
+    """
+
+    return token
+
+
+def test_parse_saml_token(valid_sample_token: str) -> None:
+    token = parse_saml_token(valid_sample_token)
+    assert token is not None
+    assert isinstance(token, SAMLToken)
+    assert token.type == TokenType.SAML
+    assert token.issuer == 'SampleIssuer'
+    assert token.subject == 'SampleSubject'
+    assert token.notBefore.isoformat() == '2021-01-01T00:00:00'  # type: ignore[union-attr]
+    assert token.notOnOrAfter.isoformat() == '2021-01-02T00:00:00'  # type: ignore[union-attr]
+    assert token.attributes['SampleAttribute'] == 'SampleValue'
+    assert token.authnContext == 'SampleAuthnContext'
