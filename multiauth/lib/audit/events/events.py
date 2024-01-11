@@ -13,6 +13,9 @@ class HTTPRequestEvent(Event):
     @property
     def logline(self) -> str:
         txt = f' {self.request.method} {self.request.scheme}://{self.request.host}{self.request.path}\n'
+        if self.request.proxy:
+            proxy_txt = self.request.proxy.split('@')[-1] if '@' in self.request.proxy else self.request.proxy
+            txt += f'PROXY> {proxy_txt}\n'
         for header in self.request.headers:
             for v in header.values:
                 txt += f'H> {header.name}: {v}\n'
