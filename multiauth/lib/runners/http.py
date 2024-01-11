@@ -2,7 +2,6 @@ import json
 from http import HTTPMethod
 from typing import Annotated, Any, Literal, Union
 
-import requests
 from pydantic import Field
 
 from multiauth.lib.audit.events.base import (
@@ -135,19 +134,13 @@ class HTTPRequestRunner(BaseRunner[HTTPRunnerConfiguration]):
         )
 
         events.append(HTTPRequestEvent(request=request))
-        response = None
-        try:
-            response = send_request(request)
-            events.append(HTTPResponseEvent(response=response))
-        except requests.exceptions.Timeout as e:
-            events.append(HTTPFailureEvent(reason='timeout', description=str(e)))
-        except requests.exceptions.ConnectionError as e:
-            events.append(HTTPFailureEvent(reason='connection_error', description=str(e)))
-        except requests.exceptions.TooManyRedirects as e:
-            events.append(HTTPFailureEvent(reason='too_many_redirects', description=str(e)))
-        except Exception as e:
-            events.append(HTTPFailureEvent(reason='unknown', description=str(e)))
+        response = send_request(request)
 
+        if isinstance(response, HTTPFailureEvent):
+            events.append(response)
+            return request, None, events
+
+        events.append(HTTPResponseEvent(response=response))
         return request, response, events
 
     def extract(self, response: HTTPResponse | None) -> tuple[list[AuthenticationVariable], EventsList]:

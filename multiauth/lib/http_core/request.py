@@ -1,8 +1,10 @@
+import asyncio
 import json
 from urllib.parse import urlencode, urlunparse
 
-import requests
+import httpx
 
+from multiauth.lib.audit.events.events import HTTPFailureEvent
 from multiauth.lib.http_core.entities import (
     HTTPCookie,
     HTTPHeader,
@@ -13,7 +15,56 @@ from multiauth.lib.http_core.entities import (
 HTTP_REQUEST_TIMEOUT = 5
 
 
-def send_request(request: HTTPRequest) -> HTTPResponse:
+def _request(
+    method: str,
+    url: str,
+    headers: dict[str, str],
+    cookies: dict[str, str],
+    data: str | None = None,
+    timeout: int | None = None,
+    proxy: str | None = None,
+) -> httpx.Response:
+    return asyncio.run(
+        _async_request(
+            method=method,
+            url=url,
+            proxy=proxy,
+            headers=headers,
+            cookies=cookies,
+            data=data,
+            timeout=timeout,
+        ),
+    )
+
+
+async def _async_request(
+    method: str,
+    url: str,
+    headers: dict[str, str],
+    cookies: dict[str, str],
+    data: str | None = None,
+    timeout: int | None = None,
+    proxy: str | None = None,
+) -> httpx.Response:
+    # TODO(QuentinN42): use env var REQUESTS_CA_BUNDLE if defined
+    context = httpx.create_ssl_context(verify='/etc/ssl/certs/ca-certificates.crt')
+    async with httpx.AsyncClient(
+        http2=True,
+        trust_env=False,
+        proxies=proxy,
+        verify=context,
+    ) as client:
+        return await client.request(
+            method=method,
+            url=url,
+            headers=headers,
+            cookies=cookies,
+            content=data,
+            timeout=timeout or 5,
+        )
+
+
+def send_request(request: HTTPRequest) -> HTTPResponse | HTTPFailureEvent:
     """Send HTTP request."""
 
     query_parameters = {qp.name: qp.values for qp in request.query_parameters}
@@ -23,18 +74,25 @@ def send_request(request: HTTPRequest) -> HTTPResponse:
     url = urlunparse((request.scheme.value, request.host, request.path, '', urlencode(query_parameters), ''))
 
     try:
-        response = requests.request(
-            request.method.value,
-            url,
+        response = _request(
+            method=request.method.value,
+            url=url,
             headers=headers,
             cookies=cookies,
             data=request.data_text,
             timeout=HTTP_REQUEST_TIMEOUT,
-            proxies={'http': request.proxy, 'https': request.proxy} if request.proxy else None,
-            verify=False if request.proxy else None,
+            proxy=request.proxy,
         )
-    except requests.exceptions.HTTPError as e:
-        response = e.response
+    except httpx.TimeoutException as e:
+        return HTTPFailureEvent(reason='timeout', description=str(e))
+    except httpx.ConnectError as e:
+        return HTTPFailureEvent(reason='connection_error', description=str(e))
+    except httpx.TooManyRedirects as e:
+        return HTTPFailureEvent(reason='too_many_redirects', description=str(e))
+    except httpx.HTTPError as e:
+        return HTTPFailureEvent(reason='http_error', description=str(e))
+    except Exception as e:
+        return HTTPFailureEvent(reason='unknown', description=str(e))
 
     data_json = None
     try:
@@ -51,9 +109,9 @@ def send_request(request: HTTPRequest) -> HTTPResponse:
     ]
 
     return HTTPResponse(
-        url=response.url,
+        url=url,
         status_code=response.status_code,
-        reason=response.reason,
+        reason=response.reason_phrase,
         headers=response_headers,
         cookies=response_cookies,
         data_text=response.text,
