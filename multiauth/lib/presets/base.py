@@ -1,5 +1,5 @@
 import abc
-from typing import Literal
+from typing import Any, Literal
 
 from pydantic import BaseModel, Field
 
@@ -7,6 +7,13 @@ from multiauth.lib.procedure import ProcedureConfiguration, ProcedureName
 from multiauth.lib.store.user import User
 
 PresetType = Literal['jwt_access_token_refresh_token', 'oauth_userpass', 'oauth_client_credentials', 'oauth_refresh']
+
+
+class UserPresetBase(BaseModel):
+    name: str
+    headers: dict[str, str] = Field(default_factory=dict)
+    cookies: dict[str, str] = Field(default_factory=dict)
+    body: Any = Field(default=None)
 
 
 class BasePreset(BaseModel, abc.ABC):
