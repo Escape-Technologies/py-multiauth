@@ -31,7 +31,7 @@ def send_request(request: HTTPRequest) -> HTTPResponse:
             data=request.data_text,
             timeout=HTTP_REQUEST_TIMEOUT,
             proxies={'http': request.proxy, 'https': request.proxy} if request.proxy else None,
-            verify=bool(request.proxy),
+            verify=False if request.proxy else None,
         )
     except requests.exceptions.HTTPError as e:
         response = e.response
