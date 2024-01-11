@@ -5,7 +5,7 @@ from multiauth.helpers.logger import setup_logger
 
 
 def exit_with_error(message: str) -> None:
-    print(message)
+    print(message)  # noqa: T201
     exit(1)
 
 
