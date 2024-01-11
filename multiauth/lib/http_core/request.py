@@ -1,5 +1,6 @@
 import asyncio
 import json
+from os import getenv
 from urllib.parse import urlencode, urlunparse
 
 import httpx
@@ -46,8 +47,8 @@ async def _async_request(
     timeout: int | None = None,
     proxy: str | None = None,
 ) -> httpx.Response:
-    # TODO(QuentinN42): use env var REQUESTS_CA_BUNDLE if defined
-    context = httpx.create_ssl_context(verify='/etc/ssl/certs/ca-certificates.crt')
+    ca_bundle = getenv('REQUESTS_CA_BUNDLE', '')
+    context = httpx.create_ssl_context(verify=ca_bundle if ca_bundle else True)
     async with httpx.AsyncClient(
         http2=True,
         trust_env=False,
@@ -90,7 +91,7 @@ def send_request(request: HTTPRequest) -> HTTPResponse | HTTPFailureEvent:
     except httpx.TooManyRedirects as e:
         return HTTPFailureEvent(reason='too_many_redirects', description=str(e))
     except httpx.HTTPError as e:
-        return HTTPFailureEvent(reason='http_error', description=str(e))
+        return HTTPFailureEvent(reason='unknown', description=str(e))
     except Exception as e:
         return HTTPFailureEvent(reason='unknown', description=str(e))
 
