@@ -1,5 +1,7 @@
 from typing import Literal
 
+from pydantic import Field
+
 from multiauth.lib.presets.base import BasePreset
 from multiauth.lib.procedure import ProcedureConfiguration, ProcedureName
 from multiauth.lib.runners.http import HTTPBodyExtraction, HTTPRequestParameters, HTTPRunnerConfiguration
@@ -8,7 +10,10 @@ from multiauth.lib.store.variables import VariableName
 
 class JWTAccessTokenRefreshTokenPreset(BasePreset):
     type: Literal['jwt_access_token_refresh_token'] = 'jwt_access_token_refresh_token'
-    parameters: HTTPRequestParameters
+    parameters: HTTPRequestParameters = Field(
+        description=('The parameters of the HTTP request used to fetch the access and refresh tokens.'),
+        examples=HTTPRequestParameters.examples(),
+    )
 
     def to_procedure_configuration(self) -> ProcedureConfiguration:
         return ProcedureConfiguration(

@@ -30,7 +30,7 @@ Type: object
 
 | Field Name | Type | Required | Description | Reference |
 |------------|------|----------|-------------|-----------|
-| parameters | `N/A` | `True` |  |  |
+| parameters | `N/A` | `True` | The parameters of the HTTP request used to test the username and password. |  |
 | extractions | `BaseExtraction[]` | `True` |  | [BaseExtraction](#BaseExtraction) |
 | tech | `N/A` | `False` |  |  |
 
@@ -240,9 +240,9 @@ Type: object
 
 | Field Name | Type | Required | Description | Reference |
 |------------|------|----------|-------------|-----------|
+| method | `N/A` | `True` | The HTTP method to use |  |
 | url | `string` | `True` | The URL to send the request to |  |
 | body | `N/A` | `False` | The body of the request. It can be a string or a JSON object. It is merged with the user credentials body if provided. If bodies of the HTTP request and of the user credentials are both JSON objects, they are merged. If the two bodies are strings, they are concatenated. If the two bodies are of different types, the body of the user credentials is used instead of this value. |  |
-| method | `N/A` | `False` | The HTTP method to use |  |
 | proxy | `N/A` | `False` | An eventual proxy used for this request |  |
 | cookies | `HTTPCookie[]` | `False` | The list of cookies to attach to the request. Cookies are merged with the user credentials cookies. It is possible to attach mutliple values to a cookie. Cookie values are url-encoded before being sent. | [HTTPCookie](#HTTPCookie) |
 | headers | `HTTPHeader[]` | `False` | The list of headers to attach to the request. Headers are merged with the user credentials headers. It is possible to attach mutliple values to a header. | [HTTPHeader](#HTTPHeader) |
@@ -271,7 +271,7 @@ Type: object
 | Field Name | Type | Required | Description | Reference |
 |------------|------|----------|-------------|-----------|
 | name | `string` | `True` | The name of the preset. Will be the name of the generated procedure. |  |
-| parameters | `N/A` | `True` |  |  |
+| parameters | `N/A` | `True` | The parameters of the HTTP request used to fetch the access and refresh tokens. |  |
 | type | `N/A` | `False` |  |  |
 
 
@@ -344,11 +344,11 @@ Type: object
 
 | Field Name | Type | Required | Description | Reference |
 |------------|------|----------|-------------|-----------|
-| command | `string` | `True` |  |  |
+| command | `string` | `True` | The command of the test. |  |
 | id | `string` | `True` |  |  |
-| target | `string` | `True` |  |  |
-| targets | `array` | `True` |  |  |
-| value | `string` | `True` |  |  |
+| target | `string` | `True` | The target of the test. |  |
+| targets | `array` | `True` | The targets of the test. |  |
+| value | `string` | `True` | The value of the test. |  |
 
 
 ## <a id="SeleniumExtraction"></a>SeleniumExtraction
@@ -359,10 +359,10 @@ Type: object
 
 | Field Name | Type | Required | Description | Reference |
 |------------|------|----------|-------------|-----------|
-| extract_location | `string` | `True` |  |  |
-| extract_regex | `string` | `True` |  |  |
+| extract_location | `string` | `True` | The location of the token in the request. |  |
+| extract_match_index | `N/A` | `True` | The index of the match to extract. |  |
+| extract_regex | `string` | `True` | The regex used to extract the token. |  |
 | name | `string` | `True` | The name of the variable to store the extracted value in |  |
-| extract_match_index | `N/A` | `False` |  |  |
 
 
 ## <a id="SeleniumProject"></a>SeleniumProject
@@ -373,7 +373,7 @@ Type: object
 
 | Field Name | Type | Required | Description | Reference |
 |------------|------|----------|-------------|-----------|
-| tests | `SeleniumTest[]` | `True` |  | [SeleniumTest](#SeleniumTest) |
+| tests | `SeleniumTest[]` | `True` | The tests of the Selenium script. | [SeleniumTest](#SeleniumTest) |
 
 
 ## <a id="SeleniumRunnerConfiguration"></a>SeleniumRunnerConfiguration
@@ -384,9 +384,9 @@ Type: object
 
 | Field Name | Type | Required | Description | Reference |
 |------------|------|----------|-------------|-----------|
-| parameters | `N/A` | `True` |  |  |
-| extractions | `SeleniumExtraction[]` | `True` |  | [SeleniumExtraction](#SeleniumExtraction) |
+| parameters | `N/A` | `True` | The parameters of the Selenium operation. |  |
 | tech | `N/A` | `False` |  |  |
+| extractions | `SeleniumExtraction[]` | `False` | The extractions of the Selenium script. | [SeleniumExtraction](#SeleniumExtraction) |
 
 
 ## <a id="SeleniumScriptOptions"></a>SeleniumScriptOptions
@@ -397,21 +397,20 @@ Type: object
 
 | Field Name | Type | Required | Description | Reference |
 |------------|------|----------|-------------|-----------|
-| proxy | `N/A` | `False` |  |  |
-| token_lifetime | `N/A` | `False` |  |  |
-| wait_for_seconds | `integer` | `False` |  |  |
+| proxy | `N/A` | `False` | The proxy used to run the script. |  |
+| wait_for_seconds | `integer` | `False` | The number of seconds to wait at various steps of the script. For example when waiting for a page to load. |  |
 
 
 ## <a id="SeleniumScriptParameters"></a>SeleniumScriptParameters
 
-Description: SeleniumScriptParameters(*, project: multiauth.lib.runners.webdriver.configuration.SeleniumProject, options: multiauth.lib.runners.webdriver.runner.SeleniumScriptOptions)
+Description: No Description.
 
 Type: object
 
 | Field Name | Type | Required | Description | Reference |
 |------------|------|----------|-------------|-----------|
-| options | `N/A` | `True` |  |  |
-| project | `N/A` | `True` |  |  |
+| options | `N/A` | `True` | The options of the Selenium script. |  |
+| project | `N/A` | `True` | The Selenium project used to run the script. It is the one that contains the tests and commands to run. The project script can be generated using the Selenium IDE. See [selenium.dev](https://www.selenium.dev/selenium-ide/docs/en/introduction/getting-started/) |  |
 
 
 ## <a id="SeleniumTest"></a>SeleniumTest
@@ -422,9 +421,9 @@ Type: object
 
 | Field Name | Type | Required | Description | Reference |
 |------------|------|----------|-------------|-----------|
-| id | `string` | `True` |  |  |
-| name | `string` | `True` |  |  |
-| commands | `SeleniumCommand[]` | `True` |  | [SeleniumCommand](#SeleniumCommand) |
+| id | `string` | `True` | The id of the test. |  |
+| name | `string` | `True` | The name of the test. |  |
+| commands | `SeleniumCommand[]` | `True` | The commands of the test. | [SeleniumCommand](#SeleniumCommand) |
 
 
 ## <a id="TokenInjection"></a>TokenInjection

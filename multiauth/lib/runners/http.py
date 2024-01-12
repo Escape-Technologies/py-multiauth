@@ -31,7 +31,7 @@ from multiauth.lib.runners.base import (
     RunnerException,
 )
 from multiauth.lib.store.user import Credentials, User
-from multiauth.lib.store.variables import AuthenticationVariable, interpolate_string
+from multiauth.lib.store.variables import AuthenticationVariable, VariableName, interpolate_string
 
 
 class HTTPHeaderExtraction(BaseExtraction):
@@ -59,8 +59,7 @@ class HTTPRequestParameters(BaseRunnerParameters):
     url: str = Field(description='The URL to send the request to')
     method: HTTPMethod = Field(
         description='The HTTP method to use',
-        examples=['CONNECT', 'DELETE', 'GET', 'HEAD', 'OPTIONS', 'PATCH', 'POST', 'PUT', 'TRACE'],
-        default='GET',
+        examples=['GET', 'POST', 'PUT', 'CONNECT', 'DELETE', 'HEAD', 'OPTIONS', 'PATCH', 'TRACE'],
     )
     headers: list[HTTPHeader] = Field(
         default_factory=list,
@@ -69,8 +68,8 @@ class HTTPRequestParameters(BaseRunnerParameters):
             'It is possible to attach mutliple values to a header.'
         ),
         examples=[
-            {'name': 'Content-Type', 'values': ['application/json']},
-            {'name': 'X-Header', 'values': ['value1', 'value2']},
+            HTTPHeader(name='Authorization', values=['Bearer my-token']),
+            HTTPHeader(name='my-header', values=['value1', 'value2']),
         ],
     )
     cookies: list[HTTPCookie] = Field(
@@ -80,8 +79,8 @@ class HTTPRequestParameters(BaseRunnerParameters):
             'It is possible to attach mutliple values to a cookie. Cookie values are url-encoded before being sent.'
         ),
         examples=[
-            {'name': 'PHPSESSIONID', 'values': ['value1', 'value2']},
-            {'name': 'cookie2', 'values': ['value3']},
+            HTTPCookie(name='PHPSESSIONID', values=['my-session-id']),
+            HTTPCookie(name='my-cookie', values=['value1', 'value2']),
         ],
     )
     query_parameters: list[HTTPQueryParameter] = Field(
@@ -92,8 +91,8 @@ class HTTPRequestParameters(BaseRunnerParameters):
             'Query parameter values are url-encoded before being sent.'
         ),
         examples=[
-            {'name': 'client_id', 'values': ['my-client-id']},
-            {'name': 'scope', 'values': ['read_data', 'write_data']},
+            HTTPQueryParameter(name='token', values=['my-token']),
+            HTTPQueryParameter(name='scope', values=['read-data', 'write-data']),
         ],
     )
     body: Any | None = Field(
@@ -116,6 +115,21 @@ class HTTPRequestParameters(BaseRunnerParameters):
         examples=['http://my-proxy:8080'],
     )
 
+    @staticmethod
+    def examples() -> list:
+        return [
+            HTTPRequestParameters(
+                url='https://my-api.com',
+                method=HTTPMethod.GET,
+            ).dict(exclude_defaults=True),
+            HTTPRequestParameters(
+                url='https://my-api.com',
+                method=HTTPMethod.POST,
+                headers=[HTTPHeader(name='Content-Type', values=['application/json'])],
+                body={'key1': 'value1', 'key2': 'value2'},
+            ).dict(exclude_defaults=True),
+        ]
+
 
 class HTTPRunnerConfiguration(BaseRunnerConfiguration):
     tech: Literal['http'] = 'http'
@@ -125,9 +139,26 @@ class HTTPRunnerConfiguration(BaseRunnerConfiguration):
             'The list of extractions to run at the end of the operation.'
             'For HTTP operations, variables are extracted from the response.'
         ),
+        examples=[
+            [HTTPHeaderExtraction(key='my-header-key', location='header', name=VariableName('my-variable'))],
+            [HTTPCookieExtraction(name=VariableName('my-variable'), location='cookie', key='my-cookie-key')],
+            [HTTPBodyExtraction(name=VariableName('my-variable'), location='body', key='my-body-key')],
+        ],
     )
     parameters: HTTPRequestParameters = Field(
         description='The parameters of the HTTP request to send. At least a URL and a method must be provided.',
+        examples=[
+            HTTPRequestParameters(
+                url='https://my-api.com',
+                method=HTTPMethod.GET,
+            ).dict(exclude_defaults=True),
+            HTTPRequestParameters(
+                url='https://my-api.com',
+                method=HTTPMethod.POST,
+                headers=[HTTPHeader(name='Content-Type', values=['application/json'])],
+                body={'key1': 'value1', 'key2': 'value2'},
+            ).dict(exclude_defaults=True),
+        ],
     )
 
     def get_runner(self) -> 'HTTPRequestRunner':

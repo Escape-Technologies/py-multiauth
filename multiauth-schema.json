@@ -42,7 +42,34 @@
           "title": "Tech"
         },
         "parameters": {
-          "$ref": "#/$defs/HTTPRequestParameters"
+          "allOf": [
+            {
+              "$ref": "#/$defs/HTTPRequestParameters"
+            }
+          ],
+          "description": "The parameters of the HTTP request used to test the username and password.",
+          "examples": [
+            {
+              "method": "GET",
+              "url": "https://my-api.com"
+            },
+            {
+              "body": {
+                "key1": "value1",
+                "key2": "value2"
+              },
+              "headers": [
+                {
+                  "name": "Content-Type",
+                  "values": [
+                    "application/json"
+                  ]
+                }
+              ],
+              "method": "POST",
+              "url": "https://my-api.com"
+            }
+          ]
         },
         "extractions": {
           "items": {
@@ -174,12 +201,7 @@
           "description": "The parameters of the first HTTP request executed during the digest procedure.It is the one that returns the WWW-Authenticate header.",
           "examples": [
             {
-              "body": null,
-              "cookies": [],
-              "headers": [],
               "method": "GET",
-              "proxy": null,
-              "query_parameters": [],
               "url": "https://example.com/digest"
             }
           ]
@@ -298,13 +320,13 @@
           "description": "The list of headers to attach to the request. Headers are merged with the user credentials headers. It is possible to attach mutliple values to a header.",
           "examples": [
             {
-              "name": "Content-Type",
+              "name": "Authorization",
               "values": [
-                "application/json"
+                "Bearer my-token"
               ]
             },
             {
-              "name": "X-Header",
+              "name": "my-header",
               "values": [
                 "value1",
                 "value2"
@@ -323,14 +345,14 @@
             {
               "name": "PHPSESSIONID",
               "values": [
-                "value1",
-                "value2"
+                "my-session-id"
               ]
             },
             {
-              "name": "cookie2",
+              "name": "my-cookie",
               "values": [
-                "value3"
+                "value1",
+                "value2"
               ]
             }
           ],
@@ -344,16 +366,16 @@
           "description": "The list of query parameters to attach to the request. Query parameters are merged with the user credentials query parameters. It is possible to attach mutliple values to a query parameter. Query parameter values are url-encoded before being sent.",
           "examples": [
             {
-              "name": "client_id",
+              "name": "token",
               "values": [
-                "my-client-id"
+                "my-token"
               ]
             },
             {
               "name": "scope",
               "values": [
-                "read_data",
-                "write_data"
+                "read-data",
+                "write-data"
               ]
             }
           ],
@@ -673,17 +695,16 @@
               "$ref": "#/$defs/HTTPMethod"
             }
           ],
-          "default": "GET",
           "description": "The HTTP method to use",
           "examples": [
+            "GET",
+            "POST",
+            "PUT",
             "CONNECT",
             "DELETE",
-            "GET",
             "HEAD",
             "OPTIONS",
             "PATCH",
-            "POST",
-            "PUT",
             "TRACE"
           ]
         },
@@ -691,13 +712,13 @@
           "description": "The list of headers to attach to the request. Headers are merged with the user credentials headers. It is possible to attach mutliple values to a header.",
           "examples": [
             {
-              "name": "Content-Type",
+              "name": "Authorization",
               "values": [
-                "application/json"
+                "Bearer my-token"
               ]
             },
             {
-              "name": "X-Header",
+              "name": "my-header",
               "values": [
                 "value1",
                 "value2"
@@ -716,14 +737,14 @@
             {
               "name": "PHPSESSIONID",
               "values": [
-                "value1",
-                "value2"
+                "my-session-id"
               ]
             },
             {
-              "name": "cookie2",
+              "name": "my-cookie",
               "values": [
-                "value3"
+                "value1",
+                "value2"
               ]
             }
           ],
@@ -737,16 +758,16 @@
           "description": "The list of query parameters to attach to the request. Query parameters are merged with the user credentials query parameters. It is possible to attach mutliple values to a query parameter. Query parameter values are url-encoded before being sent.",
           "examples": [
             {
-              "name": "client_id",
+              "name": "token",
               "values": [
-                "my-client-id"
+                "my-token"
               ]
             },
             {
               "name": "scope",
               "values": [
-                "read_data",
-                "write_data"
+                "read-data",
+                "write-data"
               ]
             }
           ],
@@ -793,7 +814,8 @@
         }
       },
       "required": [
-        "url"
+        "url",
+        "method"
       ],
       "title": "HTTPRequestParameters",
       "type": "object"
@@ -811,10 +833,55 @@
               "$ref": "#/$defs/HTTPRequestParameters"
             }
           ],
-          "description": "The parameters of the HTTP request to send. At least a URL and a method must be provided."
+          "description": "The parameters of the HTTP request to send. At least a URL and a method must be provided.",
+          "examples": [
+            {
+              "method": "GET",
+              "url": "https://my-api.com"
+            },
+            {
+              "body": {
+                "key1": "value1",
+                "key2": "value2"
+              },
+              "headers": [
+                {
+                  "name": "Content-Type",
+                  "values": [
+                    "application/json"
+                  ]
+                }
+              ],
+              "method": "POST",
+              "url": "https://my-api.com"
+            }
+          ]
         },
         "extractions": {
           "description": "The list of extractions to run at the end of the operation.For HTTP operations, variables are extracted from the response.",
+          "examples": [
+            [
+              {
+                "key": "my-header-key",
+                "location": "header",
+                "name": "my-variable"
+              }
+            ],
+            [
+              {
+                "key": "my-cookie-key",
+                "location": "cookie",
+                "name": "my-variable"
+              }
+            ],
+            [
+              {
+                "key": "my-body-key",
+                "location": "body",
+                "name": "my-variable"
+              }
+            ]
+          ],
           "items": {
             "discriminator": {
               "mapping": {
@@ -859,7 +926,34 @@
           "type": "string"
         },
         "parameters": {
-          "$ref": "#/$defs/HTTPRequestParameters"
+          "allOf": [
+            {
+              "$ref": "#/$defs/HTTPRequestParameters"
+            }
+          ],
+          "description": "The parameters of the HTTP request used to fetch the access and refresh tokens.",
+          "examples": [
+            {
+              "method": "GET",
+              "url": "https://my-api.com"
+            },
+            {
+              "body": {
+                "key1": "value1",
+                "key2": "value2"
+              },
+              "headers": [
+                {
+                  "name": "Content-Type",
+                  "values": [
+                    "application/json"
+                  ]
+                }
+              ],
+              "method": "POST",
+              "url": "https://my-api.com"
+            }
+          ]
         }
       },
       "required": [
@@ -1097,14 +1191,29 @@
           "type": "string"
         },
         "command": {
+          "description": "The command of the test.",
+          "examples": [
+            "open"
+          ],
           "title": "Command",
           "type": "string"
         },
         "target": {
+          "description": "The target of the test.",
+          "examples": [
+            "https://example.com"
+          ],
           "title": "Target",
           "type": "string"
         },
         "targets": {
+          "description": "The targets of the test.",
+          "examples": [
+            [
+              "css",
+              "body"
+            ]
+          ],
           "items": {
             "items": {
               "type": "string"
@@ -1115,6 +1224,10 @@
           "type": "array"
         },
         "value": {
+          "description": "The value of the test.",
+          "examples": [
+            "some-value"
+          ],
           "title": "Value",
           "type": "string"
         }
@@ -1137,6 +1250,7 @@
           "type": "string"
         },
         "extract_location": {
+          "description": "The location of the token in the request.",
           "enum": [
             "RequestURL",
             "RequestHeader",
@@ -1144,10 +1258,21 @@
             "ResponseHeader",
             "ResponseBody"
           ],
+          "examples": [
+            "RequestBody",
+            "ResponseBody",
+            "RequestHeaders",
+            "ResponseHeaders",
+            "RequestUrl"
+          ],
           "title": "Extract Location",
           "type": "string"
         },
         "extract_regex": {
+          "description": "The regex used to extract the token.",
+          "examples": [
+            "access_token=(.*?)&"
+          ],
           "title": "Extract Regex",
           "type": "string"
         },
@@ -1160,14 +1285,18 @@
               "type": "null"
             }
           ],
-          "default": null,
+          "description": "The index of the match to extract.",
+          "examples": [
+            0
+          ],
           "title": "Extract Match Index"
         }
       },
       "required": [
         "name",
         "extract_location",
-        "extract_regex"
+        "extract_regex",
+        "extract_match_index"
       ],
       "title": "SeleniumExtraction",
       "type": "object"
@@ -1175,6 +1304,27 @@
     "SeleniumProject": {
       "properties": {
         "tests": {
+          "description": "The tests of the Selenium script.",
+          "examples": [
+            {
+              "commands": [
+                {
+                  "command": "open",
+                  "id": "8db13a2eb5e54bfcb779e66cbf047cc1",
+                  "target": "https://example.com",
+                  "targets": [
+                    [
+                      "css",
+                      "body"
+                    ]
+                  ],
+                  "value": ""
+                }
+              ],
+              "id": "729a9d565ec346c1aedfec9ebb19cd3a",
+              "name": "test"
+            }
+          ],
           "items": {
             "$ref": "#/$defs/SeleniumTest"
           },
@@ -1196,9 +1346,53 @@
           "title": "Tech"
         },
         "parameters": {
-          "$ref": "#/$defs/SeleniumScriptParameters"
+          "allOf": [
+            {
+              "$ref": "#/$defs/SeleniumScriptParameters"
+            }
+          ],
+          "description": "The parameters of the Selenium operation.",
+          "examples": [
+            {
+              "options": {
+                "proxy": null,
+                "wait_for_seconds": 5
+              },
+              "project": {
+                "tests": [
+                  {
+                    "commands": [
+                      {
+                        "command": "open",
+                        "id": "f71afb7be6d24325b94d9ba1621d8146",
+                        "target": "https://example.com",
+                        "targets": [
+                          [
+                            "css",
+                            "body"
+                          ]
+                        ],
+                        "value": ""
+                      }
+                    ],
+                    "id": "1934ae6a388b45b9878ae29e085aa620",
+                    "name": "test"
+                  }
+                ]
+              }
+            }
+          ]
         },
         "extractions": {
+          "description": "The extractions of the Selenium script.",
+          "examples": [
+            {
+              "extract_location": "RequestBody",
+              "extract_match_index": 0,
+              "extract_regex": "access_token=(.*?)&",
+              "name": "access_token"
+            }
+          ],
           "items": {
             "$ref": "#/$defs/SeleniumExtraction"
           },
@@ -1207,28 +1401,19 @@
         }
       },
       "required": [
-        "parameters",
-        "extractions"
+        "parameters"
       ],
       "title": "SeleniumRunnerConfiguration",
       "type": "object"
     },
     "SeleniumScriptOptions": {
       "properties": {
-        "token_lifetime": {
-          "anyOf": [
-            {
-              "type": "integer"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Token Lifetime"
-        },
         "wait_for_seconds": {
           "default": 5,
+          "description": "The number of seconds to wait at various steps of the script. For example when waiting for a page to load.",
+          "examples": [
+            30
+          ],
           "title": "Wait For Seconds",
           "type": "integer"
         },
@@ -1242,6 +1427,10 @@
             }
           ],
           "default": null,
+          "description": "The proxy used to run the script.",
+          "examples": [
+            "http://my-proxy:8080"
+          ],
           "title": "Proxy"
         }
       },
@@ -1249,13 +1438,56 @@
       "type": "object"
     },
     "SeleniumScriptParameters": {
-      "description": "SeleniumScriptParameters(*, project: multiauth.lib.runners.webdriver.configuration.SeleniumProject, options: multiauth.lib.runners.webdriver.runner.SeleniumScriptOptions)",
       "properties": {
         "project": {
-          "$ref": "#/$defs/SeleniumProject"
+          "allOf": [
+            {
+              "$ref": "#/$defs/SeleniumProject"
+            }
+          ],
+          "description": "The Selenium project used to run the script. It is the one that contains the tests and commands to run. The project script can be generated using the Selenium IDE. See https://www.selenium.dev/selenium-ide/docs/en/introduction/getting-started/",
+          "examples": [
+            {
+              "tests": [
+                {
+                  "commands": [
+                    {
+                      "command": "open",
+                      "id": "command",
+                      "target": "https://example.com",
+                      "targets": [
+                        [
+                          "css",
+                          "body"
+                        ]
+                      ],
+                      "value": ""
+                    }
+                  ],
+                  "id": "test",
+                  "name": "test"
+                }
+              ]
+            }
+          ]
         },
         "options": {
-          "$ref": "#/$defs/SeleniumScriptOptions"
+          "allOf": [
+            {
+              "$ref": "#/$defs/SeleniumScriptOptions"
+            }
+          ],
+          "description": "The options of the Selenium script.",
+          "examples": [
+            {
+              "proxy": "http://my-proxy:8080",
+              "wait_for_seconds": 30
+            },
+            {
+              "proxy": null,
+              "wait_for_seconds": 5
+            }
+          ]
         }
       },
       "required": [
@@ -1268,14 +1500,37 @@
     "SeleniumTest": {
       "properties": {
         "id": {
+          "description": "The id of the test.",
+          "examples": [
+            "3a0f2934d17c4ddca7c51790e699f107"
+          ],
           "title": "Id",
           "type": "string"
         },
         "name": {
+          "description": "The name of the test.",
+          "examples": [
+            "my-test"
+          ],
           "title": "Name",
           "type": "string"
         },
         "commands": {
+          "description": "The commands of the test.",
+          "examples": [
+            {
+              "command": "open",
+              "id": "fdb3724eee1c4180a6d6481480ee6ec9",
+              "target": "https://example.com",
+              "targets": [
+                [
+                  "css",
+                  "body"
+                ]
+              ],
+              "value": ""
+            }
+          ],
           "items": {
             "$ref": "#/$defs/SeleniumCommand"
           },

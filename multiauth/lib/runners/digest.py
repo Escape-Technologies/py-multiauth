@@ -43,7 +43,7 @@ class DigestRequestSequenceConfiguration(BaseModel):
             HTTPRequestParameters(
                 url='https://example.com/digest',
                 method=HTTPMethod.GET,
-            ),
+            ).dict(exclude_defaults=True),
         ],
     )
     second_request: DigestSecondRequestConfiguration | None = Field(

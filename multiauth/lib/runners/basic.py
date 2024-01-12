@@ -1,6 +1,8 @@
 import base64
 from typing import Literal
 
+from pydantic import Field
+
 from multiauth.lib.audit.events.base import EventsList
 from multiauth.lib.http_core.entities import (
     HTTPHeader,
@@ -18,7 +20,10 @@ from multiauth.lib.store.variables import AuthenticationVariable, VariableName, 
 
 class BasicRunnerConfiguration(BaseRunnerConfiguration):
     tech: Literal['basic'] = 'basic'
-    parameters: HTTPRequestParameters
+    parameters: HTTPRequestParameters = Field(
+        description=('The parameters of the HTTP request used to test the username and password.'),
+        examples=HTTPRequestParameters.examples(),
+    )
 
     def to_http(self) -> HTTPRunnerConfiguration:
         return HTTPRunnerConfiguration(
@@ -28,6 +33,17 @@ class BasicRunnerConfiguration(BaseRunnerConfiguration):
 
     def get_runner(self) -> 'BasicRequestRunner':
         return BasicRequestRunner(self)
+
+    @staticmethod
+    def examples() -> list:
+        return [
+            BasicRunnerConfiguration(
+                parameters=HTTPRequestParameters(
+                    url='https://example.com/basic',
+                    method='GET',
+                ),
+            ),
+        ]
 
 
 def build_basic_headers(username: str, password: str) -> HTTPHeader:
