@@ -30,7 +30,7 @@ from multiauth.lib.runners.base import (
     BaseRunnerParameters,
     RunnerException,
 )
-from multiauth.lib.store.user import User
+from multiauth.lib.store.user import Credentials, User
 from multiauth.lib.store.variables import AuthenticationVariable, interpolate_string
 
 
@@ -56,19 +56,79 @@ HTTPExtractionType = Annotated[
 
 
 class HTTPRequestParameters(BaseRunnerParameters):
-    url: str
-    method: HTTPMethod
-    headers: list[HTTPHeader] = Field(default_factory=list)
-    cookies: list[HTTPCookie] = Field(default_factory=list)
-    query_parameters: list[HTTPQueryParameter] = Field(default_factory=list)
-    body: Any | None = Field(default=None)
-    proxy: str | None = Field(default=None)
+    url: str = Field(description='The URL to send the request to')
+    method: HTTPMethod = Field(
+        description='The HTTP method to use',
+        examples=['CONNECT', 'DELETE', 'GET', 'HEAD', 'OPTIONS', 'PATCH', 'POST', 'PUT', 'TRACE'],
+        default='GET',
+    )
+    headers: list[HTTPHeader] = Field(
+        default_factory=list,
+        description=(
+            'The list of headers to attach to the request. Headers are merged with the user credentials headers. '
+            'It is possible to attach mutliple values to a header.'
+        ),
+        examples=[
+            {'name': 'Content-Type', 'values': ['application/json']},
+            {'name': 'X-Header', 'values': ['value1', 'value2']},
+        ],
+    )
+    cookies: list[HTTPCookie] = Field(
+        default_factory=list,
+        description=(
+            'The list of cookies to attach to the request. Cookies are merged with the user credentials cookies. '
+            'It is possible to attach mutliple values to a cookie. Cookie values are url-encoded before being sent.'
+        ),
+        examples=[
+            {'name': 'PHPSESSIONID', 'values': ['value1', 'value2']},
+            {'name': 'cookie2', 'values': ['value3']},
+        ],
+    )
+    query_parameters: list[HTTPQueryParameter] = Field(
+        default_factory=list,
+        description=(
+            'The list of query parameters to attach to the request. Query parameters are merged with the user '
+            'credentials query parameters. It is possible to attach mutliple values to a query parameter. '
+            'Query parameter values are url-encoded before being sent.'
+        ),
+        examples=[
+            {'name': 'client_id', 'values': ['my-client-id']},
+            {'name': 'scope', 'values': ['read_data', 'write_data']},
+        ],
+    )
+    body: Any | None = Field(
+        default=None,
+        description=(
+            'The body of the request. It can be a string or a JSON object. '
+            'It is merged with the user credentials body if provided. If bodies of the HTTP request and of the user '
+            'credentials are both JSON objects, they are merged. If the two bodies are strings, they are concatenated. '
+            'If the two bodies are of different types, the body of the user credentials is used instead of this value.'
+        ),
+        examples=[
+            'my body',
+            {'key1': 'value1', 'key2': 'value2'},
+            12345,
+        ],
+    )
+    proxy: str | None = Field(
+        default=None,
+        description='An eventual proxy used for this request',
+        examples=['http://my-proxy:8080'],
+    )
 
 
 class HTTPRunnerConfiguration(BaseRunnerConfiguration):
     tech: Literal['http'] = 'http'
-    extractions: list[HTTPExtractionType] = Field(default_factory=list)
-    parameters: HTTPRequestParameters
+    extractions: list[HTTPExtractionType] = Field(
+        default_factory=list,
+        description=(
+            'The list of extractions to run at the end of the operation.'
+            'For HTTP operations, variables are extracted from the response.'
+        ),
+    )
+    parameters: HTTPRequestParameters = Field(
+        description='The parameters of the HTTP request to send. At least a URL and a method must be provided.',
+    )
 
     def get_runner(self) -> 'HTTPRequestRunner':
         return HTTPRequestRunner(self)
@@ -105,12 +165,14 @@ class HTTPRequestRunner(BaseRunner[HTTPRunnerConfiguration]):
 
         events = EventsList()
 
-        scheme, host, path = parse_raw_url(parameters.url)
-        headers = merge_headers(parameters.headers, user.credentials.headers)
-        cookies = merge_cookies(parameters.cookies, user.credentials.cookies)
-        query_parameters = merge_query_parameters(parameters.query_parameters, user.credentials.query_parameters)
+        credentials = user.credentials or Credentials()
 
-        data = merge_bodies(parameters.body, user.credentials.body)
+        scheme, host, path = parse_raw_url(parameters.url)
+        headers = merge_headers(parameters.headers, credentials.headers)
+        cookies = merge_cookies(parameters.cookies, credentials.cookies)
+        query_parameters = merge_query_parameters(parameters.query_parameters, credentials.query_parameters)
+
+        data = merge_bodies(parameters.body, credentials.body)
         data_text = None if data is None else data if isinstance(data, str) else json.dumps(data)
         data_json: Any = None
         try:
@@ -128,8 +190,8 @@ class HTTPRequestRunner(BaseRunner[HTTPRunnerConfiguration]):
             query_parameters=query_parameters,
             data_text=data_text,
             data_json=data_json,
-            username=user.credentials.username,
-            password=user.credentials.password,
+            username=credentials.username,
+            password=credentials.password,
             proxy=parameters.proxy,
         )
 

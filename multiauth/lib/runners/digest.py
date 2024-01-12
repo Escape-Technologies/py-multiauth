@@ -2,7 +2,7 @@ import hashlib
 from http import HTTPMethod
 from typing import Literal
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from multiauth.lib.audit.events.base import EventsList
 from multiauth.lib.audit.events.events import HTTPFailureEvent
@@ -10,23 +10,60 @@ from multiauth.lib.http_core.entities import HTTPHeader
 from multiauth.lib.http_core.mergers import merge_headers
 from multiauth.lib.runners.base import BaseRunnerConfiguration, RunnerException
 from multiauth.lib.runners.http import HTTPRequestParameters, HTTPRequestRunner, HTTPRunnerConfiguration
-from multiauth.lib.store.user import User
+from multiauth.lib.store.user import Credentials, User
 from multiauth.lib.store.variables import AuthenticationVariable, VariableName, interpolate_string
 
 
 class DigestSecondRequestConfiguration(BaseModel):
-    path: str | None = None
-    method: HTTPMethod | None = None
+    path: str | None = Field(
+        default=None,
+        description=(
+            'The path of the second HTTP request executed during the digest procedure.'
+            'By default, the path of the first request is used.'
+        ),
+        examples=['/digest'],
+    )
+    method: HTTPMethod | None = Field(
+        default=None,
+        description=(
+            'The method of the second HTTP request executed during the digest procedure.'
+            'By default, the method of the first request is used.'
+        ),
+        examples=['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS', 'HEAD', 'TRACE', 'CONNECT'],
+    )
 
 
 class DigestRequestSequenceConfiguration(BaseModel):
-    first_request: HTTPRequestParameters
-    second_request: DigestSecondRequestConfiguration | None = None
+    first_request: HTTPRequestParameters = Field(
+        description=(
+            'The parameters of the first HTTP request executed during the digest procedure.'
+            'It is the one that returns the WWW-Authenticate header.'
+        ),
+        examples=[
+            HTTPRequestParameters(
+                url='https://example.com/digest',
+                method=HTTPMethod.GET,
+            ),
+        ],
+    )
+    second_request: DigestSecondRequestConfiguration | None = Field(
+        default=None,
+        description=(
+            'The parameters of the second HTTP request executed during the digest procedure.'
+            'It is the one that uses the digest authentication. By default, parameters of the first request are used.'
+        ),
+    )
 
 
 class DigestRunnerConfiguration(BaseRunnerConfiguration):
     tech: Literal['digest'] = 'digest'
-    parameters: DigestRequestSequenceConfiguration
+    parameters: DigestRequestSequenceConfiguration = Field(
+        description=(
+            'The parameters of the HTTP requests executed during the digest procedure.'
+            'It features two HTTP requests: the first one is the one that returns the WWW-Authenticate header,'
+            'and the second one is the one that uses the digest authentication.'
+        ),
+    )
 
     def to_http(self) -> HTTPRunnerConfiguration:
         return HTTPRunnerConfiguration(
@@ -84,7 +121,9 @@ class DigestRunner(HTTPRequestRunner):
         events = EventsList()
         variables: list[AuthenticationVariable] = []
 
-        if not user.credentials.username or not user.credentials.password:
+        credentials = user.credentials or Credentials()
+
+        if not credentials.username or not credentials.password:
             raise ValueError(f'User {user.name} is missing a username or password.')
 
         request, response, http_events = super().request(user)
@@ -152,8 +191,8 @@ class DigestRunner(HTTPRequestRunner):
 
         header = build_digest_headers(
             realm=realm,
-            username=user.credentials.username,
-            password=user.credentials.password,
+            username=credentials.username,
+            password=credentials.password,
             domain=domain,
             method=request.method,
             nonce=nonce,

@@ -12,7 +12,7 @@ from multiauth.lib.runners.http import (
     HTTPRequestRunner,
     HTTPRunnerConfiguration,
 )
-from multiauth.lib.store.user import User
+from multiauth.lib.store.user import Credentials, User
 from multiauth.lib.store.variables import AuthenticationVariable, VariableName, interpolate_string
 
 
@@ -43,16 +43,20 @@ class BasicRequestRunner(HTTPRequestRunner):
         super().__init__(self.basic_request_configuration.to_http())
 
     def run(self, user: User) -> tuple[list[AuthenticationVariable], EventsList, RunnerException | None]:
-        if not user.credentials.username or not user.credentials.password:
+        credentials = user.credentials or Credentials()
+        request_credentials = Credentials.from_credentials(credentials)
+
+        if not credentials.username or not credentials.password:
             raise ValueError(f'User {user.name} is missing a username or password.')
 
-        header = build_basic_headers(user.credentials.username, user.credentials.password)
-
-        basic_user = User.from_user(user)
-        basic_user.credentials.headers = merge_headers(
-            user.credentials.headers,
+        header = build_basic_headers(credentials.username, credentials.password)
+        request_credentials.headers = merge_headers(
+            credentials.headers,
             [header],
         )
+
+        basic_user = User.from_user(user)
+        basic_user.credentials = request_credentials
 
         variables, events, exception = super().run(basic_user)
         variables.append(AuthenticationVariable(name=VariableName('basic-header-value'), value=header.values[0]))

@@ -25,7 +25,7 @@ RunnerParametersType = TypeVar('RunnerParametersType', bound=BaseRunnerParameter
 class BaseRunnerConfiguration(BaseModel, abc.ABC, Generic[ExtractionType, RunnerParametersType]):
     tech: RunnerType
     parameters: RunnerParametersType
-    extractions: list[ExtractionType] = Field(default_factory=list)
+    extractions: list[ExtractionType]
 
     @abc.abstractmethod
     def get_runner(self) -> 'BaseRunner':

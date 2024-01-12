@@ -20,13 +20,21 @@ class MultiauthConfiguration(BaseModel):
     Multiauth configuration model.
     """
 
-    procedures: list[ProcedureConfiguration] = Field(
-        default_factory=list,
-        description='The list of authentication procedures to use',
+    procedures: list[ProcedureConfiguration] | None = Field(
+        default=None,
+        description='The list of authentication procedures to rely on when authenticating users',
     )
-    presets: list[PresetType] = Field(default_factory=list, description='The list of presets to use')
-    users: list[User] = Field(default_factory=list, description='List of users that can be used in procedures')
-    proxy: str | None = Field(default=None, description='Global proxy to use for all requests')
+    presets: list[PresetType] | None = Field(
+        default=None,
+        description=(
+            'A list of presets used to easily generate procedures and users automatically '
+            'following common authentication standards'
+        ),
+    )
+    users: list[User] = Field(
+        description='List of users that multiauth will generate authentications for.',
+    )
+    proxy: str | None = Field(default=None, description='An eventual global proxy used for all HTTP requests')
 
     @staticmethod
     def public() -> 'MultiauthConfiguration':

@@ -9,7 +9,7 @@ from multiauth.lib.audit.events.base import EventsList
 from multiauth.lib.audit.events.events import ProcedureAbortedEvent, ProcedureSkippedEvent
 from multiauth.lib.procedure import ISOExpirationTimestamp, Procedure, ProcedureName, default_expiration_date
 from multiauth.lib.store.authentication import Authentication, AuthenticationStore, AuthenticationStoreException
-from multiauth.lib.store.user import User, UserName
+from multiauth.lib.store.user import Credentials, User, UserName
 
 
 class Multiauth:
@@ -33,7 +33,7 @@ class Multiauth:
 
         self.authentication_store = AuthenticationStore()
 
-        for preset in configuration.presets:
+        for preset in configuration.presets or []:
             preset_procedure_configuration = preset.to_procedure_configuration()
             self.procedures[preset.name] = Procedure(preset_procedure_configuration)
             users = preset.to_users()
@@ -41,11 +41,11 @@ class Multiauth:
                 self.users[user.name] = user
 
         if configuration.proxy is not None:
-            for procedure in configuration.procedures:
+            for procedure in configuration.procedures or []:
                 for operation in procedure.operations:
                     operation.parameters.proxy = configuration.proxy
 
-        for procedure_configuration in configuration.procedures:
+        for procedure_configuration in configuration.procedures or []:
             self.procedures[procedure_configuration.name] = Procedure(procedure_configuration)
         for user in configuration.users:
             self.users[user.name] = user
@@ -121,7 +121,7 @@ class Multiauth:
         is not declared in the multiauth configuration.
         """
         user = self._get_user(user_name)
-        authentication = Authentication.from_credentials(user.credentials)
+        authentication = Authentication.from_credentials(user.credentials or Credentials())
         expiration = default_expiration_date()
 
         error: Exception | None = None

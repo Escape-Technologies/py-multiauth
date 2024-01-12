@@ -1,13 +1,13 @@
 from typing import NewType
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 VariableName = NewType('VariableName', str)
 
 
 class AuthenticationVariable(BaseModel):
-    name: VariableName
-    value: str
+    name: VariableName = Field(description='The name of the variable')
+    value: str = Field(description='The value of the variable')
 
 
 def interpolate_string(string: str, variables: list[AuthenticationVariable]) -> str:

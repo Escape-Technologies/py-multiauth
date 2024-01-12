@@ -1,11 +1,11 @@
 {
-  "procedures": [],
-  "presets": [],
   "users": [
     {
       "name": "example-user",
       "credentials": {
-        "headers": [{ "name": "Authorization", "values": ["Bearer QWERTYUIOP"] }]
+        "headers": [
+          { "name": "Authorization", "values": ["Bearer QWERTYUIOP"] }
+        ]
       },
       "procedure": null,
       "injections": []

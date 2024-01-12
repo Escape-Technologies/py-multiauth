@@ -15,8 +15,7 @@
               }
             ],
             "cookies": [],
-            "query_parameters": [],
-            "body": null
+            "query_parameters": []
           },
           "extractions": [
             {
@@ -29,5 +28,6 @@
       ]
     }
   ],
+  "users": [],
   "$schema": "../multiauth-schema.json"
 }

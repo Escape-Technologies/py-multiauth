@@ -17,27 +17,54 @@ class Credentials(BaseModel):
     username: str | None = Field(
         default=None,
         description='The username to attach to the HTTP requests sent for this user. See https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication#access_using_credentials_in_the_url',
+        examples=['john'],
     )
     password: str | None = Field(
         default=None,
         description='The password to attach to the HTTP requests sent for this user. See https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication#access_using_credentials_in_the_url',
+        examples=['john@password123#'],
     )
     headers: list[HTTPHeader] = Field(
         default_factory=list,
         description='A list of headers to attach to every HTTP requests sent for this user',
+        examples=[
+            HTTPHeader(
+                name='Authorization',
+                values=['Bearer ...'],
+            ),
+        ],
     )
     cookies: list[HTTPCookie] = Field(
         default_factory=list,
         description='A list of cookies to attach to every HTTP requests sent for this user',
+        examples=[
+            HTTPCookie(
+                name='PHPSESSIONID',
+                values=['...'],
+            ),
+        ],
     )
     query_parameters: list[HTTPQueryParameter] = Field(
         default_factory=list,
         serialization_alias='queryParameters',
         description='A list of query parameters to attach to every HTTP requests sent for this user',
+        examples=[
+            HTTPQueryParameter(
+                name='token',
+                values=['...'],
+            ),
+        ],
     )
     body: Any | None = Field(
         default=None,
         description='A body to merge with the bodies of every HTTP requests sent for this user',
+        examples=[
+            {
+                'username': 'john',
+                'password': 'john@password123#',
+            },
+            'username=john&password=john%40password123%23',
+        ],
     )
 
     @staticmethod
@@ -58,7 +85,8 @@ class UserRefresh(BaseModel):
     procedure: ProcedureName | None = Field(
         default=None,
         description=(
-            'Procedure to use to refresh the authentication.Defaults to the user procedure if not provided. '
+            'An optional custom procedure to use to refresh the authentication of the user. '
+            'Defaults to the user procedure if not provided. '
             'This name MUST match the `name` field of a procedure in the `procedures` list in the '
             'multiauth configuration.'
         ),
@@ -95,9 +123,9 @@ class UserRefresh(BaseModel):
 
 class User(BaseModel):
     name: UserName = Field(description='The name of the user')
-    credentials: Credentials = Field(
-        description='The parameters use to customize requests sent for the user',
-        default_factory=Credentials,
+    credentials: Credentials | None = Field(
+        description='A set of HTTP parameters used to customize requests sent for the user.',
+        default=None,
     )
     procedure: ProcedureName | None = Field(
         description=(
@@ -109,11 +137,11 @@ class User(BaseModel):
     )
     variables: list[AuthenticationVariable] = Field(
         default_factory=list,
-        description="List of variables that will be injected at the beginning of the user's authentication procedure",
+        description="List of variables that will be injected at the beginning of the user's authentication procedure.",
     )
     refresh: UserRefresh | None = Field(
         default=None,
-        description='An optional refresh procedure to follow for the user',
+        description='An optional refresh procedure to follow for the user.',
     )
 
     @property
@@ -133,7 +161,7 @@ class User(BaseModel):
         return self.refresh.variables or self.variables
 
     @property
-    def refresh_credentials(self) -> Credentials:
+    def refresh_credentials(self) -> Credentials | None:
         if self.refresh is None:
             return self.credentials
         return self.refresh.credentials or self.credentials
@@ -153,7 +181,7 @@ class User(BaseModel):
     def from_user(user: 'User') -> 'User':
         return User(
             name=user.name,
-            credentials=Credentials.from_credentials(user.credentials),
+            credentials=Credentials.from_credentials(user.credentials or Credentials()),
             procedure=user.procedure,
             variables=user.variables,
             refresh=user.refresh,

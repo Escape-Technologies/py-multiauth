@@ -7,8 +7,8 @@ Type: object
 
 | Field Name | Type | Required | Description | Reference |
 |------------|------|----------|-------------|-----------|
-| name | `string` | `True` |  |  |
-| value | `string` | `True` |  |  |
+| name | `string` | `True` | The name of the variable |  |
+| value | `string` | `True` | The value of the variable |  |
 
 
 ## <a id="BaseExtraction"></a>BaseExtraction
@@ -31,8 +31,8 @@ Type: object
 | Field Name | Type | Required | Description | Reference |
 |------------|------|----------|-------------|-----------|
 | parameters | `N/A` | `True` |  |  |
+| extractions | `BaseExtraction[]` | `True` |  | [BaseExtraction](#BaseExtraction) |
 | tech | `N/A` | `False` |  |  |
-| extractions | `BaseExtraction[]` | `False` |  | [BaseExtraction](#BaseExtraction) |
 
 
 ## <a id="Credentials"></a>Credentials
@@ -59,8 +59,8 @@ Type: object
 
 | Field Name | Type | Required | Description | Reference |
 |------------|------|----------|-------------|-----------|
-| first_request | `N/A` | `True` |  |  |
-| second_request | `N/A` | `False` |  |  |
+| first_request | `N/A` | `True` | The parameters of the first HTTP request executed during the digest procedure.It is the one that returns the WWW-Authenticate header. |  |
+| second_request | `N/A` | `False` | The parameters of the second HTTP request executed during the digest procedure.It is the one that uses the digest authentication. By default, parameters of the first request are used. |  |
 
 
 ## <a id="DigestRunnerConfiguration"></a>DigestRunnerConfiguration
@@ -71,9 +71,9 @@ Type: object
 
 | Field Name | Type | Required | Description | Reference |
 |------------|------|----------|-------------|-----------|
-| parameters | `N/A` | `True` |  |  |
+| parameters | `N/A` | `True` | The parameters of the HTTP requests executed during the digest procedure.It features two HTTP requests: the first one is the one that returns the WWW-Authenticate header,and the second one is the one that uses the digest authentication. |  |
+| extractions | `BaseExtraction[]` | `True` |  | [BaseExtraction](#BaseExtraction) |
 | tech | `N/A` | `False` |  |  |
-| extractions | `BaseExtraction[]` | `False` |  | [BaseExtraction](#BaseExtraction) |
 
 
 ## <a id="DigestSecondRequestConfiguration"></a>DigestSecondRequestConfiguration
@@ -84,8 +84,8 @@ Type: object
 
 | Field Name | Type | Required | Description | Reference |
 |------------|------|----------|-------------|-----------|
-| method | `N/A` | `False` |  |  |
-| path | `N/A` | `False` |  |  |
+| method | `N/A` | `False` | The method of the second HTTP request executed during the digest procedure.By default, the method of the first request is used. |  |
+| path | `N/A` | `False` | The path of the second HTTP request executed during the digest procedure.By default, the path of the first request is used. |  |
 
 
 ## <a id="GraphQLRequestParameters"></a>GraphQLRequestParameters
@@ -96,15 +96,15 @@ Type: object
 
 | Field Name | Type | Required | Description | Reference |
 |------------|------|----------|-------------|-----------|
-| query | `string` | `True` |  |  |
-| url | `string` | `True` |  |  |
-| body | `N/A` | `False` |  |  |
-| method | `N/A` | `False` |  |  |
-| proxy | `N/A` | `False` |  |  |
-| cookies | `HTTPCookie[]` | `False` |  | [HTTPCookie](#HTTPCookie) |
-| headers | `HTTPHeader[]` | `False` |  | [HTTPHeader](#HTTPHeader) |
-| query_parameters | `HTTPQueryParameter[]` | `False` |  | [HTTPQueryParameter](#HTTPQueryParameter) |
-| variables | `GraphQLVariable[]` | `False` |  | [GraphQLVariable](#GraphQLVariable) |
+| query | `string` | `True` | The GraphQL query to send. Will be added to the `query` field of the JSON body of the HTTP request. |  |
+| url | `string` | `True` | The URL to send the request to |  |
+| body | `N/A` | `False` | The body of the request. It can be a string or a JSON object. It is merged with the user credentials body if provided. If bodies of the HTTP request and of the user credentials are both JSON objects, they are merged. If the two bodies are strings, they are concatenated. If the two bodies are of different types, the body of the user credentials is used instead of this value. |  |
+| method | `N/A` | `False` | The HTTP method to use to send the request. By default, POST is used. |  |
+| proxy | `N/A` | `False` | An eventual proxy used for this request |  |
+| variables | `N/A` | `False` | The variables to send with the query. Will be added to the `variables` field ofthe JSON body of the HTTP request. |  |
+| cookies | `HTTPCookie[]` | `False` | The list of cookies to attach to the request. Cookies are merged with the user credentials cookies. It is possible to attach mutliple values to a cookie. Cookie values are url-encoded before being sent. | [HTTPCookie](#HTTPCookie) |
+| headers | `HTTPHeader[]` | `False` | The list of headers to attach to the request. Headers are merged with the user credentials headers. It is possible to attach mutliple values to a header. | [HTTPHeader](#HTTPHeader) |
+| query_parameters | `HTTPQueryParameter[]` | `False` | The list of query parameters to attach to the request. Query parameters are merged with the user credentials query parameters. It is possible to attach mutliple values to a query parameter. Query parameter values are url-encoded before being sent. | [HTTPQueryParameter](#HTTPQueryParameter) |
 
 
 ## <a id="GraphQLRunnerConfiguration"></a>GraphQLRunnerConfiguration
@@ -115,8 +115,8 @@ Type: object
 
 | Field Name | Type | Required | Description | Reference |
 |------------|------|----------|-------------|-----------|
-| parameters | `N/A` | `True` |  |  |
-| extractions | `array` | `False` |  |  |
+| parameters | `N/A` | `True` | The parameters of the GraphQL request to send. At least a query and a GraphQL endpoint are required. By default, POST is used as the HTTP method, and the request is sent as JSON. |  |
+| extractions | `array` | `False` | The list of extractions to run at the end of the operation.For HTTP operations, variables are extracted from the response. |  |
 | tech | `N/A` | `False` |  |  |
 
 
@@ -240,13 +240,13 @@ Type: object
 
 | Field Name | Type | Required | Description | Reference |
 |------------|------|----------|-------------|-----------|
-| method | `N/A` | `True` |  |  |
-| url | `string` | `True` |  |  |
-| body | `N/A` | `False` |  |  |
-| proxy | `N/A` | `False` |  |  |
-| cookies | `HTTPCookie[]` | `False` |  | [HTTPCookie](#HTTPCookie) |
-| headers | `HTTPHeader[]` | `False` |  | [HTTPHeader](#HTTPHeader) |
-| query_parameters | `HTTPQueryParameter[]` | `False` |  | [HTTPQueryParameter](#HTTPQueryParameter) |
+| url | `string` | `True` | The URL to send the request to |  |
+| body | `N/A` | `False` | The body of the request. It can be a string or a JSON object. It is merged with the user credentials body if provided. If bodies of the HTTP request and of the user credentials are both JSON objects, they are merged. If the two bodies are strings, they are concatenated. If the two bodies are of different types, the body of the user credentials is used instead of this value. |  |
+| method | `N/A` | `False` | The HTTP method to use |  |
+| proxy | `N/A` | `False` | An eventual proxy used for this request |  |
+| cookies | `HTTPCookie[]` | `False` | The list of cookies to attach to the request. Cookies are merged with the user credentials cookies. It is possible to attach mutliple values to a cookie. Cookie values are url-encoded before being sent. | [HTTPCookie](#HTTPCookie) |
+| headers | `HTTPHeader[]` | `False` | The list of headers to attach to the request. Headers are merged with the user credentials headers. It is possible to attach mutliple values to a header. | [HTTPHeader](#HTTPHeader) |
+| query_parameters | `HTTPQueryParameter[]` | `False` | The list of query parameters to attach to the request. Query parameters are merged with the user credentials query parameters. It is possible to attach mutliple values to a query parameter. Query parameter values are url-encoded before being sent. | [HTTPQueryParameter](#HTTPQueryParameter) |
 
 
 ## <a id="HTTPRunnerConfiguration"></a>HTTPRunnerConfiguration
@@ -257,8 +257,8 @@ Type: object
 
 | Field Name | Type | Required | Description | Reference |
 |------------|------|----------|-------------|-----------|
-| parameters | `N/A` | `True` |  |  |
-| extractions | `array` | `False` |  |  |
+| parameters | `N/A` | `True` | The parameters of the HTTP request to send. At least a URL and a method must be provided. |  |
+| extractions | `array` | `False` | The list of extractions to run at the end of the operation.For HTTP operations, variables are extracted from the response. |  |
 | tech | `N/A` | `False` |  |  |
 
 
@@ -331,9 +331,9 @@ Type: object
 
 | Field Name | Type | Required | Description | Reference |
 |------------|------|----------|-------------|-----------|
-| name | `string` | `True` | The name of the procedure. |  |
-| operations | `array` | `False` |  |  |
-| injections | `TokenInjection[]` | `False` |  | [TokenInjection](#TokenInjection) |
+| name | `string` | `True` | The name of the procedure. It must be unique and is used to reference the procedure in users. |  |
+| operations | `array` | `False` | The list of operations executed during the procedure. An operation is a unit transaction, like an HTTP request, or a Selenium script. Operations are ordered, and the variables extracted from an operation can be used in the next operations. |  |
+| injections | `TokenInjection[]` | `False` | The list of injections to perform at the end of the procedure. Injections are used to inject the variables extracted from the procedure into the user authentication. | [TokenInjection](#TokenInjection) |
 
 
 ## <a id="SeleniumCommand"></a>SeleniumCommand
@@ -450,10 +450,10 @@ Type: object
 | Field Name | Type | Required | Description | Reference |
 |------------|------|----------|-------------|-----------|
 | name | `string` | `True` | The name of the user |  |
-| credentials | `N/A` | `False` | The parameters use to customize requests sent for the user |  |
+| credentials | `N/A` | `False` | A set of HTTP parameters used to customize requests sent for the user. |  |
 | procedure | `N/A` | `False` | The name of the procedure to use to authenticate the user.This name MUST match the `name` field of a procedure in the `procedures` list in the multiauth configuration. |  |
-| refresh | `N/A` | `False` | An optional refresh procedure to follow for the user |  |
-| variables | `AuthenticationVariable[]` | `False` | List of variables that will be injected at the beginning of the user&#39;s authentication procedure | [AuthenticationVariable](#AuthenticationVariable) |
+| refresh | `N/A` | `False` | An optional refresh procedure to follow for the user. |  |
+| variables | `AuthenticationVariable[]` | `False` | List of variables that will be injected at the beginning of the user&#39;s authentication procedure. | [AuthenticationVariable](#AuthenticationVariable) |
 
 
 ## <a id="UserRefresh"></a>UserRefresh
@@ -466,7 +466,7 @@ Type: object
 |------------|------|----------|-------------|-----------|
 | credentials | `N/A` | `False` | Credentials to use to refresh the authentication. If not provided, the user credentials will be used. |  |
 | keep | `boolean` | `False` | If true, multiauth will keep the current tokens and use a merge of the refreshed authenticationand the current one. |  |
-| procedure | `N/A` | `False` | Procedure to use to refresh the authentication.Defaults to the user procedure if not provided. This name MUST match the `name` field of a procedure in the `procedures` list in the multiauth configuration. |  |
+| procedure | `N/A` | `False` | An optional custom procedure to use to refresh the authentication of the user. Defaults to the user procedure if not provided. This name MUST match the `name` field of a procedure in the `procedures` list in the multiauth configuration. |  |
 | session_seconds | `N/A` | `False` | Number of seconds to wait before refreshing the authentication. If not provided, multiauth willtry to infer the session duration from the returned variables |  |
 | variables | `N/A` | `False` | List of variables that will be injected at the beginning of the user&#39;srefresh procedure. If not provided, the user&#39;s variables will be used instead. |  |
 

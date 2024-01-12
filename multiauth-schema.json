@@ -3,10 +3,12 @@
     "AuthenticationVariable": {
       "properties": {
         "name": {
+          "description": "The name of the variable",
           "title": "Name",
           "type": "string"
         },
         "value": {
+          "description": "The value of the variable",
           "title": "Value",
           "type": "string"
         }
@@ -51,7 +53,8 @@
         }
       },
       "required": [
-        "parameters"
+        "parameters",
+        "extractions"
       ],
       "title": "BasicRunnerConfiguration",
       "type": "object"
@@ -69,6 +72,9 @@
           ],
           "default": null,
           "description": "The username to attach to the HTTP requests sent for this user. See https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication#access_using_credentials_in_the_url",
+          "examples": [
+            "john"
+          ],
           "title": "Username"
         },
         "password": {
@@ -82,10 +88,21 @@
           ],
           "default": null,
           "description": "The password to attach to the HTTP requests sent for this user. See https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication#access_using_credentials_in_the_url",
+          "examples": [
+            "john@password123#"
+          ],
           "title": "Password"
         },
         "headers": {
           "description": "A list of headers to attach to every HTTP requests sent for this user",
+          "examples": [
+            {
+              "name": "Authorization",
+              "values": [
+                "Bearer ..."
+              ]
+            }
+          ],
           "items": {
             "$ref": "#/$defs/HTTPHeader"
           },
@@ -94,6 +111,14 @@
         },
         "cookies": {
           "description": "A list of cookies to attach to every HTTP requests sent for this user",
+          "examples": [
+            {
+              "name": "PHPSESSIONID",
+              "values": [
+                "..."
+              ]
+            }
+          ],
           "items": {
             "$ref": "#/$defs/HTTPCookie"
           },
@@ -102,6 +127,14 @@
         },
         "query_parameters": {
           "description": "A list of query parameters to attach to every HTTP requests sent for this user",
+          "examples": [
+            {
+              "name": "token",
+              "values": [
+                "..."
+              ]
+            }
+          ],
           "items": {
             "$ref": "#/$defs/HTTPQueryParameter"
           },
@@ -117,6 +150,13 @@
           ],
           "default": null,
           "description": "A body to merge with the bodies of every HTTP requests sent for this user",
+          "examples": [
+            {
+              "password": "john@password123#",
+              "username": "john"
+            },
+            "username=john&password=john%40password123%23"
+          ],
           "title": "Body"
         }
       },
@@ -126,7 +166,23 @@
     "DigestRequestSequenceConfiguration": {
       "properties": {
         "first_request": {
-          "$ref": "#/$defs/HTTPRequestParameters"
+          "allOf": [
+            {
+              "$ref": "#/$defs/HTTPRequestParameters"
+            }
+          ],
+          "description": "The parameters of the first HTTP request executed during the digest procedure.It is the one that returns the WWW-Authenticate header.",
+          "examples": [
+            {
+              "body": null,
+              "cookies": [],
+              "headers": [],
+              "method": "GET",
+              "proxy": null,
+              "query_parameters": [],
+              "url": "https://example.com/digest"
+            }
+          ]
         },
         "second_request": {
           "anyOf": [
@@ -137,7 +193,8 @@
               "type": "null"
             }
           ],
-          "default": null
+          "default": null,
+          "description": "The parameters of the second HTTP request executed during the digest procedure.It is the one that uses the digest authentication. By default, parameters of the first request are used."
         }
       },
       "required": [
@@ -154,7 +211,12 @@
           "title": "Tech"
         },
         "parameters": {
-          "$ref": "#/$defs/DigestRequestSequenceConfiguration"
+          "allOf": [
+            {
+              "$ref": "#/$defs/DigestRequestSequenceConfiguration"
+            }
+          ],
+          "description": "The parameters of the HTTP requests executed during the digest procedure.It features two HTTP requests: the first one is the one that returns the WWW-Authenticate header,and the second one is the one that uses the digest authentication."
         },
         "extractions": {
           "items": {
@@ -165,7 +227,8 @@
         }
       },
       "required": [
-        "parameters"
+        "parameters",
+        "extractions"
       ],
       "title": "DigestRunnerConfiguration",
       "type": "object"
@@ -182,6 +245,10 @@
             }
           ],
           "default": null,
+          "description": "The path of the second HTTP request executed during the digest procedure.By default, the path of the first request is used.",
+          "examples": [
+            "/digest"
+          ],
           "title": "Path"
         },
         "method": {
@@ -193,7 +260,19 @@
               "type": "null"
             }
           ],
-          "default": null
+          "default": null,
+          "description": "The method of the second HTTP request executed during the digest procedure.By default, the method of the first request is used.",
+          "examples": [
+            "GET",
+            "POST",
+            "PUT",
+            "DELETE",
+            "PATCH",
+            "OPTIONS",
+            "HEAD",
+            "TRACE",
+            "CONNECT"
+          ]
         }
       },
       "title": "DigestSecondRequestConfiguration",
@@ -202,6 +281,7 @@
     "GraphQLRequestParameters": {
       "properties": {
         "url": {
+          "description": "The URL to send the request to",
           "title": "Url",
           "type": "string"
         },
@@ -211,9 +291,26 @@
               "$ref": "#/$defs/HTTPMethod"
             }
           ],
-          "default": "POST"
+          "default": "POST",
+          "description": "The HTTP method to use to send the request. By default, POST is used."
         },
         "headers": {
+          "description": "The list of headers to attach to the request. Headers are merged with the user credentials headers. It is possible to attach mutliple values to a header.",
+          "examples": [
+            {
+              "name": "Content-Type",
+              "values": [
+                "application/json"
+              ]
+            },
+            {
+              "name": "X-Header",
+              "values": [
+                "value1",
+                "value2"
+              ]
+            }
+          ],
           "items": {
             "$ref": "#/$defs/HTTPHeader"
           },
@@ -221,6 +318,22 @@
           "type": "array"
         },
         "cookies": {
+          "description": "The list of cookies to attach to the request. Cookies are merged with the user credentials cookies. It is possible to attach mutliple values to a cookie. Cookie values are url-encoded before being sent.",
+          "examples": [
+            {
+              "name": "PHPSESSIONID",
+              "values": [
+                "value1",
+                "value2"
+              ]
+            },
+            {
+              "name": "cookie2",
+              "values": [
+                "value3"
+              ]
+            }
+          ],
           "items": {
             "$ref": "#/$defs/HTTPCookie"
           },
@@ -228,6 +341,22 @@
           "type": "array"
         },
         "query_parameters": {
+          "description": "The list of query parameters to attach to the request. Query parameters are merged with the user credentials query parameters. It is possible to attach mutliple values to a query parameter. Query parameter values are url-encoded before being sent.",
+          "examples": [
+            {
+              "name": "client_id",
+              "values": [
+                "my-client-id"
+              ]
+            },
+            {
+              "name": "scope",
+              "values": [
+                "read_data",
+                "write_data"
+              ]
+            }
+          ],
           "items": {
             "$ref": "#/$defs/HTTPQueryParameter"
           },
@@ -242,6 +371,15 @@
             }
           ],
           "default": null,
+          "description": "The body of the request. It can be a string or a JSON object. It is merged with the user credentials body if provided. If bodies of the HTTP request and of the user credentials are both JSON objects, they are merged. If the two bodies are strings, they are concatenated. If the two bodies are of different types, the body of the user credentials is used instead of this value.",
+          "examples": [
+            "my body",
+            {
+              "key1": "value1",
+              "key2": "value2"
+            },
+            12345
+          ],
           "title": "Body"
         },
         "proxy": {
@@ -254,18 +392,36 @@
             }
           ],
           "default": null,
+          "description": "An eventual proxy used for this request",
+          "examples": [
+            "http://my-proxy:8080"
+          ],
           "title": "Proxy"
         },
         "query": {
+          "description": "The GraphQL query to send. Will be added to the `query` field of the JSON body of the HTTP request.",
+          "examples": [
+            "mutation($username: String!, $password: String!) {\n   login(username: $username, password: $password) {\n       access_token\n       refresh_token\n   }\n}",
+            "query { __typename }"
+          ],
           "title": "Query",
           "type": "string"
         },
         "variables": {
-          "items": {
-            "$ref": "#/$defs/GraphQLVariable"
-          },
-          "title": "Variables",
-          "type": "array"
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/GraphQLVariable"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "The variables to send with the query. Will be added to the `variables` field ofthe JSON body of the HTTP request.",
+          "title": "Variables"
         }
       },
       "required": [
@@ -283,9 +439,15 @@
           "title": "Tech"
         },
         "parameters": {
-          "$ref": "#/$defs/GraphQLRequestParameters"
+          "allOf": [
+            {
+              "$ref": "#/$defs/GraphQLRequestParameters"
+            }
+          ],
+          "description": "The parameters of the GraphQL request to send. At least a query and a GraphQL endpoint are required. By default, POST is used as the HTTP method, and the request is sent as JSON."
         },
         "extractions": {
+          "description": "The list of extractions to run at the end of the operation.For HTTP operations, variables are extracted from the response.",
           "items": {
             "discriminator": {
               "mapping": {
@@ -501,13 +663,47 @@
     "HTTPRequestParameters": {
       "properties": {
         "url": {
+          "description": "The URL to send the request to",
           "title": "Url",
           "type": "string"
         },
         "method": {
-          "$ref": "#/$defs/HTTPMethod"
+          "allOf": [
+            {
+              "$ref": "#/$defs/HTTPMethod"
+            }
+          ],
+          "default": "GET",
+          "description": "The HTTP method to use",
+          "examples": [
+            "CONNECT",
+            "DELETE",
+            "GET",
+            "HEAD",
+            "OPTIONS",
+            "PATCH",
+            "POST",
+            "PUT",
+            "TRACE"
+          ]
         },
         "headers": {
+          "description": "The list of headers to attach to the request. Headers are merged with the user credentials headers. It is possible to attach mutliple values to a header.",
+          "examples": [
+            {
+              "name": "Content-Type",
+              "values": [
+                "application/json"
+              ]
+            },
+            {
+              "name": "X-Header",
+              "values": [
+                "value1",
+                "value2"
+              ]
+            }
+          ],
           "items": {
             "$ref": "#/$defs/HTTPHeader"
           },
@@ -515,6 +711,22 @@
           "type": "array"
         },
         "cookies": {
+          "description": "The list of cookies to attach to the request. Cookies are merged with the user credentials cookies. It is possible to attach mutliple values to a cookie. Cookie values are url-encoded before being sent.",
+          "examples": [
+            {
+              "name": "PHPSESSIONID",
+              "values": [
+                "value1",
+                "value2"
+              ]
+            },
+            {
+              "name": "cookie2",
+              "values": [
+                "value3"
+              ]
+            }
+          ],
           "items": {
             "$ref": "#/$defs/HTTPCookie"
           },
@@ -522,6 +734,22 @@
           "type": "array"
         },
         "query_parameters": {
+          "description": "The list of query parameters to attach to the request. Query parameters are merged with the user credentials query parameters. It is possible to attach mutliple values to a query parameter. Query parameter values are url-encoded before being sent.",
+          "examples": [
+            {
+              "name": "client_id",
+              "values": [
+                "my-client-id"
+              ]
+            },
+            {
+              "name": "scope",
+              "values": [
+                "read_data",
+                "write_data"
+              ]
+            }
+          ],
           "items": {
             "$ref": "#/$defs/HTTPQueryParameter"
           },
@@ -536,6 +764,15 @@
             }
           ],
           "default": null,
+          "description": "The body of the request. It can be a string or a JSON object. It is merged with the user credentials body if provided. If bodies of the HTTP request and of the user credentials are both JSON objects, they are merged. If the two bodies are strings, they are concatenated. If the two bodies are of different types, the body of the user credentials is used instead of this value.",
+          "examples": [
+            "my body",
+            {
+              "key1": "value1",
+              "key2": "value2"
+            },
+            12345
+          ],
           "title": "Body"
         },
         "proxy": {
@@ -548,12 +785,15 @@
             }
           ],
           "default": null,
+          "description": "An eventual proxy used for this request",
+          "examples": [
+            "http://my-proxy:8080"
+          ],
           "title": "Proxy"
         }
       },
       "required": [
-        "url",
-        "method"
+        "url"
       ],
       "title": "HTTPRequestParameters",
       "type": "object"
@@ -566,9 +806,15 @@
           "title": "Tech"
         },
         "parameters": {
-          "$ref": "#/$defs/HTTPRequestParameters"
+          "allOf": [
+            {
+              "$ref": "#/$defs/HTTPRequestParameters"
+            }
+          ],
+          "description": "The parameters of the HTTP request to send. At least a URL and a method must be provided."
         },
         "extractions": {
+          "description": "The list of extractions to run at the end of the operation.For HTTP operations, variables are extracted from the response.",
           "items": {
             "discriminator": {
               "mapping": {
@@ -791,11 +1037,12 @@
     "ProcedureConfiguration": {
       "properties": {
         "name": {
-          "description": "The name of the procedure.",
+          "description": "The name of the procedure. It must be unique and is used to reference the procedure in users.",
           "title": "Name",
           "type": "string"
         },
         "operations": {
+          "description": "The list of operations executed during the procedure. An operation is a unit transaction, like an HTTP request, or a Selenium script. Operations are ordered, and the variables extracted from an operation can be used in the next operations.",
           "items": {
             "discriminator": {
               "mapping": {
@@ -829,6 +1076,7 @@
           "type": "array"
         },
         "injections": {
+          "description": "The list of injections to perform at the end of the procedure. Injections are used to inject the variables extracted from the procedure into the user authentication.",
           "items": {
             "$ref": "#/$defs/TokenInjection"
           },
@@ -1108,12 +1356,16 @@
           "type": "string"
         },
         "credentials": {
-          "allOf": [
+          "anyOf": [
             {
               "$ref": "#/$defs/Credentials"
+            },
+            {
+              "type": "null"
             }
           ],
-          "description": "The parameters use to customize requests sent for the user"
+          "default": null,
+          "description": "A set of HTTP parameters used to customize requests sent for the user."
         },
         "procedure": {
           "anyOf": [
@@ -1129,7 +1381,7 @@
           "title": "Procedure"
         },
         "variables": {
-          "description": "List of variables that will be injected at the beginning of the user's authentication procedure",
+          "description": "List of variables that will be injected at the beginning of the user's authentication procedure.",
           "items": {
             "$ref": "#/$defs/AuthenticationVariable"
           },
@@ -1146,7 +1398,7 @@
             }
           ],
           "default": null,
-          "description": "An optional refresh procedure to follow for the user"
+          "description": "An optional refresh procedure to follow for the user."
         }
       },
       "required": [
@@ -1167,7 +1419,7 @@
             }
           ],
           "default": null,
-          "description": "Procedure to use to refresh the authentication.Defaults to the user procedure if not provided. This name MUST match the `name` field of a procedure in the `procedures` list in the multiauth configuration.",
+          "description": "An optional custom procedure to use to refresh the authentication of the user. Defaults to the user procedure if not provided. This name MUST match the `name` field of a procedure in the `procedures` list in the multiauth configuration.",
           "title": "Procedure"
         },
         "session_seconds": {
@@ -1225,45 +1477,61 @@
   "description": "Multiauth configuration model.",
   "properties": {
     "procedures": {
-      "description": "The list of authentication procedures to use",
-      "items": {
-        "$ref": "#/$defs/ProcedureConfiguration"
-      },
-      "title": "Procedures",
-      "type": "array"
+      "anyOf": [
+        {
+          "items": {
+            "$ref": "#/$defs/ProcedureConfiguration"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "The list of authentication procedures to rely on when authenticating users",
+      "title": "Procedures"
     },
     "presets": {
-      "description": "The list of presets to use",
-      "items": {
-        "discriminator": {
-          "mapping": {
-            "jwt_access_token_refresh_token": "#/$defs/JWTAccessTokenRefreshTokenPreset",
-            "oauth_client_credentials": "#/$defs/OAuthClientCredentialsPreset",
-            "oauth_refresh": "#/$defs/OAuthRefreshPreset",
-            "oauth_userpass": "#/$defs/OAuthUserpassPreset"
+      "anyOf": [
+        {
+          "items": {
+            "discriminator": {
+              "mapping": {
+                "jwt_access_token_refresh_token": "#/$defs/JWTAccessTokenRefreshTokenPreset",
+                "oauth_client_credentials": "#/$defs/OAuthClientCredentialsPreset",
+                "oauth_refresh": "#/$defs/OAuthRefreshPreset",
+                "oauth_userpass": "#/$defs/OAuthUserpassPreset"
+              },
+              "propertyName": "type"
+            },
+            "oneOf": [
+              {
+                "$ref": "#/$defs/JWTAccessTokenRefreshTokenPreset"
+              },
+              {
+                "$ref": "#/$defs/OAuthUserpassPreset"
+              },
+              {
+                "$ref": "#/$defs/OAuthClientCredentialsPreset"
+              },
+              {
+                "$ref": "#/$defs/OAuthRefreshPreset"
+              }
+            ]
           },
-          "propertyName": "type"
+          "type": "array"
         },
-        "oneOf": [
-          {
-            "$ref": "#/$defs/JWTAccessTokenRefreshTokenPreset"
-          },
-          {
-            "$ref": "#/$defs/OAuthUserpassPreset"
-          },
-          {
-            "$ref": "#/$defs/OAuthClientCredentialsPreset"
-          },
-          {
-            "$ref": "#/$defs/OAuthRefreshPreset"
-          }
-        ]
-      },
-      "title": "Presets",
-      "type": "array"
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "A list of presets used to easily generate procedures and users automatically following common authentication standards",
+      "title": "Presets"
     },
     "users": {
-      "description": "List of users that can be used in procedures",
+      "description": "List of users that multiauth will generate authentications for.",
       "items": {
         "$ref": "#/$defs/User"
       },
@@ -1280,10 +1548,13 @@
         }
       ],
       "default": null,
-      "description": "Global proxy to use for all requests",
+      "description": "An eventual global proxy used for all HTTP requests",
       "title": "Proxy"
     }
   },
+  "required": [
+    "users"
+  ],
   "title": "MultiauthConfiguration",
   "type": "object"
 }

@@ -48,9 +48,26 @@ DEFAULT_TTL_SECONDS = 10 * 24 * 60 * 60  # Default session ttl is 10 days
 
 
 class ProcedureConfiguration(BaseModel, abc.ABC):
-    name: ProcedureName = Field(description='The name of the procedure.')
-    operations: list[OperationConfigurationType] = Field(default_factory=list)
-    injections: list[TokenInjection] = Field(default_factory=list)
+    name: ProcedureName = Field(
+        description='The name of the procedure. It must be unique and is used to reference the procedure in users.',
+    )
+    operations: list[OperationConfigurationType] = Field(
+        default_factory=list,
+        description=(
+            'The list of operations executed during the procedure. An operation is a '
+            'unit transaction, like an HTTP request, or a Selenium script. '
+            'Operations are ordered, and the variables extracted from an operation '
+            'can be used in the next operations.'
+        ),
+    )
+    injections: list[TokenInjection] = Field(
+        default_factory=list,
+        description=(
+            'The list of injections to perform at the end of the procedure. '
+            'Injections are used to inject the variables extracted from the procedure '
+            'into the user authentication.'
+        ),
+    )
 
 
 class Procedure:

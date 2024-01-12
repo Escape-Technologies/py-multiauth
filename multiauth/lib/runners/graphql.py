@@ -24,15 +24,52 @@ class GraphQLVariable(BaseModel):
 
 
 class GraphQLRequestParameters(HTTPRequestParameters):
-    query: str
-    variables: list[GraphQLVariable] = Field(default_factory=list)
-    method: HTTPMethod = Field(default=HTTPMethod.POST)
+    query: str = Field(
+        description=(
+            'The GraphQL query to send. Will be added to the `query` field of the JSON body of the HTTP request.'
+        ),
+        examples=[
+            '\n'.join(
+                [
+                    'mutation($username: String!, $password: String!) {',
+                    '   login(username: $username, password: $password) {',
+                    '       access_token',
+                    '       refresh_token',
+                    '   }',
+                    '}',
+                ],
+            ),
+            'query { __typename }',
+        ],
+    )
+    variables: list[GraphQLVariable] | None = Field(
+        default=None,
+        description=(
+            'The variables to send with the query. Will be added to the `variables` field of'
+            'the JSON body of the HTTP request.'
+        ),
+    )
+    method: HTTPMethod = Field(
+        default=HTTPMethod.POST,
+        description='The HTTP method to use to send the request. By default, POST is used.',
+    )
 
 
 class GraphQLRunnerConfiguration(BaseRunnerConfiguration):
     tech: Literal['graphql'] = 'graphql'
-    extractions: list[HTTPExtractionType] = Field(default_factory=list)
-    parameters: GraphQLRequestParameters
+    extractions: list[HTTPExtractionType] = Field(
+        default_factory=list,
+        description=(
+            'The list of extractions to run at the end of the operation.'
+            'For HTTP operations, variables are extracted from the response.'
+        ),
+    )
+    parameters: GraphQLRequestParameters = Field(
+        description=(
+            'The parameters of the GraphQL request to send. At least a query and a GraphQL '
+            'endpoint are required. By default, POST is used as the HTTP method, and the request is sent as JSON.'
+        ),
+    )
 
     def to_http(self) -> HTTPRunnerConfiguration:
         body = {}
@@ -46,7 +83,7 @@ class GraphQLRunnerConfiguration(BaseRunnerConfiguration):
 
         graphql_body = {
             'query': self.parameters.query,
-            'variables': {variable.name: variable.value for variable in self.parameters.variables},
+            'variables': {variable.name: variable.value for variable in self.parameters.variables or []},
         }
 
         body = merge_bodies(body, graphql_body)
