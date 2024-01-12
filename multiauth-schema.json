@@ -827,6 +827,13 @@
           },
           "title": "Operations",
           "type": "array"
+        },
+        "injections": {
+          "items": {
+            "$ref": "#/$defs/TokenInjection"
+          },
+          "title": "Injections",
+          "type": "array"
         }
       },
       "required": [
@@ -1121,14 +1128,6 @@
           "description": "The name of the procedure to use to authenticate the user.This name MUST match the `name` field of a procedure in the `procedures` list in the multiauth configuration.",
           "title": "Procedure"
         },
-        "injections": {
-          "description": "List of variables injections to perform to create the authentication.",
-          "items": {
-            "$ref": "#/$defs/TokenInjection"
-          },
-          "title": "Injections",
-          "type": "array"
-        },
         "variables": {
           "description": "List of variables that will be injected at the beginning of the user's authentication procedure",
           "items": {
@@ -1183,14 +1182,6 @@
           "default": null,
           "description": "Number of seconds to wait before refreshing the authentication. If not provided, multiauth willtry to infer the session duration from the returned variables",
           "title": "Session Seconds"
-        },
-        "injections": {
-          "description": "List of injections to perform to create the refreshed authentication. If empty, the user's injections will be used to recreate an authentication object.",
-          "items": {
-            "$ref": "#/$defs/TokenInjection"
-          },
-          "title": "Injections",
-          "type": "array"
         },
         "keep": {
           "default": false,

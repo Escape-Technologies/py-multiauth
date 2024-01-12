@@ -333,6 +333,7 @@ Type: object
 |------------|------|----------|-------------|-----------|
 | name | `string` | `True` | The name of the procedure. |  |
 | operations | `array` | `False` |  |  |
+| injections | `TokenInjection[]` | `False` |  | [TokenInjection](#TokenInjection) |
 
 
 ## <a id="SeleniumCommand"></a>SeleniumCommand
@@ -452,7 +453,6 @@ Type: object
 | credentials | `N/A` | `False` | The parameters use to customize requests sent for the user |  |
 | procedure | `N/A` | `False` | The name of the procedure to use to authenticate the user.This name MUST match the `name` field of a procedure in the `procedures` list in the multiauth configuration. |  |
 | refresh | `N/A` | `False` | An optional refresh procedure to follow for the user |  |
-| injections | `TokenInjection[]` | `False` | List of variables injections to perform to create the authentication. | [TokenInjection](#TokenInjection) |
 | variables | `AuthenticationVariable[]` | `False` | List of variables that will be injected at the beginning of the user&#39;s authentication procedure | [AuthenticationVariable](#AuthenticationVariable) |
 
 
@@ -469,5 +469,4 @@ Type: object
 | procedure | `N/A` | `False` | Procedure to use to refresh the authentication.Defaults to the user procedure if not provided. This name MUST match the `name` field of a procedure in the `procedures` list in the multiauth configuration. |  |
 | session_seconds | `N/A` | `False` | Number of seconds to wait before refreshing the authentication. If not provided, multiauth willtry to infer the session duration from the returned variables |  |
 | variables | `N/A` | `False` | List of variables that will be injected at the beginning of the user&#39;srefresh procedure. If not provided, the user&#39;s variables will be used instead. |  |
-| injections | `TokenInjection[]` | `False` | List of injections to perform to create the refreshed authentication. If empty, the user&#39;s injections will be used to recreate an authentication object. | [TokenInjection](#TokenInjection) |
 

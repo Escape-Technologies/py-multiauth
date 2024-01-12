@@ -13,6 +13,7 @@ from multiauth.lib.audit.events.events import (
     TokenParsedEvent,
 )
 from multiauth.lib.helpers import parse_token
+from multiauth.lib.injection import TokenInjection
 from multiauth.lib.runners.base import BaseRunner, RunnerException
 from multiauth.lib.runners.basic import BasicRunnerConfiguration
 from multiauth.lib.runners.digest import DigestRunnerConfiguration
@@ -49,6 +50,7 @@ DEFAULT_TTL_SECONDS = 10 * 24 * 60 * 60  # Default session ttl is 10 days
 class ProcedureConfiguration(BaseModel, abc.ABC):
     name: ProcedureName = Field(description='The name of the procedure.')
     operations: list[OperationConfigurationType] = Field(default_factory=list)
+    injections: list[TokenInjection] = Field(default_factory=list)
 
 
 class Procedure:
@@ -81,10 +83,10 @@ class Procedure:
         events = EventsList()
         authentication = Authentication.empty()
 
-        for injection in user.injections:
-            new_authentication, injection_events = Authentication.inject(injection, list(self.variables.values()))
+        for injection in self.configuration.injections:
+            injected_authentication, injection_events = injection.inject(list(self.variables.values()))
             events.extend(injection_events)
-            authentication = Authentication.merge(authentication, new_authentication)
+            authentication = Authentication.merge(authentication, injected_authentication)
 
         self.events.extend(events)
 

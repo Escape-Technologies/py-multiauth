@@ -4,10 +4,10 @@ from typing import Literal
 from pydantic import Field
 
 from multiauth.lib.http_core.entities import HTTPHeader, HTTPLocation
+from multiauth.lib.injection import TokenInjection
 from multiauth.lib.presets.base import BasePreset
 from multiauth.lib.procedure import ProcedureConfiguration, ProcedureName
 from multiauth.lib.runners.http import HTTPBodyExtraction, HTTPRequestParameters, HTTPRunnerConfiguration
-from multiauth.lib.store.injection import TokenInjection
 from multiauth.lib.store.user import Credentials, User, UserName
 from multiauth.lib.store.variables import AuthenticationVariable, VariableName
 
@@ -25,6 +25,14 @@ class OAuthClientCredentialsPreset(BasePreset):
     def to_procedure_configuration(self) -> ProcedureConfiguration:
         return ProcedureConfiguration(
             name=ProcedureName(self.name),
+            injections=[
+                TokenInjection(
+                    location=HTTPLocation.HEADER,
+                    key='Authorization',
+                    prefix='Bearer ',
+                    variable=VariableName('access_token'),
+                ),
+            ],
             operations=[
                 HTTPRunnerConfiguration(
                     parameters=HTTPRequestParameters(
@@ -60,14 +68,6 @@ class OAuthClientCredentialsPreset(BasePreset):
                 ],
                 credentials=Credentials(),
                 procedure=ProcedureName(self.name),
-                injections=[
-                    TokenInjection(
-                        location=HTTPLocation.HEADER,
-                        key='Authorization',
-                        prefix='Bearer ',
-                        variable=VariableName('access_token'),
-                    ),
-                ],
                 refresh=None,
             )
             for username, password in self.users

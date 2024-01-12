@@ -5,9 +5,9 @@ from http import HTTPMethod
 from multiauth.configuration import MultiauthConfiguration
 from multiauth.helpers.logger import setup_logger
 from multiauth.lib.http_core.entities import HTTPHeader, HTTPLocation
+from multiauth.lib.injection import TokenInjection
 from multiauth.lib.procedure import ProcedureConfiguration, ProcedureName
 from multiauth.lib.runners.http import HTTPBodyExtraction, HTTPRequestParameters, HTTPRunnerConfiguration
-from multiauth.lib.store.injection import TokenInjection
 from multiauth.lib.store.user import Credentials, User, UserName
 from multiauth.lib.store.variables import AuthenticationVariable, VariableName
 
@@ -27,6 +27,14 @@ def init_command(args: argparse.Namespace) -> None:
         procedures=[
             ProcedureConfiguration(
                 name=ProcedureName('example-procedure'),
+                injections=[
+                    TokenInjection(
+                        location=HTTPLocation.HEADER,
+                        key='X-Injected-Header',
+                        prefix='Prefixed ',
+                        variable='example-extraction',
+                    ),
+                ],
                 operations=[
                     HTTPRunnerConfiguration(
                         parameters=HTTPRequestParameters(
@@ -63,14 +71,6 @@ def init_command(args: argparse.Namespace) -> None:
             User(
                 name=UserName('example-user'),
                 procedure=ProcedureName('example-procedure'),
-                injections=[
-                    TokenInjection(
-                        location=HTTPLocation.HEADER,
-                        key='X-Injected-Header',
-                        prefix='Prefixed ',
-                        variable='example-extraction',
-                    ),
-                ],
                 variables=[
                     AuthenticationVariable(
                         name=VariableName('example-user-variable'),

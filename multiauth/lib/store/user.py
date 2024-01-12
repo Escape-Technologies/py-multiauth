@@ -8,7 +8,6 @@ from multiauth.lib.http_core.entities import (
     HTTPQueryParameter,
 )
 from multiauth.lib.procedure import ProcedureName
-from multiauth.lib.store.injection import TokenInjection
 from multiauth.lib.store.variables import AuthenticationVariable
 
 UserName = NewType('UserName', str)
@@ -72,13 +71,6 @@ class UserRefresh(BaseModel):
             'try to infer the session duration from the returned variables'
         ),
     )
-    injections: list[TokenInjection] = Field(
-        default_factory=list,
-        description=(
-            'List of injections to perform to create the refreshed authentication.'
-            " If empty, the user's injections will be used to recreate an authentication object."
-        ),
-    )
     keep: bool = Field(
         default=False,
         description=(
@@ -114,10 +106,6 @@ class User(BaseModel):
             'multiauth configuration.'
         ),
         default=None,
-    )
-    injections: list[TokenInjection] = Field(
-        description='List of variables injections to perform to create the authentication.',
-        default_factory=list,
     )
     variables: list[AuthenticationVariable] = Field(
         default_factory=list,
@@ -158,7 +146,6 @@ class User(BaseModel):
             refresh_user.variables = self.refresh_variables or self.variables
             refresh_user.credentials = self.refresh_credentials or self.credentials
             refresh_user.procedure = self.refresh.procedure or self.procedure
-            refresh_user.injections = self.refresh.injections or self.injections
 
         return refresh_user
 
@@ -168,7 +155,6 @@ class User(BaseModel):
             name=user.name,
             credentials=Credentials.from_credentials(user.credentials),
             procedure=user.procedure,
-            injections=user.injections,
             variables=user.variables,
             refresh=user.refresh,
         )
@@ -179,7 +165,6 @@ class User(BaseModel):
             name=UserName('public'),
             credentials=Credentials(),
             procedure=None,
-            injections=[],
             variables=[],
             refresh=None,
         )
