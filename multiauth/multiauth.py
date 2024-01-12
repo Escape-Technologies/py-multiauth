@@ -122,6 +122,7 @@ class Multiauth:
         """
         user = self._get_user(user_name)
         authentication = Authentication.from_credentials(user.credentials)
+        expiration = default_expiration_date()
 
         error: Exception | None = None
         events = EventsList()
