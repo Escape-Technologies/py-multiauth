@@ -73,15 +73,32 @@
         },
         "extractions": {
           "items": {
-            "$ref": "#/$defs/BaseExtraction"
+            "discriminator": {
+              "mapping": {
+                "body": "#/$defs/HTTPBodyExtraction",
+                "cookie": "#/$defs/HTTPCookieExtraction",
+                "header": "#/$defs/HTTPHeaderExtraction"
+              },
+              "propertyName": "location"
+            },
+            "oneOf": [
+              {
+                "$ref": "#/$defs/HTTPHeaderExtraction"
+              },
+              {
+                "$ref": "#/$defs/HTTPCookieExtraction"
+              },
+              {
+                "$ref": "#/$defs/HTTPBodyExtraction"
+              }
+            ]
           },
           "title": "Extractions",
           "type": "array"
         }
       },
       "required": [
-        "parameters",
-        "extractions"
+        "parameters"
       ],
       "title": "BasicRunnerConfiguration",
       "type": "object"
@@ -1310,7 +1327,7 @@
               "commands": [
                 {
                   "command": "open",
-                  "id": "8db13a2eb5e54bfcb779e66cbf047cc1",
+                  "id": "05e83a58bf154b9dbd3e944c32773863",
                   "target": "https://example.com",
                   "targets": [
                     [
@@ -1321,7 +1338,7 @@
                   "value": ""
                 }
               ],
-              "id": "729a9d565ec346c1aedfec9ebb19cd3a",
+              "id": "f558f53a37d6435693c9f55c7212bdc4",
               "name": "test"
             }
           ],
@@ -1364,7 +1381,7 @@
                     "commands": [
                       {
                         "command": "open",
-                        "id": "f71afb7be6d24325b94d9ba1621d8146",
+                        "id": "28a21469ccab4140bc9c112745994f48",
                         "target": "https://example.com",
                         "targets": [
                           [
@@ -1375,7 +1392,7 @@
                         "value": ""
                       }
                     ],
-                    "id": "1934ae6a388b45b9878ae29e085aa620",
+                    "id": "13e6839647cb428b9f0373ec5dc48f3a",
                     "name": "test"
                   }
                 ]
@@ -1502,7 +1519,7 @@
         "id": {
           "description": "The id of the test.",
           "examples": [
-            "3a0f2934d17c4ddca7c51790e699f107"
+            "03441588ca0847d6bb7c6869ecdda79d"
           ],
           "title": "Id",
           "type": "string"
@@ -1520,7 +1537,7 @@
           "examples": [
             {
               "command": "open",
-              "id": "fdb3724eee1c4180a6d6481480ee6ec9",
+              "id": "00d1a67fd85a491389ea3e91b899c12a",
               "target": "https://example.com",
               "targets": [
                 [

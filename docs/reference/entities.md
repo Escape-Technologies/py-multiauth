@@ -31,7 +31,7 @@ Type: object
 | Field Name | Type | Required | Description | Reference |
 |------------|------|----------|-------------|-----------|
 | parameters | `N/A` | `True` | The parameters of the HTTP request used to test the username and password. |  |
-| extractions | `BaseExtraction[]` | `True` |  | [BaseExtraction](#BaseExtraction) |
+| extractions | `array` | `False` |  |  |
 | tech | `N/A` | `False` |  |  |
 
 

@@ -10,6 +10,7 @@ from multiauth.lib.http_core.entities import (
 from multiauth.lib.http_core.mergers import merge_headers
 from multiauth.lib.runners.base import BaseRunnerConfiguration, RunnerException
 from multiauth.lib.runners.http import (
+    HTTPExtractionType,
     HTTPRequestParameters,
     HTTPRequestRunner,
     HTTPRunnerConfiguration,
@@ -24,6 +25,9 @@ class BasicRunnerConfiguration(BaseRunnerConfiguration):
         description=('The parameters of the HTTP request used to test the username and password.'),
         examples=HTTPRequestParameters.examples(),
     )
+    extractions: list[HTTPExtractionType] = Field(
+        default_factory=list,
+    )
 
     def to_http(self) -> HTTPRunnerConfiguration:
         return HTTPRunnerConfiguration(
@@ -33,17 +37,6 @@ class BasicRunnerConfiguration(BaseRunnerConfiguration):
 
     def get_runner(self) -> 'BasicRequestRunner':
         return BasicRequestRunner(self)
-
-    @staticmethod
-    def examples() -> list:
-        return [
-            BasicRunnerConfiguration(
-                parameters=HTTPRequestParameters(
-                    url='https://example.com/basic',
-                    method='GET',
-                ),
-            ),
-        ]
 
 
 def build_basic_headers(username: str, password: str) -> HTTPHeader:
