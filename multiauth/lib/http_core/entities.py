@@ -7,6 +7,18 @@ from urllib.parse import quote
 
 from pydantic import BaseModel, Field, field_serializer
 
+class HTTPEncoding(enum.StrEnum):
+    """The MIME encoding of the HTTP request body."""
+    
+    JSON = 'application/json'
+    FORM = 'application/x-www-form-urlencoded'
+    TEXT = 'text/plain'
+    XML = 'application/xml'
+    HTML = 'text/html'
+    MULTIPART = 'multipart/form-data'
+    YAML = 'application/x-yaml'
+    CSV = 'text/csv'
+    BINARY = 'application/octet-stream'
 
 class HTTPLocation(enum.StrEnum):
     HEADER = 'header'
