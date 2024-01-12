@@ -1,4 +1,5 @@
 import base64
+from http import HTTPMethod
 from typing import Literal
 
 from pydantic import Field
@@ -10,7 +11,10 @@ from multiauth.lib.http_core.entities import (
 from multiauth.lib.http_core.mergers import merge_headers
 from multiauth.lib.runners.base import BaseRunnerConfiguration, RunnerException
 from multiauth.lib.runners.http import (
+    HTTPBodyExtraction,
+    HTTPCookieExtraction,
     HTTPExtractionType,
+    HTTPHeaderExtraction,
     HTTPRequestParameters,
     HTTPRequestRunner,
     HTTPRunnerConfiguration,
@@ -27,7 +31,25 @@ class BasicRunnerConfiguration(BaseRunnerConfiguration):
     )
     extractions: list[HTTPExtractionType] = Field(
         default_factory=list,
+        description=('The extractions of the HTTP request used to test the username and password.'),
+        examples=[
+            *HTTPHeaderExtraction.examples(),
+            *HTTPCookieExtraction.examples(),
+            *HTTPBodyExtraction.examples(),
+        ],
     )
+
+    @staticmethod
+    def examples() -> list:
+        return [
+            BasicRunnerConfiguration(
+                extractions=[],
+                parameters=HTTPRequestParameters(
+                    url='https://example.com',
+                    method=HTTPMethod.GET,
+                ),
+            ),
+        ]
 
     def to_http(self) -> HTTPRunnerConfiguration:
         return HTTPRunnerConfiguration(

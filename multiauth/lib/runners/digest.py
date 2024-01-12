@@ -9,7 +9,12 @@ from multiauth.lib.audit.events.events import HTTPFailureEvent
 from multiauth.lib.http_core.entities import HTTPHeader
 from multiauth.lib.http_core.mergers import merge_headers
 from multiauth.lib.runners.base import BaseRunnerConfiguration, RunnerException
-from multiauth.lib.runners.http import HTTPRequestParameters, HTTPRequestRunner, HTTPRunnerConfiguration
+from multiauth.lib.runners.http import (
+    HTTPHeaderExtraction,
+    HTTPRequestParameters,
+    HTTPRequestRunner,
+    HTTPRunnerConfiguration,
+)
 from multiauth.lib.store.user import Credentials, User
 from multiauth.lib.store.variables import AuthenticationVariable, VariableName, interpolate_string
 
@@ -32,6 +37,15 @@ class DigestSecondRequestConfiguration(BaseModel):
         examples=['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS', 'HEAD', 'TRACE', 'CONNECT'],
     )
 
+    @staticmethod
+    def examples() -> list:
+        return [
+            DigestSecondRequestConfiguration(
+                path='/digest',
+                method=HTTPMethod.POST,
+            ).dict(exclude_defaults=True),
+        ]
+
 
 class DigestRequestSequenceConfiguration(BaseModel):
     first_request: HTTPRequestParameters = Field(
@@ -39,12 +53,7 @@ class DigestRequestSequenceConfiguration(BaseModel):
             'The parameters of the first HTTP request executed during the digest procedure.'
             'It is the one that returns the WWW-Authenticate header.'
         ),
-        examples=[
-            HTTPRequestParameters(
-                url='https://example.com/digest',
-                method=HTTPMethod.GET,
-            ).dict(exclude_defaults=True),
-        ],
+        examples=HTTPRequestParameters.examples(),
     )
     second_request: DigestSecondRequestConfiguration | None = Field(
         default=None,
@@ -52,7 +61,32 @@ class DigestRequestSequenceConfiguration(BaseModel):
             'The parameters of the second HTTP request executed during the digest procedure.'
             'It is the one that uses the digest authentication. By default, parameters of the first request are used.'
         ),
+        examples=DigestSecondRequestConfiguration.examples(),
     )
+
+    @staticmethod
+    def examples() -> list:
+        return [
+            DigestRequestSequenceConfiguration(
+                first_request=HTTPRequestParameters(
+                    url='https://example.com',
+                    method=HTTPMethod.GET,
+                    headers=[HTTPHeader(name='Accept', values=['*/*'])],
+                ),
+                second_request=None,
+            ).dict(exclude_defaults=True),
+            DigestRequestSequenceConfiguration(
+                first_request=HTTPRequestParameters(
+                    url='https://example.com',
+                    method=HTTPMethod.GET,
+                    headers=[HTTPHeader(name='Accept', values=['*/*'])],
+                ),
+                second_request=DigestSecondRequestConfiguration(
+                    path='/digest',
+                    method=HTTPMethod.GET,
+                ),
+            ).dict(exclude_defaults=True),
+        ]
 
 
 class DigestRunnerConfiguration(BaseRunnerConfiguration):
@@ -63,6 +97,7 @@ class DigestRunnerConfiguration(BaseRunnerConfiguration):
             'It features two HTTP requests: the first one is the one that returns the WWW-Authenticate header,'
             'and the second one is the one that uses the digest authentication.'
         ),
+        examples=DigestRequestSequenceConfiguration.examples(),
     )
 
     def to_http(self) -> HTTPRunnerConfiguration:
@@ -73,6 +108,42 @@ class DigestRunnerConfiguration(BaseRunnerConfiguration):
 
     def get_runner(self) -> 'DigestRunner':
         return DigestRunner(self)
+
+    @staticmethod
+    def examples() -> list:
+        return [
+            DigestRunnerConfiguration(
+                parameters=DigestRequestSequenceConfiguration(
+                    first_request=HTTPRequestParameters(
+                        url='https://example.com',
+                        method=HTTPMethod.GET,
+                        headers=[HTTPHeader(name='Accept', values=['*/*'])],
+                    ),
+                    second_request=None,
+                ),
+                extractions=[],
+            ).dict(exclude_defaults=True),
+            DigestRunnerConfiguration(
+                parameters=DigestRequestSequenceConfiguration(
+                    first_request=HTTPRequestParameters(
+                        url='https://example.com',
+                        method=HTTPMethod.GET,
+                        headers=[HTTPHeader(name='Accept', values=['*/*'])],
+                    ),
+                    second_request=DigestSecondRequestConfiguration(
+                        path='/digest',
+                        method=HTTPMethod.GET,
+                    ),
+                ),
+                extractions=[
+                    HTTPHeaderExtraction(
+                        name=VariableName('digest-header-value'),
+                        location='header',
+                        key='Authorization',
+                    ),
+                ],
+            ).dict(exclude_defaults=True),
+        ]
 
 
 def build_digest_headers(realm: str, username: str, password: str, domain: str, method: str, nonce: str) -> HTTPHeader:

@@ -32,7 +32,7 @@ class SeleniumCommand(BaseModel):
                 target='https://example.com',
                 targets=[['css', 'body']],
                 value='',
-            ),
+            ).dict(exclude_defaults=True),
         ]
 
 
@@ -65,7 +65,7 @@ class SeleniumTest(BaseModel):
                         target='https://example.com',
                     ),
                 ],
-            ),
+            ).dict(exclude_defaults=True),
         ]
 
 

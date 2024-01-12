@@ -72,6 +72,21 @@
           ]
         },
         "extractions": {
+          "description": "The extractions of the HTTP request used to test the username and password.",
+          "examples": [
+            {
+              "key": "my-header-key",
+              "name": "my-variable"
+            },
+            {
+              "key": "my-cookie-key",
+              "name": "my-variable"
+            },
+            {
+              "key": "my-body-key",
+              "name": "my-variable"
+            }
+          ],
           "items": {
             "discriminator": {
               "mapping": {
@@ -81,6 +96,20 @@
               },
               "propertyName": "location"
             },
+            "examples": [
+              {
+                "key": "my-header-key",
+                "name": "my-variable"
+              },
+              {
+                "key": "my-cookie-key",
+                "name": "my-variable"
+              },
+              {
+                "key": "my-body-key",
+                "name": "my-variable"
+              }
+            ],
             "oneOf": [
               {
                 "$ref": "#/$defs/HTTPHeaderExtraction"
@@ -219,7 +248,23 @@
           "examples": [
             {
               "method": "GET",
-              "url": "https://example.com/digest"
+              "url": "https://my-api.com"
+            },
+            {
+              "body": {
+                "key1": "value1",
+                "key2": "value2"
+              },
+              "headers": [
+                {
+                  "name": "Content-Type",
+                  "values": [
+                    "application/json"
+                  ]
+                }
+              ],
+              "method": "POST",
+              "url": "https://my-api.com"
             }
           ]
         },
@@ -233,7 +278,13 @@
             }
           ],
           "default": null,
-          "description": "The parameters of the second HTTP request executed during the digest procedure.It is the one that uses the digest authentication. By default, parameters of the first request are used."
+          "description": "The parameters of the second HTTP request executed during the digest procedure.It is the one that uses the digest authentication. By default, parameters of the first request are used.",
+          "examples": [
+            {
+              "method": "POST",
+              "path": "/digest"
+            }
+          ]
         }
       },
       "required": [
@@ -255,7 +306,41 @@
               "$ref": "#/$defs/DigestRequestSequenceConfiguration"
             }
           ],
-          "description": "The parameters of the HTTP requests executed during the digest procedure.It features two HTTP requests: the first one is the one that returns the WWW-Authenticate header,and the second one is the one that uses the digest authentication."
+          "description": "The parameters of the HTTP requests executed during the digest procedure.It features two HTTP requests: the first one is the one that returns the WWW-Authenticate header,and the second one is the one that uses the digest authentication.",
+          "examples": [
+            {
+              "first_request": {
+                "headers": [
+                  {
+                    "name": "Accept",
+                    "values": [
+                      "*/*"
+                    ]
+                  }
+                ],
+                "method": "GET",
+                "url": "https://example.com"
+              }
+            },
+            {
+              "first_request": {
+                "headers": [
+                  {
+                    "name": "Accept",
+                    "values": [
+                      "*/*"
+                    ]
+                  }
+                ],
+                "method": "GET",
+                "url": "https://example.com"
+              },
+              "second_request": {
+                "method": "GET",
+                "path": "/digest"
+              }
+            }
+          ]
         },
         "extractions": {
           "items": {
@@ -483,10 +568,60 @@
               "$ref": "#/$defs/GraphQLRequestParameters"
             }
           ],
-          "description": "The parameters of the GraphQL request to send. At least a query and a GraphQL endpoint are required. By default, POST is used as the HTTP method, and the request is sent as JSON."
+          "description": "The parameters of the GraphQL request to send. At least a query and a GraphQL endpoint are required. By default, POST is used as the HTTP method, and the request is sent as JSON.",
+          "examples": [
+            {
+              "headers": [
+                {
+                  "name": "Content-Type",
+                  "values": [
+                    "application/json"
+                  ]
+                }
+              ],
+              "query": "query { __typename }",
+              "url": "https://example.com/graphql"
+            },
+            {
+              "headers": [
+                {
+                  "name": "Content-Type",
+                  "values": [
+                    "application/json"
+                  ]
+                }
+              ],
+              "query": "mutation($username: String!, $password: String!) {   login(username: $username, password: $password) {       access_token       refresh_token   }}",
+              "url": "https://example.com/graphql",
+              "variables": [
+                {
+                  "name": "username",
+                  "value": "my-username"
+                },
+                {
+                  "name": "password",
+                  "value": "my-password"
+                }
+              ]
+            }
+          ]
         },
         "extractions": {
           "description": "The list of extractions to run at the end of the operation.For HTTP operations, variables are extracted from the response.",
+          "examples": [
+            {
+              "key": "my-header-key",
+              "name": "my-variable"
+            },
+            {
+              "key": "my-cookie-key",
+              "name": "my-variable"
+            },
+            {
+              "key": "my-body-key",
+              "name": "my-variable"
+            }
+          ],
           "items": {
             "discriminator": {
               "mapping": {
@@ -496,6 +631,20 @@
               },
               "propertyName": "location"
             },
+            "examples": [
+              {
+                "key": "my-header-key",
+                "name": "my-variable"
+              },
+              {
+                "key": "my-cookie-key",
+                "name": "my-variable"
+              },
+              {
+                "key": "my-body-key",
+                "name": "my-variable"
+              }
+            ],
             "oneOf": [
               {
                 "$ref": "#/$defs/HTTPHeaderExtraction"
@@ -877,27 +1026,18 @@
         "extractions": {
           "description": "The list of extractions to run at the end of the operation.For HTTP operations, variables are extracted from the response.",
           "examples": [
-            [
-              {
-                "key": "my-header-key",
-                "location": "header",
-                "name": "my-variable"
-              }
-            ],
-            [
-              {
-                "key": "my-cookie-key",
-                "location": "cookie",
-                "name": "my-variable"
-              }
-            ],
-            [
-              {
-                "key": "my-body-key",
-                "location": "body",
-                "name": "my-variable"
-              }
-            ]
+            {
+              "key": "my-header-key",
+              "name": "my-variable"
+            },
+            {
+              "key": "my-cookie-key",
+              "name": "my-variable"
+            },
+            {
+              "key": "my-body-key",
+              "name": "my-variable"
+            }
           ],
           "items": {
             "discriminator": {
@@ -908,6 +1048,20 @@
               },
               "propertyName": "location"
             },
+            "examples": [
+              {
+                "key": "my-header-key",
+                "name": "my-variable"
+              },
+              {
+                "key": "my-cookie-key",
+                "name": "my-variable"
+              },
+              {
+                "key": "my-body-key",
+                "name": "my-variable"
+              }
+            ],
             "oneOf": [
               {
                 "$ref": "#/$defs/HTTPHeaderExtraction"
@@ -1327,7 +1481,7 @@
               "commands": [
                 {
                   "command": "open",
-                  "id": "05e83a58bf154b9dbd3e944c32773863",
+                  "id": "090c3c348b474ea2b570b545a424f441",
                   "target": "https://example.com",
                   "targets": [
                     [
@@ -1338,7 +1492,7 @@
                   "value": ""
                 }
               ],
-              "id": "f558f53a37d6435693c9f55c7212bdc4",
+              "id": "f5c391a080c64673b99c17762e050c96",
               "name": "test"
             }
           ],
@@ -1381,7 +1535,7 @@
                     "commands": [
                       {
                         "command": "open",
-                        "id": "28a21469ccab4140bc9c112745994f48",
+                        "id": "123d190c7c6748e8b1117177b8ff501d",
                         "target": "https://example.com",
                         "targets": [
                           [
@@ -1392,7 +1546,7 @@
                         "value": ""
                       }
                     ],
-                    "id": "13e6839647cb428b9f0373ec5dc48f3a",
+                    "id": "bcf0122c987548d9afd1ceaa08fad8cd",
                     "name": "test"
                   }
                 ]
@@ -1519,7 +1673,7 @@
         "id": {
           "description": "The id of the test.",
           "examples": [
-            "03441588ca0847d6bb7c6869ecdda79d"
+            "e8279fce62ef48329533cbb59a40fb19"
           ],
           "title": "Id",
           "type": "string"
@@ -1537,7 +1691,7 @@
           "examples": [
             {
               "command": "open",
-              "id": "00d1a67fd85a491389ea3e91b899c12a",
+              "id": "01fabf67ebf24b62b3d29ba5165f4896",
               "target": "https://example.com",
               "targets": [
                 [

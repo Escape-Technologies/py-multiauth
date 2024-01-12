@@ -143,6 +143,41 @@ class SeleniumRunnerConfiguration(BaseRunnerConfiguration):
     def get_runner(self) -> 'SeleniumRunner':
         return SeleniumRunner(self)
 
+    @staticmethod
+    def examples() -> list:
+        return [
+            SeleniumRunnerConfiguration(
+                extractions=[
+                    SeleniumExtraction(
+                        extract_location='ResponseBody',
+                        extract_match_index=0,
+                        extract_regex='access_token=(.*?)&',
+                        name=VariableName('access_token'),
+                    ),
+                ],
+                parameters=SeleniumScriptParameters(
+                    project=SeleniumProject(
+                        tests=[
+                            SeleniumTest(
+                                id=uuid4().hex,
+                                name='test',
+                                commands=[
+                                    SeleniumCommand(
+                                        id=uuid4().hex,
+                                        targets=[['css', 'body']],
+                                        value='',
+                                        command='open',
+                                        target='https://example.com',
+                                    ),
+                                ],
+                            ),
+                        ],
+                    ),
+                    options=SeleniumScriptOptions(),
+                ),
+            ).dict(exclude_defaults=True),
+        ]
+
 
 class SeleniumRunner(BaseRunner[SeleniumRunnerConfiguration]):
     selenium_configuration: SeleniumRunnerConfiguration

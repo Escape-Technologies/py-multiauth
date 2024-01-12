@@ -38,20 +38,47 @@ class HTTPHeaderExtraction(BaseExtraction):
     location: Literal['header'] = 'header'
     key: str = Field(description=('The name of the header to extract the value from'))
 
+    @staticmethod
+    def examples() -> list:
+        return [
+            HTTPHeaderExtraction(key='my-header-key', location='header', name=VariableName('my-variable')).dict(
+                exclude_defaults=True,
+            ),
+        ]
+
 
 class HTTPCookieExtraction(BaseExtraction):
     location: Literal['cookie'] = 'cookie'
     key: str = Field(description=('The name of the cookie to extract the value from'))
+
+    @staticmethod
+    def examples() -> list:
+        return [
+            HTTPCookieExtraction(key='my-cookie-key', location='cookie', name=VariableName('my-variable')).dict(
+                exclude_defaults=True,
+            ),
+        ]
 
 
 class HTTPBodyExtraction(BaseExtraction):
     location: Literal['body'] = 'body'
     key: str = Field(description='The key to extract the value from the body. The key is searched recursively.')
 
+    @staticmethod
+    def examples() -> list:
+        return [
+            HTTPBodyExtraction(key='my-body-key', location='body', name=VariableName('my-variable')).dict(
+                exclude_defaults=True,
+            ),
+        ]
+
 
 HTTPExtractionType = Annotated[
     Union[HTTPHeaderExtraction, HTTPCookieExtraction, HTTPBodyExtraction],
-    Field(discriminator='location'),
+    Field(
+        discriminator='location',
+        examples=[*HTTPHeaderExtraction.examples(), *HTTPCookieExtraction.examples(), *HTTPBodyExtraction.examples()],
+    ),
 ]
 
 
@@ -140,9 +167,9 @@ class HTTPRunnerConfiguration(BaseRunnerConfiguration):
             'For HTTP operations, variables are extracted from the response.'
         ),
         examples=[
-            [HTTPHeaderExtraction(key='my-header-key', location='header', name=VariableName('my-variable'))],
-            [HTTPCookieExtraction(name=VariableName('my-variable'), location='cookie', key='my-cookie-key')],
-            [HTTPBodyExtraction(name=VariableName('my-variable'), location='body', key='my-body-key')],
+            *HTTPHeaderExtraction.examples(),
+            *HTTPCookieExtraction.examples(),
+            *HTTPBodyExtraction.examples(),
         ],
     )
     parameters: HTTPRequestParameters = Field(

@@ -10,12 +10,15 @@ from multiauth.lib.http_core.entities import (
 from multiauth.lib.http_core.mergers import merge_bodies, merge_headers
 from multiauth.lib.runners.base import BaseRunnerConfiguration
 from multiauth.lib.runners.http import (
+    HTTPBodyExtraction,
+    HTTPCookieExtraction,
     HTTPExtractionType,
+    HTTPHeaderExtraction,
     HTTPRequestParameters,
     HTTPRequestRunner,
     HTTPRunnerConfiguration,
 )
-from multiauth.lib.store.variables import AuthenticationVariable, interpolate_string
+from multiauth.lib.store.variables import AuthenticationVariable, VariableName, interpolate_string
 
 
 class GraphQLVariable(BaseModel):
@@ -54,6 +57,39 @@ class GraphQLRequestParameters(HTTPRequestParameters):
         description='The HTTP method to use to send the request. By default, POST is used.',
     )
 
+    @staticmethod
+    def examples() -> list:
+        return [
+            GraphQLRequestParameters(
+                url='https://example.com/graphql',
+                query='query { __typename }',
+                method=HTTPMethod.POST,
+                headers=[
+                    HTTPHeader(name='Content-Type', values=['application/json']),
+                ],
+            ).dict(exclude_defaults=True),
+            GraphQLRequestParameters(
+                url='https://example.com/graphql',
+                query=(
+                    'mutation($username: String!, $password: String!) {'
+                    '   login(username: $username, password: $password) {'
+                    '       access_token'
+                    '       refresh_token'
+                    '   }'
+                    '}'
+                ),
+                variables=[
+                    GraphQLVariable(name='username', value='my-username'),
+                    GraphQLVariable(name='password', value='my-password'),
+                ],
+                method=HTTPMethod.POST,
+                headers=[
+                    HTTPHeader(name='Content-Type', values=['application/json']),
+                ],
+                proxy=None,
+            ).dict(exclude_defaults=True),
+        ]
+
 
 class GraphQLRunnerConfiguration(BaseRunnerConfiguration):
     tech: Literal['graphql'] = 'graphql'
@@ -63,13 +99,70 @@ class GraphQLRunnerConfiguration(BaseRunnerConfiguration):
             'The list of extractions to run at the end of the operation.'
             'For HTTP operations, variables are extracted from the response.'
         ),
+        examples=[
+            *HTTPHeaderExtraction.examples(),
+            *HTTPCookieExtraction.examples(),
+            *HTTPBodyExtraction.examples(),
+        ],
     )
     parameters: GraphQLRequestParameters = Field(
         description=(
             'The parameters of the GraphQL request to send. At least a query and a GraphQL '
             'endpoint are required. By default, POST is used as the HTTP method, and the request is sent as JSON.'
         ),
+        examples=GraphQLRequestParameters.examples(),
     )
+
+    @staticmethod
+    def examples() -> list:
+        return [
+            GraphQLRunnerConfiguration(
+                extractions=[
+                    HTTPBodyExtraction(
+                        key='access_token',
+                        location='body',
+                        name=VariableName('access_token'),
+                    ),
+                ],
+                parameters=GraphQLRequestParameters(
+                    url='https://example.com/graphql',
+                    query=(
+                        'mutation($username: String!, $password: String!) {'
+                        '   login(username: $username, password: $password) {'
+                        '       access_token'
+                        '       refresh_token'
+                        '   }'
+                        '}'
+                    ),
+                    variables=[
+                        GraphQLVariable(name='username', value='my-username'),
+                        GraphQLVariable(name='password', value='my-password'),
+                    ],
+                    method=HTTPMethod.POST,
+                    headers=[
+                        HTTPHeader(name='Content-Type', values=['application/json']),
+                    ],
+                    proxy=None,
+                ),
+            ).dict(exclude_defaults=True),
+            GraphQLRunnerConfiguration(
+                extractions=[
+                    HTTPHeaderExtraction(
+                        key='token',
+                        location='header',
+                        name=VariableName('access_token'),
+                    ),
+                ],
+                parameters=GraphQLRequestParameters(
+                    url='https://example.com/graphql',
+                    query='query { __typename }',
+                    method=HTTPMethod.POST,
+                    headers=[
+                        HTTPHeader(name='Content-Type', values=['application/json']),
+                    ],
+                ),
+            ).dict(exclude_defaults=True),
+        ]
 
     def to_http(self) -> HTTPRunnerConfiguration:
         body = {}
