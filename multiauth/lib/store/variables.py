@@ -1,8 +1,6 @@
-from typing import NewType
-
 from pydantic import BaseModel, Field
 
-VariableName = NewType('VariableName', str)
+from multiauth.lib.entities import VariableName
 
 
 class AuthenticationVariable(BaseModel):

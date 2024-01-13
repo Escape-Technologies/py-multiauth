@@ -1,6 +1,6 @@
 import pytest
 
-from multiauth.lib.helpers import JWTToken, SAMLToken, TokenType, extract_token, parse_jwt_token, parse_saml_token
+from multiauth.lib.token import JWTToken, SAMLToken, TokenType, extract_token, parse_jwt_token, parse_saml_token
 
 
 # Fixture for valid JWT token

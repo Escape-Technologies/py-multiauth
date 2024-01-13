@@ -3,30 +3,30 @@ from typing import NewType
 from pydantic import Field
 
 from multiauth.lib.http_core.entities import HTTPLocation
-from multiauth.lib.presets.base_old import (
-    AuthPreset,
-    ExtractPreset,
-    InjectPreset,
-    RequestPreset,
+from multiauth.lib.presets.base import (
+    BaseExtraction,
+    BaseInjection,
+    BasePreset,
+    HTTPRequestParameters,
     UserPreset,
 )
 
 GraphQLQuery = NewType('GraphQLQuery', str)
 
 
-class GraphQLRequestPreset(RequestPreset):
+class GraphQLRequestPreset(HTTPRequestParameters):
     query: GraphQLQuery = Field(description='The tamplated GraphQL query to authenticate the user.')
 
 
-class GraphQLExtractPreset(ExtractPreset):
+class GraphQLExtractPreset(BaseExtraction):
     location: HTTPLocation = Field(default=HTTPLocation.BODY)
 
 
-class GraphQLInjectPreset(InjectPreset):
+class GraphQLInjectPreset(BaseInjection):
     pass
 
 
-class AuthPresetGraphQL(AuthPreset):
+class BasePresetGraphQL(BasePreset):
     request: GraphQLRequestPreset
     inject: GraphQLInjectPreset
     extract: GraphQLExtractPreset

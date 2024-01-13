@@ -1,6 +1,6 @@
 from pydantic import Field
 
-from multiauth.lib.presets.base_old import AuthPreset, UserPreset
+from multiauth.lib.presets.base import BasePreset, UserPreset
 
 
 class BasicUserPreset(UserPreset):
@@ -8,5 +8,5 @@ class BasicUserPreset(UserPreset):
     password: str = Field(description='The Basic password of the user.')
 
 
-class BasicAuthPreset(AuthPreset):
+class BasicBasePreset(BasePreset):
     pass

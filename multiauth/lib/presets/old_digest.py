@@ -1,4 +1,4 @@
-from multiauth.lib.presets.base_old import UserPreset
+from multiauth.lib.presets.base import UserPreset
 
 
 class DigestUserPreset(UserPreset):

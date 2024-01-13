@@ -11,6 +11,32 @@ Type: object
 | value | `string` | `True` | The value of the variable |  |
 
 
+## <a id="BaseExtraction"></a>BaseExtraction
+
+Description: No Description.
+
+Type: object
+
+| Field Name | Type | Required | Description | Reference |
+|------------|------|----------|-------------|-----------|
+| key | `string` | `True` | The key to use for the extracted value, depending on the location |  |
+| location | `N/A` | `True` | The location of the HTTP request where the value should be extracted |  |
+| regex | `N/A` | `False` | The regex to use to extract the token from the key value. By default the entire value is taken. |  |
+
+
+## <a id="BaseInjection"></a>BaseInjection
+
+Description: No Description.
+
+Type: object
+
+| Field Name | Type | Required | Description | Reference |
+|------------|------|----------|-------------|-----------|
+| key | `string` | `True` | The key to use for the injected token. Its usage depends on the location. For headers, cookies,and query parameters, this key describes the name of the header, cookie or query parameter. For a body location, the key is the field where the token should be injected within the request bodies |  |
+| location | `N/A` | `True` | The location of the HTTP request where the token should be injected |  |
+| prefix | `N/A` | `False` | A prefix to prepend to the token before it is injected |  |
+
+
 ## <a id="BasicRunnerConfiguration"></a>BasicRunnerConfiguration
 
 Description: No Description.
@@ -222,7 +248,12 @@ Type: object
 |------------|------|----------|-------------|-----------|
 | name | `string` | `True` | The name of the preset. Will be the name of the generated procedure. |  |
 | parameters | `N/A` | `True` | The parameters of the HTTP request used to fetch the access and refresh tokens. |  |
+| extract | `N/A` | `False` | The way the token is going to be extracted from the authentication response. |  |
+| inject | `N/A` | `False` | The way the extracted token is going to be injected and formatted in the authenticated requests. |  |
+| refresh | `N/A` | `False` | The definition of the refresh procedure. |  |
+| request | `N/A` | `False` | The request parameters that define the authentication process. |  |
 | type | `N/A` | `False` |  |  |
+| users | `UserPreset[]` | `False` | The list of users and their credentials that will use this authentication preset. | [UserPreset](#UserPreset) |
 
 
 ## <a id="OAuthClientCredentialsPreset"></a>OAuthClientCredentialsPreset
@@ -237,8 +268,29 @@ Type: object
 | client_secret | `string` | `True` | The client secret to use for the OAuth requests |  |
 | name | `string` | `True` | The name of the preset. Will be the name of the generated procedure. |  |
 | server_url | `string` | `True` | The URL of the token endpoint of the OpenIDConnect server |  |
+| users | `OAuthClientCredentialsUserPreset[]` | `True` | A list of users to create | [OAuthClientCredentialsUserPreset](#OAuthClientCredentialsUserPreset) |
+| extract | `N/A` | `False` | The way the token is going to be extracted from the authentication response. |  |
+| inject | `N/A` | `False` | The way the extracted token is going to be injected and formatted in the authenticated requests. |  |
+| refresh | `N/A` | `False` | The definition of the refresh procedure. |  |
+| request | `N/A` | `False` | The request parameters that define the authentication process. |  |
 | type | `N/A` | `False` |  |  |
-| users | `array` | `False` | A list of users to create |  |
+
+
+## <a id="OAuthClientCredentialsUserPreset"></a>OAuthClientCredentialsUserPreset
+
+Description: No Description.
+
+Type: object
+
+| Field Name | Type | Required | Description | Reference |
+|------------|------|----------|-------------|-----------|
+| name | `string` | `True` | The arbitrary name given to the user. |  |
+| password | `string` | `True` | The password of the user. |  |
+| username | `string` | `True` | The username of the user. |  |
+| body | `N/A` | `False` | A body to merge with the bodies of every HTTP requests sent for this user |  |
+| cookies | `HTTPCookie[]` | `False` | A list of cookies to attach to every HTTP requests sent for this user | [HTTPCookie](#HTTPCookie) |
+| headers | `HTTPHeader[]` | `False` | A list of headers to attach to every HTTP requests sent for this user | [HTTPHeader](#HTTPHeader) |
+| query_parameters | `HTTPQueryParameter[]` | `False` | A list of query parameters to attach to every HTTP requests sent for this user | [HTTPQueryParameter](#HTTPQueryParameter) |
 
 
 ## <a id="OAuthRefreshPreset"></a>OAuthRefreshPreset
@@ -253,8 +305,29 @@ Type: object
 | client_secret | `string` | `True` | The client secret to use for the OAuth requests |  |
 | name | `string` | `True` | The name of the preset. Will be the name of the generated procedure. |  |
 | server_url | `string` | `True` | The URL of the token endpoint of the OpenIDConnect server |  |
+| users | `OAuthRefreshUserPreset[]` | `True` | The list of users and their credentials that will use this authentication preset. | [OAuthRefreshUserPreset](#OAuthRefreshUserPreset) |
+| extract | `N/A` | `False` | The way the token is going to be extracted from the authentication response. |  |
+| inject | `N/A` | `False` | The way the extracted token is going to be injected and formatted in the authenticated requests. |  |
+| refresh | `N/A` | `False` | The definition of the refresh procedure. |  |
+| request | `N/A` | `False` | The request parameters that define the authentication process. |  |
 | type | `N/A` | `False` |  |  |
-| users | `array` | `False` | A list of users to create |  |
+
+
+## <a id="OAuthRefreshUserPreset"></a>OAuthRefreshUserPreset
+
+Description: No Description.
+
+Type: object
+
+| Field Name | Type | Required | Description | Reference |
+|------------|------|----------|-------------|-----------|
+| name | `string` | `True` | The arbitrary name given to the user. |  |
+| password | `string` | `True` | The password of the user. |  |
+| username | `string` | `True` | The username of the user. |  |
+| body | `N/A` | `False` | A body to merge with the bodies of every HTTP requests sent for this user |  |
+| cookies | `HTTPCookie[]` | `False` | A list of cookies to attach to every HTTP requests sent for this user | [HTTPCookie](#HTTPCookie) |
+| headers | `HTTPHeader[]` | `False` | A list of headers to attach to every HTTP requests sent for this user | [HTTPHeader](#HTTPHeader) |
+| query_parameters | `HTTPQueryParameter[]` | `False` | A list of query parameters to attach to every HTTP requests sent for this user | [HTTPQueryParameter](#HTTPQueryParameter) |
 
 
 ## <a id="OAuthUserpassPreset"></a>OAuthUserpassPreset
@@ -268,9 +341,30 @@ Type: object
 | client_id | `string` | `True` | The client ID to use for the OAuth requests |  |
 | client_secret | `string` | `True` | The client secret to use for the OAuth requests |  |
 | name | `string` | `True` | The name of the preset. Will be the name of the generated procedure. |  |
-| server_url | `string` | `True` | The URL of the token endpoint of the OpenIDConnect server |  |
+| url | `string` | `True` | The URL of the token endpoint of the OpenIDConnect server |  |
+| users | `OAuthUserpassUserPreset[]` | `True` | A list of users to create | [OAuthUserpassUserPreset](#OAuthUserpassUserPreset) |
+| extract | `N/A` | `False` | The way the token is going to be extracted from the authentication response. |  |
+| inject | `N/A` | `False` | The way the extracted token is going to be injected and formatted in the authenticated requests. |  |
+| refresh | `N/A` | `False` | The definition of the refresh procedure. |  |
+| request | `N/A` | `False` | The request parameters that define the authentication process. |  |
 | type | `N/A` | `False` |  |  |
-| users | `array` | `False` | A list of users to create |  |
+
+
+## <a id="OAuthUserpassUserPreset"></a>OAuthUserpassUserPreset
+
+Description: No Description.
+
+Type: object
+
+| Field Name | Type | Required | Description | Reference |
+|------------|------|----------|-------------|-----------|
+| name | `string` | `True` | The arbitrary name given to the user. |  |
+| password | `string` | `True` | The password of the user. |  |
+| username | `string` | `True` | The username of the user. |  |
+| body | `N/A` | `False` | A body to merge with the bodies of every HTTP requests sent for this user |  |
+| cookies | `HTTPCookie[]` | `False` | A list of cookies to attach to every HTTP requests sent for this user | [HTTPCookie](#HTTPCookie) |
+| headers | `HTTPHeader[]` | `False` | A list of headers to attach to every HTTP requests sent for this user | [HTTPHeader](#HTTPHeader) |
+| query_parameters | `HTTPQueryParameter[]` | `False` | A list of query parameters to attach to every HTTP requests sent for this user | [HTTPQueryParameter](#HTTPQueryParameter) |
 
 
 ## <a id="ProcedureConfiguration"></a>ProcedureConfiguration
@@ -284,6 +378,19 @@ Type: object
 | name | `string` | `True` | The name of the procedure. It must be unique and is used to reference the procedure in users. |  |
 | operations | `array` | `False` | The list of operations executed during the procedure. An operation is a unit transaction, like an HTTP request, or a Selenium script. Operations are ordered, and the variables extracted from an operation can be used in the next operations. |  |
 | injections | `TokenInjection[]` | `False` | The list of injections to perform at the end of the procedure. Injections are used to inject the variables extracted from the procedure into the user authentication. | [TokenInjection](#TokenInjection) |
+
+
+## <a id="RefreshPreset"></a>RefreshPreset
+
+Description: No Description.
+
+Type: object
+
+| Field Name | Type | Required | Description | Reference |
+|------------|------|----------|-------------|-----------|
+| extract | `N/A` | `True` |  |  |
+| inject | `N/A` | `True` |  |  |
+| request | `N/A` | `True` |  |  |
 
 
 ## <a id="SeleniumCommand"></a>SeleniumCommand
@@ -403,6 +510,23 @@ Type: object
 | procedure | `N/A` | `False` | The name of the procedure to use to authenticate the user.This name MUST match the `name` field of a procedure in the `procedures` list in the multiauth configuration. |  |
 | refresh | `N/A` | `False` | An optional refresh procedure to follow for the user. |  |
 | variables | `AuthenticationVariable[]` | `False` | List of variables that will be injected at the beginning of the user&#39;s authentication procedure. | [AuthenticationVariable](#AuthenticationVariable) |
+
+
+## <a id="UserPreset"></a>UserPreset
+
+Description: No Description.
+
+Type: object
+
+| Field Name | Type | Required | Description | Reference |
+|------------|------|----------|-------------|-----------|
+| name | `string` | `True` | The arbitrary name given to the user. |  |
+| body | `N/A` | `False` | A body to merge with the bodies of every HTTP requests sent for this user |  |
+| password | `N/A` | `False` | The password to attach to the HTTP requests sent for this user. See [developer.mozilla.org](https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication#access_using_credentials_in_the_url) |  |
+| username | `N/A` | `False` | The username to attach to the HTTP requests sent for this user. See [developer.mozilla.org](https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication#access_using_credentials_in_the_url) |  |
+| cookies | `HTTPCookie[]` | `False` | A list of cookies to attach to every HTTP requests sent for this user | [HTTPCookie](#HTTPCookie) |
+| headers | `HTTPHeader[]` | `False` | A list of headers to attach to every HTTP requests sent for this user | [HTTPHeader](#HTTPHeader) |
+| query_parameters | `HTTPQueryParameter[]` | `False` | A list of query parameters to attach to every HTTP requests sent for this user | [HTTPQueryParameter](#HTTPQueryParameter) |
 
 
 ## <a id="UserRefresh"></a>UserRefresh

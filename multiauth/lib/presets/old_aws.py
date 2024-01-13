@@ -2,7 +2,7 @@ import enum
 
 from pydantic import Field
 
-from multiauth.lib.presets.base_old import AuthPreset, RequestPreset, UserPreset
+from multiauth.lib.presets.base import BasePreset, HTTPRequestParameters, UserPreset
 
 ###########################
 ## TODO(maxence@escape, antoine@escape): We should stop doing that and use this method: https://stackoverflow.com/questions/58833462/aws-cognito-authentication-curl-call-generate-token-without-cli-no-clien
@@ -50,7 +50,7 @@ class AWSSRPUserPreset(UserPreset):
     password: str
 
 
-class AWSSRPRequestPreset(RequestPreset):
+class AWSSRPRequestPreset(HTTPRequestParameters):
     region: AWSRegion = Field(description='The region of the AWS service.')
     algorithm: AWSHashAlgorithm = Field(description='The hash algorithm used generate the signature.')
     poolId: int = Field(description='The pool ID of the AWS account.')
@@ -58,7 +58,7 @@ class AWSSRPRequestPreset(RequestPreset):
     clientSecret: str = Field(description='The client secret of the AWS account.')
 
 
-class AWSSRPAuthPreset(AuthPreset):
+class AWSSRPBasePreset(BasePreset):
     request: AWSSRPRequestPreset
 
 
@@ -70,13 +70,13 @@ class AWSSignatureUserPreset(UserPreset):
     secretKey: str
 
 
-class AWSSignatureRequestPreset(RequestPreset):
+class AWSSignatureRequestPreset(HTTPRequestParameters):
     region: AWSRegion = Field(description='The region of the AWS service.')
     algorithm: AWSHashAlgorithm = Field(description='The hash algorithm used generate the signature.')
     service: str = Field(description='The service of the AWS account.')
 
 
-class AWSSignatureAuthPreset(AuthPreset):
+class AWSSignatureBasePreset(BasePreset):
     request: AWSSignatureRequestPreset
 
 
@@ -90,13 +90,13 @@ class AWSPasswordUserPreset(UserPreset):
     password: str
 
 
-class AWSPasswordRequestPreset(RequestPreset):
+class AWSPasswordRequestPreset(HTTPRequestParameters):
     region: AWSRegion = Field(description='The region of the AWS service.')
     clientId: int = Field(description='The client ID of the AWS account.')
     clientSecret: str = Field(description='The client secret of the AWS account.')
 
 
-class AWSPasswordAuthPreset(AuthPreset):
+class AWSPasswordBasePreset(BasePreset):
     request: AWSPasswordRequestPreset
 
 
@@ -109,11 +109,11 @@ class AWSRefreshUserPreset(UserPreset):
     refreshToken: str
 
 
-class AWSRefreshRequestPreset(RequestPreset):
+class AWSRefreshRequestPreset(HTTPRequestParameters):
     region: AWSRegion = Field(description='The region of the AWS service.')
     clientId: int = Field(description='The client ID of the AWS account.')
     clientSecret: str = Field(description='The client secret of the AWS account.')
 
 
-class AWSRefreshAuthPreset(AuthPreset):
+class AWSRefreshBasePreset(BasePreset):
     request: AWSRefreshRequestPreset

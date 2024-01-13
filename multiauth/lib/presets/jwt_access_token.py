@@ -2,11 +2,11 @@ from typing import Literal
 
 from pydantic import Field
 
+from multiauth.lib.entities import ProcedureName, VariableName
 from multiauth.lib.http_core.entities import HTTPLocation
 from multiauth.lib.presets.base import BasePreset
-from multiauth.lib.procedure import ProcedureConfiguration, ProcedureName
+from multiauth.lib.procedure import ProcedureConfiguration
 from multiauth.lib.runners.http import HTTPRequestParameters, HTTPRunnerConfiguration, TokenExtraction
-from multiauth.lib.store.variables import VariableName
 
 
 class JWTAccessTokenRefreshTokenPreset(BasePreset):
