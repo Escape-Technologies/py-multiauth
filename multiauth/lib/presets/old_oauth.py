@@ -2,7 +2,7 @@ from enum import StrEnum
 
 from pydantic import Field
 
-from multiauth.lib.presets.old_main import AuthProvider, AuthRequester, Credentials
+from multiauth.lib.presets.base_old import AuthPreset, RequestPreset, UserPreset
 from multiauth.lib.runners.webdriver.configuration import SeleniumCommand
 
 ###########################
@@ -21,12 +21,12 @@ class AuthOAuthClientMethod(StrEnum):
     POST = 'post'
 
 
-class OAuth2AuthCodeCredentials(Credentials):
+class OAuth2AuthCodeUserPreset(UserPreset):
     clientId: str
     clientSecret: str
 
 
-class OAuth2AuthCodeAuthRequester(AuthRequester):
+class OAuth2AuthCodeRequestPreset(RequestPreset):
     url: str = Field(description='The URL to request the authorization code')
     tokenUrl: str = Field(description='The URL to exchange the authorization code for an access token')
     redirectUrl: str = Field(description='The URL to redirect to after authorization')
@@ -40,28 +40,28 @@ class OAuth2AuthCodeAuthRequester(AuthRequester):
     codeVerifier: str | None = Field(default=None, description='The code verifier used to generate the code challenge')
 
 
-class OAuth2AuthCodeAuthProvider(AuthProvider):
+class OAuth2AuthCodeAuthPreset(AuthPreset):
     """This OAuth2 flow requires a Webdriver."""
 
-    requester: OAuth2AuthCodeAuthRequester
+    request: OAuth2AuthCodeRequestPreset
 
 
 ###########################
 ###### OAuth2 Client ######
 ###########################
-class OAuth2ClientCredentials(Credentials):
+class OAuth2ClientUserPreset(UserPreset):
     clientId: str
     clientSecret: str
 
 
-class OAuth2ClientAuthRequester(AuthRequester):
+class OAuth2ClientRequestPreset(RequestPreset):
     url: str = Field(description='The URL to request the authorization code')
     tokenUrl: str = Field(description='The URL to exchange the authorization code for an access token')
     scope: str | None = Field(default=None, description='The scope to request access to')
 
 
-class OAuth2ClientAuthProvider(AuthProvider):
-    requester: OAuth2ClientAuthRequester
+class OAuth2ClientAuthPreset(AuthPreset):
+    request: OAuth2ClientRequestPreset
 
 
 ###########################
@@ -69,14 +69,14 @@ class OAuth2ClientAuthProvider(AuthProvider):
 ###########################
 
 
-class OAuth2PasswordCredentials(Credentials):
+class OAuth2PasswordUserPreset(UserPreset):
     clientId: str
     clientSecret: str
     username: str
     password: str
 
 
-class OAuth2PasswordAuthRequester(AuthRequester):
+class OAuth2PasswordRequestPreset(RequestPreset):
     url: str = Field(description='The URL to request the authorization code')
     tokenUrl: str = Field(description='The URL to exchange the authorization code for an access token')
     clientMethod: AuthOAuthClientMethod = Field(
@@ -86,8 +86,8 @@ class OAuth2PasswordAuthRequester(AuthRequester):
     scope: str | None = Field(default=None, description='The scope to request access to')
 
 
-class OAuth2PasswordAuthProvider(AuthProvider):
-    requester: OAuth2PasswordAuthRequester
+class OAuth2PasswordAuthPreset(AuthPreset):
+    request: OAuth2PasswordRequestPreset
 
 
 ###########################
@@ -95,11 +95,11 @@ class OAuth2PasswordAuthProvider(AuthProvider):
 ###########################
 
 
-class OAuth2ImplicitCredentials(Credentials):
+class OAuth2ImplicitUserPreset(UserPreset):
     clientId: str
 
 
-class OAuth2ImplicitAuthRequester(AuthRequester):
+class OAuth2ImplicitRequestPreset(RequestPreset):
     url: str = Field(description='The URL to request the authorization code')
     redirectUrl: str = Field(description='The URL to redirect to after authorization')
     webDriverCommmands: list[SeleniumCommand] = Field(description='The commands to execute in the web driver')
@@ -111,10 +111,10 @@ class OAuth2ImplicitAuthRequester(AuthRequester):
     state: str | None = Field(default=None, description='The state is used to prevent CSRF attacks')
 
 
-class OAuth2ImplicitAuthProvider(AuthProvider):
+class OAuth2ImplicitAuthPreset(AuthPreset):
     """This OAuth2 flow requires a Webdriver."""
 
-    requester: OAuth2ImplicitAuthRequester
+    request: OAuth2ImplicitRequestPreset
 
 
 ###########################
@@ -122,9 +122,9 @@ class OAuth2ImplicitAuthProvider(AuthProvider):
 ###########################
 
 
-class OAuth2RefreshCredentials(Credentials):
+class OAuth2RefreshUserPreset(UserPreset):
     refreshToken: str
 
 
-class OAuth2RefreshProvider(AuthProvider):
+class OAuth2RefreshProvider(AuthPreset):
     pass

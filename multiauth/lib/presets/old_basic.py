@@ -1,12 +1,12 @@
 from pydantic import Field
 
-from multiauth.lib.presets.old_main import AuthProvider, Credentials
+from multiauth.lib.presets.base_old import AuthPreset, UserPreset
 
 
-class BasicCredentials(Credentials):
+class BasicUserPreset(UserPreset):
     username: str = Field(description='The Basic username of the user.')
     password: str = Field(description='The Basic password of the user.')
 
 
-class BasicAuthProvider(AuthProvider):
+class BasicAuthPreset(AuthPreset):
     pass

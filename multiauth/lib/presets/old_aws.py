@@ -2,7 +2,7 @@ import enum
 
 from pydantic import Field
 
-from multiauth.lib.presets.old_main import AuthProvider, AuthRequester, Credentials
+from multiauth.lib.presets.base_old import AuthPreset, RequestPreset, UserPreset
 
 ###########################
 ## TODO(maxence@escape, antoine@escape): We should stop doing that and use this method: https://stackoverflow.com/questions/58833462/aws-cognito-authentication-curl-call-generate-token-without-cli-no-clien
@@ -45,12 +45,12 @@ class AWSHashAlgorithm(enum.StrEnum):
 ###########################
 
 
-class AWSSRPCredentials(Credentials):
+class AWSSRPUserPreset(UserPreset):
     username: str
     password: str
 
 
-class AWSSRPAuthRequester(AuthRequester):
+class AWSSRPRequestPreset(RequestPreset):
     region: AWSRegion = Field(description='The region of the AWS service.')
     algorithm: AWSHashAlgorithm = Field(description='The hash algorithm used generate the signature.')
     poolId: int = Field(description='The pool ID of the AWS account.')
@@ -58,26 +58,26 @@ class AWSSRPAuthRequester(AuthRequester):
     clientSecret: str = Field(description='The client secret of the AWS account.')
 
 
-class AWSSRPAuthProvider(AuthProvider):
-    requester: AWSSRPAuthRequester
+class AWSSRPAuthPreset(AuthPreset):
+    request: AWSSRPRequestPreset
 
 
 ###########################
 ###### AWS Signature ######
 ###########################
-class AWSSignatureCredentials(Credentials):
+class AWSSignatureUserPreset(UserPreset):
     accessKey: str
     secretKey: str
 
 
-class AWSSignatureAuthRequester(AuthRequester):
+class AWSSignatureRequestPreset(RequestPreset):
     region: AWSRegion = Field(description='The region of the AWS service.')
     algorithm: AWSHashAlgorithm = Field(description='The hash algorithm used generate the signature.')
     service: str = Field(description='The service of the AWS account.')
 
 
-class AWSSignatureAuthProvider(AuthProvider):
-    requester: AWSSignatureAuthRequester
+class AWSSignatureAuthPreset(AuthPreset):
+    request: AWSSignatureRequestPreset
 
 
 ###########################
@@ -85,19 +85,19 @@ class AWSSignatureAuthProvider(AuthProvider):
 ###########################
 
 
-class AWSPasswordCredentials(Credentials):
+class AWSPasswordUserPreset(UserPreset):
     username: str
     password: str
 
 
-class AWSPasswordAuthRequester(AuthRequester):
+class AWSPasswordRequestPreset(RequestPreset):
     region: AWSRegion = Field(description='The region of the AWS service.')
     clientId: int = Field(description='The client ID of the AWS account.')
     clientSecret: str = Field(description='The client secret of the AWS account.')
 
 
-class AWSPasswordAuthProvider(AuthProvider):
-    requester: AWSPasswordAuthRequester
+class AWSPasswordAuthPreset(AuthPreset):
+    request: AWSPasswordRequestPreset
 
 
 ###########################
@@ -105,15 +105,15 @@ class AWSPasswordAuthProvider(AuthProvider):
 ###########################
 
 
-class AWSRefreshCredentials(Credentials):
+class AWSRefreshUserPreset(UserPreset):
     refreshToken: str
 
 
-class AWSRefreshAuthRequester(AuthRequester):
+class AWSRefreshRequestPreset(RequestPreset):
     region: AWSRegion = Field(description='The region of the AWS service.')
     clientId: int = Field(description='The client ID of the AWS account.')
     clientSecret: str = Field(description='The client secret of the AWS account.')
 
 
-class AWSRefreshAuthProvider(AuthProvider):
-    requester: AWSRefreshAuthRequester
+class AWSRefreshAuthPreset(AuthPreset):
+    request: AWSRefreshRequestPreset

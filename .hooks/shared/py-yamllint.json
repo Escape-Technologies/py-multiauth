@@ -1,5 +1,5 @@
 {
   "name": "python: yamllint",
-  "command": "poetry run yamllint multiauth -s",
+  "command": "poetry run yamllint multiauth scripts -s",
   "onlyOn": "**/*.yaml"
 }

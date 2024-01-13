@@ -102,7 +102,7 @@ def parse_saml_token(token: str) -> SAMLToken | None:
     token = extract_token(token)
 
     try:
-        root = ET.fromstring(token)
+        root = ET.fromstring(token)  # noqa: S314
         namespace = {'saml': 'urn:oasis:names:tc:SAML:2.0:assertion'}
 
         issuer = root.find('.//saml:Issuer', namespace)
@@ -119,8 +119,8 @@ def parse_saml_token(token: str) -> SAMLToken | None:
         authn_context = root.find('.//saml:AuthnContextClassRef', namespace)
 
         expiration = (
-            datetime.strptime(conditions.get('NotBefore', ''), '%Y-%m-%dT%H:%M:%SZ')
-            if conditions is not None and conditions.get('NotBefore')
+            datetime.strptime(conditions.get('NotOnOrAfter', ''), '%Y-%m-%dT%H:%M:%SZ')
+            if conditions is not None and conditions.get('NotOnOrAfter')
             else None
         )
 

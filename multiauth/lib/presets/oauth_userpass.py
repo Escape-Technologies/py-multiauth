@@ -7,7 +7,7 @@ from multiauth.lib.http_core.entities import HTTPHeader, HTTPLocation
 from multiauth.lib.injection import TokenInjection
 from multiauth.lib.presets.base import BasePreset
 from multiauth.lib.procedure import ProcedureConfiguration, ProcedureName
-from multiauth.lib.runners.http import HTTPBodyExtraction, HTTPRequestParameters, HTTPRunnerConfiguration
+from multiauth.lib.runners.http import HTTPRequestParameters, HTTPRunnerConfiguration, TokenExtraction
 from multiauth.lib.store.user import Credentials, User, UserName
 from multiauth.lib.store.variables import AuthenticationVariable, VariableName
 
@@ -49,11 +49,13 @@ class OAuthUserpassPreset(BasePreset):
                         ),
                     ),
                     extractions=[
-                        HTTPBodyExtraction(
+                        TokenExtraction(
+                            location=HTTPLocation.BODY,
                             name=VariableName('access_token'),
                             key='access_token',
                         ),
-                        HTTPBodyExtraction(
+                        TokenExtraction(
+                            location=HTTPLocation.BODY,
                             name=VariableName('refresh_token'),
                             key='refresh_token',
                         ),

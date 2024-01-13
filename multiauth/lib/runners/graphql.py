@@ -6,17 +6,15 @@ from pydantic import BaseModel, Field
 
 from multiauth.lib.http_core.entities import (
     HTTPHeader,
+    HTTPLocation,
 )
 from multiauth.lib.http_core.mergers import merge_bodies, merge_headers
 from multiauth.lib.runners.base import BaseRunnerConfiguration
 from multiauth.lib.runners.http import (
-    HTTPBodyExtraction,
-    HTTPCookieExtraction,
-    HTTPExtractionType,
-    HTTPHeaderExtraction,
     HTTPRequestParameters,
     HTTPRequestRunner,
     HTTPRunnerConfiguration,
+    TokenExtraction,
 )
 from multiauth.lib.store.variables import AuthenticationVariable, VariableName, interpolate_string
 
@@ -93,16 +91,14 @@ class GraphQLRequestParameters(HTTPRequestParameters):
 
 class GraphQLRunnerConfiguration(BaseRunnerConfiguration):
     tech: Literal['graphql'] = 'graphql'
-    extractions: list[HTTPExtractionType] = Field(
+    extractions: list[TokenExtraction] = Field(
         default_factory=list,
         description=(
             'The list of extractions to run at the end of the operation.'
             'For HTTP operations, variables are extracted from the response.'
         ),
         examples=[
-            *HTTPHeaderExtraction.examples(),
-            *HTTPCookieExtraction.examples(),
-            *HTTPBodyExtraction.examples(),
+            *TokenExtraction.examples(),
         ],
     )
     parameters: GraphQLRequestParameters = Field(
@@ -118,9 +114,9 @@ class GraphQLRunnerConfiguration(BaseRunnerConfiguration):
         return [
             GraphQLRunnerConfiguration(
                 extractions=[
-                    HTTPBodyExtraction(
+                    TokenExtraction(
                         key='access_token',
-                        location='body',
+                        location=HTTPLocation.BODY,
                         name=VariableName('access_token'),
                     ),
                 ],
@@ -147,9 +143,9 @@ class GraphQLRunnerConfiguration(BaseRunnerConfiguration):
             ).dict(exclude_defaults=True),
             GraphQLRunnerConfiguration(
                 extractions=[
-                    HTTPHeaderExtraction(
+                    TokenExtraction(
                         key='token',
-                        location='header',
+                        location=HTTPLocation.HEADER,
                         name=VariableName('access_token'),
                     ),
                 ],

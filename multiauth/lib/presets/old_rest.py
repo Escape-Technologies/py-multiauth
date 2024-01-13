@@ -2,34 +2,34 @@ from typing import Any
 
 from pydantic import Field
 
-from multiauth.lib.presets.old_main import (
-    AuthExtractor,
-    AuthInjector,
-    AuthProvider,
-    AuthRefresher,
-    AuthRequester,
-    Credentials,
+from multiauth.lib.presets.base_old import (
+    AuthPreset,
+    ExtractPreset,
+    InjectPreset,
+    RefreshPreset,
+    RequestPreset,
+    UserPreset,
 )
 
 
-class RESTCredentials(Credentials):
+class RESTUserPreset(UserPreset):
     body: Any | None
 
 
-class RESTAuthRequester(AuthRequester):
+class RESTRequestPreset(RequestPreset):
     pass
 
 
-class RESTAuthInjector(AuthInjector):
+class RESTInjectPreset(InjectPreset):
     pass
 
 
-class RESTAuthExtractor(AuthExtractor):
+class RESTExtractPreset(ExtractPreset):
     pass
 
 
-class RESTAuthProvider(AuthProvider):
-    requester: RESTAuthRequester
-    injector: RESTAuthInjector
-    extractor: RESTAuthExtractor
-    refresher: AuthRefresher | None = Field(default=None)
+class RESTAuthPreset(AuthPreset):
+    request: RESTRequestPreset
+    inject: RESTInjectPreset
+    extract: RESTExtractPreset
+    refresher: RefreshPreset | None = Field(default=None)

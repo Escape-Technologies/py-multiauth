@@ -1,6 +1,21 @@
 {
   "steps": [
     {
+      "from": "py-black"
+    },
+    {
+      "from": "py-mypy"
+    },
+    {
+      "from": "py-pytest"
+    },
+    {
+      "from": "py-ruff"
+    },
+    {
+      "from": "py-yamllint"
+    },
+    {
       "name": "Generate schema",
       "command": "poetry run python ./scripts/generate_schema.py",
       "serial": true

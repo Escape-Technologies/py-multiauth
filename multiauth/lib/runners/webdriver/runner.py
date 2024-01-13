@@ -13,19 +13,20 @@ from multiauth.lib.audit.events.events import (
     SeleniumScriptErrorEvent,
     SeleniumScriptLogEvent,
 )
+from multiauth.lib.http_core.entities import HTTPLocation
 from multiauth.lib.runners.base import (
-    BaseExtraction,
     BaseRunner,
     BaseRunnerConfiguration,
     BaseRunnerParameters,
     RunnerException,
 )
+from multiauth.lib.runners.http import TokenExtraction
 from multiauth.lib.runners.webdriver.configuration import (
     SeleniumCommand,
     SeleniumProject,
     SeleniumTest,
 )
-from multiauth.lib.runners.webdriver.extractors import WebdriverTokenLocationType, extract_token
+from multiauth.lib.runners.webdriver.extractors import extract_token
 from multiauth.lib.runners.webdriver.handler import SeleniumCommandHandler
 from multiauth.lib.store.user import User
 from multiauth.lib.store.variables import AuthenticationVariable, VariableName, interpolate_string
@@ -102,39 +103,8 @@ class SeleniumScriptParameters(BaseRunnerParameters):
         ]
 
 
-class SeleniumExtraction(BaseExtraction):
-    extract_location: WebdriverTokenLocationType = Field(
-        description=('The location of the token in the request.'),
-        examples=['RequestBody', 'ResponseBody', 'RequestHeaders', 'ResponseHeaders', 'RequestUrl'],
-    )
-    extract_regex: str = Field(
-        description=('The regex used to extract the token.'),
-        examples=['access_token=(.*?)&'],
-    )
-    extract_match_index: int | None = Field(
-        description=('The index of the match to extract.'),
-        examples=[0],
-    )
-
-    @staticmethod
-    def examples() -> list:
-        return [
-            SeleniumExtraction(
-                extract_location='RequestBody',
-                extract_match_index=0,
-                extract_regex='access_token=(.*?)&',
-                name=VariableName('access_token'),
-            ).dict(exclude_defaults=True),
-        ]
-
-
 class SeleniumRunnerConfiguration(BaseRunnerConfiguration):
     tech: Literal['selenium'] = 'selenium'
-    extractions: list[SeleniumExtraction] = Field(
-        default_factory=list,
-        description=('The extractions of the Selenium script.'),
-        examples=SeleniumExtraction.examples(),
-    )
     parameters: SeleniumScriptParameters = Field(
         description=('The parameters of the Selenium operation.'),
         examples=SeleniumScriptParameters.examples(),
@@ -148,10 +118,10 @@ class SeleniumRunnerConfiguration(BaseRunnerConfiguration):
         return [
             SeleniumRunnerConfiguration(
                 extractions=[
-                    SeleniumExtraction(
-                        extract_location='ResponseBody',
-                        extract_match_index=0,
-                        extract_regex='access_token=(.*?)&',
+                    TokenExtraction(
+                        key='access_token',
+                        location=HTTPLocation.BODY,
+                        regex='access_token=(.*?)&',
                         name=VariableName('access_token'),
                     ),
                 ],
@@ -209,9 +179,9 @@ class SeleniumRunner(BaseRunner[SeleniumRunnerConfiguration]):
         for extraction in self.selenium_configuration.extractions:
             try:
                 token = extract_token(
-                    extraction.extract_location,
-                    extraction.extract_regex,
-                    extraction.extract_match_index,
+                    extraction.location,
+                    extraction.key,
+                    extraction.regex,
                     requests,
                 )
                 variable = AuthenticationVariable(name=extraction.name, value=token)

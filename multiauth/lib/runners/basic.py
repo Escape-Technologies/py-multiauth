@@ -11,13 +11,10 @@ from multiauth.lib.http_core.entities import (
 from multiauth.lib.http_core.mergers import merge_headers
 from multiauth.lib.runners.base import BaseRunnerConfiguration, RunnerException
 from multiauth.lib.runners.http import (
-    HTTPBodyExtraction,
-    HTTPCookieExtraction,
-    HTTPExtractionType,
-    HTTPHeaderExtraction,
     HTTPRequestParameters,
     HTTPRequestRunner,
     HTTPRunnerConfiguration,
+    TokenExtraction,
 )
 from multiauth.lib.store.user import Credentials, User
 from multiauth.lib.store.variables import AuthenticationVariable, VariableName, interpolate_string
@@ -29,13 +26,11 @@ class BasicRunnerConfiguration(BaseRunnerConfiguration):
         description=('The parameters of the HTTP request used to test the username and password.'),
         examples=HTTPRequestParameters.examples(),
     )
-    extractions: list[HTTPExtractionType] = Field(
+    extractions: list[TokenExtraction] = Field(
         default_factory=list,
         description=('The extractions of the HTTP request used to test the username and password.'),
         examples=[
-            *HTTPHeaderExtraction.examples(),
-            *HTTPCookieExtraction.examples(),
-            *HTTPBodyExtraction.examples(),
+            *TokenExtraction.examples(),
         ],
     )
 

@@ -4,6 +4,8 @@ from typing import Any, Literal
 
 from seleniumwire.request import Request  # type: ignore[import-untyped]
 
+from multiauth.lib.http_core.entities import HTTPLocation
+
 WebdriverTokenLocationType = Literal['RequestURL', 'RequestHeader', 'RequestBody', 'ResponseHeader', 'ResponseBody']
 
 logger = logging.getLogger('multiauth.providers.webdriver.extractors')
@@ -66,28 +68,33 @@ def extract_from_response_body(requests: Any, rx: str) -> list[str]:
 
 
 def extract_token(
-    location: WebdriverTokenLocationType,
-    regex: str,
-    index: int | None,
+    location: HTTPLocation,
+    key: str,  # noqa: ARG001 todo(antoine@escape.tech): Uniformise extraction
+    regex: str | None,
     requests: list[Request],
 ) -> str:
-    match location:
-        case 'RequestBody':
-            tokens = extract_from_request_body(requests, regex)
-        case 'RequestHeader':
-            tokens = extract_from_request_header(requests, regex)
-        case 'RequestURL':
-            tokens = extract_from_request_url(requests, regex)
-        case 'ResponseBody':
-            tokens = extract_from_response_body(requests, regex)
-        case 'ResponseHeader':
-            tokens = extract_from_response_header(requests, regex)
+    if regex is None:
+        raise Exception('Regex is required')
 
-    if len(tokens) == 0:
+    match location:
+        case HTTPLocation.BODY:
+            tokens = extract_from_request_body(requests, regex)
+            tokens += extract_from_response_body(requests, regex)
+        case HTTPLocation.HEADER:
+            tokens = extract_from_request_header(requests, regex)
+            tokens += extract_from_response_header(requests, regex)
+        case HTTPLocation.QUERY:
+            tokens = extract_from_request_url(requests, regex)
+
+    _l = len(tokens)
+
+    if _l == 0:
         raise Exception(f'Could not find token in `{location}` with regex `{regex}`')
 
-    index = index or 0
-    if len(tokens) <= index:
-        raise Exception(f'Could not find token in `{location}` with regex `{regex}` at index `{index}`')
+    if _l > 1:
+        raise Exception(
+            f'We could find {_l} token in `{location}` with regex `{regex}`: `{tokens}`.\
+              Please strengthen your regex so that only one is found.',
+        )
 
-    return tokens[index]
+    return tokens[0]

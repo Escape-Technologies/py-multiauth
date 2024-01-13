@@ -20,20 +20,6 @@
       "title": "AuthenticationVariable",
       "type": "object"
     },
-    "BaseExtraction": {
-      "properties": {
-        "name": {
-          "description": "The name of the variable to store the extracted value in",
-          "title": "Name",
-          "type": "string"
-        }
-      },
-      "required": [
-        "name"
-      ],
-      "title": "BaseExtraction",
-      "type": "object"
-    },
     "BasicRunnerConfiguration": {
       "properties": {
         "tech": {
@@ -75,52 +61,13 @@
           "description": "The extractions of the HTTP request used to test the username and password.",
           "examples": [
             {
-              "key": "my-header-key",
-              "name": "my-variable"
-            },
-            {
-              "key": "my-cookie-key",
-              "name": "my-variable"
-            },
-            {
-              "key": "my-body-key",
+              "key": "Set-Cookie",
+              "location": "header",
               "name": "my-variable"
             }
           ],
           "items": {
-            "discriminator": {
-              "mapping": {
-                "body": "#/$defs/HTTPBodyExtraction",
-                "cookie": "#/$defs/HTTPCookieExtraction",
-                "header": "#/$defs/HTTPHeaderExtraction"
-              },
-              "propertyName": "location"
-            },
-            "examples": [
-              {
-                "key": "my-header-key",
-                "name": "my-variable"
-              },
-              {
-                "key": "my-cookie-key",
-                "name": "my-variable"
-              },
-              {
-                "key": "my-body-key",
-                "name": "my-variable"
-              }
-            ],
-            "oneOf": [
-              {
-                "$ref": "#/$defs/HTTPHeaderExtraction"
-              },
-              {
-                "$ref": "#/$defs/HTTPCookieExtraction"
-              },
-              {
-                "$ref": "#/$defs/HTTPBodyExtraction"
-              }
-            ]
+            "$ref": "#/$defs/TokenExtraction"
           },
           "title": "Extractions",
           "type": "array"
@@ -344,7 +291,7 @@
         },
         "extractions": {
           "items": {
-            "$ref": "#/$defs/BaseExtraction"
+            "$ref": "#/$defs/TokenExtraction"
           },
           "title": "Extractions",
           "type": "array"
@@ -610,52 +557,13 @@
           "description": "The list of extractions to run at the end of the operation.For HTTP operations, variables are extracted from the response.",
           "examples": [
             {
-              "key": "my-header-key",
-              "name": "my-variable"
-            },
-            {
-              "key": "my-cookie-key",
-              "name": "my-variable"
-            },
-            {
-              "key": "my-body-key",
+              "key": "Set-Cookie",
+              "location": "header",
               "name": "my-variable"
             }
           ],
           "items": {
-            "discriminator": {
-              "mapping": {
-                "body": "#/$defs/HTTPBodyExtraction",
-                "cookie": "#/$defs/HTTPCookieExtraction",
-                "header": "#/$defs/HTTPHeaderExtraction"
-              },
-              "propertyName": "location"
-            },
-            "examples": [
-              {
-                "key": "my-header-key",
-                "name": "my-variable"
-              },
-              {
-                "key": "my-cookie-key",
-                "name": "my-variable"
-              },
-              {
-                "key": "my-body-key",
-                "name": "my-variable"
-              }
-            ],
-            "oneOf": [
-              {
-                "$ref": "#/$defs/HTTPHeaderExtraction"
-              },
-              {
-                "$ref": "#/$defs/HTTPCookieExtraction"
-              },
-              {
-                "$ref": "#/$defs/HTTPBodyExtraction"
-              }
-            ]
+            "$ref": "#/$defs/TokenExtraction"
           },
           "title": "Extractions",
           "type": "array"
@@ -684,31 +592,6 @@
       "title": "GraphQLVariable",
       "type": "object"
     },
-    "HTTPBodyExtraction": {
-      "properties": {
-        "name": {
-          "description": "The name of the variable to store the extracted value in",
-          "title": "Name",
-          "type": "string"
-        },
-        "location": {
-          "const": "body",
-          "default": "body",
-          "title": "Location"
-        },
-        "key": {
-          "description": "The key to extract the value from the body. The key is searched recursively.",
-          "title": "Key",
-          "type": "string"
-        }
-      },
-      "required": [
-        "name",
-        "key"
-      ],
-      "title": "HTTPBodyExtraction",
-      "type": "object"
-    },
     "HTTPCookie": {
       "properties": {
         "name": {
@@ -730,31 +613,6 @@
       "title": "HTTPCookie",
       "type": "object"
     },
-    "HTTPCookieExtraction": {
-      "properties": {
-        "name": {
-          "description": "The name of the variable to store the extracted value in",
-          "title": "Name",
-          "type": "string"
-        },
-        "location": {
-          "const": "cookie",
-          "default": "cookie",
-          "title": "Location"
-        },
-        "key": {
-          "description": "The name of the cookie to extract the value from",
-          "title": "Key",
-          "type": "string"
-        }
-      },
-      "required": [
-        "name",
-        "key"
-      ],
-      "title": "HTTPCookieExtraction",
-      "type": "object"
-    },
     "HTTPHeader": {
       "properties": {
         "name": {
@@ -774,31 +632,6 @@
         "values"
       ],
       "title": "HTTPHeader",
-      "type": "object"
-    },
-    "HTTPHeaderExtraction": {
-      "properties": {
-        "name": {
-          "description": "The name of the variable to store the extracted value in",
-          "title": "Name",
-          "type": "string"
-        },
-        "location": {
-          "const": "header",
-          "default": "header",
-          "title": "Location"
-        },
-        "key": {
-          "description": "The name of the header to extract the value from",
-          "title": "Key",
-          "type": "string"
-        }
-      },
-      "required": [
-        "name",
-        "key"
-      ],
-      "title": "HTTPHeaderExtraction",
       "type": "object"
     },
     "HTTPLocation": {
@@ -865,13 +698,7 @@
           "examples": [
             "GET",
             "POST",
-            "PUT",
-            "CONNECT",
-            "DELETE",
-            "HEAD",
-            "OPTIONS",
-            "PATCH",
-            "TRACE"
+            "PUT"
           ]
         },
         "headers": {
@@ -1027,52 +854,13 @@
           "description": "The list of extractions to run at the end of the operation.For HTTP operations, variables are extracted from the response.",
           "examples": [
             {
-              "key": "my-header-key",
-              "name": "my-variable"
-            },
-            {
-              "key": "my-cookie-key",
-              "name": "my-variable"
-            },
-            {
-              "key": "my-body-key",
+              "key": "Set-Cookie",
+              "location": "header",
               "name": "my-variable"
             }
           ],
           "items": {
-            "discriminator": {
-              "mapping": {
-                "body": "#/$defs/HTTPBodyExtraction",
-                "cookie": "#/$defs/HTTPCookieExtraction",
-                "header": "#/$defs/HTTPHeaderExtraction"
-              },
-              "propertyName": "location"
-            },
-            "examples": [
-              {
-                "key": "my-header-key",
-                "name": "my-variable"
-              },
-              {
-                "key": "my-cookie-key",
-                "name": "my-variable"
-              },
-              {
-                "key": "my-body-key",
-                "name": "my-variable"
-              }
-            ],
-            "oneOf": [
-              {
-                "$ref": "#/$defs/HTTPHeaderExtraction"
-              },
-              {
-                "$ref": "#/$defs/HTTPCookieExtraction"
-              },
-              {
-                "$ref": "#/$defs/HTTPBodyExtraction"
-              }
-            ]
+            "$ref": "#/$defs/TokenExtraction"
           },
           "title": "Extractions",
           "type": "array"
@@ -1413,65 +1201,6 @@
       "title": "SeleniumCommand",
       "type": "object"
     },
-    "SeleniumExtraction": {
-      "properties": {
-        "name": {
-          "description": "The name of the variable to store the extracted value in",
-          "title": "Name",
-          "type": "string"
-        },
-        "extract_location": {
-          "description": "The location of the token in the request.",
-          "enum": [
-            "RequestURL",
-            "RequestHeader",
-            "RequestBody",
-            "ResponseHeader",
-            "ResponseBody"
-          ],
-          "examples": [
-            "RequestBody",
-            "ResponseBody",
-            "RequestHeaders",
-            "ResponseHeaders",
-            "RequestUrl"
-          ],
-          "title": "Extract Location",
-          "type": "string"
-        },
-        "extract_regex": {
-          "description": "The regex used to extract the token.",
-          "examples": [
-            "access_token=(.*?)&"
-          ],
-          "title": "Extract Regex",
-          "type": "string"
-        },
-        "extract_match_index": {
-          "anyOf": [
-            {
-              "type": "integer"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "description": "The index of the match to extract.",
-          "examples": [
-            0
-          ],
-          "title": "Extract Match Index"
-        }
-      },
-      "required": [
-        "name",
-        "extract_location",
-        "extract_regex",
-        "extract_match_index"
-      ],
-      "title": "SeleniumExtraction",
-      "type": "object"
-    },
     "SeleniumProject": {
       "properties": {
         "tests": {
@@ -1481,7 +1210,7 @@
               "commands": [
                 {
                   "command": "open",
-                  "id": "c4b736fde1094509858da05d0034d6fa",
+                  "id": "e2b12026a18a40f382021004c8c70a1d",
                   "target": "https://example.com",
                   "targets": [
                     [
@@ -1492,7 +1221,7 @@
                   "value": ""
                 }
               ],
-              "id": "eb2c36910584458ca10b89e4f03b2ce2",
+              "id": "b985aad4c2f34d3fb903a95fd378a9d9",
               "name": "test"
             }
           ],
@@ -1535,7 +1264,7 @@
                     "commands": [
                       {
                         "command": "open",
-                        "id": "59f508378000480684da81ee19d367b6",
+                        "id": "020d4cba022e4459ab66b8cf7786173f",
                         "target": "https://example.com",
                         "targets": [
                           [
@@ -1546,7 +1275,7 @@
                         "value": ""
                       }
                     ],
-                    "id": "6ea0f3200eec4fa3aee9bd68d0f38f0e",
+                    "id": "2f2567155cf44ebca70813cdc6e321c1",
                     "name": "test"
                   }
                 ]
@@ -1555,24 +1284,16 @@
           ]
         },
         "extractions": {
-          "description": "The extractions of the Selenium script.",
-          "examples": [
-            {
-              "extract_location": "RequestBody",
-              "extract_match_index": 0,
-              "extract_regex": "access_token=(.*?)&",
-              "name": "access_token"
-            }
-          ],
           "items": {
-            "$ref": "#/$defs/SeleniumExtraction"
+            "$ref": "#/$defs/TokenExtraction"
           },
           "title": "Extractions",
           "type": "array"
         }
       },
       "required": [
-        "parameters"
+        "parameters",
+        "extractions"
       ],
       "title": "SeleniumRunnerConfiguration",
       "type": "object"
@@ -1673,7 +1394,7 @@
         "id": {
           "description": "The id of the test.",
           "examples": [
-            "859b2a4b34ae4f48a4ac2b698b43ff63"
+            "c873ba36e5614c23a92f9d84dd16d32e"
           ],
           "title": "Id",
           "type": "string"
@@ -1691,7 +1412,7 @@
           "examples": [
             {
               "command": "open",
-              "id": "99564130325d4eee812d1318d019f395",
+              "id": "06eae7432421475b967e61dad97aad0f",
               "target": "https://example.com",
               "targets": [
                 [
@@ -1715,6 +1436,51 @@
         "commands"
       ],
       "title": "SeleniumTest",
+      "type": "object"
+    },
+    "TokenExtraction": {
+      "properties": {
+        "location": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/HTTPLocation"
+            }
+          ],
+          "description": "The location of the HTTP request where the value should be extracted"
+        },
+        "key": {
+          "description": "The key to use for the extracted value, depending on the location",
+          "title": "Key",
+          "type": "string"
+        },
+        "regex": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "The regex to use to extract the token from the key value. By default the entire value is taken.",
+          "title": "Regex"
+        },
+        "name": {
+          "description": "The name of the variable to store the extracted value into",
+          "examples": [
+            "my-token"
+          ],
+          "title": "Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "location",
+        "key",
+        "name"
+      ],
+      "title": "TokenExtraction",
       "type": "object"
     },
     "TokenInjection": {
