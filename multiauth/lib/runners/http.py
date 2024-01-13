@@ -1,6 +1,6 @@
 import json
 from http import HTTPMethod
-from typing import Annotated, Any, Literal, Union
+from typing import Any, Literal
 
 from pydantic import Field
 
@@ -16,6 +16,7 @@ from multiauth.lib.audit.events.events import (
 from multiauth.lib.http_core.entities import (
     HTTPCookie,
     HTTPHeader,
+    HTTPLocation,
     HTTPQueryParameter,
     HTTPRequest,
     HTTPResponse,
@@ -24,69 +25,21 @@ from multiauth.lib.http_core.mergers import merge_bodies, merge_cookies, merge_h
 from multiauth.lib.http_core.parsers import parse_raw_url
 from multiauth.lib.http_core.request import send_request
 from multiauth.lib.runners.base import (
-    BaseExtraction,
     BaseRunner,
     BaseRunnerConfiguration,
     BaseRunnerParameters,
     RunnerException,
+    TokenExtraction,
 )
 from multiauth.lib.store.user import Credentials, User
-from multiauth.lib.store.variables import AuthenticationVariable, VariableName, interpolate_string
-
-
-class HTTPHeaderExtraction(BaseExtraction):
-    location: Literal['header'] = 'header'
-    key: str = Field(description=('The name of the header to extract the value from'))
-
-    @staticmethod
-    def examples() -> list:
-        return [
-            HTTPHeaderExtraction(key='my-header-key', location='header', name=VariableName('my-variable')).dict(
-                exclude_defaults=True,
-            ),
-        ]
-
-
-class HTTPCookieExtraction(BaseExtraction):
-    location: Literal['cookie'] = 'cookie'
-    key: str = Field(description=('The name of the cookie to extract the value from'))
-
-    @staticmethod
-    def examples() -> list:
-        return [
-            HTTPCookieExtraction(key='my-cookie-key', location='cookie', name=VariableName('my-variable')).dict(
-                exclude_defaults=True,
-            ),
-        ]
-
-
-class HTTPBodyExtraction(BaseExtraction):
-    location: Literal['body'] = 'body'
-    key: str = Field(description='The key to extract the value from the body. The key is searched recursively.')
-
-    @staticmethod
-    def examples() -> list:
-        return [
-            HTTPBodyExtraction(key='my-body-key', location='body', name=VariableName('my-variable')).dict(
-                exclude_defaults=True,
-            ),
-        ]
-
-
-HTTPExtractionType = Annotated[
-    Union[HTTPHeaderExtraction, HTTPCookieExtraction, HTTPBodyExtraction],
-    Field(
-        discriminator='location',
-        examples=[*HTTPHeaderExtraction.examples(), *HTTPCookieExtraction.examples(), *HTTPBodyExtraction.examples()],
-    ),
-]
+from multiauth.lib.store.variables import AuthenticationVariable, interpolate_string
 
 
 class HTTPRequestParameters(BaseRunnerParameters):
     url: str = Field(description='The URL to send the request to')
     method: HTTPMethod = Field(
         description='The HTTP method to use',
-        examples=['GET', 'POST', 'PUT', 'CONNECT', 'DELETE', 'HEAD', 'OPTIONS', 'PATCH', 'TRACE'],
+        examples=['GET', 'POST', 'PUT'],
     )
     headers: list[HTTPHeader] = Field(
         default_factory=list,
@@ -160,16 +113,14 @@ class HTTPRequestParameters(BaseRunnerParameters):
 
 class HTTPRunnerConfiguration(BaseRunnerConfiguration):
     tech: Literal['http'] = 'http'
-    extractions: list[HTTPExtractionType] = Field(
+    extractions: list[TokenExtraction] = Field(
         default_factory=list,
         description=(
             'The list of extractions to run at the end of the operation.'
             'For HTTP operations, variables are extracted from the response.'
         ),
         examples=[
-            *HTTPHeaderExtraction.examples(),
-            *HTTPCookieExtraction.examples(),
-            *HTTPBodyExtraction.examples(),
+            *TokenExtraction.examples(),
         ],
     )
     parameters: HTTPRequestParameters = Field(
@@ -274,7 +225,7 @@ class HTTPRequestRunner(BaseRunner[HTTPRunnerConfiguration]):
         variables: list[AuthenticationVariable] = []
 
         for extraction in extractions:
-            if isinstance(extraction, HTTPHeaderExtraction):
+            if extraction.location == HTTPLocation.HEADER:
                 h_findings = [h for h in response.headers if h.name == extraction]
                 if len(h_findings) == 0:
                     continue
@@ -282,7 +233,7 @@ class HTTPRequestRunner(BaseRunner[HTTPRunnerConfiguration]):
                 events.append(ExtractedVariableEvent(variable=variable))
                 variables.append(variable)
 
-            if isinstance(extraction, HTTPCookieExtraction):
+            if extraction.location == HTTPLocation.COOKIE:
                 c_findings = [c for c in response.cookies if c.name == extraction.key]
                 if len(c_findings) == 0:
                     continue
@@ -290,7 +241,7 @@ class HTTPRequestRunner(BaseRunner[HTTPRunnerConfiguration]):
                 events.append(ExtractedVariableEvent(variable=variable))
                 variables.append(variable)
 
-            if isinstance(extraction, HTTPBodyExtraction):
+            if extraction.location == HTTPLocation.BODY:
                 if response.data_json is None:
                     continue
                 if not isinstance(response.data_json, dict):

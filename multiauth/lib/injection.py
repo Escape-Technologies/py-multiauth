@@ -7,7 +7,7 @@ from multiauth.lib.store.authentication import Authentication
 from multiauth.lib.store.variables import AuthenticationVariable
 
 
-class TokenInjection(BaseModel):
+class BaseInjection(BaseModel):
     location: HTTPLocation = Field(description='The location of the HTTP request where the token should be injected')
     key: str = Field(
         description=(
@@ -22,6 +22,9 @@ class TokenInjection(BaseModel):
         description='A prefix to prepend to the token before it is injected',
         examples=['Bearer '],
     )
+
+
+class TokenInjection(BaseInjection):
     variable: str | None = Field(
         default=None,
         description=(

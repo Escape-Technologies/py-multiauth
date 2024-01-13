@@ -2,10 +2,11 @@ from typing import Literal
 
 from pydantic import Field
 
+from multiauth.lib.entities import ProcedureName, VariableName
+from multiauth.lib.http_core.entities import HTTPLocation
 from multiauth.lib.presets.base import BasePreset
-from multiauth.lib.procedure import ProcedureConfiguration, ProcedureName
-from multiauth.lib.runners.http import HTTPBodyExtraction, HTTPRequestParameters, HTTPRunnerConfiguration
-from multiauth.lib.store.variables import VariableName
+from multiauth.lib.procedure import ProcedureConfiguration
+from multiauth.lib.runners.http import HTTPRequestParameters, HTTPRunnerConfiguration, TokenExtraction
 
 
 class JWTAccessTokenRefreshTokenPreset(BasePreset):
@@ -22,11 +23,13 @@ class JWTAccessTokenRefreshTokenPreset(BasePreset):
                 HTTPRunnerConfiguration(
                     parameters=self.parameters,
                     extractions=[
-                        HTTPBodyExtraction(
+                        TokenExtraction(
+                            location=HTTPLocation.BODY,
                             name=VariableName('access_token'),
                             key='access_token',
                         ),
-                        HTTPBodyExtraction(
+                        TokenExtraction(
+                            location=HTTPLocation.BODY,
                             name=VariableName('refresh_token'),
                             key='refresh_token',
                         ),

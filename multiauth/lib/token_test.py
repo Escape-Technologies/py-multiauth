@@ -1,12 +1,12 @@
 import pytest
 
-from multiauth.lib.helpers import JWTToken, SAMLToken, TokenType, extract_token, parse_jwt_token, parse_saml_token
+from multiauth.lib.token import JWTToken, SAMLToken, TokenType, extract_token, parse_jwt_token, parse_saml_token
 
 
 # Fixture for valid JWT token
 @pytest.fixture()
 def valid_jwt_token() -> str:
-    return 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJ0ZXN0SXNzdWVyIiwic3ViIjoiMTIzNDU2Nzg5MCIsImF1ZCI6InRlc3RBdWRpZW5jZSIsImV4cCI6MTYxNTkyOTIwMCwibmJmIjoxNjE1ODQyODAwLCJpYXQiOjE2MTU4NDI4MDAsImp0aSI6InRlc3RKVEkiLCJjdXN0b21GaWVsZCI6InRlc3RWYWx1ZSJ9.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c'
+    return 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJ0ZXN0SXNzdWVyIiwic3ViIjoiMTIzNDU2Nzg5MCIsImF1ZCI6InRlc3RBdWRpZW5jZSIsImV4cCI6MTYxNTkyOTIwMCwibmJmIjoxNjE1ODQyODAwLCJpYXQiOjE2MTU4NDI4MDAsImp0aSI6InRlc3RKVEkiLCJjdXN0b21GaWVsZCI6InRlc3RWYWx1ZSJ9.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c'  # noqa: E501
 
 
 # Fixture for invalid JWT token
@@ -43,15 +43,14 @@ def test_jwt_token_analyzer_valid(valid_jwt_token: str) -> None:
 
 
 def test_jwt_token_analyzer_invalid(invalid_jwt_token: str) -> None:
-    with pytest.raises(ValueError):
-        parse_jwt_token(invalid_jwt_token)
+    assert parse_jwt_token(invalid_jwt_token) is None
 
 
 # Fixture for valid JWT token
 @pytest.fixture()
 def valid_sample_token() -> str:
     # Sample SAML token for testing (this should be a string representation of a SAML XML)
-    token = """
+    return """
     <saml:Assertion xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion">
         <saml:Issuer>SampleIssuer</saml:Issuer>
         <saml:Subject>
@@ -70,8 +69,6 @@ def valid_sample_token() -> str:
         </saml:AuthnStatement>
     </saml:Assertion>
     """
-
-    return token
 
 
 def test_parse_saml_token(valid_sample_token: str) -> None:

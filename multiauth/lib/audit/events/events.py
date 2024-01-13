@@ -1,9 +1,9 @@
 from typing import Literal
 
 from multiauth.lib.audit.events.base import Event
-from multiauth.lib.helpers import Token
 from multiauth.lib.http_core.entities import HTTPLocation, HTTPRequest, HTTPResponse
 from multiauth.lib.store.variables import AuthenticationVariable
+from multiauth.lib.token import Token
 
 
 class HTTPRequestEvent(Event):

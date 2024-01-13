@@ -1,11 +1,12 @@
 import abc
 from typing import Generic, Literal, TypeVar
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 from multiauth.lib.audit.events.base import EventsList
+from multiauth.lib.extraction import TokenExtraction
 from multiauth.lib.store.user import User
-from multiauth.lib.store.variables import AuthenticationVariable, VariableName
+from multiauth.lib.store.variables import AuthenticationVariable
 
 RunnerType = Literal['http', 'basic', 'graphql', 'selenium', 'digest']
 
@@ -14,18 +15,13 @@ class BaseRunnerParameters(BaseModel, abc.ABC):
     pass
 
 
-class BaseExtraction(BaseModel, abc.ABC):
-    name: VariableName = Field(description=('The name of the variable to store the extracted value in'))
-
-
-ExtractionType = TypeVar('ExtractionType', bound=BaseExtraction)
 RunnerParametersType = TypeVar('RunnerParametersType', bound=BaseRunnerParameters)
 
 
-class BaseRunnerConfiguration(BaseModel, abc.ABC, Generic[ExtractionType, RunnerParametersType]):
+class BaseRunnerConfiguration(BaseModel, abc.ABC, Generic[RunnerParametersType]):
     tech: RunnerType
     parameters: RunnerParametersType
-    extractions: list[ExtractionType]
+    extractions: list[TokenExtraction]
 
     @abc.abstractmethod
     def get_runner(self) -> 'BaseRunner':

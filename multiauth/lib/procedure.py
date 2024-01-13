@@ -4,7 +4,6 @@ from typing import Annotated, NewType, Union
 
 from pydantic import BaseModel, Field
 
-from multiauth.lib import ProcedureName
 from multiauth.lib.audit.events.base import EventsList
 from multiauth.lib.audit.events.events import (
     ProcedureAbortedEvent,
@@ -12,7 +11,7 @@ from multiauth.lib.audit.events.events import (
     ProcedureStartedEvent,
     TokenParsedEvent,
 )
-from multiauth.lib.helpers import parse_token
+from multiauth.lib.entities import ProcedureName, VariableName
 from multiauth.lib.injection import TokenInjection
 from multiauth.lib.runners.base import BaseRunner, RunnerException
 from multiauth.lib.runners.basic import BasicRunnerConfiguration
@@ -22,7 +21,8 @@ from multiauth.lib.runners.http import HTTPRunnerConfiguration
 from multiauth.lib.runners.webdriver.runner import SeleniumRunnerConfiguration
 from multiauth.lib.store.authentication import Authentication
 from multiauth.lib.store.user import User
-from multiauth.lib.store.variables import AuthenticationVariable, VariableName
+from multiauth.lib.store.variables import AuthenticationVariable
+from multiauth.lib.token import parse_token
 
 ISOExpirationTimestamp = NewType('ISOExpirationTimestamp', str)
 

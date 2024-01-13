@@ -7,9 +7,10 @@ from multiauth.configuration import (
 from multiauth.exceptions import MissingProcedureException, MissingUserException, MultiAuthException
 from multiauth.lib.audit.events.base import EventsList
 from multiauth.lib.audit.events.events import ProcedureAbortedEvent, ProcedureSkippedEvent
-from multiauth.lib.procedure import ISOExpirationTimestamp, Procedure, ProcedureName, default_expiration_date
+from multiauth.lib.entities import ProcedureName, UserName
+from multiauth.lib.procedure import ISOExpirationTimestamp, Procedure, default_expiration_date
 from multiauth.lib.store.authentication import Authentication, AuthenticationStore, AuthenticationStoreException
-from multiauth.lib.store.user import Credentials, User, UserName
+from multiauth.lib.store.user import Credentials, User
 
 
 class Multiauth:

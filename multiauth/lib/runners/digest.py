@@ -6,14 +6,14 @@ from pydantic import BaseModel, Field
 
 from multiauth.lib.audit.events.base import EventsList
 from multiauth.lib.audit.events.events import HTTPFailureEvent
-from multiauth.lib.http_core.entities import HTTPHeader
+from multiauth.lib.http_core.entities import HTTPHeader, HTTPLocation
 from multiauth.lib.http_core.mergers import merge_headers
 from multiauth.lib.runners.base import BaseRunnerConfiguration, RunnerException
 from multiauth.lib.runners.http import (
-    HTTPHeaderExtraction,
     HTTPRequestParameters,
     HTTPRequestRunner,
     HTTPRunnerConfiguration,
+    TokenExtraction,
 )
 from multiauth.lib.store.user import Credentials, User
 from multiauth.lib.store.variables import AuthenticationVariable, VariableName, interpolate_string
@@ -136,9 +136,9 @@ class DigestRunnerConfiguration(BaseRunnerConfiguration):
                     ),
                 ),
                 extractions=[
-                    HTTPHeaderExtraction(
+                    TokenExtraction(
                         name=VariableName('digest-header-value'),
-                        location='header',
+                        location=HTTPLocation.HEADER,
                         key='Authorization',
                     ),
                 ],

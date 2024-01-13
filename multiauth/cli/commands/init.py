@@ -4,12 +4,13 @@ from http import HTTPMethod
 
 from multiauth.configuration import MultiauthConfiguration
 from multiauth.helpers.logger import setup_logger
+from multiauth.lib.entities import ProcedureName, UserName, VariableName
 from multiauth.lib.http_core.entities import HTTPHeader, HTTPLocation
 from multiauth.lib.injection import TokenInjection
-from multiauth.lib.procedure import ProcedureConfiguration, ProcedureName
-from multiauth.lib.runners.http import HTTPBodyExtraction, HTTPRequestParameters, HTTPRunnerConfiguration
-from multiauth.lib.store.user import Credentials, User, UserName
-from multiauth.lib.store.variables import AuthenticationVariable, VariableName
+from multiauth.lib.procedure import ProcedureConfiguration
+from multiauth.lib.runners.http import HTTPRequestParameters, HTTPRunnerConfiguration, TokenExtraction
+from multiauth.lib.store.user import Credentials, User
+from multiauth.lib.store.variables import AuthenticationVariable
 
 
 def init_command(args: argparse.Namespace) -> None:
@@ -48,7 +49,11 @@ def init_command(args: argparse.Namespace) -> None:
                             ],
                         ),
                         extractions=[
-                            HTTPBodyExtraction(name=VariableName('example-extraction'), key='message'),
+                            TokenExtraction(
+                                location=HTTPLocation.BODY,
+                                name=VariableName('example-extraction'),
+                                key='message',
+                            ),
                         ],
                     ),
                     HTTPRunnerConfiguration(

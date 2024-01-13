@@ -1,16 +1,14 @@
-from typing import Any, Literal, NewType
+from typing import Any, Literal
 
 from pydantic import BaseModel, Field
 
+from multiauth.lib.entities import ProcedureName, UserName
 from multiauth.lib.http_core.entities import (
     HTTPCookie,
     HTTPHeader,
     HTTPQueryParameter,
 )
-from multiauth.lib.procedure import ProcedureName
 from multiauth.lib.store.variables import AuthenticationVariable
-
-UserName = NewType('UserName', str)
 
 
 class Credentials(BaseModel):
