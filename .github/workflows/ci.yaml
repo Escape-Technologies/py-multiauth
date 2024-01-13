@@ -43,7 +43,7 @@ jobs:
         run: |
           source .venv/bin/activate
           pytest -V
-          pytest --cov=$MODULE_NAME --cov-report=xml --cov-fail-under=$MIN_TEST_COV tests/unit/
+          pytest --cov=$MODULE_NAME --cov-report=xml --cov-fail-under=$MIN_TEST_COV $MODULE_NAME
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
         with:
