@@ -258,10 +258,23 @@ class Multiauth:
 
         if isinstance(response, HTTPFailureEvent):
             events.append(ValidationFailedEvent(reason='http_error', description=str(response), user_name=user_name))
-            events.append(response)
-            return False, events, None
+            return False, events, Exception('Received HTTP error during validation')
 
-        events.append(HTTPResponseEvent(response=response))
+        if response.status_code in [401, 403]:
+            events.append(HTTPResponseEvent(response=response, severity='error'))
+            events.append(
+                ValidationFailedEvent(
+                    reason='http_error',
+                    description=f'Received status code {response.status_code}',
+                    user_name=user_name,
+                ),
+            )
+            return False, events, Exception(f'Received HTTP status code {response.status_code} during validation')
+
+        events.append(
+            HTTPResponseEvent(response=response, severity='info' if response.status_code < 400 else 'warning'),
+        )
+
         events.append(ValidationSucceededEvent(user_name=user_name))
         return True, events, None
 
