@@ -12,7 +12,9 @@ from multiauth.lib.audit.events.events import (
     HTTPResponseEvent,
     ProcedureAbortedEvent,
     ProcedureSkippedEvent,
-    ValidationSuccedeedEvent,
+    ValidationAttemptedEvent,
+    ValidationFailedEvent,
+    ValidationSucceededEvent,
 )
 from multiauth.lib.entities import ProcedureName, UserName
 from multiauth.lib.http_core.entities import HTTPRequest
@@ -233,14 +235,15 @@ class Multiauth:
         Will send a request to the provided URL using the credentials of the given user.
         """
         events = EventsList()
+        events.append(ValidationAttemptedEvent(user_name=user_name))
 
         try:
             authentication, expiration = self.authentication_store.get(user_name)
         except UnauthenticatedUserException as e:
-            events.append(ProcedureAbortedEvent(reason='unauthenticated', description=str(e)))
+            events.append(ValidationFailedEvent(reason='unauthenticated', description=str(e), user_name=user_name))
             return False, events, e
         except Exception as e:
-            events.append(ProcedureAbortedEvent(reason='unknown', description=str(e)))
+            events.append(ValidationFailedEvent(reason='unknown', description=str(e), user_name=user_name))
             return False, events, e
 
         for header in authentication.headers:
@@ -254,11 +257,12 @@ class Multiauth:
         response = send_request(request)
 
         if isinstance(response, HTTPFailureEvent):
+            events.append(ValidationFailedEvent(reason='http_error', description=str(response), user_name=user_name))
             events.append(response)
             return False, events, None
 
         events.append(HTTPResponseEvent(response=response))
-        events.append(ValidationSuccedeedEvent(user_name=user_name))
+        events.append(ValidationSucceededEvent(user_name=user_name))
         return True, events, None
 
     def sign(*args: Any, **kwargs: Any) -> dict[str, str]:
