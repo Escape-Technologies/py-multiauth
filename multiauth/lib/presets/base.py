@@ -19,6 +19,7 @@ PresetType = Literal[
     'oauth_client_credentials',
     'basic',
     'graphql',
+    'headers',
 ]
 
 
