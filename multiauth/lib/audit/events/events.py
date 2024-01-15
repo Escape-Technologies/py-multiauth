@@ -2,7 +2,6 @@ from typing import Literal
 
 from multiauth.lib.audit.events.base import Event
 from multiauth.lib.http_core.entities import HTTPLocation, HTTPRequest, HTTPResponse
-from multiauth.lib.store.authentication import Authentication
 from multiauth.lib.store.variables import AuthenticationVariable
 from multiauth.lib.token import Token
 
@@ -157,7 +156,6 @@ class TokenParsedEvent(Event):
 class ValidationAttemptedEvent(Event):
     type: Literal['validation_attempted'] = 'validation_attempted'
     default_severity: Literal['debug'] = 'debug'
-    authentication: Authentication
     user_name: str
 
     @property
@@ -169,7 +167,7 @@ class ValidationFailedEvent(Event):
     type: Literal['validation_failed'] = 'validation_failed'
     default_severity: Literal['error'] = 'error'
     user_name: str
-    reason: Literal['http_error', 'unknown']
+    reason: Literal['http_error', 'unknown', 'unauthenticated']
     description: str
 
     @property
@@ -177,8 +175,8 @@ class ValidationFailedEvent(Event):
         return f'Validation failed for {self.user_name}: {self.reason} {self.description}'
 
 
-class ValidationSuccedeedEvent(Event):
-    type: Literal['validation_succedeed'] = 'validation_succedeed'
+class ValidationSucceededEvent(Event):
+    type: Literal['validation_succeeded'] = 'validation_succeeded'
     default_severity: Literal['success'] = 'success'
     user_name: str
 

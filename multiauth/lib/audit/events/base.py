@@ -20,7 +20,7 @@ EventType = Literal[
     'procedure_skipped',
     'token_parsed',
     'validation_attempted',
-    'validation_succedeed',
+    'validation_succeeded',
     'validation_failed',
 ]
 
