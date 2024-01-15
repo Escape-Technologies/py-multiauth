@@ -247,20 +247,6 @@ Type: object
 | extractions | `TokenExtraction[]` | `False` | The list of extractions to run at the end of the operation.For HTTP operations, variables are extracted from the response. | [TokenExtraction](#TokenExtraction) |
 
 
-## <a id="JWTAccessTokenRefreshTokenPreset"></a>JWTAccessTokenRefreshTokenPreset
-
-Description: No Description.
-
-Type: object
-
-| Field Name | Type | Required | Description | Reference |
-|------------|------|----------|-------------|-----------|
-| name | `string` | `True` | The arbitrary name given to the preset. |  |
-| parameters | `N/A` | `True` | The parameters of the HTTP request used to fetch the access and refresh tokens. |  |
-| type | `N/A` | `False` |  |  |
-| users | `UserPreset[]` | `False` | The list of users and their credentials that will use this authentication preset. | [UserPreset](#UserPreset) |
-
-
 ## <a id="OAuthClientCredentialsPreset"></a>OAuthClientCredentialsPreset
 
 Description: No Description.
@@ -371,6 +357,22 @@ Type: object
 | name | `string` | `True` | The name of the procedure. It must be unique and is used to reference the procedure in users. |  |
 | operations | `array` | `False` | The list of operations executed during the procedure. An operation is a unit transaction, like an HTTP request, or a Selenium script. Operations are ordered, and the variables extracted from an operation can be used in the next operations. |  |
 | injections | `TokenInjection[]` | `False` | The list of injections to perform at the end of the procedure. Injections are used to inject the variables extracted from the procedure into the user authentication. | [TokenInjection](#TokenInjection) |
+
+
+## <a id="RESTPreset"></a>RESTPreset
+
+Description: No Description.
+
+Type: object
+
+| Field Name | Type | Required | Description | Reference |
+|------------|------|----------|-------------|-----------|
+| extract | `N/A` | `True` | The token extraction configuration used to extract the tokens from the HTTP response. |  |
+| inject | `N/A` | `True` | The injection configuration used to inject the tokens into the HTTP requests. |  |
+| name | `string` | `True` | The arbitrary name given to the preset. |  |
+| request | `N/A` | `True` | The parameters of the HTTP request used to fetch the access and refresh tokens. |  |
+| type | `N/A` | `False` |  |  |
+| users | `UserPreset[]` | `False` | The list of users and their credentials that will use this authentication preset. | [UserPreset](#UserPreset) |
 
 
 ## <a id="SeleniumCommand"></a>SeleniumCommand

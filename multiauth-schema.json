@@ -965,64 +965,6 @@
       "title": "HTTPRunnerConfiguration",
       "type": "object"
     },
-    "JWTAccessTokenRefreshTokenPreset": {
-      "properties": {
-        "type": {
-          "const": "jwt_access_token_refresh_token",
-          "default": "jwt_access_token_refresh_token",
-          "title": "Type"
-        },
-        "name": {
-          "description": "The arbitrary name given to the preset.",
-          "title": "Name",
-          "type": "string"
-        },
-        "users": {
-          "default": [],
-          "description": "The list of users and their credentials that will use this authentication preset.",
-          "items": {
-            "$ref": "#/$defs/UserPreset"
-          },
-          "title": "Users",
-          "type": "array"
-        },
-        "parameters": {
-          "allOf": [
-            {
-              "$ref": "#/$defs/HTTPRequestParameters"
-            }
-          ],
-          "description": "The parameters of the HTTP request used to fetch the access and refresh tokens.",
-          "examples": [
-            {
-              "method": "GET",
-              "url": "https://my-api.com"
-            },
-            {
-              "body": {
-                "key1": "value1",
-                "key2": "value2"
-              },
-              "headers": [
-                {
-                  "name": "Content-Type",
-                  "values": [
-                    "application/json"
-                  ]
-                }
-              ],
-              "url": "https://my-api.com"
-            }
-          ]
-        }
-      },
-      "required": [
-        "name",
-        "parameters"
-      ],
-      "title": "JWTAccessTokenRefreshTokenPreset",
-      "type": "object"
-    },
     "OAuthClientCredentialsPreset": {
       "properties": {
         "type": {
@@ -1485,6 +1427,96 @@
       "title": "ProcedureConfiguration",
       "type": "object"
     },
+    "RESTPreset": {
+      "properties": {
+        "type": {
+          "const": "jwt",
+          "default": "jwt",
+          "title": "Type"
+        },
+        "name": {
+          "description": "The arbitrary name given to the preset.",
+          "title": "Name",
+          "type": "string"
+        },
+        "users": {
+          "default": [],
+          "description": "The list of users and their credentials that will use this authentication preset.",
+          "items": {
+            "$ref": "#/$defs/UserPreset"
+          },
+          "title": "Users",
+          "type": "array"
+        },
+        "request": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/HTTPRequestParameters"
+            }
+          ],
+          "description": "The parameters of the HTTP request used to fetch the access and refresh tokens.",
+          "examples": [
+            {
+              "method": "GET",
+              "url": "https://my-api.com"
+            },
+            {
+              "body": {
+                "key1": "value1",
+                "key2": "value2"
+              },
+              "headers": [
+                {
+                  "name": "Content-Type",
+                  "values": [
+                    "application/json"
+                  ]
+                }
+              ],
+              "url": "https://my-api.com"
+            }
+          ]
+        },
+        "extract": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/BaseExtraction"
+            }
+          ],
+          "description": "The token extraction configuration used to extract the tokens from the HTTP response.",
+          "examples": [
+            {
+              "key": "Set-Cookie",
+              "location": "header",
+              "name": "my-variable"
+            }
+          ]
+        },
+        "inject": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/BaseInjection"
+            }
+          ],
+          "description": "The injection configuration used to inject the tokens into the HTTP requests.",
+          "examples": [
+            {
+              "key": "Set-Cookie",
+              "location": "header",
+              "name": "my-variable"
+            }
+          ]
+        }
+      },
+      "required": [
+        "name",
+        "request",
+        "extract",
+        "inject"
+      ],
+      "title": "RESTPreset",
+      "type": "object"
+    },
     "SeleniumCommand": {
       "properties": {
         "id": {
@@ -1552,7 +1584,7 @@
               "commands": [
                 {
                   "command": "open",
-                  "id": "270668cd1b18493d8aae196f4b6d9355",
+                  "id": "597121a8dc2d4ba6aa2f5e789f90ca1d",
                   "target": "https://example.com",
                   "targets": [
                     [
@@ -1563,7 +1595,7 @@
                   "value": ""
                 }
               ],
-              "id": "f4a6281495ba454c934c63bfe753826f",
+              "id": "8ad22c91dc1c43b8bd9c29a66b3833c7",
               "name": "test"
             }
           ],
@@ -1606,7 +1638,7 @@
                     "commands": [
                       {
                         "command": "open",
-                        "id": "9d866d5d5cda49a2b716315faa4a7de6",
+                        "id": "5ed2b5b1ac5a460e972a6fc681154f21",
                         "target": "https://example.com",
                         "targets": [
                           [
@@ -1617,7 +1649,7 @@
                         "value": ""
                       }
                     ],
-                    "id": "0765815ada714b9d879795c23b51eb0b",
+                    "id": "952023c682b04e59a7202216f1be6c39",
                     "name": "test"
                   }
                 ]
@@ -1736,7 +1768,7 @@
         "id": {
           "description": "The id of the test.",
           "examples": [
-            "ddfe44c87607488db757a3ea3f5a5f8f"
+            "5641a1a43d59435a96ed77e48706d649"
           ],
           "title": "Id",
           "type": "string"
@@ -1754,7 +1786,7 @@
           "examples": [
             {
               "command": "open",
-              "id": "e374e331c61e41009f9823047d676fea",
+              "id": "115abd9edd95465c86e9eeb6ddc8a351",
               "target": "https://example.com",
               "targets": [
                 [
@@ -2146,7 +2178,7 @@
               "mapping": {
                 "basic": "#/$defs/BasicPreset",
                 "graphql": "#/$defs/GraphQLPreset",
-                "jwt_access_token_refresh_token": "#/$defs/JWTAccessTokenRefreshTokenPreset",
+                "jwt": "#/$defs/RESTPreset",
                 "oauth_client_credentials": "#/$defs/OAuthClientCredentialsPreset",
                 "oauth_refresh": "#/$defs/OAuthRefreshPreset",
                 "oauth_userpass": "#/$defs/OAuthUserpassPreset"
@@ -2155,7 +2187,7 @@
             },
             "oneOf": [
               {
-                "$ref": "#/$defs/JWTAccessTokenRefreshTokenPreset"
+                "$ref": "#/$defs/RESTPreset"
               },
               {
                 "$ref": "#/$defs/OAuthUserpassPreset"
