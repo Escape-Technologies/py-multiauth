@@ -1,13 +1,14 @@
-from typing import Literal
+from typing import Literal, Sequence
 
 from pydantic import Field
 
 from multiauth.lib.entities import ProcedureName, VariableName
 from multiauth.lib.extraction import BaseExtraction
 from multiauth.lib.injection import BaseInjection, TokenInjection
-from multiauth.lib.presets.base import BasePreset
+from multiauth.lib.presets.base import BasePreset, UserPreset
 from multiauth.lib.procedure import ProcedureConfiguration
 from multiauth.lib.runners.http import HTTPRequestParameters, HTTPRunnerConfiguration, TokenExtraction
+from multiauth.lib.store.user import User
 
 VARIABLE_NAME = VariableName('token')
 
@@ -25,6 +26,10 @@ class RESTPreset(BasePreset):
     inject: BaseInjection = Field(
         description='The injection configuration used to inject the tokens into the HTTP requests.',
         examples=TokenExtraction.examples(),
+    )
+
+    users: Sequence[UserPreset] = Field(
+        description='The list of users to generate tokens for.',
     )
 
     def to_procedure_configuration(self) -> ProcedureConfiguration:
@@ -60,3 +65,6 @@ class RESTPreset(BasePreset):
                 ),
             ],
         )
+
+    def to_users(self) -> list[User]:
+        return [User(name=user.name, credentials=user.to_credentials()) for user in self.users]

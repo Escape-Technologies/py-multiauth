@@ -1440,8 +1440,7 @@
           "type": "string"
         },
         "users": {
-          "default": [],
-          "description": "The list of users and their credentials that will use this authentication preset.",
+          "description": "The list of users to generate tokens for.",
           "items": {
             "$ref": "#/$defs/UserPreset"
           },
@@ -1510,6 +1509,7 @@
       },
       "required": [
         "name",
+        "users",
         "request",
         "extract",
         "inject"
@@ -1584,7 +1584,7 @@
               "commands": [
                 {
                   "command": "open",
-                  "id": "597121a8dc2d4ba6aa2f5e789f90ca1d",
+                  "id": "a881b0dfa7d3491b86447bf12ab77e96",
                   "target": "https://example.com",
                   "targets": [
                     [
@@ -1595,7 +1595,7 @@
                   "value": ""
                 }
               ],
-              "id": "8ad22c91dc1c43b8bd9c29a66b3833c7",
+              "id": "64459c7fa97a422885a9768dd918dab2",
               "name": "test"
             }
           ],
@@ -1638,7 +1638,7 @@
                     "commands": [
                       {
                         "command": "open",
-                        "id": "5ed2b5b1ac5a460e972a6fc681154f21",
+                        "id": "68461b5fc2494254ba979f00d0af83a8",
                         "target": "https://example.com",
                         "targets": [
                           [
@@ -1649,7 +1649,7 @@
                         "value": ""
                       }
                     ],
-                    "id": "952023c682b04e59a7202216f1be6c39",
+                    "id": "c8037835deb7404d8598f1249c4f3c7b",
                     "name": "test"
                   }
                 ]
@@ -1768,7 +1768,7 @@
         "id": {
           "description": "The id of the test.",
           "examples": [
-            "5641a1a43d59435a96ed77e48706d649"
+            "41faee3638a942c3b71b12c1247d3762"
           ],
           "title": "Id",
           "type": "string"
@@ -1786,7 +1786,7 @@
           "examples": [
             {
               "command": "open",
-              "id": "115abd9edd95465c86e9eeb6ddc8a351",
+              "id": "fdfb1a1113ef41d0b0075d6a7214b56c",
               "target": "https://example.com",
               "targets": [
                 [

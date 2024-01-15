@@ -371,8 +371,8 @@ Type: object
 | inject | `N/A` | `True` | The injection configuration used to inject the tokens into the HTTP requests. |  |
 | name | `string` | `True` | The arbitrary name given to the preset. |  |
 | request | `N/A` | `True` | The parameters of the HTTP request used to fetch the access and refresh tokens. |  |
+| users | `UserPreset[]` | `True` | The list of users to generate tokens for. | [UserPreset](#UserPreset) |
 | type | `N/A` | `False` |  |  |
-| users | `UserPreset[]` | `False` | The list of users and their credentials that will use this authentication preset. | [UserPreset](#UserPreset) |
 
 
 ## <a id="SeleniumCommand"></a>SeleniumCommand
