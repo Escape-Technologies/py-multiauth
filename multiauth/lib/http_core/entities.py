@@ -3,7 +3,7 @@ import datetime
 import enum
 import json
 from http import HTTPMethod
-from urllib.parse import quote
+from urllib.parse import quote, urlparse
 
 from pydantic import BaseModel, Field, field_serializer
 
@@ -110,6 +110,16 @@ class HTTPRequest(BaseModel):
             document += '\n'
 
         return document
+
+    @staticmethod
+    def from_url(url: str) -> 'HTTPRequest':
+        parsed_url = urlparse(url)
+        return HTTPRequest(
+            method=HTTPMethod.GET,
+            host=parsed_url.netloc,
+            path=parsed_url.path,
+            scheme=HTTPScheme(parsed_url.scheme),
+        )
 
 
 class HTTPResponse(BaseModel):
