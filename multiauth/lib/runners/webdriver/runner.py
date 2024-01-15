@@ -185,7 +185,7 @@ class SeleniumRunner(BaseRunner[SeleniumRunnerConfiguration]):
                     requests,
                 )
                 variable = AuthenticationVariable(name=extraction.name, value=token)
-                events.append(ExtractedVariableEvent(variable=variable))
+                events.append(ExtractedVariableEvent(location=extraction.location, variable=variable))
                 variables.append(variable)
             except Exception as e:
                 events.append(

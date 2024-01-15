@@ -1,6 +1,7 @@
 import json
 from http import HTTPMethod
 from typing import Any, Literal
+from urllib.parse import parse_qs, urlparse
 
 from pydantic import Field
 
@@ -226,34 +227,44 @@ class HTTPRequestRunner(BaseRunner[HTTPRunnerConfiguration]):
         variables: list[AuthenticationVariable] = []
 
         for extraction in extractions:
-            if extraction.location == HTTPLocation.HEADER:
-                h_findings = [h for h in response.headers if h.name == extraction]
-                if len(h_findings) == 0:
-                    continue
-                variable = AuthenticationVariable(name=extraction.name, value=','.join(h_findings[0].values))
-                events.append(ExtractedVariableEvent(variable=variable))
-                variables.append(variable)
+            match extraction.location:
+                case HTTPLocation.HEADER:
+                    h_findings = [h for h in response.headers if h.name == extraction]
+                    if len(h_findings) == 0:
+                        continue
+                    variable = AuthenticationVariable(name=extraction.name, value=','.join(h_findings[0].values))
+                    events.append(ExtractedVariableEvent(location=HTTPLocation.HEADER, variable=variable))
+                    variables.append(variable)
 
-            if extraction.location == HTTPLocation.COOKIE:
-                c_findings = [c for c in response.cookies if c.name == extraction.key]
-                if len(c_findings) == 0:
-                    continue
-                variable = AuthenticationVariable(name=extraction.name, value=','.join(c_findings[0].values))
-                events.append(ExtractedVariableEvent(variable=variable))
-                variables.append(variable)
+                case HTTPLocation.COOKIE:
+                    c_findings = [c for c in response.cookies if c.name == extraction.key]
+                    if len(c_findings) == 0:
+                        continue
+                    variable = AuthenticationVariable(name=extraction.name, value=','.join(c_findings[0].values))
+                    events.append(ExtractedVariableEvent(location=HTTPLocation.COOKIE, variable=variable))
+                    variables.append(variable)
 
-            if extraction.location == HTTPLocation.BODY:
-                if response.data_json is None:
-                    continue
-                if not isinstance(response.data_json, dict):
-                    continue
-                result = search_key_in_dict(response.data_json, extraction.key)
-                if result is None:
-                    continue
-                result_str = str(result) if not isinstance(result, str) else result
-                variable = AuthenticationVariable(name=extraction.name, value=result_str)
-                events.append(ExtractedVariableEvent(variable=variable))
-                variables.append(variable)
+                case HTTPLocation.BODY:
+                    if response.data_json is None:
+                        continue
+                    if not isinstance(response.data_json, dict):
+                        continue
+                    result = search_key_in_dict(response.data_json, extraction.key)
+                    if result is None:
+                        continue
+                    result_str = str(result) if not isinstance(result, str) else result
+                    variable = AuthenticationVariable(name=extraction.name, value=result_str)
+                    events.append(ExtractedVariableEvent(location=HTTPLocation.BODY, variable=variable))
+                    variables.append(variable)
+
+                case HTTPLocation.QUERY:
+                    parsed_qp = parse_qs(urlparse(response.url).query)
+                    finding = parsed_qp.get(extraction.key)
+                    if finding is None:
+                        continue
+                    variable = AuthenticationVariable(name=extraction.name, value=','.join(c_findings[0].values))
+                    events.append(ExtractedVariableEvent(location=HTTPLocation.QUERY, variable=variable))
+                    variables.append(variable)
 
         return variables, events
 

@@ -104,11 +104,12 @@ class ProcedureAbortedEvent(Event):
 class ExtractedVariableEvent(Event):
     type: Literal['extraction'] = 'extraction'
     default_severity: Literal['info'] = 'info'
+    location: HTTPLocation
     variable: AuthenticationVariable
 
     @property
     def logline(self) -> str:
-        return f'{self.variable.name}={self.variable.value}'
+        return f'Variable `{self.variable.name}` extracted in `{self.location}`: `{self.variable.value}`'
 
 
 class InjectedVariableEvent(Event):
