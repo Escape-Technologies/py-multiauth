@@ -45,8 +45,6 @@ Type: object
 
 | Field Name | Type | Required | Description | Reference |
 |------------|------|----------|-------------|-----------|
-| name | `string` | `True` | The arbitrary name given to the preset. |  |
-| url | `string` | `True` | The URL of the Basic authentication endpoint. |  |
 | users | `BasicUserPreset[]` | `True` | A list of users with basic credentials to create | [BasicUserPreset](#BasicUserPreset) |
 | type | `N/A` | `False` |  |  |
 
@@ -59,13 +57,9 @@ Type: object
 
 | Field Name | Type | Required | Description | Reference |
 |------------|------|----------|-------------|-----------|
-| name | `string` | `True` | The arbitrary name given to the user. |  |
 | password | `string` | `True` | The Basic password of the user. |  |
 | username | `string` | `True` | The Basic username of the user. |  |
-| body | `N/A` | `False` | A body to merge with the bodies of every HTTP requests sent for this user |  |
-| cookies | `HTTPCookie[]` | `False` | A list of cookies to attach to every HTTP requests sent for this user | [HTTPCookie](#HTTPCookie) |
-| headers | `HTTPHeader[]` | `False` | A list of headers to attach to every HTTP requests sent for this user | [HTTPHeader](#HTTPHeader) |
-| query_parameters | `HTTPQueryParameter[]` | `False` | A list of query parameters to attach to every HTTP requests sent for this user | [HTTPQueryParameter](#HTTPQueryParameter) |
+| name | `string` | `False` | The name of the user. By default, the username is used. |  |
 
 
 ## <a id="Credentials"></a>Credentials
@@ -134,7 +128,6 @@ Type: object
 | users | `GraphQLUserPreset[]` | `True` | A list of users with credentials contained in the GraphQL `variables` of the query | [GraphQLUserPreset](#GraphQLUserPreset) |
 | extract | `N/A` | `False` | The extraction of the GraphQL query containing the user credentials. |  |
 | inject | `N/A` | `False` | The injection of the GraphQL query containing the user credentials. |  |
-| name | `string` | `False` | The arbitrary name given to the preset. |  |
 | type | `N/A` | `False` |  |  |
 
 
@@ -146,14 +139,8 @@ Type: object
 
 | Field Name | Type | Required | Description | Reference |
 |------------|------|----------|-------------|-----------|
-| name | `string` | `True` | The arbitrary name given to the user. |  |
+| name | `string` | `True` | The name of the user. |  |
 | variables | `object` | `True` | The variables of the GraphQL query containing the user credentials. |  |
-| body | `N/A` | `False` | A body to merge with the bodies of every HTTP requests sent for this user |  |
-| password | `N/A` | `False` | The password to attach to the HTTP requests sent for this user. See [developer.mozilla.org](https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication#access_using_credentials_in_the_url) |  |
-| username | `N/A` | `False` | The username to attach to the HTTP requests sent for this user. See [developer.mozilla.org](https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication#access_using_credentials_in_the_url) |  |
-| cookies | `HTTPCookie[]` | `False` | A list of cookies to attach to every HTTP requests sent for this user | [HTTPCookie](#HTTPCookie) |
-| headers | `HTTPHeader[]` | `False` | A list of headers to attach to every HTTP requests sent for this user | [HTTPHeader](#HTTPHeader) |
-| query_parameters | `HTTPQueryParameter[]` | `False` | A list of query parameters to attach to every HTTP requests sent for this user | [HTTPQueryParameter](#HTTPQueryParameter) |
 
 
 ## <a id="HTTPCookie"></a>HTTPCookie
@@ -255,7 +242,6 @@ Type: object
 
 | Field Name | Type | Required | Description | Reference |
 |------------|------|----------|-------------|-----------|
-| name | `string` | `True` | The arbitrary name given to the preset. |  |
 | url | `string` | `True` | The URL of the token endpoint of the OpenIDConnect server |  |
 | users | `OAuthClientCredentialsUserPreset[]` | `True` | A list of users to create | [OAuthClientCredentialsUserPreset](#OAuthClientCredentialsUserPreset) |
 | type | `N/A` | `False` |  |  |
@@ -271,46 +257,7 @@ Type: object
 |------------|------|----------|-------------|-----------|
 | client_id | `string` | `True` | The client ID to use for the OAuth requests |  |
 | client_secret | `string` | `True` | The client secret to use for the OAuth requests |  |
-| name | `string` | `True` | The arbitrary name given to the user. |  |
-| body | `N/A` | `False` | A body to merge with the bodies of every HTTP requests sent for this user |  |
-| password | `N/A` | `False` | The password to attach to the HTTP requests sent for this user. See [developer.mozilla.org](https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication#access_using_credentials_in_the_url) |  |
-| username | `N/A` | `False` | The username to attach to the HTTP requests sent for this user. See [developer.mozilla.org](https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication#access_using_credentials_in_the_url) |  |
-| cookies | `HTTPCookie[]` | `False` | A list of cookies to attach to every HTTP requests sent for this user | [HTTPCookie](#HTTPCookie) |
-| headers | `HTTPHeader[]` | `False` | A list of headers to attach to every HTTP requests sent for this user | [HTTPHeader](#HTTPHeader) |
-| query_parameters | `HTTPQueryParameter[]` | `False` | A list of query parameters to attach to every HTTP requests sent for this user | [HTTPQueryParameter](#HTTPQueryParameter) |
-
-
-## <a id="OAuthRefreshPreset"></a>OAuthRefreshPreset
-
-Description: No Description.
-
-Type: object
-
-| Field Name | Type | Required | Description | Reference |
-|------------|------|----------|-------------|-----------|
-| client_id | `string` | `True` | The client ID to use for the OAuth requests |  |
-| client_secret | `string` | `True` | The client secret to use for the OAuth requests |  |
-| name | `string` | `True` | The arbitrary name given to the preset. |  |
-| server_url | `string` | `True` | The URL of the token endpoint of the OpenIDConnect server |  |
-| users | `OAuthRefreshUserPreset[]` | `True` | The list of users and their credentials that will use this authentication preset. | [OAuthRefreshUserPreset](#OAuthRefreshUserPreset) |
-| type | `N/A` | `False` |  |  |
-
-
-## <a id="OAuthRefreshUserPreset"></a>OAuthRefreshUserPreset
-
-Description: No Description.
-
-Type: object
-
-| Field Name | Type | Required | Description | Reference |
-|------------|------|----------|-------------|-----------|
-| name | `string` | `True` | The arbitrary name given to the user. |  |
-| password | `string` | `True` | The password of the user. |  |
-| username | `string` | `True` | The username of the user. |  |
-| body | `N/A` | `False` | A body to merge with the bodies of every HTTP requests sent for this user |  |
-| cookies | `HTTPCookie[]` | `False` | A list of cookies to attach to every HTTP requests sent for this user | [HTTPCookie](#HTTPCookie) |
-| headers | `HTTPHeader[]` | `False` | A list of headers to attach to every HTTP requests sent for this user | [HTTPHeader](#HTTPHeader) |
-| query_parameters | `HTTPQueryParameter[]` | `False` | A list of query parameters to attach to every HTTP requests sent for this user | [HTTPQueryParameter](#HTTPQueryParameter) |
+| name | `string` | `False` | The name of the user. By default, the client_id is used. |  |
 
 
 ## <a id="OAuthUserpassPreset"></a>OAuthUserpassPreset
@@ -323,7 +270,6 @@ Type: object
 |------------|------|----------|-------------|-----------|
 | client_id | `string` | `True` | The client ID to use for the OAuth requests |  |
 | client_secret | `string` | `True` | The client secret to use for the OAuth requests |  |
-| name | `string` | `True` | The arbitrary name given to the preset. |  |
 | url | `string` | `True` | The URL of the token endpoint of the OpenIDConnect server |  |
 | users | `OAuthUserpassUserPreset[]` | `True` | A list of users to create | [OAuthUserpassUserPreset](#OAuthUserpassUserPreset) |
 | type | `N/A` | `False` |  |  |
@@ -337,13 +283,9 @@ Type: object
 
 | Field Name | Type | Required | Description | Reference |
 |------------|------|----------|-------------|-----------|
-| name | `string` | `True` | The arbitrary name given to the user. |  |
+| name | `string` | `True` | The name of the user. |  |
 | password | `string` | `True` | The password of the user. |  |
 | username | `string` | `True` | The username of the user. |  |
-| body | `N/A` | `False` | A body to merge with the bodies of every HTTP requests sent for this user |  |
-| cookies | `HTTPCookie[]` | `False` | A list of cookies to attach to every HTTP requests sent for this user | [HTTPCookie](#HTTPCookie) |
-| headers | `HTTPHeader[]` | `False` | A list of headers to attach to every HTTP requests sent for this user | [HTTPHeader](#HTTPHeader) |
-| query_parameters | `HTTPQueryParameter[]` | `False` | A list of query parameters to attach to every HTTP requests sent for this user | [HTTPQueryParameter](#HTTPQueryParameter) |
 
 
 ## <a id="ProcedureConfiguration"></a>ProcedureConfiguration
@@ -369,10 +311,26 @@ Type: object
 |------------|------|----------|-------------|-----------|
 | extract | `N/A` | `True` | The token extraction configuration used to extract the tokens from the HTTP response. |  |
 | inject | `N/A` | `True` | The injection configuration used to inject the tokens into the HTTP requests. |  |
-| name | `string` | `True` | The arbitrary name given to the preset. |  |
 | request | `N/A` | `True` | The parameters of the HTTP request used to fetch the access and refresh tokens. |  |
-| users | `UserPreset[]` | `True` | The list of users to generate tokens for. | [UserPreset](#UserPreset) |
+| users | `RESTUserPreset[]` | `True` | The list of users to generate tokens for. | [RESTUserPreset](#RESTUserPreset) |
 | type | `N/A` | `False` |  |  |
+
+
+## <a id="RESTUserPreset"></a>RESTUserPreset
+
+Description: No Description.
+
+Type: object
+
+| Field Name | Type | Required | Description | Reference |
+|------------|------|----------|-------------|-----------|
+| name | `string` | `True` | The name of the user. |  |
+| body | `N/A` | `False` | A body to merge with the bodies of every HTTP requests sent for this user |  |
+| password | `N/A` | `False` | The password to attach to the HTTP requests sent for this user. See [developer.mozilla.org](https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication#access_using_credentials_in_the_url) |  |
+| username | `N/A` | `False` | The username to attach to the HTTP requests sent for this user. See [developer.mozilla.org](https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication#access_using_credentials_in_the_url) |  |
+| cookies | `HTTPCookie[]` | `False` | A list of cookies to attach to every HTTP requests sent for this user | [HTTPCookie](#HTTPCookie) |
+| headers | `HTTPHeader[]` | `False` | A list of headers to attach to every HTTP requests sent for this user | [HTTPHeader](#HTTPHeader) |
+| query_parameters | `HTTPQueryParameter[]` | `False` | A list of query parameters to attach to every HTTP requests sent for this user | [HTTPQueryParameter](#HTTPQueryParameter) |
 
 
 ## <a id="SeleniumCommand"></a>SeleniumCommand
@@ -492,23 +450,6 @@ Type: object
 | procedure | `N/A` | `False` | The name of the procedure to use to authenticate the user.This name MUST match the `name` field of a procedure in the `procedures` list in the multiauth configuration. |  |
 | refresh | `N/A` | `False` | An optional refresh procedure to follow for the user. |  |
 | variables | `AuthenticationVariable[]` | `False` | List of variables that will be injected at the beginning of the user&#39;s authentication procedure. | [AuthenticationVariable](#AuthenticationVariable) |
-
-
-## <a id="UserPreset"></a>UserPreset
-
-Description: No Description.
-
-Type: object
-
-| Field Name | Type | Required | Description | Reference |
-|------------|------|----------|-------------|-----------|
-| name | `string` | `True` | The arbitrary name given to the user. |  |
-| body | `N/A` | `False` | A body to merge with the bodies of every HTTP requests sent for this user |  |
-| password | `N/A` | `False` | The password to attach to the HTTP requests sent for this user. See [developer.mozilla.org](https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication#access_using_credentials_in_the_url) |  |
-| username | `N/A` | `False` | The username to attach to the HTTP requests sent for this user. See [developer.mozilla.org](https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication#access_using_credentials_in_the_url) |  |
-| cookies | `HTTPCookie[]` | `False` | A list of cookies to attach to every HTTP requests sent for this user | [HTTPCookie](#HTTPCookie) |
-| headers | `HTTPHeader[]` | `False` | A list of headers to attach to every HTTP requests sent for this user | [HTTPHeader](#HTTPHeader) |
-| query_parameters | `HTTPQueryParameter[]` | `False` | A list of query parameters to attach to every HTTP requests sent for this user | [HTTPQueryParameter](#HTTPQueryParameter) |
 
 
 ## <a id="UserRefresh"></a>UserRefresh

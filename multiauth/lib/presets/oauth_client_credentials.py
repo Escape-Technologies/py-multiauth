@@ -1,21 +1,32 @@
 from http import HTTPMethod
 from typing import Literal, Sequence
 
-from pydantic import Field
+from pydantic import Field, root_validator
 
 from multiauth.lib.entities import ProcedureName, UserName, VariableName
-from multiauth.lib.http_core.entities import HTTPHeader, HTTPLocation
+from multiauth.lib.http_core.entities import HTTPEncoding, HTTPHeader, HTTPLocation
 from multiauth.lib.injection import TokenInjection
 from multiauth.lib.presets.base import BasePreset, UserPreset
 from multiauth.lib.procedure import ProcedureConfiguration
 from multiauth.lib.runners.http import HTTPRequestParameters, HTTPRunnerConfiguration, TokenExtraction
-from multiauth.lib.store.user import User
+from multiauth.lib.store.user import User, UserRefresh
 from multiauth.lib.store.variables import AuthenticationVariable
 
 
 class OAuthClientCredentialsUserPreset(UserPreset):
+    name: UserName = Field(
+        default=None,
+        description='The name of the user. By default, the client_id is used.',
+    )
     client_id: str = Field(description='The client ID to use for the OAuth requests')
     client_secret: str = Field(description='The client secret to use for the OAuth requests')
+
+    @root_validator(pre=True)
+    def default_name(cls, values: dict) -> dict:
+        name, client_id = values.get('name'), values.get('client_id')
+        if name is None and client_id is not None:
+            values['name'] = client_id
+        return values
 
 
 class OAuthClientCredentialsPreset(BasePreset):
@@ -27,9 +38,9 @@ class OAuthClientCredentialsPreset(BasePreset):
         description='A list of users to create',
     )
 
-    def to_procedure_configuration(self) -> ProcedureConfiguration:
-        return ProcedureConfiguration(
-            name=ProcedureName(self.name),
+    def to_procedure_configuration(self) -> list[ProcedureConfiguration]:
+        generate_token = ProcedureConfiguration(
+            name=ProcedureName(self.slug),
             injections=[
                 TokenInjection(
                     location=HTTPLocation.HEADER,
@@ -44,8 +55,8 @@ class OAuthClientCredentialsPreset(BasePreset):
                         url=self.url,
                         method=HTTPMethod.POST,
                         headers=[
-                            HTTPHeader(name='Content-Type', values=['application/x-www-form-urlencoded']),
-                            HTTPHeader(name='Accept', values=['application/json']),
+                            HTTPHeader(name='Content-Type', values=[HTTPEncoding.FORM]),
+                            HTTPHeader(name='Accept', values=[HTTPEncoding.JSON]),
                         ],
                         body=(
                             'grant_type=client_credentials'
@@ -64,6 +75,44 @@ class OAuthClientCredentialsPreset(BasePreset):
             ],
         )
 
+        refresh_token = ProcedureConfiguration(
+            name=ProcedureName(self.slug + '-refresh'),
+            injections=[
+                TokenInjection(
+                    location=HTTPLocation.HEADER,
+                    key='Authorization',
+                    prefix='Bearer ',
+                    variable=VariableName('access_token'),
+                ),
+            ],
+            operations=[
+                HTTPRunnerConfiguration(
+                    parameters=HTTPRequestParameters(
+                        url=self.url,
+                        method=HTTPMethod.POST,
+                        headers=[
+                            HTTPHeader(name='Content-Type', values=['application/x-www-form-urlencoded']),
+                            HTTPHeader(name='Accept', values=['application/json']),
+                        ],
+                        body=(
+                            'grant_type=refresh_token&refresh_token={{ refresh_token }}'
+                            '&client_id={{ client_id }}'
+                            '&client_secret={{ client_secret }}'
+                        ),
+                    ),
+                    extractions=[
+                        TokenExtraction(
+                            location=HTTPLocation.BODY,
+                            name=VariableName('access_token'),
+                            key='access_token',
+                        ),
+                    ],
+                ),
+            ],
+        )
+
+        return [generate_token, refresh_token]
+
     def to_users(self) -> list[User]:
         return [
             User(
@@ -72,9 +121,8 @@ class OAuthClientCredentialsPreset(BasePreset):
                     AuthenticationVariable(name=VariableName('client_id'), value=user.client_id),
                     AuthenticationVariable(name=VariableName('client_secret'), value=user.client_secret),
                 ],
-                credentials=user.to_credentials(),
-                procedure=ProcedureName(self.name),
-                refresh=None,
+                procedure=ProcedureName(self.slug),
+                refresh=UserRefresh(procedure=ProcedureName(self.slug + '-refresh')),
             )
             for user in self.users
         ]

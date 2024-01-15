@@ -15,7 +15,7 @@ from multiauth.lib.presets.base import (
 )
 from multiauth.lib.procedure import ProcedureConfiguration
 from multiauth.lib.runners.http import HTTPRunnerConfiguration
-from multiauth.lib.store.user import User
+from multiauth.lib.store.user import Credentials, User
 
 GraphQLQuery = NewType('GraphQLQuery', str)
 
@@ -33,8 +33,6 @@ class GraphQLUserPreset(UserPreset):
 
 class GraphQLPreset(BasePreset):
     type: Literal['graphql'] = 'graphql'
-
-    name: ProcedureName = Field(default='My GraphQL Preset', description='The arbitrary name given to the preset.')
 
     url: str = Field(description='The URL of the GraphQL authentication endpoint.')
     query: GraphQLQuery = Field(
@@ -68,36 +66,39 @@ class GraphQLPreset(BasePreset):
         description='A list of users with credentials contained in the GraphQL `variables` of the query',
     )
 
-    def to_procedure_configuration(self) -> ProcedureConfiguration:
-        return ProcedureConfiguration(
-            name=ProcedureName(self.name),
-            operations=[
-                HTTPRunnerConfiguration(
-                    parameters=HTTPRequestParameters(
-                        url=self.url,
-                        method=HTTPMethod.POST,
-                        headers=[
-                            HTTPHeader(name='Accept', values=[HTTPEncoding.JSON]),
-                        ],
+    def to_procedure_configuration(self) -> list[ProcedureConfiguration]:
+        return [
+            ProcedureConfiguration(
+                name=ProcedureName(self.slug),
+                operations=[
+                    HTTPRunnerConfiguration(
+                        parameters=HTTPRequestParameters(
+                            url=self.url,
+                            method=HTTPMethod.POST,
+                            headers=[
+                                HTTPHeader(name='Accept', values=[HTTPEncoding.JSON]),
+                            ],
+                        ),
                     ),
-                ),
-            ],
-        )
+                ],
+            ),
+        ]
 
     def to_users(self) -> list[User]:
         res: list[User] = []
 
         for user in self.users:
-            creds = user.to_credentials()
-            creds.body = {
-                'query': self.query,
-                'variables': user.variables,
-            }
+            creds = Credentials(
+                body={
+                    'query': self.query,
+                    'variables': user.variables,
+                },
+            )
             res.append(
                 User(
                     name=UserName(user.name),
                     credentials=creds,
-                    procedure=ProcedureName(self.name),
+                    procedure=ProcedureName(self.slug),
                 ),
             )
 

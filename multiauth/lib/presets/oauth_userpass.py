@@ -1,7 +1,7 @@
 from http import HTTPMethod
 from typing import Literal, Sequence
 
-from pydantic import Field
+from pydantic import Field, root_validator
 
 from multiauth.lib.entities import ProcedureName, UserName, VariableName
 from multiauth.lib.http_core.entities import HTTPHeader, HTTPLocation
@@ -9,13 +9,20 @@ from multiauth.lib.injection import TokenInjection
 from multiauth.lib.presets.base import BasePreset, UserPreset
 from multiauth.lib.procedure import ProcedureConfiguration
 from multiauth.lib.runners.http import HTTPRequestParameters, HTTPRunnerConfiguration, TokenExtraction
-from multiauth.lib.store.user import User
+from multiauth.lib.store.user import User, UserRefresh
 from multiauth.lib.store.variables import AuthenticationVariable
 
 
 class OAuthUserpassUserPreset(UserPreset):
     username: UserName = Field(description='The username of the user.')
     password: str = Field(description='The password of the user.')
+
+    @root_validator(pre=True)
+    def default_name(cls, values: dict) -> dict:
+        name, username = values.get('name'), values.get('username')
+        if name is None and username is not None:
+            values['name'] = username
+        return values
 
 
 class OAuthUserpassPreset(BasePreset):
@@ -28,9 +35,9 @@ class OAuthUserpassPreset(BasePreset):
 
     users: Sequence[OAuthUserpassUserPreset] = Field(description='A list of users to create')
 
-    def to_procedure_configuration(self) -> ProcedureConfiguration:
-        return ProcedureConfiguration(
-            name=ProcedureName(self.name),
+    def to_procedure_configuration(self) -> list[ProcedureConfiguration]:
+        generate_token = ProcedureConfiguration(
+            name=ProcedureName(self.slug),
             injections=[
                 TokenInjection(
                     location=HTTPLocation.HEADER,
@@ -70,6 +77,44 @@ class OAuthUserpassPreset(BasePreset):
             ],
         )
 
+        refresh_token = ProcedureConfiguration(
+            name=ProcedureName(self.slug + '-refresh'),
+            injections=[
+                TokenInjection(
+                    location=HTTPLocation.HEADER,
+                    key='Authorization',
+                    prefix='Bearer ',
+                    variable=VariableName('access_token'),
+                ),
+            ],
+            operations=[
+                HTTPRunnerConfiguration(
+                    parameters=HTTPRequestParameters(
+                        url=self.url,
+                        method=HTTPMethod.POST,
+                        headers=[
+                            HTTPHeader(name='Content-Type', values=['application/x-www-form-urlencoded']),
+                            HTTPHeader(name='Accept', values=['application/json']),
+                        ],
+                        body=(
+                            'grant_type=refresh_token&refresh_token={{ refresh_token }}'
+                            f'&client_id={self.client_id}'
+                            f'&client_secret={self.client_secret}'
+                        ),
+                    ),
+                    extractions=[
+                        TokenExtraction(
+                            location=HTTPLocation.BODY,
+                            name=VariableName('access_token'),
+                            key='access_token',
+                        ),
+                    ],
+                ),
+            ],
+        )
+
+        return [generate_token, refresh_token]
+
     def to_users(self) -> list[User]:
         return [
             User(
@@ -78,9 +123,8 @@ class OAuthUserpassPreset(BasePreset):
                     AuthenticationVariable(name=VariableName('username'), value=user.username),
                     AuthenticationVariable(name=VariableName('password'), value=user.password),
                 ],
-                credentials=user.to_credentials(),
-                procedure=ProcedureName(self.name),
-                refresh=None,
+                procedure=ProcedureName(self.slug),
+                refresh=UserRefresh(procedure=ProcedureName(self.slug + '-refresh')),
             )
             for user in self.users
         ]
