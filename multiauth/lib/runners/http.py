@@ -1,4 +1,5 @@
 import json
+import re
 from http import HTTPMethod
 from typing import Any, Literal
 from urllib.parse import parse_qs, urlparse
@@ -34,6 +35,19 @@ from multiauth.lib.runners.base import (
 )
 from multiauth.lib.store.user import Credentials, User
 from multiauth.lib.store.variables import AuthenticationVariable, interpolate_string
+
+
+def extract_with_regex(string_list: list[str], regex_pattern: str | None) -> list[str]:
+    if regex_pattern is None:
+        return []  # Return an empty list when no regex is provided
+
+    extracted_items = []
+    for input_string in string_list:
+        match = re.search(regex_pattern, input_string)
+        if match:
+            extracted_items.append(match.group())
+
+    return extracted_items
 
 
 class HTTPRequestParameters(BaseRunnerParameters):
@@ -229,10 +243,11 @@ class HTTPRequestRunner(BaseRunner[HTTPRunnerConfiguration]):
         for extraction in extractions:
             match extraction.location:
                 case HTTPLocation.HEADER:
-                    h_findings = [h for h in response.headers if h.name == extraction]
+                    h_findings = [h for h in response.headers if h.name == extraction.key]
                     if len(h_findings) == 0:
                         continue
-                    variable = AuthenticationVariable(name=extraction.name, value=','.join(h_findings[0].values))
+                    findings = extract_with_regex(h_findings[0].values, extraction.regex)
+                    variable = AuthenticationVariable(name=extraction.name, value=','.join(findings))
                     events.append(ExtractedVariableEvent(location=HTTPLocation.HEADER, variable=variable))
                     variables.append(variable)
 
@@ -240,7 +255,8 @@ class HTTPRequestRunner(BaseRunner[HTTPRunnerConfiguration]):
                     c_findings = [c for c in response.cookies if c.name == extraction.key]
                     if len(c_findings) == 0:
                         continue
-                    variable = AuthenticationVariable(name=extraction.name, value=','.join(c_findings[0].values))
+                    findings = extract_with_regex(c_findings[0].values, extraction.regex)
+                    variable = AuthenticationVariable(name=extraction.name, value=','.join(findings))
                     events.append(ExtractedVariableEvent(location=HTTPLocation.COOKIE, variable=variable))
                     variables.append(variable)
 
@@ -253,16 +269,18 @@ class HTTPRequestRunner(BaseRunner[HTTPRunnerConfiguration]):
                     if result is None:
                         continue
                     result_str = str(result) if not isinstance(result, str) else result
-                    variable = AuthenticationVariable(name=extraction.name, value=result_str)
+                    findings = extract_with_regex([result_str], extraction.regex)
+                    variable = AuthenticationVariable(name=extraction.name, value=findings[0])
                     events.append(ExtractedVariableEvent(location=HTTPLocation.BODY, variable=variable))
                     variables.append(variable)
 
                 case HTTPLocation.QUERY:
                     parsed_qp = parse_qs(urlparse(response.url).query)
-                    finding = parsed_qp.get(extraction.key)
-                    if finding is None:
+                    q_finding = parsed_qp.get(extraction.key)
+                    if q_finding is None:
                         continue
-                    variable = AuthenticationVariable(name=extraction.name, value=','.join(c_findings[0].values))
+                    findings = extract_with_regex(q_finding, extraction.regex)
+                    variable = AuthenticationVariable(name=extraction.name, value=','.join(findings))
                     events.append(ExtractedVariableEvent(location=HTTPLocation.QUERY, variable=variable))
                     variables.append(variable)
 
