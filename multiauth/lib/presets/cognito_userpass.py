@@ -4,20 +4,25 @@ from typing import Literal, Sequence
 from pydantic import Field
 
 from multiauth.lib.entities import ProcedureName, UserName, VariableName
-from multiauth.lib.http_core.entities import HTTPHeader, HTTPLocation
+from multiauth.lib.http_core.entities import HTTPEncoding, HTTPHeader, HTTPLocation
 from multiauth.lib.injection import TokenInjection
-from multiauth.lib.presets.base import BasePreset
+from multiauth.lib.presets.base import BasePreset, HTTPRequestParameters
 from multiauth.lib.presets.basic import BasicUserPreset
+from multiauth.lib.presets.cognito_base import AWSRegion
 from multiauth.lib.procedure import ProcedureConfiguration
-from multiauth.lib.runners.http import HTTPRequestParameters, HTTPRunnerConfiguration, TokenExtraction
+from multiauth.lib.runners.http import HTTPRunnerConfiguration, TokenExtraction
 from multiauth.lib.store.user import User, UserRefresh
 from multiauth.lib.store.variables import AuthenticationVariable
 
+###########################
+###### AWS Password ######
+###########################
+
 
 class OAuthUserpassPreset(BasePreset):
-    type: Literal['oauth_userpass'] = 'oauth_userpass'
+    type: Literal['cognito_userpass'] = 'cognito_userpass'
 
-    url: str = Field(description='The URL of the token endpoint of the OpenIDConnect server')
+    region: AWSRegion = Field(description='The region of the Cognito Service.')
 
     client_id: str = Field(description='The client ID to use for the OAuth requests')
     client_secret: str = Field(description='The client secret to use for the OAuth requests')
@@ -32,34 +37,40 @@ class OAuthUserpassPreset(BasePreset):
                     location=HTTPLocation.HEADER,
                     key='Authorization',
                     prefix='Bearer ',
-                    variable=VariableName('access_token'),
+                    variable=VariableName('AccessToken'),
                 ),
             ],
             operations=[
                 HTTPRunnerConfiguration(
                     parameters=HTTPRequestParameters(
-                        url=self.url,
+                        url=f'https://cognito-idp.{self.region}.amazonaws.com/',
                         method=HTTPMethod.POST,
                         headers=[
-                            HTTPHeader(name='Content-Type', values=['application/x-www-form-urlencoded']),
-                            HTTPHeader(name='Accept', values=['application/json']),
+                            HTTPHeader(name='X-Amz-Target', values=['AWSCognitoIdentityProviderService.InitiateAuth']),
+                            HTTPHeader(name='Content-Type', values=[HTTPEncoding.AWS_JSON]),
                         ],
-                        body=(
-                            'grant_type=password&username={{ username }}&password={{ password }}'
-                            f'&client_id={self.client_id}'
-                            f'&client_secret={self.client_secret}'
-                        ),
+                        body={
+                            {
+                                'AuthParameters': {
+                                    'USERNAME': '{{ username }}',
+                                    'PASSWORD': '{{ password }}',
+                                    'SECRET_HASH': self.client_secret,
+                                },
+                                'AuthFlow': 'USER_PASSWORD_AUTH',
+                                'ClientId': self.client_id,
+                            },
+                        },
                     ),
                     extractions=[
                         TokenExtraction(
                             location=HTTPLocation.BODY,
-                            name=VariableName('access_token'),
-                            key='access_token',
+                            name=VariableName('AccessToken'),
+                            key='AccessToken',
                         ),
                         TokenExtraction(
                             location=HTTPLocation.BODY,
-                            name=VariableName('refresh_token'),
-                            key='refresh_token',
+                            name=VariableName('RefreshToken'),
+                            key='RefreshToken',
                         ),
                     ],
                 ),
@@ -79,23 +90,28 @@ class OAuthUserpassPreset(BasePreset):
             operations=[
                 HTTPRunnerConfiguration(
                     parameters=HTTPRequestParameters(
-                        url=self.url,
+                        url=f'https://cognito-idp.{self.region}.amazonaws.com/',
                         method=HTTPMethod.POST,
                         headers=[
-                            HTTPHeader(name='Content-Type', values=['application/x-www-form-urlencoded']),
-                            HTTPHeader(name='Accept', values=['application/json']),
+                            HTTPHeader(name='X-Amz-Target', values=['AWSCognitoIdentityProviderService.InitiateAuth']),
+                            HTTPHeader(name='Content-Type', values=[HTTPEncoding.AWS_JSON]),
                         ],
-                        body=(
-                            'grant_type=refresh_token&refresh_token={{ refresh_token }}'
-                            f'&client_id={self.client_id}'
-                            f'&client_secret={self.client_secret}'
-                        ),
+                        body={
+                            {
+                                'AuthParameters': {
+                                    'REFRESH_TOKEN': '{{ RefreshToken }}',
+                                    'SECRET_HASH': self.client_secret,
+                                },
+                                'AuthFlow': 'REFRESH_TOKEN_AUTH',
+                                'ClientId': self.client_id,
+                            },
+                        },
                     ),
                     extractions=[
                         TokenExtraction(
                             location=HTTPLocation.BODY,
-                            name=VariableName('access_token'),
-                            key='access_token',
+                            name=VariableName('AccessToken'),
+                            key='AccessToken',
                         ),
                     ],
                 ),

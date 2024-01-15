@@ -20,6 +20,7 @@ class HTTPEncoding(enum.StrEnum):
     YAML = 'application/x-yaml'
     CSV = 'text/csv'
     BINARY = 'application/octet-stream'
+    AWS_JSON = 'application/x-amz-json-1.1'
 
 
 class HTTPLocation(enum.StrEnum):

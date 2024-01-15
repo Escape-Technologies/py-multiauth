@@ -21,6 +21,7 @@ PresetType = Literal[
     'graphql',
     'headers',
     'digest',
+    'cognito_userpass',
 ]
 
 
