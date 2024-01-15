@@ -3,8 +3,7 @@ from typing import Literal, Sequence
 from pydantic import Field, root_validator
 
 from multiauth.lib.entities import ProcedureName, VariableName
-from multiauth.lib.extraction import BaseExtraction
-from multiauth.lib.injection import BaseInjection, TokenInjection
+from multiauth.lib.injection import TokenInjection
 from multiauth.lib.presets.base import BasePreset, UserPreset
 from multiauth.lib.procedure import ProcedureConfiguration
 from multiauth.lib.runners.http import HTTPRequestParameters, HTTPRunnerConfiguration, TokenExtraction
@@ -13,7 +12,7 @@ from multiauth.lib.store.user import Credentials, User
 VARIABLE_NAME = VariableName('token')
 
 
-class RESTUserPreset(UserPreset, Credentials):
+class HttpUserPreset(UserPreset, Credentials):
     @root_validator(pre=True)
     def default_name(cls, values: dict) -> dict:
         name, username = values.get('name'), values.get('username')
@@ -28,16 +27,16 @@ class HTTPPreset(BasePreset):
         description=('The parameters of the HTTP request used to fetch the access and refresh tokens.'),
         examples=HTTPRequestParameters.examples(),
     )
-    extract: BaseExtraction = Field(
+    extract: TokenExtraction = Field(
         description='The token extraction configuration used to extract the tokens from the HTTP response.',
         examples=TokenExtraction.examples(),
     )
-    inject: BaseInjection = Field(
+    inject: TokenInjection = Field(
         description='The injection configuration used to inject the tokens into the HTTP requests.',
-        examples=TokenExtraction.examples(),
+        examples=TokenInjection.examples(),
     )
 
-    users: Sequence[RESTUserPreset] = Field(
+    users: Sequence[HttpUserPreset] = Field(
         description='The list of users to generate tokens for.',
     )
 

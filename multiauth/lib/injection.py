@@ -7,7 +7,7 @@ from multiauth.lib.store.authentication import Authentication
 from multiauth.lib.store.variables import AuthenticationVariable
 
 
-class BaseInjection(BaseModel):
+class TokenInjection(BaseModel):
     location: HTTPLocation = Field(description='The location of the HTTP request where the token should be injected')
     key: str = Field(
         description=(
@@ -22,9 +22,6 @@ class BaseInjection(BaseModel):
         description='A prefix to prepend to the token before it is injected',
         examples=['Bearer '],
     )
-
-
-class TokenInjection(BaseInjection):
     variable: str | None = Field(
         default=None,
         description=(
@@ -32,6 +29,17 @@ class TokenInjection(BaseInjection):
             'the token will be infered as the first successful extraction of the procedure'
         ),
     )
+
+    @staticmethod
+    def examples() -> list['TokenInjection']:
+        return [
+            TokenInjection(
+                variable='token',
+                key='Authorization',
+                location=HTTPLocation.HEADER,
+                prefix='Bearer ',
+            ),
+        ]
 
     def inject(
         self,

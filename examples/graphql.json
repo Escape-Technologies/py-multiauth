@@ -5,10 +5,6 @@
       "type": "graphql",
       "url": "https://gontoz.escape.tech/",
       "query": "mutation($username: String!, $password: String!) { authentification(username: $username, password: $password) { token } }",
-      "extract": {
-        "location": "body",
-        "key": "token"
-      },
       "inject": {
         "location": "header",
         "key": "Authorization",

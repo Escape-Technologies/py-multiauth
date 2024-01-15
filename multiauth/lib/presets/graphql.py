@@ -4,10 +4,10 @@ from typing import Literal, NewType, Sequence
 
 from pydantic import Field
 
-from multiauth.lib.entities import ProcedureName, UserName
-from multiauth.lib.extraction import BaseExtraction
+from multiauth.lib.entities import ProcedureName, UserName, VariableName
+from multiauth.lib.extraction import TokenExtraction
 from multiauth.lib.http_core.entities import HTTPEncoding, HTTPHeader, HTTPLocation
-from multiauth.lib.injection import BaseInjection
+from multiauth.lib.injection import TokenInjection
 from multiauth.lib.presets.base import BasePreset, UserPreset
 from multiauth.lib.procedure import ProcedureConfiguration
 from multiauth.lib.runners.http import HTTPRequestParameters, HTTPRunnerConfiguration
@@ -48,13 +48,13 @@ class GraphQLPreset(BasePreset):
         ],
     )
 
-    extract: BaseExtraction = Field(
-        default=BaseExtraction(location=HTTPLocation.BODY, key='token'),
+    extract: TokenExtraction = Field(
+        default=TokenExtraction(location=HTTPLocation.BODY, key='token', name=VariableName('token')),
         description='The extraction of the GraphQL query containing the user credentials.',
     )
 
-    inject: BaseInjection = Field(
-        default=BaseInjection(location=HTTPLocation.HEADER, key='Authorization', prefix='Bearer '),
+    inject: TokenInjection = Field(
+        default=TokenInjection(location=HTTPLocation.HEADER, key='Authorization', prefix='Bearer '),
         description='The injection of the GraphQL query containing the user credentials.',
     )
 

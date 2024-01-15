@@ -11,32 +11,6 @@ Type: object
 | value | `string` | `True` | The value of the variable |  |
 
 
-## <a id="BaseExtraction"></a>BaseExtraction
-
-Description: No Description.
-
-Type: object
-
-| Field Name | Type | Required | Description | Reference |
-|------------|------|----------|-------------|-----------|
-| key | `string` | `True` | The key to use for the extracted value, depending on the location |  |
-| location | `N/A` | `True` | The location of the HTTP request where the value should be extracted |  |
-| regex | `N/A` | `False` | The regex to use to extract the token from the key value. By default the entire value is taken. |  |
-
-
-## <a id="BaseInjection"></a>BaseInjection
-
-Description: No Description.
-
-Type: object
-
-| Field Name | Type | Required | Description | Reference |
-|------------|------|----------|-------------|-----------|
-| key | `string` | `True` | The key to use for the injected token. Its usage depends on the location. For headers, cookies,and query parameters, this key describes the name of the header, cookie or query parameter. For a body location, the key is the field where the token should be injected within the request bodies |  |
-| location | `N/A` | `True` | The location of the HTTP request where the token should be injected |  |
-| prefix | `N/A` | `False` | A prefix to prepend to the token before it is injected |  |
-
-
 ## <a id="BasicPreset"></a>BasicPreset
 
 Description: No Description.
@@ -203,7 +177,7 @@ Type: object
 | extract | `N/A` | `True` | The token extraction configuration used to extract the tokens from the HTTP response. |  |
 | inject | `N/A` | `True` | The injection configuration used to inject the tokens into the HTTP requests. |  |
 | request | `N/A` | `True` | The parameters of the HTTP request used to fetch the access and refresh tokens. |  |
-| users | `RESTUserPreset[]` | `True` | The list of users to generate tokens for. | [RESTUserPreset](#RESTUserPreset) |
+| users | `HttpUserPreset[]` | `True` | The list of users to generate tokens for. | [HttpUserPreset](#HttpUserPreset) |
 | type | `N/A` | `False` |  |  |
 
 
@@ -247,6 +221,23 @@ Type: object
 | parameters | `N/A` | `True` | The parameters of the HTTP request to send. At least a URL and a method must be provided. |  |
 | tech | `N/A` | `False` |  |  |
 | extractions | `TokenExtraction[]` | `False` | The list of extractions to run at the end of the operation.For HTTP operations, variables are extracted from the response. | [TokenExtraction](#TokenExtraction) |
+
+
+## <a id="HttpUserPreset"></a>HttpUserPreset
+
+Description: No Description.
+
+Type: object
+
+| Field Name | Type | Required | Description | Reference |
+|------------|------|----------|-------------|-----------|
+| name | `string` | `True` | The name of the user. |  |
+| body | `N/A` | `False` | A body to merge with the bodies of every HTTP requests sent for this user |  |
+| password | `N/A` | `False` | The password to attach to the HTTP requests sent for this user. See [developer.mozilla.org](https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication#access_using_credentials_in_the_url) |  |
+| username | `N/A` | `False` | The username to attach to the HTTP requests sent for this user. See [developer.mozilla.org](https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication#access_using_credentials_in_the_url) |  |
+| cookies | `HTTPCookie[]` | `False` | A list of cookies to attach to every HTTP requests sent for this user | [HTTPCookie](#HTTPCookie) |
+| headers | `HTTPHeader[]` | `False` | A list of headers to attach to every HTTP requests sent for this user | [HTTPHeader](#HTTPHeader) |
+| query_parameters | `HTTPQueryParameter[]` | `False` | A list of query parameters to attach to every HTTP requests sent for this user | [HTTPQueryParameter](#HTTPQueryParameter) |
 
 
 ## <a id="OAuthClientCredentialsPreset"></a>OAuthClientCredentialsPreset
@@ -301,23 +292,6 @@ Type: object
 | name | `string` | `True` | The name of the procedure. It must be unique and is used to reference the procedure in users. |  |
 | operations | `array` | `False` | The list of operations executed during the procedure. An operation is a unit transaction, like an HTTP request, or a Selenium script. Operations are ordered, and the variables extracted from an operation can be used in the next operations. |  |
 | injections | `TokenInjection[]` | `False` | The list of injections to perform at the end of the procedure. Injections are used to inject the variables extracted from the procedure into the user authentication. | [TokenInjection](#TokenInjection) |
-
-
-## <a id="RESTUserPreset"></a>RESTUserPreset
-
-Description: No Description.
-
-Type: object
-
-| Field Name | Type | Required | Description | Reference |
-|------------|------|----------|-------------|-----------|
-| name | `string` | `True` | The name of the user. |  |
-| body | `N/A` | `False` | A body to merge with the bodies of every HTTP requests sent for this user |  |
-| password | `N/A` | `False` | The password to attach to the HTTP requests sent for this user. See [developer.mozilla.org](https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication#access_using_credentials_in_the_url) |  |
-| username | `N/A` | `False` | The username to attach to the HTTP requests sent for this user. See [developer.mozilla.org](https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication#access_using_credentials_in_the_url) |  |
-| cookies | `HTTPCookie[]` | `False` | A list of cookies to attach to every HTTP requests sent for this user | [HTTPCookie](#HTTPCookie) |
-| headers | `HTTPHeader[]` | `False` | A list of headers to attach to every HTTP requests sent for this user | [HTTPHeader](#HTTPHeader) |
-| query_parameters | `HTTPQueryParameter[]` | `False` | A list of query parameters to attach to every HTTP requests sent for this user | [HTTPQueryParameter](#HTTPQueryParameter) |
 
 
 ## <a id="SeleniumCommand"></a>SeleniumCommand

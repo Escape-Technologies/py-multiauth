@@ -20,86 +20,6 @@
       "title": "AuthenticationVariable",
       "type": "object"
     },
-    "BaseExtraction": {
-      "properties": {
-        "location": {
-          "allOf": [
-            {
-              "$ref": "#/$defs/HTTPLocation"
-            }
-          ],
-          "description": "The location of the HTTP request where the value should be extracted"
-        },
-        "key": {
-          "description": "The key to use for the extracted value, depending on the location",
-          "title": "Key",
-          "type": "string"
-        },
-        "regex": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "The regex to use to extract the token from the key value. By default the entire value is taken.",
-          "title": "Regex"
-        }
-      },
-      "required": [
-        "location",
-        "key"
-      ],
-      "title": "BaseExtraction",
-      "type": "object"
-    },
-    "BaseInjection": {
-      "properties": {
-        "location": {
-          "allOf": [
-            {
-              "$ref": "#/$defs/HTTPLocation"
-            }
-          ],
-          "description": "The location of the HTTP request where the token should be injected"
-        },
-        "key": {
-          "description": "The key to use for the injected token. Its usage depends on the location. For headers, cookies,and query parameters, this key describes the name of the header, cookie or query parameter. For a body location, the key is the field where the token should be injected within the request bodies",
-          "examples": [
-            "Authorization",
-            "sessionId",
-            "access_token"
-          ],
-          "title": "Key",
-          "type": "string"
-        },
-        "prefix": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "A prefix to prepend to the token before it is injected",
-          "examples": [
-            "Bearer "
-          ],
-          "title": "Prefix"
-        }
-      },
-      "required": [
-        "location",
-        "key"
-      ],
-      "title": "BaseInjection",
-      "type": "object"
-    },
     "BasicPreset": {
       "properties": {
         "type": {
@@ -449,26 +369,28 @@
         "extract": {
           "allOf": [
             {
-              "$ref": "#/$defs/BaseExtraction"
+              "$ref": "#/$defs/TokenExtraction"
             }
           ],
           "default": {
             "location": "body",
             "key": "token",
-            "regex": null
+            "regex": null,
+            "name": "token"
           },
           "description": "The extraction of the GraphQL query containing the user credentials."
         },
         "inject": {
           "allOf": [
             {
-              "$ref": "#/$defs/BaseInjection"
+              "$ref": "#/$defs/TokenInjection"
             }
           ],
           "default": {
             "location": "header",
             "key": "Authorization",
-            "prefix": "Bearer "
+            "prefix": "Bearer ",
+            "variable": null
           },
           "description": "The injection of the GraphQL query containing the user credentials."
         }
@@ -582,7 +504,7 @@
         "users": {
           "description": "The list of users to generate tokens for.",
           "items": {
-            "$ref": "#/$defs/RESTUserPreset"
+            "$ref": "#/$defs/HttpUserPreset"
           },
           "title": "Users",
           "type": "array"
@@ -619,7 +541,7 @@
         "extract": {
           "allOf": [
             {
-              "$ref": "#/$defs/BaseExtraction"
+              "$ref": "#/$defs/TokenExtraction"
             }
           ],
           "description": "The token extraction configuration used to extract the tokens from the HTTP response.",
@@ -634,15 +556,16 @@
         "inject": {
           "allOf": [
             {
-              "$ref": "#/$defs/BaseInjection"
+              "$ref": "#/$defs/TokenInjection"
             }
           ],
           "description": "The injection configuration used to inject the tokens into the HTTP requests.",
           "examples": [
             {
-              "key": "Set-Cookie",
+              "key": "Authorization",
               "location": "header",
-              "name": "my-variable"
+              "prefix": "Bearer ",
+              "variable": "token"
             }
           ]
         }
@@ -867,6 +790,118 @@
       "title": "HTTPRunnerConfiguration",
       "type": "object"
     },
+    "HttpUserPreset": {
+      "properties": {
+        "username": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "The username to attach to the HTTP requests sent for this user. See https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication#access_using_credentials_in_the_url",
+          "examples": [
+            "john"
+          ],
+          "title": "Username"
+        },
+        "password": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "The password to attach to the HTTP requests sent for this user. See https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication#access_using_credentials_in_the_url",
+          "examples": [
+            "john@password123#"
+          ],
+          "title": "Password"
+        },
+        "headers": {
+          "description": "A list of headers to attach to every HTTP requests sent for this user",
+          "examples": [
+            {
+              "name": "Authorization",
+              "values": [
+                "Bearer ..."
+              ]
+            }
+          ],
+          "items": {
+            "$ref": "#/$defs/HTTPHeader"
+          },
+          "title": "Headers",
+          "type": "array"
+        },
+        "cookies": {
+          "description": "A list of cookies to attach to every HTTP requests sent for this user",
+          "examples": [
+            {
+              "name": "PHPSESSIONID",
+              "values": [
+                "..."
+              ]
+            }
+          ],
+          "items": {
+            "$ref": "#/$defs/HTTPCookie"
+          },
+          "title": "Cookies",
+          "type": "array"
+        },
+        "query_parameters": {
+          "description": "A list of query parameters to attach to every HTTP requests sent for this user",
+          "examples": [
+            {
+              "name": "token",
+              "values": [
+                "..."
+              ]
+            }
+          ],
+          "items": {
+            "$ref": "#/$defs/HTTPQueryParameter"
+          },
+          "title": "Query Parameters",
+          "type": "array"
+        },
+        "body": {
+          "anyOf": [
+            {},
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "A body to merge with the bodies of every HTTP requests sent for this user",
+          "examples": [
+            {
+              "password": "john@password123#",
+              "username": "john"
+            },
+            "username=john&password=john%40password123%23"
+          ],
+          "title": "Body"
+        },
+        "name": {
+          "description": "The name of the user.",
+          "title": "Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "HttpUserPreset",
+      "type": "object"
+    },
     "OAuthClientCredentialsPreset": {
       "properties": {
         "type": {
@@ -1009,118 +1044,6 @@
       "title": "ProcedureConfiguration",
       "type": "object"
     },
-    "RESTUserPreset": {
-      "properties": {
-        "username": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "The username to attach to the HTTP requests sent for this user. See https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication#access_using_credentials_in_the_url",
-          "examples": [
-            "john"
-          ],
-          "title": "Username"
-        },
-        "password": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "The password to attach to the HTTP requests sent for this user. See https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication#access_using_credentials_in_the_url",
-          "examples": [
-            "john@password123#"
-          ],
-          "title": "Password"
-        },
-        "headers": {
-          "description": "A list of headers to attach to every HTTP requests sent for this user",
-          "examples": [
-            {
-              "name": "Authorization",
-              "values": [
-                "Bearer ..."
-              ]
-            }
-          ],
-          "items": {
-            "$ref": "#/$defs/HTTPHeader"
-          },
-          "title": "Headers",
-          "type": "array"
-        },
-        "cookies": {
-          "description": "A list of cookies to attach to every HTTP requests sent for this user",
-          "examples": [
-            {
-              "name": "PHPSESSIONID",
-              "values": [
-                "..."
-              ]
-            }
-          ],
-          "items": {
-            "$ref": "#/$defs/HTTPCookie"
-          },
-          "title": "Cookies",
-          "type": "array"
-        },
-        "query_parameters": {
-          "description": "A list of query parameters to attach to every HTTP requests sent for this user",
-          "examples": [
-            {
-              "name": "token",
-              "values": [
-                "..."
-              ]
-            }
-          ],
-          "items": {
-            "$ref": "#/$defs/HTTPQueryParameter"
-          },
-          "title": "Query Parameters",
-          "type": "array"
-        },
-        "body": {
-          "anyOf": [
-            {},
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "A body to merge with the bodies of every HTTP requests sent for this user",
-          "examples": [
-            {
-              "password": "john@password123#",
-              "username": "john"
-            },
-            "username=john&password=john%40password123%23"
-          ],
-          "title": "Body"
-        },
-        "name": {
-          "description": "The name of the user.",
-          "title": "Name",
-          "type": "string"
-        }
-      },
-      "required": [
-        "name"
-      ],
-      "title": "RESTUserPreset",
-      "type": "object"
-    },
     "SeleniumCommand": {
       "properties": {
         "id": {
@@ -1188,7 +1111,7 @@
               "commands": [
                 {
                   "command": "open",
-                  "id": "2d90cb83d1214196972720b66c817a66",
+                  "id": "abd9d08e607c4006b7f053d25e1a7af1",
                   "target": "https://example.com",
                   "targets": [
                     [
@@ -1199,7 +1122,7 @@
                   "value": ""
                 }
               ],
-              "id": "967c37b6ed334e0e8776cf2a630a873b",
+              "id": "9a44b3473ab946d6af645043584db586",
               "name": "test"
             }
           ],
@@ -1242,7 +1165,7 @@
                     "commands": [
                       {
                         "command": "open",
-                        "id": "4348310f463e4eaab3c440d423e34f24",
+                        "id": "26db1122ecbb4adb8818d61f5786d575",
                         "target": "https://example.com",
                         "targets": [
                           [
@@ -1253,7 +1176,7 @@
                         "value": ""
                       }
                     ],
-                    "id": "9fadf7a5232f44bda6acdf43fa066d20",
+                    "id": "1f92a8bacda543a090628a2c51469377",
                     "name": "test"
                   }
                 ]
@@ -1372,7 +1295,7 @@
         "id": {
           "description": "The id of the test.",
           "examples": [
-            "434f90fe709947809d72311f84755909"
+            "e607383014ae4a328de445e6fba49391"
           ],
           "title": "Id",
           "type": "string"
@@ -1390,7 +1313,7 @@
           "examples": [
             {
               "command": "open",
-              "id": "cfa6335563eb4194bed67cdc3ad64352",
+              "id": "f950148c240f4bbb879c3a2e262fd93b",
               "target": "https://example.com",
               "targets": [
                 [
