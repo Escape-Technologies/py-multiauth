@@ -4,12 +4,12 @@ from pydantic import Field
 
 from multiauth.lib.entities import UserName
 from multiauth.lib.http_core.entities import HTTPHeader
-from multiauth.lib.presets.base import BasePreset, UserPreset
+from multiauth.lib.presets.base import BasePreset, BaseUserPreset
 from multiauth.lib.procedure import ProcedureConfiguration
 from multiauth.lib.store.user import Credentials, User
 
 
-class HeadersUserPreset(UserPreset):
+class HeadersUserPreset(BaseUserPreset):
     name: UserName = Field(
         default=None,
         description='The name of the user. By default, the username is used.',

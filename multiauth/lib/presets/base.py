@@ -25,14 +25,14 @@ PresetType = Literal[
 ##### Credentials ####
 
 
-class UserPreset(BaseModel):
+class BaseUserPreset(BaseModel):
     name: UserName = Field(description='The name of the user.')
 
 
 class BasePreset(BaseModel, abc.ABC):
     type: PresetType = Field(description='The type of the preset.')
 
-    users: Sequence[UserPreset] = Field(
+    users: Sequence[BaseUserPreset] = Field(
         description='A list of users to create',
     )
 

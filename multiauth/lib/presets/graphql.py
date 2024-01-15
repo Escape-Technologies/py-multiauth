@@ -8,7 +8,7 @@ from multiauth.lib.entities import ProcedureName, UserName, VariableName
 from multiauth.lib.extraction import TokenExtraction
 from multiauth.lib.http_core.entities import HTTPEncoding, HTTPHeader, HTTPLocation
 from multiauth.lib.injection import TokenInjection
-from multiauth.lib.presets.base import BasePreset, UserPreset
+from multiauth.lib.presets.base import BasePreset, BaseUserPreset
 from multiauth.lib.procedure import ProcedureConfiguration
 from multiauth.lib.runners.http import HTTPRequestParameters, HTTPRunnerConfiguration
 from multiauth.lib.store.user import Credentials, User
@@ -23,7 +23,7 @@ def safe_json_loads(s: str) -> dict:
         return {}
 
 
-class GraphQLUserPreset(UserPreset):
+class GraphQLUserPreset(BaseUserPreset):
     variables: dict[str, str] = Field(description='The variables of the GraphQL query containing the user credentials.')
 
 

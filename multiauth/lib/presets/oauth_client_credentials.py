@@ -6,14 +6,14 @@ from pydantic import Field, root_validator
 from multiauth.lib.entities import ProcedureName, UserName, VariableName
 from multiauth.lib.http_core.entities import HTTPEncoding, HTTPHeader, HTTPLocation
 from multiauth.lib.injection import TokenInjection
-from multiauth.lib.presets.base import BasePreset, UserPreset
+from multiauth.lib.presets.base import BasePreset, BaseUserPreset
 from multiauth.lib.procedure import ProcedureConfiguration
 from multiauth.lib.runners.http import HTTPRequestParameters, HTTPRunnerConfiguration, TokenExtraction
 from multiauth.lib.store.user import User, UserRefresh
 from multiauth.lib.store.variables import AuthenticationVariable
 
 
-class OAuthClientCredentialsUserPreset(UserPreset):
+class OAuthClientCredentialsUserPreset(BaseUserPreset):
     name: UserName = Field(
         default=None,
         description='The name of the user. By default, the client_id is used.',

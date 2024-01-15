@@ -966,7 +966,7 @@
         "users": {
           "description": "A list of users to create",
           "items": {
-            "$ref": "#/$defs/BasicUserPreset"
+            "$ref": "#/$defs/OauthUserPassUserPreset"
           },
           "title": "Users",
           "type": "array"
@@ -994,6 +994,32 @@
         "client_secret"
       ],
       "title": "OAuthUserpassPreset",
+      "type": "object"
+    },
+    "OauthUserPassUserPreset": {
+      "properties": {
+        "name": {
+          "description": "The name of the user. By default, the username is used.",
+          "title": "Name",
+          "type": "string"
+        },
+        "username": {
+          "description": "The Basic username of the user.",
+          "title": "Username",
+          "type": "string"
+        },
+        "password": {
+          "description": "The Basic password of the user.",
+          "title": "Password",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "username",
+        "password"
+      ],
+      "title": "OauthUserPassUserPreset",
       "type": "object"
     },
     "ProcedureConfiguration": {
@@ -1111,7 +1137,7 @@
               "commands": [
                 {
                   "command": "open",
-                  "id": "abd9d08e607c4006b7f053d25e1a7af1",
+                  "id": "82a7fd912248415d828bd64b56a95a37",
                   "target": "https://example.com",
                   "targets": [
                     [
@@ -1122,7 +1148,7 @@
                   "value": ""
                 }
               ],
-              "id": "9a44b3473ab946d6af645043584db586",
+              "id": "b7c67cecf0a24a5fb60a5fd9a827f3c6",
               "name": "test"
             }
           ],
@@ -1165,7 +1191,7 @@
                     "commands": [
                       {
                         "command": "open",
-                        "id": "26db1122ecbb4adb8818d61f5786d575",
+                        "id": "ed076228dcb94622b29c073f60ff918c",
                         "target": "https://example.com",
                         "targets": [
                           [
@@ -1176,7 +1202,7 @@
                         "value": ""
                       }
                     ],
-                    "id": "1f92a8bacda543a090628a2c51469377",
+                    "id": "78998cab43ab4c9f8f8beda41fa6fd22",
                     "name": "test"
                   }
                 ]
@@ -1295,7 +1321,7 @@
         "id": {
           "description": "The id of the test.",
           "examples": [
-            "e607383014ae4a328de445e6fba49391"
+            "625fbf254e384390b09fdab9638a0926"
           ],
           "title": "Id",
           "type": "string"
@@ -1313,7 +1339,7 @@
           "examples": [
             {
               "command": "open",
-              "id": "f950148c240f4bbb879c3a2e262fd93b",
+              "id": "3f929db29f3f4210994037554fbd0b67",
               "target": "https://example.com",
               "targets": [
                 [

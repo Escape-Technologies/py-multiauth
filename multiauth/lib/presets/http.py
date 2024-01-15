@@ -4,7 +4,7 @@ from pydantic import Field, root_validator
 
 from multiauth.lib.entities import ProcedureName, VariableName
 from multiauth.lib.injection import TokenInjection
-from multiauth.lib.presets.base import BasePreset, UserPreset
+from multiauth.lib.presets.base import BasePreset, BaseUserPreset
 from multiauth.lib.procedure import ProcedureConfiguration
 from multiauth.lib.runners.http import HTTPRequestParameters, HTTPRunnerConfiguration, TokenExtraction
 from multiauth.lib.store.user import Credentials, User
@@ -12,7 +12,7 @@ from multiauth.lib.store.user import Credentials, User
 VARIABLE_NAME = VariableName('token')
 
 
-class HttpUserPreset(UserPreset, Credentials):
+class HttpUserPreset(BaseUserPreset, Credentials):
     @root_validator(pre=True)
     def default_name(cls, values: dict) -> dict:
         name, username = values.get('name'), values.get('username')

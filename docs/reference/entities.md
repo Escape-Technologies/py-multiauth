@@ -277,8 +277,21 @@ Type: object
 | client_id | `string` | `True` | The client ID to use for the OAuth requests |  |
 | client_secret | `string` | `True` | The client secret to use for the OAuth requests |  |
 | url | `string` | `True` | The URL of the token endpoint of the OpenIDConnect server |  |
-| users | `BasicUserPreset[]` | `True` | A list of users to create | [BasicUserPreset](#BasicUserPreset) |
+| users | `OauthUserPassUserPreset[]` | `True` | A list of users to create | [OauthUserPassUserPreset](#OauthUserPassUserPreset) |
 | type | `N/A` | `False` |  |  |
+
+
+## <a id="OauthUserPassUserPreset"></a>OauthUserPassUserPreset
+
+Description: No Description.
+
+Type: object
+
+| Field Name | Type | Required | Description | Reference |
+|------------|------|----------|-------------|-----------|
+| name | `string` | `True` | The name of the user. By default, the username is used. |  |
+| password | `string` | `True` | The Basic password of the user. |  |
+| username | `string` | `True` | The Basic username of the user. |  |
 
 
 ## <a id="ProcedureConfiguration"></a>ProcedureConfiguration
