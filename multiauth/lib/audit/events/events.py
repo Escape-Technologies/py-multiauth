@@ -2,6 +2,7 @@ from typing import Literal
 
 from multiauth.lib.audit.events.base import Event
 from multiauth.lib.http_core.entities import HTTPLocation, HTTPRequest, HTTPResponse
+from multiauth.lib.store.authentication import Authentication
 from multiauth.lib.store.variables import AuthenticationVariable
 from multiauth.lib.token import Token
 
@@ -93,7 +94,7 @@ class ProcedureStartedEvent(Event):
 class ProcedureAbortedEvent(Event):
     type: Literal['procedure_aborted'] = 'procedure_aborted'
     default_severity: Literal['error'] = 'error'
-    reason: Literal['runner_error', 'unknown']
+    reason: Literal['runner_error', 'unauthenticated', 'unknown']
     description: str
 
     @property
@@ -151,3 +152,36 @@ class TokenParsedEvent(Event):
     @property
     def logline(self) -> str:
         return f'{self.token.type} token parsed: {self.token.raw}. Expiration: {self.token.expiration}'
+
+
+class ValidationAttemptedEvent(Event):
+    type: Literal['validation_attempted'] = 'validation_attempted'
+    default_severity: Literal['debug'] = 'debug'
+    authentication: Authentication
+    user_name: str
+
+    @property
+    def logline(self) -> str:
+        return f'Validation attempted for {self.user_name}'
+
+
+class ValidationFailedEvent(Event):
+    type: Literal['validation_failed'] = 'validation_failed'
+    default_severity: Literal['error'] = 'error'
+    user_name: str
+    reason: Literal['http_error', 'unknown']
+    description: str
+
+    @property
+    def logline(self) -> str:
+        return f'Validation failed for {self.user_name}: {self.reason} {self.description}'
+
+
+class ValidationSuccedeedEvent(Event):
+    type: Literal['validation_succedeed'] = 'validation_succedeed'
+    default_severity: Literal['success'] = 'success'
+    user_name: str
+
+    @property
+    def logline(self) -> str:
+        return f'Validation succedeed for {self.user_name}'

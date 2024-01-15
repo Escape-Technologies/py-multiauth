@@ -19,6 +19,9 @@ EventType = Literal[
     'selenium_error',
     'procedure_skipped',
     'token_parsed',
+    'validation_attempted',
+    'validation_succedeed',
+    'validation_failed',
 ]
 
 EventSeverity = Literal['info', 'warning', 'error', 'success', 'debug']
