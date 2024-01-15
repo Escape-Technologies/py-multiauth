@@ -192,6 +192,21 @@ Type: string
 |------------|------|----------|-------------|-----------|
 
 
+## <a id="HTTPPreset"></a>HTTPPreset
+
+Description: No Description.
+
+Type: object
+
+| Field Name | Type | Required | Description | Reference |
+|------------|------|----------|-------------|-----------|
+| extract | `N/A` | `True` | The token extraction configuration used to extract the tokens from the HTTP response. |  |
+| inject | `N/A` | `True` | The injection configuration used to inject the tokens into the HTTP requests. |  |
+| request | `N/A` | `True` | The parameters of the HTTP request used to fetch the access and refresh tokens. |  |
+| users | `RESTUserPreset[]` | `True` | The list of users to generate tokens for. | [RESTUserPreset](#RESTUserPreset) |
+| type | `N/A` | `False` |  |  |
+
+
 ## <a id="HTTPQueryParameter"></a>HTTPQueryParameter
 
 Description: No Description.
@@ -299,21 +314,6 @@ Type: object
 | name | `string` | `True` | The name of the procedure. It must be unique and is used to reference the procedure in users. |  |
 | operations | `array` | `False` | The list of operations executed during the procedure. An operation is a unit transaction, like an HTTP request, or a Selenium script. Operations are ordered, and the variables extracted from an operation can be used in the next operations. |  |
 | injections | `TokenInjection[]` | `False` | The list of injections to perform at the end of the procedure. Injections are used to inject the variables extracted from the procedure into the user authentication. | [TokenInjection](#TokenInjection) |
-
-
-## <a id="RESTPreset"></a>RESTPreset
-
-Description: No Description.
-
-Type: object
-
-| Field Name | Type | Required | Description | Reference |
-|------------|------|----------|-------------|-----------|
-| extract | `N/A` | `True` | The token extraction configuration used to extract the tokens from the HTTP response. |  |
-| inject | `N/A` | `True` | The injection configuration used to inject the tokens into the HTTP requests. |  |
-| request | `N/A` | `True` | The parameters of the HTTP request used to fetch the access and refresh tokens. |  |
-| users | `RESTUserPreset[]` | `True` | The list of users to generate tokens for. | [RESTUserPreset](#RESTUserPreset) |
-| type | `N/A` | `False` |  |  |
 
 
 ## <a id="RESTUserPreset"></a>RESTUserPreset

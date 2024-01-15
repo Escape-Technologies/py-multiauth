@@ -6,13 +6,13 @@ from multiauth.lib.presets.basic import BasicPreset
 from multiauth.lib.presets.graphql import GraphQLPreset
 from multiauth.lib.presets.oauth_client_credentials import OAuthClientCredentialsPreset
 from multiauth.lib.presets.oauth_userpass import OAuthUserpassPreset
-from multiauth.lib.presets.rest import RESTPreset
+from multiauth.lib.presets.rest import HTTPPreset
 from multiauth.lib.procedure import ProcedureConfiguration
 from multiauth.lib.store.user import User
 
 PresetType = Annotated[
     Union[
-        RESTPreset,
+        HTTPPreset,
         OAuthUserpassPreset,
         OAuthClientCredentialsPreset,
         BasicPreset,

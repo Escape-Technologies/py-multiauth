@@ -14,10 +14,9 @@ from multiauth.lib.runners.http import HTTPRequestParameters  # noqa: F401
 from multiauth.lib.store.user import User
 
 PresetType = Literal[
-    'jwt',
+    'http',
     'oauth_userpass',
     'oauth_client_credentials',
-    'oauth_refresh',
     'basic',
     'graphql',
 ]

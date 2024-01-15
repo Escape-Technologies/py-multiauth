@@ -22,8 +22,8 @@ class RESTUserPreset(UserPreset, Credentials):
         return values
 
 
-class RESTPreset(BasePreset):
-    type: Literal['jwt'] = 'jwt'
+class HTTPPreset(BasePreset):
+    type: Literal['http'] = 'http'
     request: HTTPRequestParameters = Field(
         description=('The parameters of the HTTP request used to fetch the access and refresh tokens.'),
         examples=HTTPRequestParameters.examples(),
