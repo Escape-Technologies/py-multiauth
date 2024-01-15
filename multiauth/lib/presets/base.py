@@ -10,7 +10,13 @@ from multiauth.lib.procedure import ProcedureConfiguration
 from multiauth.lib.runners.http import HTTPRequestParameters
 from multiauth.lib.store.user import Credentials, User
 
-PresetType = Literal['jwt_access_token_refresh_token', 'oauth_userpass', 'oauth_client_credentials', 'oauth_refresh']
+PresetType = Literal[
+    'jwt_access_token_refresh_token',
+    'oauth_userpass',
+    'oauth_client_credentials',
+    'oauth_refresh',
+    'basic',
+]
 
 
 ##### Authentications ######
@@ -42,20 +48,6 @@ class UserPreset(Credentials):
 class BasePreset(BaseModel, abc.ABC):
     type: PresetType = Field(description='The type of the preset.')
     name: ProcedureName = Field(description='The name of the preset. Will be the name of the generated procedure.')
-
-    request: HTTPRequestParameters | None = Field(
-        default=None,
-        description='The request parameters that define the authentication process.',
-    )
-    extract: BaseExtraction | None = Field(
-        default=None,
-        description='The way the token is going to be extracted from the authentication response.',
-    )
-    inject: BaseInjection | None = Field(
-        default=None,
-        description='The way the extracted token is going to be injected and formatted in the authenticated requests.',
-    )
-    refresh: RefreshPreset | None = Field(default=None, description='The definition of the refresh procedure.')
 
     users: Sequence[UserPreset] = Field(
         default=[],

@@ -14,7 +14,6 @@ from multiauth.lib.audit.events.events import (
 from multiauth.lib.entities import ProcedureName, VariableName
 from multiauth.lib.injection import TokenInjection
 from multiauth.lib.runners.base import BaseRunner, RunnerException
-from multiauth.lib.runners.basic import BasicRunnerConfiguration
 from multiauth.lib.runners.digest import DigestRunnerConfiguration
 from multiauth.lib.runners.graphql import GraphQLRunnerConfiguration
 from multiauth.lib.runners.http import HTTPRunnerConfiguration
@@ -37,7 +36,6 @@ OperationConfigurationType = Annotated[
     Union[
         HTTPRunnerConfiguration,
         GraphQLRunnerConfiguration,
-        BasicRunnerConfiguration,
         SeleniumRunnerConfiguration,
         DigestRunnerConfiguration,
     ],

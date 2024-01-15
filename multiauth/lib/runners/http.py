@@ -38,6 +38,7 @@ from multiauth.lib.store.variables import AuthenticationVariable, interpolate_st
 class HTTPRequestParameters(BaseRunnerParameters):
     url: str = Field(description='The URL to send the request to')
     method: HTTPMethod = Field(
+        default=HTTPMethod.POST,
         description='The HTTP method to use',
         examples=['GET', 'POST', 'PUT'],
     )

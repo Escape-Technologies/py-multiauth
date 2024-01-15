@@ -20,145 +20,6 @@
       "title": "AuthenticationVariable",
       "type": "object"
     },
-    "BaseExtraction": {
-      "properties": {
-        "location": {
-          "allOf": [
-            {
-              "$ref": "#/$defs/HTTPLocation"
-            }
-          ],
-          "description": "The location of the HTTP request where the value should be extracted"
-        },
-        "key": {
-          "description": "The key to use for the extracted value, depending on the location",
-          "title": "Key",
-          "type": "string"
-        },
-        "regex": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "The regex to use to extract the token from the key value. By default the entire value is taken.",
-          "title": "Regex"
-        }
-      },
-      "required": [
-        "location",
-        "key"
-      ],
-      "title": "BaseExtraction",
-      "type": "object"
-    },
-    "BaseInjection": {
-      "properties": {
-        "location": {
-          "allOf": [
-            {
-              "$ref": "#/$defs/HTTPLocation"
-            }
-          ],
-          "description": "The location of the HTTP request where the token should be injected"
-        },
-        "key": {
-          "description": "The key to use for the injected token. Its usage depends on the location. For headers, cookies,and query parameters, this key describes the name of the header, cookie or query parameter. For a body location, the key is the field where the token should be injected within the request bodies",
-          "examples": [
-            "Authorization",
-            "sessionId",
-            "access_token"
-          ],
-          "title": "Key",
-          "type": "string"
-        },
-        "prefix": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "A prefix to prepend to the token before it is injected",
-          "examples": [
-            "Bearer "
-          ],
-          "title": "Prefix"
-        }
-      },
-      "required": [
-        "location",
-        "key"
-      ],
-      "title": "BaseInjection",
-      "type": "object"
-    },
-    "BasicRunnerConfiguration": {
-      "properties": {
-        "tech": {
-          "const": "basic",
-          "default": "basic",
-          "title": "Tech"
-        },
-        "parameters": {
-          "allOf": [
-            {
-              "$ref": "#/$defs/HTTPRequestParameters"
-            }
-          ],
-          "description": "The parameters of the HTTP request used to test the username and password.",
-          "examples": [
-            {
-              "method": "GET",
-              "url": "https://my-api.com"
-            },
-            {
-              "body": {
-                "key1": "value1",
-                "key2": "value2"
-              },
-              "headers": [
-                {
-                  "name": "Content-Type",
-                  "values": [
-                    "application/json"
-                  ]
-                }
-              ],
-              "method": "POST",
-              "url": "https://my-api.com"
-            }
-          ]
-        },
-        "extractions": {
-          "description": "The extractions of the HTTP request used to test the username and password.",
-          "examples": [
-            {
-              "key": "Set-Cookie",
-              "location": "header",
-              "name": "my-variable"
-            }
-          ],
-          "items": {
-            "$ref": "#/$defs/TokenExtraction"
-          },
-          "title": "Extractions",
-          "type": "array"
-        }
-      },
-      "required": [
-        "parameters"
-      ],
-      "title": "BasicRunnerConfiguration",
-      "type": "object"
-    },
     "Credentials": {
       "properties": {
         "username": {
@@ -290,7 +151,6 @@
                   ]
                 }
               ],
-              "method": "POST",
               "url": "https://my-api.com"
             }
           ]
@@ -774,6 +634,7 @@
               "$ref": "#/$defs/HTTPMethod"
             }
           ],
+          "default": "POST",
           "description": "The HTTP method to use",
           "examples": [
             "GET",
@@ -887,8 +748,7 @@
         }
       },
       "required": [
-        "url",
-        "method"
+        "url"
       ],
       "title": "HTTPRequestParameters",
       "type": "object"
@@ -925,7 +785,6 @@
                   ]
                 }
               ],
-              "method": "POST",
               "url": "https://my-api.com"
             }
           ]
@@ -964,54 +823,6 @@
           "title": "Name",
           "type": "string"
         },
-        "request": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/HTTPRequestParameters"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "The request parameters that define the authentication process."
-        },
-        "extract": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/BaseExtraction"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "The way the token is going to be extracted from the authentication response."
-        },
-        "inject": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/BaseInjection"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "The way the extracted token is going to be injected and formatted in the authenticated requests."
-        },
-        "refresh": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/RefreshPreset"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "The definition of the refresh procedure."
-        },
         "users": {
           "default": [],
           "description": "The list of users and their credentials that will use this authentication preset.",
@@ -1046,7 +857,6 @@
                   ]
                 }
               ],
-              "method": "POST",
               "url": "https://my-api.com"
             }
           ]
@@ -1070,54 +880,6 @@
           "description": "The name of the preset. Will be the name of the generated procedure.",
           "title": "Name",
           "type": "string"
-        },
-        "request": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/HTTPRequestParameters"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "The request parameters that define the authentication process."
-        },
-        "extract": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/BaseExtraction"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "The way the token is going to be extracted from the authentication response."
-        },
-        "inject": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/BaseInjection"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "The way the extracted token is going to be injected and formatted in the authenticated requests."
-        },
-        "refresh": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/RefreshPreset"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "The definition of the refresh procedure."
         },
         "users": {
           "description": "A list of users to create",
@@ -1257,54 +1019,6 @@
           "title": "Name",
           "type": "string"
         },
-        "request": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/HTTPRequestParameters"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "The request parameters that define the authentication process."
-        },
-        "extract": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/BaseExtraction"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "The way the token is going to be extracted from the authentication response."
-        },
-        "inject": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/BaseInjection"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "The way the extracted token is going to be injected and formatted in the authenticated requests."
-        },
-        "refresh": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/RefreshPreset"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "The definition of the refresh procedure."
-        },
         "users": {
           "description": "The list of users and their credentials that will use this authentication preset.",
           "items": {
@@ -1442,54 +1156,6 @@
           "description": "The name of the preset. Will be the name of the generated procedure.",
           "title": "Name",
           "type": "string"
-        },
-        "request": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/HTTPRequestParameters"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "The request parameters that define the authentication process."
-        },
-        "extract": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/BaseExtraction"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "The way the token is going to be extracted from the authentication response."
-        },
-        "inject": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/BaseInjection"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "The way the extracted token is going to be injected and formatted in the authenticated requests."
-        },
-        "refresh": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/RefreshPreset"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "The definition of the refresh procedure."
         },
         "users": {
           "description": "A list of users to create",
@@ -1629,7 +1295,6 @@
           "items": {
             "discriminator": {
               "mapping": {
-                "basic": "#/$defs/BasicRunnerConfiguration",
                 "digest": "#/$defs/DigestRunnerConfiguration",
                 "graphql": "#/$defs/GraphQLRunnerConfiguration",
                 "http": "#/$defs/HTTPRunnerConfiguration",
@@ -1643,9 +1308,6 @@
               },
               {
                 "$ref": "#/$defs/GraphQLRunnerConfiguration"
-              },
-              {
-                "$ref": "#/$defs/BasicRunnerConfiguration"
               },
               {
                 "$ref": "#/$defs/SeleniumRunnerConfiguration"
@@ -1671,26 +1333,6 @@
         "name"
       ],
       "title": "ProcedureConfiguration",
-      "type": "object"
-    },
-    "RefreshPreset": {
-      "properties": {
-        "request": {
-          "$ref": "#/$defs/HTTPRequestParameters"
-        },
-        "extract": {
-          "$ref": "#/$defs/BaseExtraction"
-        },
-        "inject": {
-          "$ref": "#/$defs/BaseInjection"
-        }
-      },
-      "required": [
-        "request",
-        "extract",
-        "inject"
-      ],
-      "title": "RefreshPreset",
       "type": "object"
     },
     "SeleniumCommand": {
@@ -1760,7 +1402,7 @@
               "commands": [
                 {
                   "command": "open",
-                  "id": "1396fea3b6c14017992ade103f2fd1e3",
+                  "id": "20ca7f3880b64abe86563c3506146e2f",
                   "target": "https://example.com",
                   "targets": [
                     [
@@ -1771,7 +1413,7 @@
                   "value": ""
                 }
               ],
-              "id": "b7d85e44c81a418884c2ae38bfea2f94",
+              "id": "c4fa2191f0484eb88c8eed73688acc63",
               "name": "test"
             }
           ],
@@ -1814,7 +1456,7 @@
                     "commands": [
                       {
                         "command": "open",
-                        "id": "a4b480fe4db24bb799d562bfc903e358",
+                        "id": "ee6c95060f7642118ff1a91234ebc11d",
                         "target": "https://example.com",
                         "targets": [
                           [
@@ -1825,7 +1467,7 @@
                         "value": ""
                       }
                     ],
-                    "id": "d5bab2998d1547cbb10fa9538b29df4c",
+                    "id": "901cac6756ad4195abc597c4055a5de2",
                     "name": "test"
                   }
                 ]
@@ -1944,7 +1586,7 @@
         "id": {
           "description": "The id of the test.",
           "examples": [
-            "413a23bab0b64f2d8e4cc53716c098d8"
+            "b7aaca5ea06a4975b40641191dd8c622"
           ],
           "title": "Id",
           "type": "string"
@@ -1962,7 +1604,7 @@
           "examples": [
             {
               "command": "open",
-              "id": "36f33dd850eb47698b0cc882114b94c4",
+              "id": "499d6ba1e8754e78b888f22ce1a4e773",
               "target": "https://example.com",
               "targets": [
                 [

@@ -11,45 +11,6 @@ Type: object
 | value | `string` | `True` | The value of the variable |  |
 
 
-## <a id="BaseExtraction"></a>BaseExtraction
-
-Description: No Description.
-
-Type: object
-
-| Field Name | Type | Required | Description | Reference |
-|------------|------|----------|-------------|-----------|
-| key | `string` | `True` | The key to use for the extracted value, depending on the location |  |
-| location | `N/A` | `True` | The location of the HTTP request where the value should be extracted |  |
-| regex | `N/A` | `False` | The regex to use to extract the token from the key value. By default the entire value is taken. |  |
-
-
-## <a id="BaseInjection"></a>BaseInjection
-
-Description: No Description.
-
-Type: object
-
-| Field Name | Type | Required | Description | Reference |
-|------------|------|----------|-------------|-----------|
-| key | `string` | `True` | The key to use for the injected token. Its usage depends on the location. For headers, cookies,and query parameters, this key describes the name of the header, cookie or query parameter. For a body location, the key is the field where the token should be injected within the request bodies |  |
-| location | `N/A` | `True` | The location of the HTTP request where the token should be injected |  |
-| prefix | `N/A` | `False` | A prefix to prepend to the token before it is injected |  |
-
-
-## <a id="BasicRunnerConfiguration"></a>BasicRunnerConfiguration
-
-Description: No Description.
-
-Type: object
-
-| Field Name | Type | Required | Description | Reference |
-|------------|------|----------|-------------|-----------|
-| parameters | `N/A` | `True` | The parameters of the HTTP request used to test the username and password. |  |
-| tech | `N/A` | `False` |  |  |
-| extractions | `TokenExtraction[]` | `False` | The extractions of the HTTP request used to test the username and password. | [TokenExtraction](#TokenExtraction) |
-
-
 ## <a id="Credentials"></a>Credentials
 
 Description: No Description.
@@ -216,9 +177,9 @@ Type: object
 
 | Field Name | Type | Required | Description | Reference |
 |------------|------|----------|-------------|-----------|
-| method | `N/A` | `True` | The HTTP method to use |  |
 | url | `string` | `True` | The URL to send the request to |  |
 | body | `N/A` | `False` | The body of the request. It can be a string or a JSON object. It is merged with the user credentials body if provided. If bodies of the HTTP request and of the user credentials are both JSON objects, they are merged. If the two bodies are strings, they are concatenated. If the two bodies are of different types, the body of the user credentials is used instead of this value. |  |
+| method | `N/A` | `False` | The HTTP method to use |  |
 | proxy | `N/A` | `False` | An eventual proxy used for this request |  |
 | cookies | `HTTPCookie[]` | `False` | The list of cookies to attach to the request. Cookies are merged with the user credentials cookies. It is possible to attach mutliple values to a cookie. Cookie values are url-encoded before being sent. | [HTTPCookie](#HTTPCookie) |
 | headers | `HTTPHeader[]` | `False` | The list of headers to attach to the request. Headers are merged with the user credentials headers. It is possible to attach mutliple values to a header. | [HTTPHeader](#HTTPHeader) |
@@ -248,10 +209,6 @@ Type: object
 |------------|------|----------|-------------|-----------|
 | name | `string` | `True` | The name of the preset. Will be the name of the generated procedure. |  |
 | parameters | `N/A` | `True` | The parameters of the HTTP request used to fetch the access and refresh tokens. |  |
-| extract | `N/A` | `False` | The way the token is going to be extracted from the authentication response. |  |
-| inject | `N/A` | `False` | The way the extracted token is going to be injected and formatted in the authenticated requests. |  |
-| refresh | `N/A` | `False` | The definition of the refresh procedure. |  |
-| request | `N/A` | `False` | The request parameters that define the authentication process. |  |
 | type | `N/A` | `False` |  |  |
 | users | `UserPreset[]` | `False` | The list of users and their credentials that will use this authentication preset. | [UserPreset](#UserPreset) |
 
@@ -269,10 +226,6 @@ Type: object
 | name | `string` | `True` | The name of the preset. Will be the name of the generated procedure. |  |
 | server_url | `string` | `True` | The URL of the token endpoint of the OpenIDConnect server |  |
 | users | `OAuthClientCredentialsUserPreset[]` | `True` | A list of users to create | [OAuthClientCredentialsUserPreset](#OAuthClientCredentialsUserPreset) |
-| extract | `N/A` | `False` | The way the token is going to be extracted from the authentication response. |  |
-| inject | `N/A` | `False` | The way the extracted token is going to be injected and formatted in the authenticated requests. |  |
-| refresh | `N/A` | `False` | The definition of the refresh procedure. |  |
-| request | `N/A` | `False` | The request parameters that define the authentication process. |  |
 | type | `N/A` | `False` |  |  |
 
 
@@ -306,10 +259,6 @@ Type: object
 | name | `string` | `True` | The name of the preset. Will be the name of the generated procedure. |  |
 | server_url | `string` | `True` | The URL of the token endpoint of the OpenIDConnect server |  |
 | users | `OAuthRefreshUserPreset[]` | `True` | The list of users and their credentials that will use this authentication preset. | [OAuthRefreshUserPreset](#OAuthRefreshUserPreset) |
-| extract | `N/A` | `False` | The way the token is going to be extracted from the authentication response. |  |
-| inject | `N/A` | `False` | The way the extracted token is going to be injected and formatted in the authenticated requests. |  |
-| refresh | `N/A` | `False` | The definition of the refresh procedure. |  |
-| request | `N/A` | `False` | The request parameters that define the authentication process. |  |
 | type | `N/A` | `False` |  |  |
 
 
@@ -343,10 +292,6 @@ Type: object
 | name | `string` | `True` | The name of the preset. Will be the name of the generated procedure. |  |
 | url | `string` | `True` | The URL of the token endpoint of the OpenIDConnect server |  |
 | users | `OAuthUserpassUserPreset[]` | `True` | A list of users to create | [OAuthUserpassUserPreset](#OAuthUserpassUserPreset) |
-| extract | `N/A` | `False` | The way the token is going to be extracted from the authentication response. |  |
-| inject | `N/A` | `False` | The way the extracted token is going to be injected and formatted in the authenticated requests. |  |
-| refresh | `N/A` | `False` | The definition of the refresh procedure. |  |
-| request | `N/A` | `False` | The request parameters that define the authentication process. |  |
 | type | `N/A` | `False` |  |  |
 
 
@@ -378,19 +323,6 @@ Type: object
 | name | `string` | `True` | The name of the procedure. It must be unique and is used to reference the procedure in users. |  |
 | operations | `array` | `False` | The list of operations executed during the procedure. An operation is a unit transaction, like an HTTP request, or a Selenium script. Operations are ordered, and the variables extracted from an operation can be used in the next operations. |  |
 | injections | `TokenInjection[]` | `False` | The list of injections to perform at the end of the procedure. Injections are used to inject the variables extracted from the procedure into the user authentication. | [TokenInjection](#TokenInjection) |
-
-
-## <a id="RefreshPreset"></a>RefreshPreset
-
-Description: No Description.
-
-Type: object
-
-| Field Name | Type | Required | Description | Reference |
-|------------|------|----------|-------------|-----------|
-| extract | `N/A` | `True` |  |  |
-| inject | `N/A` | `True` |  |  |
-| request | `N/A` | `True` |  |  |
 
 
 ## <a id="SeleniumCommand"></a>SeleniumCommand
