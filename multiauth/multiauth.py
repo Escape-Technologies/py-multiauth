@@ -6,10 +6,24 @@ from multiauth.configuration import (
 )
 from multiauth.exceptions import MissingProcedureException, MissingUserException, MultiAuthException
 from multiauth.lib.audit.events.base import EventsList
-from multiauth.lib.audit.events.events import ProcedureAbortedEvent, ProcedureSkippedEvent
+from multiauth.lib.audit.events.events import (
+    HTTPFailureEvent,
+    HTTPRequestEvent,
+    HTTPResponseEvent,
+    ProcedureAbortedEvent,
+    ProcedureSkippedEvent,
+    ValidationSuccedeedEvent,
+)
 from multiauth.lib.entities import ProcedureName, UserName
+from multiauth.lib.http_core.entities import HTTPRequest
+from multiauth.lib.http_core.request import send_request
 from multiauth.lib.procedure import ISOExpirationTimestamp, Procedure, default_expiration_date
-from multiauth.lib.store.authentication import Authentication, AuthenticationStore, AuthenticationStoreException
+from multiauth.lib.store.authentication import (
+    Authentication,
+    AuthenticationStore,
+    AuthenticationStoreException,
+    UnauthenticatedUserException,
+)
 from multiauth.lib.store.user import Credentials, User
 
 
@@ -212,6 +226,40 @@ class Multiauth:
         self.authentication_store.store(user_name, refreshed_authentication, expiration)
 
         return refreshed_authentication, events, ISOExpirationTimestamp(expiration.isoformat()), error
+
+    def test(self, user_name: UserName, request: HTTPRequest) -> tuple[bool, EventsList, Exception | None]:
+        """
+        Test the authentication object of a given user.
+        Will send a request to the provided URL using the credentials of the given user.
+        """
+        events = EventsList()
+
+        try:
+            authentication, expiration = self.authentication_store.get(user_name)
+        except UnauthenticatedUserException as e:
+            events.append(ProcedureAbortedEvent(reason='unauthenticated', description=str(e)))
+            return False, events, e
+        except Exception as e:
+            events.append(ProcedureAbortedEvent(reason='unknown', description=str(e)))
+            return False, events, e
+
+        for header in authentication.headers:
+            request.headers.append(header)
+        for cookie in authentication.cookies:
+            request.cookies.append(cookie)
+        for query_parameters in authentication.query_parameters:
+            request.query_parameters.append(query_parameters)
+
+        events.append(HTTPRequestEvent(request=request))
+        response = send_request(request)
+
+        if isinstance(response, HTTPFailureEvent):
+            events.append(response)
+            return False, events, None
+
+        events.append(HTTPResponseEvent(response=response))
+        events.append(ValidationSuccedeedEvent(user_name=user_name))
+        return True, events, None
 
     def sign(*args: Any, **kwargs: Any) -> dict[str, str]:
         """
