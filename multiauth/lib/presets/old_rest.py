@@ -1,13 +1,10 @@
 from typing import Any
 
-from pydantic import Field
-
 from multiauth.lib.presets.base import (
     BaseExtraction,
     BaseInjection,
     BasePreset,
     HTTPRequestParameters,
-    RefreshPreset,
     UserPreset,
 )
 
@@ -32,4 +29,3 @@ class RESTBasePreset(BasePreset):
     request: RESTRequestPreset
     inject: RESTInjectPreset
     extract: RESTExtractPreset
-    refresher: RefreshPreset | None = Field(default=None)

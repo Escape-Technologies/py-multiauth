@@ -48,7 +48,7 @@ class Multiauth:
 
         for procedure_configuration in configuration.procedures or []:
             self.procedures[procedure_configuration.name] = Procedure(procedure_configuration)
-        for user in configuration.users:
+        for user in configuration.users or []:
             self.users[user.name] = user
 
     def _get_user(self, user_name: UserName) -> User:

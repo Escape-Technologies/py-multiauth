@@ -22,7 +22,7 @@ class BasicUserPreset(UserPreset):
     password: str = Field(description='The Basic password of the user.')
 
 
-class BasicBasePreset(BasePreset):
+class BasicPreset(BasePreset):
     type: Literal['basic'] = 'basic'
 
     url: str = Field(description='The URL of the Basic authentication endpoint.')

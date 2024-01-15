@@ -4,10 +4,10 @@ from typing import Literal, Sequence
 from pydantic import BaseModel, Field
 
 from multiauth.lib.entities import ProcedureName, UserName
-from multiauth.lib.extraction import BaseExtraction
-from multiauth.lib.injection import BaseInjection
+from multiauth.lib.extraction import BaseExtraction  # noqa: F401
+from multiauth.lib.injection import BaseInjection  # noqa: F401
 from multiauth.lib.procedure import ProcedureConfiguration
-from multiauth.lib.runners.http import HTTPRequestParameters
+from multiauth.lib.runners.http import HTTPRequestParameters  # noqa: F401
 from multiauth.lib.store.user import Credentials, User
 
 PresetType = Literal[
@@ -16,16 +16,8 @@ PresetType = Literal[
     'oauth_client_credentials',
     'oauth_refresh',
     'basic',
+    'graphql',
 ]
-
-
-##### Authentications ######
-
-
-class RefreshPreset(BaseModel):
-    request: HTTPRequestParameters
-    extract: BaseExtraction
-    inject: BaseInjection
 
 
 ##### Credentials ####
@@ -47,7 +39,7 @@ class UserPreset(Credentials):
 
 class BasePreset(BaseModel, abc.ABC):
     type: PresetType = Field(description='The type of the preset.')
-    name: ProcedureName = Field(description='The name of the preset. Will be the name of the generated procedure.')
+    name: ProcedureName = Field(description='The arbitrary name given to the preset.')
 
     users: Sequence[UserPreset] = Field(
         default=[],

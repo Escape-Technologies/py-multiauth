@@ -15,7 +15,6 @@ from multiauth.lib.entities import ProcedureName, VariableName
 from multiauth.lib.injection import TokenInjection
 from multiauth.lib.runners.base import BaseRunner, RunnerException
 from multiauth.lib.runners.digest import DigestRunnerConfiguration
-from multiauth.lib.runners.graphql import GraphQLRunnerConfiguration
 from multiauth.lib.runners.http import HTTPRunnerConfiguration
 from multiauth.lib.runners.webdriver.runner import SeleniumRunnerConfiguration
 from multiauth.lib.store.authentication import Authentication
@@ -35,7 +34,6 @@ def default_expiration_date() -> datetime:
 OperationConfigurationType = Annotated[
     Union[
         HTTPRunnerConfiguration,
-        GraphQLRunnerConfiguration,
         SeleniumRunnerConfiguration,
         DigestRunnerConfiguration,
     ],

@@ -11,6 +11,63 @@ Type: object
 | value | `string` | `True` | The value of the variable |  |
 
 
+## <a id="BaseExtraction"></a>BaseExtraction
+
+Description: No Description.
+
+Type: object
+
+| Field Name | Type | Required | Description | Reference |
+|------------|------|----------|-------------|-----------|
+| key | `string` | `True` | The key to use for the extracted value, depending on the location |  |
+| location | `N/A` | `True` | The location of the HTTP request where the value should be extracted |  |
+| regex | `N/A` | `False` | The regex to use to extract the token from the key value. By default the entire value is taken. |  |
+
+
+## <a id="BaseInjection"></a>BaseInjection
+
+Description: No Description.
+
+Type: object
+
+| Field Name | Type | Required | Description | Reference |
+|------------|------|----------|-------------|-----------|
+| key | `string` | `True` | The key to use for the injected token. Its usage depends on the location. For headers, cookies,and query parameters, this key describes the name of the header, cookie or query parameter. For a body location, the key is the field where the token should be injected within the request bodies |  |
+| location | `N/A` | `True` | The location of the HTTP request where the token should be injected |  |
+| prefix | `N/A` | `False` | A prefix to prepend to the token before it is injected |  |
+
+
+## <a id="BasicPreset"></a>BasicPreset
+
+Description: No Description.
+
+Type: object
+
+| Field Name | Type | Required | Description | Reference |
+|------------|------|----------|-------------|-----------|
+| name | `string` | `True` | The arbitrary name given to the preset. |  |
+| url | `string` | `True` | The URL of the Basic authentication endpoint. |  |
+| users | `BasicUserPreset[]` | `True` | A list of users with basic credentials to create | [BasicUserPreset](#BasicUserPreset) |
+| type | `N/A` | `False` |  |  |
+
+
+## <a id="BasicUserPreset"></a>BasicUserPreset
+
+Description: No Description.
+
+Type: object
+
+| Field Name | Type | Required | Description | Reference |
+|------------|------|----------|-------------|-----------|
+| name | `string` | `True` | The arbitrary name given to the user. |  |
+| password | `string` | `True` | The Basic password of the user. |  |
+| username | `string` | `True` | The Basic username of the user. |  |
+| body | `N/A` | `False` | A body to merge with the bodies of every HTTP requests sent for this user |  |
+| cookies | `HTTPCookie[]` | `False` | A list of cookies to attach to every HTTP requests sent for this user | [HTTPCookie](#HTTPCookie) |
+| headers | `HTTPHeader[]` | `False` | A list of headers to attach to every HTTP requests sent for this user | [HTTPHeader](#HTTPHeader) |
+| query_parameters | `HTTPQueryParameter[]` | `False` | A list of query parameters to attach to every HTTP requests sent for this user | [HTTPQueryParameter](#HTTPQueryParameter) |
+
+
 ## <a id="Credentials"></a>Credentials
 
 Description: No Description.
@@ -64,7 +121,7 @@ Type: object
 | path | `N/A` | `False` | The path of the second HTTP request executed during the digest procedure.By default, the path of the first request is used. |  |
 
 
-## <a id="GraphQLRequestParameters"></a>GraphQLRequestParameters
+## <a id="GraphQLPreset"></a>GraphQLPreset
 
 Description: No Description.
 
@@ -72,18 +129,16 @@ Type: object
 
 | Field Name | Type | Required | Description | Reference |
 |------------|------|----------|-------------|-----------|
-| query | `string` | `True` | The GraphQL query to send. Will be added to the `query` field of the JSON body of the HTTP request. |  |
-| url | `string` | `True` | The URL to send the request to |  |
-| body | `N/A` | `False` | The body of the request. It can be a string or a JSON object. It is merged with the user credentials body if provided. If bodies of the HTTP request and of the user credentials are both JSON objects, they are merged. If the two bodies are strings, they are concatenated. If the two bodies are of different types, the body of the user credentials is used instead of this value. |  |
-| method | `N/A` | `False` | The HTTP method to use to send the request. By default, POST is used. |  |
-| proxy | `N/A` | `False` | An eventual proxy used for this request |  |
-| variables | `N/A` | `False` | The variables to send with the query. Will be added to the `variables` field ofthe JSON body of the HTTP request. |  |
-| cookies | `HTTPCookie[]` | `False` | The list of cookies to attach to the request. Cookies are merged with the user credentials cookies. It is possible to attach mutliple values to a cookie. Cookie values are url-encoded before being sent. | [HTTPCookie](#HTTPCookie) |
-| headers | `HTTPHeader[]` | `False` | The list of headers to attach to the request. Headers are merged with the user credentials headers. It is possible to attach mutliple values to a header. | [HTTPHeader](#HTTPHeader) |
-| query_parameters | `HTTPQueryParameter[]` | `False` | The list of query parameters to attach to the request. Query parameters are merged with the user credentials query parameters. It is possible to attach mutliple values to a query parameter. Query parameter values are url-encoded before being sent. | [HTTPQueryParameter](#HTTPQueryParameter) |
+| query | `string` | `True` | The templated GraphQL inside the `query` field of the JSON body of the HTTP request. |  |
+| url | `string` | `True` | The URL of the GraphQL authentication endpoint. |  |
+| users | `GraphQLUserPreset[]` | `True` | A list of users with credentials contained in the GraphQL `variables` of the query | [GraphQLUserPreset](#GraphQLUserPreset) |
+| extract | `N/A` | `False` | The extraction of the GraphQL query containing the user credentials. |  |
+| inject | `N/A` | `False` | The injection of the GraphQL query containing the user credentials. |  |
+| name | `string` | `False` | The arbitrary name given to the preset. |  |
+| type | `N/A` | `False` |  |  |
 
 
-## <a id="GraphQLRunnerConfiguration"></a>GraphQLRunnerConfiguration
+## <a id="GraphQLUserPreset"></a>GraphQLUserPreset
 
 Description: No Description.
 
@@ -91,21 +146,14 @@ Type: object
 
 | Field Name | Type | Required | Description | Reference |
 |------------|------|----------|-------------|-----------|
-| parameters | `N/A` | `True` | The parameters of the GraphQL request to send. At least a query and a GraphQL endpoint are required. By default, POST is used as the HTTP method, and the request is sent as JSON. |  |
-| tech | `N/A` | `False` |  |  |
-| extractions | `TokenExtraction[]` | `False` | The list of extractions to run at the end of the operation.For HTTP operations, variables are extracted from the response. | [TokenExtraction](#TokenExtraction) |
-
-
-## <a id="GraphQLVariable"></a>GraphQLVariable
-
-Description: No Description.
-
-Type: object
-
-| Field Name | Type | Required | Description | Reference |
-|------------|------|----------|-------------|-----------|
-| name | `string` | `True` |  |  |
-| value | `N/A` | `True` |  |  |
+| name | `string` | `True` | The arbitrary name given to the user. |  |
+| variables | `object` | `True` | The variables of the GraphQL query containing the user credentials. |  |
+| body | `N/A` | `False` | A body to merge with the bodies of every HTTP requests sent for this user |  |
+| password | `N/A` | `False` | The password to attach to the HTTP requests sent for this user. See [developer.mozilla.org](https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication#access_using_credentials_in_the_url) |  |
+| username | `N/A` | `False` | The username to attach to the HTTP requests sent for this user. See [developer.mozilla.org](https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication#access_using_credentials_in_the_url) |  |
+| cookies | `HTTPCookie[]` | `False` | A list of cookies to attach to every HTTP requests sent for this user | [HTTPCookie](#HTTPCookie) |
+| headers | `HTTPHeader[]` | `False` | A list of headers to attach to every HTTP requests sent for this user | [HTTPHeader](#HTTPHeader) |
+| query_parameters | `HTTPQueryParameter[]` | `False` | A list of query parameters to attach to every HTTP requests sent for this user | [HTTPQueryParameter](#HTTPQueryParameter) |
 
 
 ## <a id="HTTPCookie"></a>HTTPCookie
@@ -207,7 +255,7 @@ Type: object
 
 | Field Name | Type | Required | Description | Reference |
 |------------|------|----------|-------------|-----------|
-| name | `string` | `True` | The name of the preset. Will be the name of the generated procedure. |  |
+| name | `string` | `True` | The arbitrary name given to the preset. |  |
 | parameters | `N/A` | `True` | The parameters of the HTTP request used to fetch the access and refresh tokens. |  |
 | type | `N/A` | `False` |  |  |
 | users | `UserPreset[]` | `False` | The list of users and their credentials that will use this authentication preset. | [UserPreset](#UserPreset) |
@@ -223,7 +271,7 @@ Type: object
 |------------|------|----------|-------------|-----------|
 | client_id | `string` | `True` | The client ID to use for the OAuth requests |  |
 | client_secret | `string` | `True` | The client secret to use for the OAuth requests |  |
-| name | `string` | `True` | The name of the preset. Will be the name of the generated procedure. |  |
+| name | `string` | `True` | The arbitrary name given to the preset. |  |
 | server_url | `string` | `True` | The URL of the token endpoint of the OpenIDConnect server |  |
 | users | `OAuthClientCredentialsUserPreset[]` | `True` | A list of users to create | [OAuthClientCredentialsUserPreset](#OAuthClientCredentialsUserPreset) |
 | type | `N/A` | `False` |  |  |
@@ -256,7 +304,7 @@ Type: object
 |------------|------|----------|-------------|-----------|
 | client_id | `string` | `True` | The client ID to use for the OAuth requests |  |
 | client_secret | `string` | `True` | The client secret to use for the OAuth requests |  |
-| name | `string` | `True` | The name of the preset. Will be the name of the generated procedure. |  |
+| name | `string` | `True` | The arbitrary name given to the preset. |  |
 | server_url | `string` | `True` | The URL of the token endpoint of the OpenIDConnect server |  |
 | users | `OAuthRefreshUserPreset[]` | `True` | The list of users and their credentials that will use this authentication preset. | [OAuthRefreshUserPreset](#OAuthRefreshUserPreset) |
 | type | `N/A` | `False` |  |  |
@@ -289,7 +337,7 @@ Type: object
 |------------|------|----------|-------------|-----------|
 | client_id | `string` | `True` | The client ID to use for the OAuth requests |  |
 | client_secret | `string` | `True` | The client secret to use for the OAuth requests |  |
-| name | `string` | `True` | The name of the preset. Will be the name of the generated procedure. |  |
+| name | `string` | `True` | The arbitrary name given to the preset. |  |
 | url | `string` | `True` | The URL of the token endpoint of the OpenIDConnect server |  |
 | users | `OAuthUserpassUserPreset[]` | `True` | A list of users to create | [OAuthUserpassUserPreset](#OAuthUserpassUserPreset) |
 | type | `N/A` | `False` |  |  |

@@ -1,50 +1,29 @@
 {
-  "procedures": [
+  "presets": [
     {
-      "name": "graphql",
-      "operations": [
+      "name": "My GraphQL Config",
+      "type": "graphql",
+      "url": "https://gontoz.escape.tech/",
+      "query": "mutation($username: String!, $password: String!) { authentification(username: $username, password: $password) { token } }",
+      "extract": {
+        "location": "body",
+        "key": "token"
+      },
+      "inject": {
+        "location": "header",
+        "key": "Authorization",
+        "prefix": "Bearer "
+      },
+      "users": [
         {
-          "tech": "graphql",
-          "parameters": {
-            "url": "https://gontoz.escape.tech/",
-            "method": "POST",
-            "query": "mutation { authentification(username: \"{{username}}\", password: \"{{password}}\") { token } }",
-            "variables": []
-          },
-          "extractions": [
-            {
-              "name": "token",
-              "location": "body",
-              "key": "token"
-            }
-          ]
+          "name": "user",
+          "variables": {
+            "username": "john",
+            "password": "P4ss"
+          }
         }
       ]
     }
   ],
-  "users": [
-    {
-      "name": "user",
-      "credentials": {},
-      "procedure": "graphql",
-      "injections": [
-        {
-          "location": "header",
-          "key": "Authorization",
-          "value": "Bearer {{token}}"
-        }
-      ],
-      "variables": [
-        {
-          "name": "username",
-          "value": "john"
-        },
-        {
-          "name": "password",
-          "value": "P4ss"
-        }
-      ]
-    }
-  ],
-  "$schema": "./multiauth-schema.json"
+  "$schema": "../multiauth-schema.json"
 }

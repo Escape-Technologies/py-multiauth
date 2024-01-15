@@ -2,6 +2,8 @@ from typing import Annotated, Union
 
 from pydantic import BaseModel, Field
 
+from multiauth.lib.presets.basic import BasicPreset
+from multiauth.lib.presets.graphql import GraphQLPreset
 from multiauth.lib.presets.jwt_access_token import JWTAccessTokenRefreshTokenPreset
 from multiauth.lib.presets.oauth_client_credentials import OAuthClientCredentialsPreset
 from multiauth.lib.presets.oauth_refresh import OAuthRefreshPreset
@@ -10,7 +12,14 @@ from multiauth.lib.procedure import ProcedureConfiguration
 from multiauth.lib.store.user import User
 
 PresetType = Annotated[
-    Union[JWTAccessTokenRefreshTokenPreset, OAuthUserpassPreset, OAuthClientCredentialsPreset, OAuthRefreshPreset],
+    Union[
+        JWTAccessTokenRefreshTokenPreset,
+        OAuthUserpassPreset,
+        OAuthClientCredentialsPreset,
+        OAuthRefreshPreset,
+        BasicPreset,
+        GraphQLPreset,
+    ],
     Field(discriminator='type'),
 ]
 
@@ -31,7 +40,8 @@ class MultiauthConfiguration(BaseModel):
             'following common authentication standards'
         ),
     )
-    users: list[User] = Field(
+    users: list[User] | None = Field(
+        default=None,
         description='List of users that multiauth will generate authentications for.',
     )
     proxy: str | None = Field(default=None, description='An eventual global proxy used for all HTTP requests')
