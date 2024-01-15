@@ -20,7 +20,7 @@ from multiauth.lib.store.variables import AuthenticationVariable, VariableName, 
 
 
 class DigestSecondRequestConfiguration(BaseModel):
-    path: str | None = Field(
+    url: str | None = Field(
         default=None,
         description=(
             'The path of the second HTTP request executed during the digest procedure.'
@@ -41,7 +41,7 @@ class DigestSecondRequestConfiguration(BaseModel):
     def examples() -> list:
         return [
             DigestSecondRequestConfiguration(
-                path='/digest',
+                url='/digest',
                 method=HTTPMethod.POST,
             ).dict(exclude_defaults=True),
         ]
@@ -82,7 +82,7 @@ class DigestRequestSequenceConfiguration(BaseModel):
                     headers=[HTTPHeader(name='Accept', values=['*/*'])],
                 ),
                 second_request=DigestSecondRequestConfiguration(
-                    path='/digest',
+                    url='/digest',
                     method=HTTPMethod.GET,
                 ),
             ).dict(exclude_defaults=True),
@@ -131,7 +131,7 @@ class DigestRunnerConfiguration(BaseRunnerConfiguration):
                         headers=[HTTPHeader(name='Accept', values=['*/*'])],
                     ),
                     second_request=DigestSecondRequestConfiguration(
-                        path='/digest',
+                        url='/digest',
                         method=HTTPMethod.GET,
                     ),
                 ),
@@ -282,8 +282,8 @@ class DigestRunner(HTTPRequestRunner):
         second_request_path = domain
 
         if self.digest_configuration.parameters.second_request is not None:
-            if self.digest_configuration.parameters.second_request.path is not None:
-                second_request_path = self.digest_configuration.parameters.second_request.path
+            if self.digest_configuration.parameters.second_request.url is not None:
+                second_request_path = self.digest_configuration.parameters.second_request.url
             if self.digest_configuration.parameters.second_request.method is not None:
                 request_parameters.method = self.digest_configuration.parameters.second_request.method
 

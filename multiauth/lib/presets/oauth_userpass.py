@@ -123,7 +123,7 @@ class OAuthUserpassPreset(BasePreset):
                     AuthenticationVariable(name=VariableName('username'), value=user.username),
                     AuthenticationVariable(name=VariableName('password'), value=user.password),
                 ],
-                procedure=ProcedureName(self.slug),
+                procedure=self.slug,
                 refresh=UserRefresh(procedure=ProcedureName(self.slug + '-refresh')),
             )
             for user in self.users

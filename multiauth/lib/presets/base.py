@@ -20,6 +20,7 @@ PresetType = Literal[
     'basic',
     'graphql',
     'headers',
+    'digest',
 ]
 
 

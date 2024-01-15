@@ -297,7 +297,7 @@
           "examples": [
             {
               "method": "POST",
-              "path": "/digest"
+              "url": "/digest"
             }
           ]
         }
@@ -352,7 +352,7 @@
               },
               "second_request": {
                 "method": "GET",
-                "path": "/digest"
+                "url": "/digest"
               }
             }
           ]
@@ -374,7 +374,7 @@
     },
     "DigestSecondRequestConfiguration": {
       "properties": {
-        "path": {
+        "url": {
           "anyOf": [
             {
               "type": "string"
@@ -388,7 +388,7 @@
           "examples": [
             "/digest"
           ],
-          "title": "Path"
+          "title": "Url"
         },
         "method": {
           "anyOf": [
@@ -1214,7 +1214,7 @@
               "commands": [
                 {
                   "command": "open",
-                  "id": "11234eb42d1d4adca4d757f95b3b957d",
+                  "id": "f201e1c2e5a841279e3c14380ec1b7e6",
                   "target": "https://example.com",
                   "targets": [
                     [
@@ -1225,7 +1225,7 @@
                   "value": ""
                 }
               ],
-              "id": "2862a46a151a4522a2674a497d479bc7",
+              "id": "dd0c08216d45415b8470af6c8759efb7",
               "name": "test"
             }
           ],
@@ -1268,7 +1268,7 @@
                     "commands": [
                       {
                         "command": "open",
-                        "id": "fcbb10b24dfa472bb3bebd967eb0b319",
+                        "id": "bddd58dc20024658a1b68dd4f92c89a7",
                         "target": "https://example.com",
                         "targets": [
                           [
@@ -1279,7 +1279,7 @@
                         "value": ""
                       }
                     ],
-                    "id": "b3e783548a45460e9dd0232113fa761d",
+                    "id": "cd4db1d825f847859754887e762cd819",
                     "name": "test"
                   }
                 ]
@@ -1398,7 +1398,7 @@
         "id": {
           "description": "The id of the test.",
           "examples": [
-            "0120e0e59c3441c58980471a65392e12"
+            "fdcd03a5447e41e3bd07e4a6a7525e40"
           ],
           "title": "Id",
           "type": "string"
@@ -1416,7 +1416,7 @@
           "examples": [
             {
               "command": "open",
-              "id": "90b7c95615ab45839ff79fcc76e6218e",
+              "id": "0fab7fd638454737933b599f39ec80b0",
               "target": "https://example.com",
               "targets": [
                 [

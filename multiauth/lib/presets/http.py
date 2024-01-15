@@ -89,6 +89,7 @@ class HTTPPreset(BasePreset):
                     body=user.body,
                     query_parameters=user.query_parameters,
                 ),
+                procedure=self.slug,
             )
             for user in self.users
         ]

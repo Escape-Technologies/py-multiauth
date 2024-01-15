@@ -98,7 +98,7 @@ class GraphQLPreset(BasePreset):
                 User(
                     name=UserName(user.name),
                     credentials=creds,
-                    procedure=ProcedureName(self.slug),
+                    procedure=self.slug,
                 ),
             )
 

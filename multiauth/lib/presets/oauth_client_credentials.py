@@ -121,7 +121,7 @@ class OAuthClientCredentialsPreset(BasePreset):
                     AuthenticationVariable(name=VariableName('client_id'), value=user.client_id),
                     AuthenticationVariable(name=VariableName('client_secret'), value=user.client_secret),
                 ],
-                procedure=ProcedureName(self.slug),
+                procedure=self.slug,
                 refresh=UserRefresh(procedure=ProcedureName(self.slug + '-refresh')),
             )
             for user in self.users

@@ -112,7 +112,7 @@ Type: object
 | Field Name | Type | Required | Description | Reference |
 |------------|------|----------|-------------|-----------|
 | method | `N/A` | `False` | The method of the second HTTP request executed during the digest procedure.By default, the method of the first request is used. |  |
-| path | `N/A` | `False` | The path of the second HTTP request executed during the digest procedure.By default, the path of the first request is used. |  |
+| url | `N/A` | `False` | The path of the second HTTP request executed during the digest procedure.By default, the path of the first request is used. |  |
 
 
 ## <a id="GraphQLPreset"></a>GraphQLPreset
