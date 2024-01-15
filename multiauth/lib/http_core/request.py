@@ -1,4 +1,3 @@
-import asyncio
 import json
 from os import getenv
 from urllib.parse import urlencode, urlunparse
@@ -25,37 +24,16 @@ def _request(
     timeout: int | None = None,
     proxy: str | None = None,
 ) -> httpx.Response:
-    return asyncio.run(
-        _async_request(
-            method=method,
-            url=url,
-            proxy=proxy,
-            headers=headers,
-            cookies=cookies,
-            data=data,
-            timeout=timeout,
-        ),
-    )
-
-
-async def _async_request(
-    method: str,
-    url: str,
-    headers: dict[str, str],
-    cookies: dict[str, str],
-    data: str | None = None,
-    timeout: int | None = None,
-    proxy: str | None = None,
-) -> httpx.Response:
     ca_bundle = getenv('REQUESTS_CA_BUNDLE', '')
     context = httpx.create_ssl_context(verify=ca_bundle if ca_bundle else True)
-    async with httpx.AsyncClient(
+
+    with httpx.Client(
         http2=True,
         trust_env=False,
         proxies=proxy,
         verify=context,
     ) as client:
-        return await client.request(
+        return client.request(
             method=method,
             url=url,
             headers=headers,
