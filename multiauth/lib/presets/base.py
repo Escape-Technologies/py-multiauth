@@ -41,7 +41,7 @@ class BasePreset(BaseModel, abc.ABC):
         return ProcedureName(generate_seeded_slug(self.type + ''.join([user.name for user in self.users])))
 
     @abc.abstractmethod
-    def to_procedure_configuration(self) -> list[ProcedureConfiguration]:
+    def to_procedure_configurations(self) -> list[ProcedureConfiguration]:
         ...
 
     @abc.abstractmethod

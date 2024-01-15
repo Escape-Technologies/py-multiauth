@@ -24,7 +24,7 @@ class OAuthUserpassPreset(BasePreset):
 
     users: Sequence[BasicUserPreset] = Field(description='A list of users to create')
 
-    def to_procedure_configuration(self) -> list[ProcedureConfiguration]:
+    def to_procedure_configurations(self) -> list[ProcedureConfiguration]:
         generate_token = ProcedureConfiguration(
             name=ProcedureName(self.slug),
             injections=[

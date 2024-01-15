@@ -28,7 +28,7 @@ class HeadersPreset(BasePreset):
         description='A list of users with basic credentials to create',
     )
 
-    def to_procedure_configuration(self) -> list[ProcedureConfiguration]:
+    def to_procedure_configurations(self) -> list[ProcedureConfiguration]:
         return []
 
     def to_users(self) -> list[User]:

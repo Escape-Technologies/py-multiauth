@@ -44,6 +44,30 @@ class MultiauthConfiguration(BaseModel):
     )
     proxy: str | None = Field(default=None, description='An eventual global proxy used for all HTTP requests')
 
+    def expand(self) -> 'MultiauthConfiguration':
+        """
+        Expand the configuration by generating procedures and users from presets.
+        """
+
+        if self.presets is None:
+            return self
+
+        procedures = self.procedures or []
+        users = self.users or []
+
+        for preset in self.presets:
+            for procedure in preset.to_procedure_configurations():
+                procedures.append(procedure)
+            for user in preset.to_users():
+                users.append(user)
+
+        return MultiauthConfiguration(
+            procedures=procedures,
+            presets=None,
+            users=users,
+            proxy=self.proxy,
+        )
+
     @staticmethod
     def public() -> 'MultiauthConfiguration':
         """

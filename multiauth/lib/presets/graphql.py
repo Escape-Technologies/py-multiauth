@@ -62,7 +62,7 @@ class GraphQLPreset(BasePreset):
         description='A list of users with credentials contained in the GraphQL `variables` of the query',
     )
 
-    def to_procedure_configuration(self) -> list[ProcedureConfiguration]:
+    def to_procedure_configurations(self) -> list[ProcedureConfiguration]:
         return [
             ProcedureConfiguration(
                 name=ProcedureName(self.slug),

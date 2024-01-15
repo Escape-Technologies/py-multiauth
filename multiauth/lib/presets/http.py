@@ -41,7 +41,7 @@ class HTTPPreset(BasePreset):
         description='The list of users to generate tokens for.',
     )
 
-    def to_procedure_configuration(self) -> list[ProcedureConfiguration]:
+    def to_procedure_configurations(self) -> list[ProcedureConfiguration]:
         return [
             ProcedureConfiguration(
                 name=ProcedureName(self.slug),

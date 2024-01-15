@@ -50,21 +50,15 @@ class Multiauth:
 
         self.authentication_store = AuthenticationStore()
 
-        for preset in configuration.presets or []:
-            for procedure_preset in preset.to_procedure_configuration():
-                self.procedures[procedure_preset.name] = Procedure(procedure_preset)
-            users = preset.to_users()
-            for user in users:
-                self.users[user.name] = user
-
         if configuration.proxy is not None:
             for procedure in configuration.procedures or []:
                 for operation in procedure.operations:
                     operation.parameters.proxy = configuration.proxy
 
-        for procedure_configuration in configuration.procedures or []:
+        expanded = configuration.expand()
+        for procedure_configuration in expanded.procedures or []:
             self.procedures[procedure_configuration.name] = Procedure(procedure_configuration)
-        for user in configuration.users or []:
+        for user in expanded.users or []:
             self.users[user.name] = user
 
     def _get_user(self, user_name: UserName) -> User:
