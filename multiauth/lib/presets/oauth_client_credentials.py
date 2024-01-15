@@ -14,17 +14,14 @@ from multiauth.lib.store.variables import AuthenticationVariable
 
 
 class OAuthClientCredentialsUserPreset(UserPreset):
-    username: UserName = Field(description='The username of the user.')
-    password: str = Field(description='The password of the user.')
+    client_id: str = Field(description='The client ID to use for the OAuth requests')
+    client_secret: str = Field(description='The client secret to use for the OAuth requests')
 
 
 class OAuthClientCredentialsPreset(BasePreset):
     type: Literal['oauth_client_credentials'] = 'oauth_client_credentials'
 
-    server_url: str = Field(description='The URL of the token endpoint of the OpenIDConnect server')
-
-    client_id: str = Field(description='The client ID to use for the OAuth requests')
-    client_secret: str = Field(description='The client secret to use for the OAuth requests')
+    url: str = Field(description='The URL of the token endpoint of the OpenIDConnect server')
 
     users: Sequence[OAuthClientCredentialsUserPreset] = Field(
         description='A list of users to create',
@@ -44,7 +41,7 @@ class OAuthClientCredentialsPreset(BasePreset):
             operations=[
                 HTTPRunnerConfiguration(
                     parameters=HTTPRequestParameters(
-                        url=self.server_url,
+                        url=self.url,
                         method=HTTPMethod.POST,
                         headers=[
                             HTTPHeader(name='Content-Type', values=['application/x-www-form-urlencoded']),
@@ -52,8 +49,8 @@ class OAuthClientCredentialsPreset(BasePreset):
                         ],
                         body=(
                             'grant_type=client_credentials'
-                            f'&client_id={self.client_id}'
-                            f'&client_secret={self.client_secret}'
+                            '&client_id={{ client_id }}'
+                            '&client_secret={{ client_secret }}'
                         ),
                     ),
                     extractions=[
@@ -72,8 +69,8 @@ class OAuthClientCredentialsPreset(BasePreset):
             User(
                 name=UserName(user.name),
                 variables=[
-                    AuthenticationVariable(name=VariableName('username'), value=user.username),
-                    AuthenticationVariable(name=VariableName('password'), value=user.password),
+                    AuthenticationVariable(name=VariableName('client_id'), value=user.client_id),
+                    AuthenticationVariable(name=VariableName('client_secret'), value=user.client_secret),
                 ],
                 credentials=user.to_credentials(),
                 procedure=ProcedureName(self.name),

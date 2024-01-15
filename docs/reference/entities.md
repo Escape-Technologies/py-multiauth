@@ -255,10 +255,8 @@ Type: object
 
 | Field Name | Type | Required | Description | Reference |
 |------------|------|----------|-------------|-----------|
-| client_id | `string` | `True` | The client ID to use for the OAuth requests |  |
-| client_secret | `string` | `True` | The client secret to use for the OAuth requests |  |
 | name | `string` | `True` | The arbitrary name given to the preset. |  |
-| server_url | `string` | `True` | The URL of the token endpoint of the OpenIDConnect server |  |
+| url | `string` | `True` | The URL of the token endpoint of the OpenIDConnect server |  |
 | users | `OAuthClientCredentialsUserPreset[]` | `True` | A list of users to create | [OAuthClientCredentialsUserPreset](#OAuthClientCredentialsUserPreset) |
 | type | `N/A` | `False` |  |  |
 
@@ -271,10 +269,12 @@ Type: object
 
 | Field Name | Type | Required | Description | Reference |
 |------------|------|----------|-------------|-----------|
+| client_id | `string` | `True` | The client ID to use for the OAuth requests |  |
+| client_secret | `string` | `True` | The client secret to use for the OAuth requests |  |
 | name | `string` | `True` | The arbitrary name given to the user. |  |
-| password | `string` | `True` | The password of the user. |  |
-| username | `string` | `True` | The username of the user. |  |
 | body | `N/A` | `False` | A body to merge with the bodies of every HTTP requests sent for this user |  |
+| password | `N/A` | `False` | The password to attach to the HTTP requests sent for this user. See [developer.mozilla.org](https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication#access_using_credentials_in_the_url) |  |
+| username | `N/A` | `False` | The username to attach to the HTTP requests sent for this user. See [developer.mozilla.org](https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication#access_using_credentials_in_the_url) |  |
 | cookies | `HTTPCookie[]` | `False` | A list of cookies to attach to every HTTP requests sent for this user | [HTTPCookie](#HTTPCookie) |
 | headers | `HTTPHeader[]` | `False` | A list of headers to attach to every HTTP requests sent for this user | [HTTPHeader](#HTTPHeader) |
 | query_parameters | `HTTPQueryParameter[]` | `False` | A list of query parameters to attach to every HTTP requests sent for this user | [HTTPQueryParameter](#HTTPQueryParameter) |

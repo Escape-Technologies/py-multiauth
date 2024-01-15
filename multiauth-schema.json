@@ -985,28 +985,16 @@
           "title": "Users",
           "type": "array"
         },
-        "server_url": {
+        "url": {
           "description": "The URL of the token endpoint of the OpenIDConnect server",
-          "title": "Server Url",
-          "type": "string"
-        },
-        "client_id": {
-          "description": "The client ID to use for the OAuth requests",
-          "title": "Client Id",
-          "type": "string"
-        },
-        "client_secret": {
-          "description": "The client secret to use for the OAuth requests",
-          "title": "Client Secret",
+          "title": "Url",
           "type": "string"
         }
       },
       "required": [
         "name",
         "users",
-        "server_url",
-        "client_id",
-        "client_secret"
+        "url"
       ],
       "title": "OAuthClientCredentialsPreset",
       "type": "object"
@@ -1014,14 +1002,36 @@
     "OAuthClientCredentialsUserPreset": {
       "properties": {
         "username": {
-          "description": "The username of the user.",
-          "title": "Username",
-          "type": "string"
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "The username to attach to the HTTP requests sent for this user. See https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication#access_using_credentials_in_the_url",
+          "examples": [
+            "john"
+          ],
+          "title": "Username"
         },
         "password": {
-          "description": "The password of the user.",
-          "title": "Password",
-          "type": "string"
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "The password to attach to the HTTP requests sent for this user. See https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication#access_using_credentials_in_the_url",
+          "examples": [
+            "john@password123#"
+          ],
+          "title": "Password"
         },
         "headers": {
           "description": "A list of headers to attach to every HTTP requests sent for this user",
@@ -1093,12 +1103,22 @@
           "description": "The arbitrary name given to the user.",
           "title": "Name",
           "type": "string"
+        },
+        "client_id": {
+          "description": "The client ID to use for the OAuth requests",
+          "title": "Client Id",
+          "type": "string"
+        },
+        "client_secret": {
+          "description": "The client secret to use for the OAuth requests",
+          "title": "Client Secret",
+          "type": "string"
         }
       },
       "required": [
-        "username",
-        "password",
-        "name"
+        "name",
+        "client_id",
+        "client_secret"
       ],
       "title": "OAuthClientCredentialsUserPreset",
       "type": "object"
@@ -1584,7 +1604,7 @@
               "commands": [
                 {
                   "command": "open",
-                  "id": "d589b422875f4a60bb650b80edaabfee",
+                  "id": "8a4e80e87eed413fbccbfcbcdf1c633c",
                   "target": "https://example.com",
                   "targets": [
                     [
@@ -1595,7 +1615,7 @@
                   "value": ""
                 }
               ],
-              "id": "92b538aa9f764f9dbc79c4ca4eb4896c",
+              "id": "52c407f1f6fd46de9e1dd1d4acdec662",
               "name": "test"
             }
           ],
@@ -1638,7 +1658,7 @@
                     "commands": [
                       {
                         "command": "open",
-                        "id": "3fc12c79af8246f099d6502b0545b701",
+                        "id": "2ef5a8e02d024432a0126d346ced981b",
                         "target": "https://example.com",
                         "targets": [
                           [
@@ -1649,7 +1669,7 @@
                         "value": ""
                       }
                     ],
-                    "id": "f28ddd310f5940958c557ffe27771658",
+                    "id": "9c42eaea794b48eaa4c41cca33b5756c",
                     "name": "test"
                   }
                 ]
@@ -1768,7 +1788,7 @@
         "id": {
           "description": "The id of the test.",
           "examples": [
-            "6d5ad85c69ab4b2996a611a45e7a9328"
+            "0446725e8aa24176b3b6ae9e7f082a4c"
           ],
           "title": "Id",
           "type": "string"
@@ -1786,7 +1806,7 @@
           "examples": [
             {
               "command": "open",
-              "id": "88f9d2ef555b42dbb45315b48dadd63f",
+              "id": "a2f73db88fb34630a510c504744c1922",
               "target": "https://example.com",
               "targets": [
                 [
