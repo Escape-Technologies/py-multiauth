@@ -1004,12 +1004,12 @@
           "type": "string"
         },
         "username": {
-          "description": "The Basic username of the user.",
+          "description": "The username of the user.",
           "title": "Username",
           "type": "string"
         },
         "password": {
-          "description": "The Basic password of the user.",
+          "description": "The password of the user.",
           "title": "Password",
           "type": "string"
         }
@@ -1137,7 +1137,7 @@
               "commands": [
                 {
                   "command": "open",
-                  "id": "82a7fd912248415d828bd64b56a95a37",
+                  "id": "eb9989e52cab4405a4bccb02fdc9b057",
                   "target": "https://example.com",
                   "targets": [
                     [
@@ -1148,7 +1148,7 @@
                   "value": ""
                 }
               ],
-              "id": "b7c67cecf0a24a5fb60a5fd9a827f3c6",
+              "id": "45ea6a8cc7bb42caa36dd4122212bebe",
               "name": "test"
             }
           ],
@@ -1191,7 +1191,7 @@
                     "commands": [
                       {
                         "command": "open",
-                        "id": "ed076228dcb94622b29c073f60ff918c",
+                        "id": "c093ea09732b4f22b2a669680cb01e06",
                         "target": "https://example.com",
                         "targets": [
                           [
@@ -1202,7 +1202,7 @@
                         "value": ""
                       }
                     ],
-                    "id": "78998cab43ab4c9f8f8beda41fa6fd22",
+                    "id": "ce359121725546c8bc883bc3159fec04",
                     "name": "test"
                   }
                 ]
@@ -1321,7 +1321,7 @@
         "id": {
           "description": "The id of the test.",
           "examples": [
-            "625fbf254e384390b09fdab9638a0926"
+            "1db58c656d0f4573830553ac20e1eebe"
           ],
           "title": "Id",
           "type": "string"
@@ -1339,7 +1339,7 @@
           "examples": [
             {
               "command": "open",
-              "id": "3f929db29f3f4210994037554fbd0b67",
+              "id": "ad8295dcc46841d29f65747c429ca841",
               "target": "https://example.com",
               "targets": [
                 [

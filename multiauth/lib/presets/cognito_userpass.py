@@ -7,8 +7,7 @@ from pydantic import Field
 from multiauth.lib.entities import ProcedureName, UserName, VariableName
 from multiauth.lib.http_core.entities import HTTPEncoding, HTTPHeader, HTTPLocation
 from multiauth.lib.injection import TokenInjection
-from multiauth.lib.presets.base import BasePreset
-from multiauth.lib.presets.basic import BasicUserPreset
+from multiauth.lib.presets.base import BasePreset, BaseUserPreset
 from multiauth.lib.procedure import ProcedureConfiguration
 from multiauth.lib.runners.http import HTTPRequestParameters, HTTPRunnerConfiguration, TokenExtraction
 from multiauth.lib.store.user import User, UserRefresh
@@ -50,7 +49,15 @@ class AWSRegion(enum.StrEnum):
 ###########################
 
 
-class OAuthUserpassPreset(BasePreset):
+class CognitoUserPassUserPreset(BaseUserPreset):
+    name: UserName = Field(
+        description='The name of the user. By default, the username is used.',
+    )
+    username: str = Field(description='The username of the user.')
+    password: str = Field(description='The password of the user.')
+
+
+class CognitoUserpassPreset(BasePreset):
     type: Literal['cognito_userpass'] = 'cognito_userpass'
 
     region: AWSRegion = Field(description='The region of the Cognito Service.')
@@ -58,7 +65,7 @@ class OAuthUserpassPreset(BasePreset):
     client_id: str = Field(description='The client ID to use for the OAuth requests')
     client_secret: str = Field(description='The client secret to use for the OAuth requests')
 
-    users: Sequence[BasicUserPreset] = Field(description='A list of users to create')
+    users: Sequence[CognitoUserPassUserPreset] = Field(description='A list of users to create')
 
     def to_procedure_configurations(self) -> list[ProcedureConfiguration]:
         generate_token = ProcedureConfiguration(

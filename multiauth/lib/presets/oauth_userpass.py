@@ -17,8 +17,8 @@ class OauthUserPassUserPreset(BaseUserPreset):
     name: UserName = Field(
         description='The name of the user. By default, the username is used.',
     )
-    username: str = Field(description='The Basic username of the user.')
-    password: str = Field(description='The Basic password of the user.')
+    username: str = Field(description='The username of the user.')
+    password: str = Field(description='The password of the user.')
 
 
 class OAuthUserpassPreset(BasePreset):
