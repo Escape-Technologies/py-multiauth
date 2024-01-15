@@ -1188,7 +1188,7 @@
               "commands": [
                 {
                   "command": "open",
-                  "id": "93827d18f09d45ffbd91ea3341ffa9f5",
+                  "id": "59be4fc789c6404aa43ffff896c9be18",
                   "target": "https://example.com",
                   "targets": [
                     [
@@ -1199,7 +1199,7 @@
                   "value": ""
                 }
               ],
-              "id": "6d4a86a8308943c88bc4a557ee387a74",
+              "id": "c2ff4106178f46efb6718f1cf367c633",
               "name": "test"
             }
           ],
@@ -1242,7 +1242,7 @@
                     "commands": [
                       {
                         "command": "open",
-                        "id": "9b6c070c6b244cfdbac5ed6bbab7313b",
+                        "id": "b074a4e534c54e6da247e95a7be178a5",
                         "target": "https://example.com",
                         "targets": [
                           [
@@ -1253,7 +1253,7 @@
                         "value": ""
                       }
                     ],
-                    "id": "0aa02a4eb9bf40cb9496d61adee1859b",
+                    "id": "c6bab22b842e4575bbbd0231e60a412f",
                     "name": "test"
                   }
                 ]
@@ -1372,7 +1372,7 @@
         "id": {
           "description": "The id of the test.",
           "examples": [
-            "19ce14b2f44048fe9f967eaeeeebf33b"
+            "da6e9f345a2b467f9f855fcf2fd86af7"
           ],
           "title": "Id",
           "type": "string"
@@ -1390,7 +1390,7 @@
           "examples": [
             {
               "command": "open",
-              "id": "e9919c833ecc45f386ffb79800d1f152",
+              "id": "4ca2517bf4f345849965d618dfb2a211",
               "target": "https://example.com",
               "targets": [
                 [
