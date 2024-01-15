@@ -5,16 +5,12 @@ from typing import Literal, NewType, Sequence
 from pydantic import Field
 
 from multiauth.lib.entities import ProcedureName, UserName
+from multiauth.lib.extraction import BaseExtraction
 from multiauth.lib.http_core.entities import HTTPEncoding, HTTPHeader, HTTPLocation
 from multiauth.lib.injection import BaseInjection
-from multiauth.lib.presets.base import (
-    BaseExtraction,
-    BasePreset,
-    HTTPRequestParameters,
-    UserPreset,
-)
+from multiauth.lib.presets.base import BasePreset, UserPreset
 from multiauth.lib.procedure import ProcedureConfiguration
-from multiauth.lib.runners.http import HTTPRunnerConfiguration
+from multiauth.lib.runners.http import HTTPRequestParameters, HTTPRunnerConfiguration
 from multiauth.lib.store.user import Credentials, User
 
 GraphQLQuery = NewType('GraphQLQuery', str)

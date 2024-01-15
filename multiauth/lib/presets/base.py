@@ -7,10 +7,7 @@ from typing import Literal, Sequence
 from pydantic import BaseModel, Field
 
 from multiauth.lib.entities import ProcedureName, UserName
-from multiauth.lib.extraction import BaseExtraction  # noqa: F401
-from multiauth.lib.injection import BaseInjection  # noqa: F401
 from multiauth.lib.procedure import ProcedureConfiguration
-from multiauth.lib.runners.http import HTTPRequestParameters  # noqa: F401
 from multiauth.lib.store.user import User
 
 PresetType = Literal[

@@ -7,10 +7,10 @@ from pydantic import Field
 from multiauth.lib.entities import ProcedureName, UserName, VariableName
 from multiauth.lib.http_core.entities import HTTPEncoding, HTTPHeader, HTTPLocation
 from multiauth.lib.injection import TokenInjection
-from multiauth.lib.presets.base import BasePreset, HTTPRequestParameters
+from multiauth.lib.presets.base import BasePreset
 from multiauth.lib.presets.basic import BasicUserPreset
 from multiauth.lib.procedure import ProcedureConfiguration
-from multiauth.lib.runners.http import HTTPRunnerConfiguration, TokenExtraction
+from multiauth.lib.runners.http import HTTPRequestParameters, HTTPRunnerConfiguration, TokenExtraction
 from multiauth.lib.store.user import User, UserRefresh
 from multiauth.lib.store.variables import AuthenticationVariable
 
