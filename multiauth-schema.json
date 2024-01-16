@@ -1169,6 +1169,32 @@
       "title": "OAuthClientCredentialsUserPreset",
       "type": "object"
     },
+    "OAuthUserPassUserPreset": {
+      "properties": {
+        "name": {
+          "description": "The name of the user. By default, the username is used.",
+          "title": "Name",
+          "type": "string"
+        },
+        "username": {
+          "description": "The username of the user.",
+          "title": "Username",
+          "type": "string"
+        },
+        "password": {
+          "description": "The password of the user.",
+          "title": "Password",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "username",
+        "password"
+      ],
+      "title": "OAuthUserPassUserPreset",
+      "type": "object"
+    },
     "OAuthUserpassPreset": {
       "properties": {
         "type": {
@@ -1179,7 +1205,7 @@
         "users": {
           "description": "A list of users to create",
           "items": {
-            "$ref": "#/$defs/OauthUserPassUserPreset"
+            "$ref": "#/$defs/OAuthUserPassUserPreset"
           },
           "title": "Users",
           "type": "array"
@@ -1207,32 +1233,6 @@
         "client_secret"
       ],
       "title": "OAuthUserpassPreset",
-      "type": "object"
-    },
-    "OauthUserPassUserPreset": {
-      "properties": {
-        "name": {
-          "description": "The name of the user. By default, the username is used.",
-          "title": "Name",
-          "type": "string"
-        },
-        "username": {
-          "description": "The username of the user.",
-          "title": "Username",
-          "type": "string"
-        },
-        "password": {
-          "description": "The password of the user.",
-          "title": "Password",
-          "type": "string"
-        }
-      },
-      "required": [
-        "name",
-        "username",
-        "password"
-      ],
-      "title": "OauthUserPassUserPreset",
       "type": "object"
     },
     "ProcedureConfiguration": {
@@ -1350,7 +1350,7 @@
               "commands": [
                 {
                   "command": "open",
-                  "id": "aae16ee62d24495b9191c6f65c8e2b1f",
+                  "id": "c5fab53d537f47818a070119d947fc04",
                   "target": "https://example.com",
                   "targets": [
                     [
@@ -1361,7 +1361,7 @@
                   "value": ""
                 }
               ],
-              "id": "d459ac92a6554951ab625c42922839d9",
+              "id": "04258adc1e2a4561870fd8a103f54080",
               "name": "test"
             }
           ],
@@ -1404,7 +1404,7 @@
                     "commands": [
                       {
                         "command": "open",
-                        "id": "29410faf8d7e4dfabf7fd27b08c697c0",
+                        "id": "9488d3a4a51c4d35bbb9efbf05c0be24",
                         "target": "https://example.com",
                         "targets": [
                           [
@@ -1415,7 +1415,7 @@
                         "value": ""
                       }
                     ],
-                    "id": "a8f28a9ac753426887924e6ec64aa784",
+                    "id": "1bf8b89238104bdb8471b102155f1ab8",
                     "name": "test"
                   }
                 ]
@@ -1534,7 +1534,7 @@
         "id": {
           "description": "The id of the test.",
           "examples": [
-            "3c46ff8f56134f7aaf6e5a576b2421fe"
+            "e7f52dadebf4423680715870f9418e28"
           ],
           "title": "Id",
           "type": "string"
@@ -1552,7 +1552,7 @@
           "examples": [
             {
               "command": "open",
-              "id": "d71ff01c09864cfb90df05ab926d8485",
+              "id": "3dda668f755746d294e19eeb31578ff5",
               "target": "https://example.com",
               "targets": [
                 [
