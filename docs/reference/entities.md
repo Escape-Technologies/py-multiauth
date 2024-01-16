@@ -46,19 +46,6 @@ Type: object
 | name | `string` | `False` | The name of the user. By default, the username is used. |  |
 
 
-## <a id="CognitoUserPassUserPreset"></a>CognitoUserPassUserPreset
-
-Description: No Description.
-
-Type: object
-
-| Field Name | Type | Required | Description | Reference |
-|------------|------|----------|-------------|-----------|
-| name | `string` | `True` | The name of the user. By default, the username is used. |  |
-| password | `string` | `True` | The password of the user. |  |
-| username | `string` | `True` | The username of the user. |  |
-
-
 ## <a id="CognitoUserpassPreset"></a>CognitoUserpassPreset
 
 Description: No Description.
@@ -70,8 +57,21 @@ Type: object
 | client_id | `string` | `True` | The client ID to use for the OAuth requests |  |
 | client_secret | `string` | `True` | The client secret to use for the OAuth requests |  |
 | region | `N/A` | `True` | The region of the Cognito Service. |  |
-| users | `CognitoUserPassUserPreset[]` | `True` | A list of users to create | [CognitoUserPassUserPreset](#CognitoUserPassUserPreset) |
+| users | `CognitoUserpassUserPreset[]` | `True` | A list of users to create | [CognitoUserpassUserPreset](#CognitoUserpassUserPreset) |
 | type | `N/A` | `False` |  |  |
+
+
+## <a id="CognitoUserpassUserPreset"></a>CognitoUserpassUserPreset
+
+Description: No Description.
+
+Type: object
+
+| Field Name | Type | Required | Description | Reference |
+|------------|------|----------|-------------|-----------|
+| name | `string` | `True` | The name of the user. By default, the username is used. |  |
+| password | `string` | `True` | The password of the user. |  |
+| username | `string` | `True` | The username of the user. |  |
 
 
 ## <a id="Credentials"></a>Credentials

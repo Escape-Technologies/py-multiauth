@@ -97,32 +97,6 @@
       "title": "BasicUserPreset",
       "type": "object"
     },
-    "CognitoUserPassUserPreset": {
-      "properties": {
-        "name": {
-          "description": "The name of the user. By default, the username is used.",
-          "title": "Name",
-          "type": "string"
-        },
-        "username": {
-          "description": "The username of the user.",
-          "title": "Username",
-          "type": "string"
-        },
-        "password": {
-          "description": "The password of the user.",
-          "title": "Password",
-          "type": "string"
-        }
-      },
-      "required": [
-        "name",
-        "username",
-        "password"
-      ],
-      "title": "CognitoUserPassUserPreset",
-      "type": "object"
-    },
     "CognitoUserpassPreset": {
       "properties": {
         "type": {
@@ -133,7 +107,7 @@
         "users": {
           "description": "A list of users to create",
           "items": {
-            "$ref": "#/$defs/CognitoUserPassUserPreset"
+            "$ref": "#/$defs/CognitoUserpassUserPreset"
           },
           "title": "Users",
           "type": "array"
@@ -164,6 +138,32 @@
         "client_secret"
       ],
       "title": "CognitoUserpassPreset",
+      "type": "object"
+    },
+    "CognitoUserpassUserPreset": {
+      "properties": {
+        "name": {
+          "description": "The name of the user. By default, the username is used.",
+          "title": "Name",
+          "type": "string"
+        },
+        "username": {
+          "description": "The username of the user.",
+          "title": "Username",
+          "type": "string"
+        },
+        "password": {
+          "description": "The password of the user.",
+          "title": "Password",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "username",
+        "password"
+      ],
+      "title": "CognitoUserpassUserPreset",
       "type": "object"
     },
     "Credentials": {
@@ -1350,7 +1350,7 @@
               "commands": [
                 {
                   "command": "open",
-                  "id": "c983c2d9ed67474183607ce9b8b37c2b",
+                  "id": "09c2775aea1f4bce9be87a571fd2733c",
                   "target": "https://example.com",
                   "targets": [
                     [
@@ -1361,7 +1361,7 @@
                   "value": ""
                 }
               ],
-              "id": "3303e960a4bd40708b9c6b4c699897e0",
+              "id": "15e730eebdb240d985d6b0b4cc7ce24a",
               "name": "test"
             }
           ],
@@ -1404,7 +1404,7 @@
                     "commands": [
                       {
                         "command": "open",
-                        "id": "ba6ee099db9f442994af630590a13653",
+                        "id": "18a875825a2d4a21b15f79a8718748cc",
                         "target": "https://example.com",
                         "targets": [
                           [
@@ -1415,7 +1415,7 @@
                         "value": ""
                       }
                     ],
-                    "id": "ffaefc7ab1934384a32e0fd8cfc429cf",
+                    "id": "0d8f1b6334a04242b7d0370462876f30",
                     "name": "test"
                   }
                 ]
@@ -1534,7 +1534,7 @@
         "id": {
           "description": "The id of the test.",
           "examples": [
-            "7de778690aa54eb3bdb7d5591960b316"
+            "e16e829b9c504cafa9d8995f88ce2477"
           ],
           "title": "Id",
           "type": "string"
@@ -1552,7 +1552,7 @@
           "examples": [
             {
               "command": "open",
-              "id": "082356e644be4ffa84388e3b1da5f58d",
+              "id": "007e9fdf732e43628e1b74b8d0193a9f",
               "target": "https://example.com",
               "targets": [
                 [
