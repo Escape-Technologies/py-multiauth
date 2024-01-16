@@ -13,11 +13,11 @@ VARIABLE_NAME = VariableName('token')
 
 
 class HTTPUserPreset(BaseUserPreset, Credentials):
-    name: UserName = Field(description='The name of the user.')
-
-    @property
-    def identifier(self) -> UserName:
-        return self.name
+    username: UserName = Field(
+        default=None,
+        description='The username to attach to the HTTP requests sent for this user. See https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication#access_using_credentials_in_the_url',
+        examples=['john'],
+    )
 
 
 class HTTPPreset(BasePreset):
@@ -78,7 +78,7 @@ class HTTPPreset(BasePreset):
     def to_users(self) -> list[User]:
         return [
             User(
-                name=user.identifier,
+                name=user.username,
                 credentials=Credentials(
                     username=user.username,
                     password=user.password,

@@ -10,15 +10,11 @@ from multiauth.lib.store.user import Credentials, User
 
 
 class HeadersUserPreset(BaseUserPreset):
-    name: UserName = Field(
+    username: UserName = Field(
         default=None,
         description='The name of the user. By default, the username is used.',
     )
     headers: dict[str, str] = Field(description='The headers of the user.')
-
-    @property
-    def identifier(self) -> UserName:
-        return self.name
 
 
 def build_headers(user: HeadersUserPreset) -> list[HTTPHeader]:
@@ -41,7 +37,7 @@ class HeadersPreset(BasePreset):
         for user in self.users:
             res.append(
                 User(
-                    name=user.identifier,
+                    name=user.username,
                     credentials=Credentials(headers=build_headers(user)),
                     procedure=self.slug,
                 ),

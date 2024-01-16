@@ -561,9 +561,9 @@
     },
     "GraphQLUserPreset": {
       "properties": {
-        "name": {
+        "username": {
           "description": "The name of the user.",
-          "title": "Name",
+          "title": "Username",
           "type": "string"
         },
         "variables": {
@@ -576,7 +576,7 @@
         }
       },
       "required": [
-        "name",
+        "username",
         "variables"
       ],
       "title": "GraphQLUserPreset",
@@ -949,20 +949,13 @@
     "HTTPUserPreset": {
       "properties": {
         "username": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
           "default": null,
           "description": "The username to attach to the HTTP requests sent for this user. See https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication#access_using_credentials_in_the_url",
           "examples": [
             "john"
           ],
-          "title": "Username"
+          "title": "Username",
+          "type": "string"
         },
         "password": {
           "anyOf": [
@@ -1045,16 +1038,8 @@
             "username=john&password=john%40password123%23"
           ],
           "title": "Body"
-        },
-        "name": {
-          "description": "The name of the user.",
-          "title": "Name",
-          "type": "string"
         }
       },
-      "required": [
-        "name"
-      ],
       "title": "HTTPUserPreset",
       "type": "object"
     },
@@ -1082,10 +1067,10 @@
     },
     "HeadersUserPreset": {
       "properties": {
-        "name": {
+        "username": {
           "default": null,
           "description": "The name of the user. By default, the username is used.",
-          "title": "Name",
+          "title": "Username",
           "type": "string"
         },
         "headers": {
@@ -1133,6 +1118,11 @@
     },
     "OAuthClientCredentialsUserPreset": {
       "properties": {
+        "username": {
+          "description": "The arbitrary username given to the user.",
+          "title": "Username",
+          "type": "string"
+        },
         "client_id": {
           "description": "The client ID to use for the OAuth requests",
           "title": "Client Id",
@@ -1145,6 +1135,7 @@
         }
       },
       "required": [
+        "username",
         "client_id",
         "client_secret"
       ],
@@ -1326,7 +1317,7 @@
               "commands": [
                 {
                   "command": "open",
-                  "id": "7eb4e4577280422b82f2e37def556d58",
+                  "id": "fa0865e757d0433cb72897be144fa34d",
                   "target": "https://example.com",
                   "targets": [
                     [
@@ -1337,7 +1328,7 @@
                   "value": ""
                 }
               ],
-              "id": "4c237b92942246e2b3ba27daad255795",
+              "id": "df8c3ab615864856b2dc273611221ad7",
               "name": "test"
             }
           ],
@@ -1380,7 +1371,7 @@
                     "commands": [
                       {
                         "command": "open",
-                        "id": "2dc9ae5b060545d4bd31323ecafa850a",
+                        "id": "9ed6b715fb8740b391c55dfa6cb1bc0f",
                         "target": "https://example.com",
                         "targets": [
                           [
@@ -1391,7 +1382,7 @@
                         "value": ""
                       }
                     ],
-                    "id": "36423cc7d32f49fea1efbae9393760a4",
+                    "id": "74429726a6054eb08af8815ab8636ae0",
                     "name": "test"
                   }
                 ]
@@ -1510,7 +1501,7 @@
         "id": {
           "description": "The id of the test.",
           "examples": [
-            "3d0323bcd68e4c92bb52f4da789627c3"
+            "df30a0a5f948428ab3b938b123451c9b"
           ],
           "title": "Id",
           "type": "string"
@@ -1528,7 +1519,7 @@
           "examples": [
             {
               "command": "open",
-              "id": "e8bfac8ecf5543e8ae03037c69cc70b3",
+              "id": "2f9d6b3c0ffa4721b22204bf7c093780",
               "target": "https://example.com",
               "targets": [
                 [

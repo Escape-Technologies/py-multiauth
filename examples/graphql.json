@@ -12,7 +12,7 @@
       },
       "users": [
         {
-          "name": "user",
+          "username": "user",
           "variables": {
             "username": "john",
             "password": "P4ss"

@@ -12,7 +12,7 @@ from multiauth.lib.store.variables import AuthenticationVariable
 
 
 class Credentials(BaseModel):
-    username: str | None = Field(
+    username: UserName | None = Field(
         default=None,
         description='The username to attach to the HTTP requests sent for this user. See https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication#access_using_credentials_in_the_url',
         examples=['john'],

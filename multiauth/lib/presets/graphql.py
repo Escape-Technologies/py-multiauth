@@ -24,12 +24,8 @@ def safe_json_loads(s: str) -> dict:
 
 
 class GraphQLUserPreset(BaseUserPreset):
-    name: UserName = Field(description='The name of the user.')
+    username: UserName = Field(description='The name of the user.')
     variables: dict[str, str] = Field(description='The variables of the GraphQL query containing the user credentials.')
-
-    @property
-    def identifier(self) -> UserName:
-        return self.name
 
 
 class GraphQLPreset(BasePreset):
@@ -97,7 +93,7 @@ class GraphQLPreset(BasePreset):
             )
             res.append(
                 User(
-                    name=UserName(user.identifier),
+                    name=UserName(user.username),
                     credentials=creds,
                     procedure=self.slug,
                 ),

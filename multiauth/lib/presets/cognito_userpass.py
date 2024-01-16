@@ -53,10 +53,6 @@ class CognitoUserpassUserPreset(BaseUserPreset):
     username: UserName = Field(description='The username of the user.')
     password: str = Field(description='The password of the user.')
 
-    @property
-    def identifier(self) -> UserName:
-        return self.username
-
 
 class CognitoUserpassPreset(BasePreset):
     type: Literal['cognito_userpass'] = 'cognito_userpass'
@@ -162,7 +158,7 @@ class CognitoUserpassPreset(BasePreset):
     def to_users(self) -> list[User]:
         return [
             User(
-                name=UserName(user.identifier),
+                name=UserName(user.username),
                 variables=[
                     AuthenticationVariable(name=VariableName('username'), value=user.username),
                     AuthenticationVariable(name=VariableName('password'), value=user.password),

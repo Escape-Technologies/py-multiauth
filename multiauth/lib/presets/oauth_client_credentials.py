@@ -14,12 +14,9 @@ from multiauth.lib.store.variables import AuthenticationVariable
 
 
 class OAuthClientCredentialsUserPreset(BaseUserPreset):
-    client_id: UserName = Field(description='The client ID to use for the OAuth requests')
+    username: UserName = Field(description='The arbitrary username given to the user.')
+    client_id: str = Field(description='The client ID to use for the OAuth requests')
     client_secret: str = Field(description='The client secret to use for the OAuth requests')
-
-    @property
-    def identifier(self) -> UserName:
-        return self.client_id
 
     @root_validator(pre=True)
     def default_name(cls, values: dict) -> dict:
@@ -116,7 +113,7 @@ class OAuthClientCredentialsPreset(BasePreset):
     def to_users(self) -> list[User]:
         return [
             User(
-                name=user.identifier,
+                name=user.username,
                 variables=[
                     AuthenticationVariable(name=VariableName('client_id'), value=user.client_id),
                     AuthenticationVariable(name=VariableName('client_secret'), value=user.client_secret),

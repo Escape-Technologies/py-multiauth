@@ -19,10 +19,6 @@ class BasicUserPreset(BaseUserPreset):
     username: UserName = Field(description='The Basic username of the user.')
     password: str = Field(description='The Basic password of the user.')
 
-    @property
-    def identifier(self) -> UserName:
-        return self.username
-
 
 class BasicPreset(BasePreset):
     type: Literal['basic'] = 'basic'
@@ -41,7 +37,7 @@ class BasicPreset(BasePreset):
             res.append(
                 User(
                     procedure=self.slug,
-                    name=UserName(user.identifier),
+                    name=UserName(user.username),
                     credentials=Credentials(headers=[build_basic_headers(user.username, user.password)]),
                 ),
             )

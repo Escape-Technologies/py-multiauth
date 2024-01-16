@@ -11,19 +11,15 @@ from multiauth.lib.runners.http import HTTPRequestParameters, HTTPRunnerConfigur
 from multiauth.lib.store.user import Credentials, User
 
 
-class HTTPUserPreset(BaseUserPreset, Credentials):
-    name: UserName = Field(description='The arbitrary name that identifies the user.')
+class cURLUserPreset(BaseUserPreset, Credentials):
+    username: UserName = Field(description='The arbitrary name that identifies the user.')
     curl: str = Field(description='The curl command that is used to fetch the tokens for this user.')
-
-    @property
-    def identifier(self) -> UserName:
-        return self.name
 
 
 VARIABLE_NAME = 'token'
 
 
-class HTTPPreset(BasePreset):
+class cURLPreset(BasePreset):
     type: Literal['http'] = 'http'
 
     extract: TokenExtraction = Field(
@@ -35,7 +31,7 @@ class HTTPPreset(BasePreset):
         examples=TokenInjection.examples(),
     )
 
-    users: Sequence[HTTPUserPreset] = Field(
+    users: Sequence[cURLUserPreset] = Field(
         description='The list of users to generate tokens for.',
     )
 
@@ -46,13 +42,13 @@ class HTTPPreset(BasePreset):
             request = parse_curl(user.curl)
             procedures.append(
                 ProcedureConfiguration(
-                    name=ProcedureName(self.slug + user.identifier),
+                    name=ProcedureName(self.slug + user.username),
                     injections=[
                         TokenInjection(
                             location=self.inject.location,
                             key=self.inject.key,
                             prefix=self.inject.prefix,
-                            variable=VariableName(f'{user.identifier}-{VARIABLE_NAME}'),
+                            variable=VariableName(f'{user.username}-{VARIABLE_NAME}'),
                         ),
                     ],
                     operations=[
@@ -69,7 +65,7 @@ class HTTPPreset(BasePreset):
                             extractions=[
                                 TokenExtraction(
                                     location=self.extract.location,
-                                    name=VariableName(f'{user.identifier}-{VARIABLE_NAME}'),
+                                    name=VariableName(f'{user.username}-{VARIABLE_NAME}'),
                                     key=self.extract.key,
                                     regex=self.extract.regex,
                                 ),
@@ -84,8 +80,8 @@ class HTTPPreset(BasePreset):
     def to_users(self) -> list[User]:
         return [
             User(
-                name=user.identifier,
-                procedure=ProcedureName(self.slug + user.identifier),
+                name=user.username,
+                procedure=ProcedureName(self.slug + user.username),
             )
             for user in self.users
         ]
