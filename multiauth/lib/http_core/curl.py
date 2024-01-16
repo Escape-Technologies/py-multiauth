@@ -100,12 +100,14 @@ def parse_cookies(raw_cookies: Any) -> list[HTTPCookie]:
         try:
             key, value = raw_cookie.split('=', 1)
         except ValueError:
-            pass
+            continue
+
+        # Check if cookie already exists
+        existing_cookie = next((cookie for cookie in cookies if cookie.name == key), None)
+        if existing_cookie:
+            existing_cookie.values.append(value)
         else:
-            for cookie in cookies:
-                if cookie.name == key:
-                    cookie.values.append(value)
-                    break
+            cookies.append(HTTPCookie(name=key, values=[value]))
 
     return cookies
 
@@ -121,12 +123,14 @@ def parse_headers(raw_headers: Any) -> list[HTTPHeader]:
             key, value = raw_header.split(':', 1)
             value = value.strip()
         except ValueError:
-            pass
+            continue
+
+        # Check if header already exists
+        existing_header = next((header for header in headers if header.name == key), None)
+        if existing_header:
+            existing_header.values.append(value)
         else:
-            for header in headers:
-                if header.name == key:
-                    header.values.append(value)
-                    break
+            headers.append(HTTPHeader(name=key, values=[value]))
 
     return headers
 
