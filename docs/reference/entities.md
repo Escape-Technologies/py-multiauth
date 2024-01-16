@@ -465,7 +465,7 @@ Type: object
 |------------|------|----------|-------------|-----------|
 | key | `string` | `True` | The key to use for the extracted value, depending on the location |  |
 | location | `N/A` | `True` | The location of the HTTP request where the value should be extracted |  |
-| name | `string` | `True` | The name of the variable to store the extracted value into |  |
+| name | `N/A` | `False` | The name of the variable to store the extracted value into |  |
 | regex | `N/A` | `False` | The regex to use to extract the token from the key value. By default the entire value is taken. |  |
 
 

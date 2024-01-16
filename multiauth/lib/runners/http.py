@@ -255,7 +255,7 @@ class HTTPRequestRunner(BaseRunner[HTTPRunnerConfiguration]):
                     if len(h_findings) == 0:
                         continue
                     findings = extract_with_regex(h_findings[0].values, extraction.regex)
-                    variable = AuthenticationVariable(name=extraction.name, value=','.join(findings))
+                    variable = AuthenticationVariable(name=extraction.slug, value=','.join(findings))
                     events.append(ExtractedVariableEvent(location=HTTPLocation.HEADER, variable=variable))
                     variables.append(variable)
 
@@ -264,7 +264,7 @@ class HTTPRequestRunner(BaseRunner[HTTPRunnerConfiguration]):
                     if len(c_findings) == 0:
                         continue
                     findings = extract_with_regex(c_findings[0].values, extraction.regex)
-                    variable = AuthenticationVariable(name=extraction.name, value=','.join(findings))
+                    variable = AuthenticationVariable(name=extraction.slug, value=','.join(findings))
                     events.append(ExtractedVariableEvent(location=HTTPLocation.COOKIE, variable=variable))
                     variables.append(variable)
 
@@ -278,7 +278,7 @@ class HTTPRequestRunner(BaseRunner[HTTPRunnerConfiguration]):
                         continue
                     result_str = str(result) if not isinstance(result, str) else result
                     findings = extract_with_regex([result_str], extraction.regex)
-                    variable = AuthenticationVariable(name=extraction.name, value=findings[0])
+                    variable = AuthenticationVariable(name=extraction.slug, value=findings[0])
                     events.append(ExtractedVariableEvent(location=HTTPLocation.BODY, variable=variable))
                     variables.append(variable)
 
@@ -288,7 +288,7 @@ class HTTPRequestRunner(BaseRunner[HTTPRunnerConfiguration]):
                     if q_finding is None:
                         continue
                     findings = extract_with_regex(q_finding, extraction.regex)
-                    variable = AuthenticationVariable(name=extraction.name, value=','.join(findings))
+                    variable = AuthenticationVariable(name=extraction.slug, value=','.join(findings))
                     events.append(ExtractedVariableEvent(location=HTTPLocation.QUERY, variable=variable))
                     variables.append(variable)
 
