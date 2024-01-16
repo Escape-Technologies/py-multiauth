@@ -13,7 +13,7 @@ from multiauth.lib.store.user import User, UserRefresh
 from multiauth.lib.store.variables import AuthenticationVariable
 
 
-class OAuthUserPassUserPreset(BaseUserPreset):
+class OAuthUserpassUserPreset(BaseUserPreset):
     name: UserName = Field(
         description='The name of the user. By default, the username is used.',
     )
@@ -29,7 +29,7 @@ class OAuthUserpassPreset(BasePreset):
     client_id: str = Field(description='The client ID to use for the OAuth requests')
     client_secret: str = Field(description='The client secret to use for the OAuth requests')
 
-    users: Sequence[OAuthUserPassUserPreset] = Field(description='A list of users to create')
+    users: Sequence[OAuthUserpassUserPreset] = Field(description='A list of users to create')
 
     def to_procedure_configurations(self) -> list[ProcedureConfiguration]:
         generate_token = ProcedureConfiguration(

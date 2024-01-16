@@ -342,19 +342,6 @@ Type: object
 | name | `string` | `False` | The name of the user. By default, the client_id is used. |  |
 
 
-## <a id="OAuthUserPassUserPreset"></a>OAuthUserPassUserPreset
-
-Description: No Description.
-
-Type: object
-
-| Field Name | Type | Required | Description | Reference |
-|------------|------|----------|-------------|-----------|
-| name | `string` | `True` | The name of the user. By default, the username is used. |  |
-| password | `string` | `True` | The password of the user. |  |
-| username | `string` | `True` | The username of the user. |  |
-
-
 ## <a id="OAuthUserpassPreset"></a>OAuthUserpassPreset
 
 Description: No Description.
@@ -366,8 +353,21 @@ Type: object
 | client_id | `string` | `True` | The client ID to use for the OAuth requests |  |
 | client_secret | `string` | `True` | The client secret to use for the OAuth requests |  |
 | url | `string` | `True` | The URL of the token endpoint of the OpenIDConnect server |  |
-| users | `OAuthUserPassUserPreset[]` | `True` | A list of users to create | [OAuthUserPassUserPreset](#OAuthUserPassUserPreset) |
+| users | `OAuthUserpassUserPreset[]` | `True` | A list of users to create | [OAuthUserpassUserPreset](#OAuthUserpassUserPreset) |
 | type | `N/A` | `False` |  |  |
+
+
+## <a id="OAuthUserpassUserPreset"></a>OAuthUserpassUserPreset
+
+Description: No Description.
+
+Type: object
+
+| Field Name | Type | Required | Description | Reference |
+|------------|------|----------|-------------|-----------|
+| name | `string` | `True` | The name of the user. By default, the username is used. |  |
+| password | `string` | `True` | The password of the user. |  |
+| username | `string` | `True` | The username of the user. |  |
 
 
 ## <a id="ProcedureConfiguration"></a>ProcedureConfiguration
