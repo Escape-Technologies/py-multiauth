@@ -25,8 +25,10 @@ PresetType = Literal[
 ##### Credentials ####
 
 
-class BaseUserPreset(BaseModel):
-    name: UserName = Field(description='The name of the user.')
+class BaseUserPreset(BaseModel, abc.ABC):
+    @abc.abstractproperty
+    def identifier(self) -> UserName:
+        ...
 
 
 class BasePreset(BaseModel, abc.ABC):
@@ -38,7 +40,7 @@ class BasePreset(BaseModel, abc.ABC):
 
     @property
     def slug(self) -> ProcedureName:
-        return ProcedureName(generate_seeded_slug(self.type + ''.join([user.name for user in self.users])))
+        return ProcedureName(generate_seeded_slug(self.type + ''.join([user.identifier for user in self.users])))
 
     @abc.abstractmethod
     def to_procedure_configurations(self) -> list[ProcedureConfiguration]:

@@ -1,7 +1,7 @@
 import base64
 from typing import Literal, Sequence
 
-from pydantic import Field, root_validator
+from pydantic import Field
 
 from multiauth.lib.entities import UserName
 from multiauth.lib.http_core.entities import HTTPHeader
@@ -16,19 +16,12 @@ def build_basic_headers(username: str, password: str) -> HTTPHeader:
 
 
 class BasicUserPreset(BaseUserPreset):
-    name: UserName = Field(
-        default=None,
-        description='The name of the user. By default, the username is used.',
-    )
-    username: str = Field(description='The Basic username of the user.')
+    username: UserName = Field(description='The Basic username of the user.')
     password: str = Field(description='The Basic password of the user.')
 
-    @root_validator(pre=True)
-    def default_name(cls, values: dict) -> dict:
-        name, username = values.get('name'), values.get('username')
-        if name is None and username is not None:
-            values['name'] = username
-        return values
+    @property
+    def identifier(self) -> UserName:
+        return self.username
 
 
 class BasicPreset(BasePreset):
@@ -48,7 +41,7 @@ class BasicPreset(BasePreset):
             res.append(
                 User(
                     procedure=self.slug,
-                    name=UserName(user.username),
+                    name=UserName(user.identifier),
                     credentials=Credentials(headers=[build_basic_headers(user.username, user.password)]),
                 ),
             )

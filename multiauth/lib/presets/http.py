@@ -1,8 +1,8 @@
 from typing import Literal, Sequence
 
-from pydantic import Field, root_validator
+from pydantic import Field
 
-from multiauth.lib.entities import ProcedureName, VariableName
+from multiauth.lib.entities import ProcedureName, UserName, VariableName
 from multiauth.lib.injection import TokenInjection
 from multiauth.lib.presets.base import BasePreset, BaseUserPreset
 from multiauth.lib.procedure import ProcedureConfiguration
@@ -13,12 +13,11 @@ VARIABLE_NAME = VariableName('token')
 
 
 class HTTPUserPreset(BaseUserPreset, Credentials):
-    @root_validator(pre=True)
-    def default_name(cls, values: dict) -> dict:
-        name, username = values.get('name'), values.get('username')
-        if name is None and username is not None:
-            values['name'] = username
-        return values
+    name: UserName = Field(description='The name of the user.')
+
+    @property
+    def identifier(self) -> UserName:
+        return self.name
 
 
 class HTTPPreset(BasePreset):
@@ -79,7 +78,7 @@ class HTTPPreset(BasePreset):
     def to_users(self) -> list[User]:
         return [
             User(
-                name=user.name,
+                name=user.identifier,
                 credentials=Credentials(
                     username=user.username,
                     password=user.password,

@@ -73,12 +73,6 @@
     },
     "BasicUserPreset": {
       "properties": {
-        "name": {
-          "default": null,
-          "description": "The name of the user. By default, the username is used.",
-          "title": "Name",
-          "type": "string"
-        },
         "username": {
           "description": "The Basic username of the user.",
           "title": "Username",
@@ -107,7 +101,7 @@
         "users": {
           "description": "A list of users to create",
           "items": {
-            "$ref": "#/$defs/CognitoUserpassUserPreset"
+            "$ref": "#/$defs/BasicUserPreset"
           },
           "title": "Users",
           "type": "array"
@@ -138,32 +132,6 @@
         "client_secret"
       ],
       "title": "CognitoUserpassPreset",
-      "type": "object"
-    },
-    "CognitoUserpassUserPreset": {
-      "properties": {
-        "name": {
-          "description": "The name of the user. By default, the username is used.",
-          "title": "Name",
-          "type": "string"
-        },
-        "username": {
-          "description": "The username of the user.",
-          "title": "Username",
-          "type": "string"
-        },
-        "password": {
-          "description": "The password of the user.",
-          "title": "Password",
-          "type": "string"
-        }
-      },
-      "required": [
-        "name",
-        "username",
-        "password"
-      ],
-      "title": "CognitoUserpassUserPreset",
       "type": "object"
     },
     "Credentials": {
@@ -1145,12 +1113,6 @@
     },
     "OAuthClientCredentialsUserPreset": {
       "properties": {
-        "name": {
-          "default": null,
-          "description": "The name of the user. By default, the client_id is used.",
-          "title": "Name",
-          "type": "string"
-        },
         "client_id": {
           "description": "The client ID to use for the OAuth requests",
           "title": "Client Id",
@@ -1179,7 +1141,7 @@
         "users": {
           "description": "A list of users to create",
           "items": {
-            "$ref": "#/$defs/OAuthUserpassUserPreset"
+            "$ref": "#/$defs/BasicUserPreset"
           },
           "title": "Users",
           "type": "array"
@@ -1207,32 +1169,6 @@
         "client_secret"
       ],
       "title": "OAuthUserpassPreset",
-      "type": "object"
-    },
-    "OAuthUserpassUserPreset": {
-      "properties": {
-        "name": {
-          "description": "The name of the user. By default, the username is used.",
-          "title": "Name",
-          "type": "string"
-        },
-        "username": {
-          "description": "The username of the user.",
-          "title": "Username",
-          "type": "string"
-        },
-        "password": {
-          "description": "The password of the user.",
-          "title": "Password",
-          "type": "string"
-        }
-      },
-      "required": [
-        "name",
-        "username",
-        "password"
-      ],
-      "title": "OAuthUserpassUserPreset",
       "type": "object"
     },
     "ProcedureConfiguration": {
@@ -1350,7 +1286,7 @@
               "commands": [
                 {
                   "command": "open",
-                  "id": "46aedd5b9a51493198020ecfa91822d0",
+                  "id": "d4f4ecf7af254c618783cfb5b0b3dfe8",
                   "target": "https://example.com",
                   "targets": [
                     [
@@ -1361,7 +1297,7 @@
                   "value": ""
                 }
               ],
-              "id": "d89f2d16ff604fbe8f55d9ee107f35ab",
+              "id": "acae32fbedaf40c0907a53a8309db72b",
               "name": "test"
             }
           ],
@@ -1404,7 +1340,7 @@
                     "commands": [
                       {
                         "command": "open",
-                        "id": "9b72e71c75d8448a9fa6263b8f6ac670",
+                        "id": "8f406c7f9555492fb1b01d5a8ee0c3bd",
                         "target": "https://example.com",
                         "targets": [
                           [
@@ -1415,7 +1351,7 @@
                         "value": ""
                       }
                     ],
-                    "id": "b9c0ecf7bf04436db75eb64a8d253a41",
+                    "id": "4bfc7c926f7e44b69c6d9a8df2a0234d",
                     "name": "test"
                   }
                 ]
@@ -1534,7 +1470,7 @@
         "id": {
           "description": "The id of the test.",
           "examples": [
-            "55f72e65262240d391348be7bffd1690"
+            "4f436e77fc4f4083a68fe263cbc7ce60"
           ],
           "title": "Id",
           "type": "string"
@@ -1552,7 +1488,7 @@
           "examples": [
             {
               "command": "open",
-              "id": "e5c3933b9c8b4339a6f53b86fa63a09a",
+              "id": "2ade86c862ed44318804b504be494f33",
               "target": "https://example.com",
               "targets": [
                 [

@@ -43,7 +43,6 @@ Type: object
 |------------|------|----------|-------------|-----------|
 | password | `string` | `True` | The Basic password of the user. |  |
 | username | `string` | `True` | The Basic username of the user. |  |
-| name | `string` | `False` | The name of the user. By default, the username is used. |  |
 
 
 ## <a id="CognitoUserpassPreset"></a>CognitoUserpassPreset
@@ -57,21 +56,8 @@ Type: object
 | client_id | `string` | `True` | The client ID to use for the OAuth requests |  |
 | client_secret | `string` | `True` | The client secret to use for the OAuth requests |  |
 | region | `N/A` | `True` | The region of the Cognito Service. |  |
-| users | `CognitoUserpassUserPreset[]` | `True` | A list of users to create | [CognitoUserpassUserPreset](#CognitoUserpassUserPreset) |
+| users | `BasicUserPreset[]` | `True` | A list of users to create | [BasicUserPreset](#BasicUserPreset) |
 | type | `N/A` | `False` |  |  |
-
-
-## <a id="CognitoUserpassUserPreset"></a>CognitoUserpassUserPreset
-
-Description: No Description.
-
-Type: object
-
-| Field Name | Type | Required | Description | Reference |
-|------------|------|----------|-------------|-----------|
-| name | `string` | `True` | The name of the user. By default, the username is used. |  |
-| password | `string` | `True` | The password of the user. |  |
-| username | `string` | `True` | The username of the user. |  |
 
 
 ## <a id="Credentials"></a>Credentials
@@ -339,7 +325,6 @@ Type: object
 |------------|------|----------|-------------|-----------|
 | client_id | `string` | `True` | The client ID to use for the OAuth requests |  |
 | client_secret | `string` | `True` | The client secret to use for the OAuth requests |  |
-| name | `string` | `False` | The name of the user. By default, the client_id is used. |  |
 
 
 ## <a id="OAuthUserpassPreset"></a>OAuthUserpassPreset
@@ -353,21 +338,8 @@ Type: object
 | client_id | `string` | `True` | The client ID to use for the OAuth requests |  |
 | client_secret | `string` | `True` | The client secret to use for the OAuth requests |  |
 | url | `string` | `True` | The URL of the token endpoint of the OpenIDConnect server |  |
-| users | `OAuthUserpassUserPreset[]` | `True` | A list of users to create | [OAuthUserpassUserPreset](#OAuthUserpassUserPreset) |
+| users | `BasicUserPreset[]` | `True` | A list of users to create | [BasicUserPreset](#BasicUserPreset) |
 | type | `N/A` | `False` |  |  |
-
-
-## <a id="OAuthUserpassUserPreset"></a>OAuthUserpassUserPreset
-
-Description: No Description.
-
-Type: object
-
-| Field Name | Type | Required | Description | Reference |
-|------------|------|----------|-------------|-----------|
-| name | `string` | `True` | The name of the user. By default, the username is used. |  |
-| password | `string` | `True` | The password of the user. |  |
-| username | `string` | `True` | The username of the user. |  |
 
 
 ## <a id="ProcedureConfiguration"></a>ProcedureConfiguration

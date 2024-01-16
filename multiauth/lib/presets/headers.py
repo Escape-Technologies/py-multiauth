@@ -16,6 +16,10 @@ class HeadersUserPreset(BaseUserPreset):
     )
     headers: dict[str, str] = Field(description='The headers of the user.')
 
+    @property
+    def identifier(self) -> UserName:
+        return self.name
+
 
 def build_headers(user: HeadersUserPreset) -> list[HTTPHeader]:
     return [HTTPHeader(name=k, values=[v]) for k, v in user.headers.items()]
@@ -37,7 +41,7 @@ class HeadersPreset(BasePreset):
         for user in self.users:
             res.append(
                 User(
-                    name=UserName(user.name),
+                    name=user.identifier,
                     credentials=Credentials(headers=build_headers(user)),
                     procedure=self.slug,
                 ),

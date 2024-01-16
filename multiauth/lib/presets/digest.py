@@ -58,7 +58,7 @@ class DigestPreset(BasePreset):
         return [
             User(
                 procedure=ProcedureName(self.slug),
-                name=user.name,
+                name=user.identifier,
                 credentials=Credentials(
                     username=user.username,
                     password=user.password,
