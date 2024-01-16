@@ -1,9 +1,11 @@
 from uuid import uuid4
 
-from pydantic import BaseModel, Field
+from pydantic import Field
+
+from multiauth.helpers.base_model import StrictBaseModel
 
 
-class SeleniumCommand(BaseModel):
+class SeleniumCommand(StrictBaseModel):
     id: str
     # comment: str
     command: str = Field(
@@ -36,7 +38,7 @@ class SeleniumCommand(BaseModel):
         ]
 
 
-class SeleniumTest(BaseModel):
+class SeleniumTest(StrictBaseModel):
     id: str = Field(
         description=('The id of the test.'),
         examples=[uuid4().hex],
@@ -69,7 +71,7 @@ class SeleniumTest(BaseModel):
         ]
 
 
-class SeleniumProject(BaseModel):
+class SeleniumProject(StrictBaseModel):
     # id: str
     # version: str
     # name: str

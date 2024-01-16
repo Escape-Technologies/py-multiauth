@@ -1,10 +1,11 @@
 import abc
 from typing import Literal, Sequence
 
-from pydantic import BaseModel, Field
+from pydantic import Field
 
+from multiauth.helpers.base_model import StrictBaseModel
+from multiauth.helpers.slug import generate_seeded_slug
 from multiauth.lib.entities import ProcedureName, UserName
-from multiauth.lib.helpers import generate_seeded_slug
 from multiauth.lib.procedure import ProcedureConfiguration
 from multiauth.lib.store.user import User
 
@@ -24,11 +25,11 @@ PresetType = Literal[
 ##### Credentials ####
 
 
-class BaseUserPreset(BaseModel, abc.ABC):
+class BaseUserPreset(StrictBaseModel, abc.ABC):
     username: UserName = Field(description='The username of the user.')
 
 
-class BasePreset(BaseModel, abc.ABC):
+class BasePreset(StrictBaseModel, abc.ABC):
     type: PresetType = Field(description='The type of the preset.')
 
     users: Sequence[BaseUserPreset] = Field(

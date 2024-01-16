@@ -7,8 +7,7 @@
           { "name": "Authorization", "values": ["Bearer QWERTYUIOP"] }
         ]
       },
-      "procedure": null,
-      "injections": []
+      "procedure": null
     }
   ],
   "$schema": "../multiauth-schema.json"

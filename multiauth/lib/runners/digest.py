@@ -2,8 +2,9 @@ import hashlib
 from http import HTTPMethod
 from typing import Literal
 
-from pydantic import BaseModel, Field
+from pydantic import Field
 
+from multiauth.helpers.base_model import StrictBaseModel
 from multiauth.lib.audit.events.base import EventsList
 from multiauth.lib.audit.events.events import HTTPFailureEvent
 from multiauth.lib.http_core.entities import HTTPHeader, HTTPLocation
@@ -19,7 +20,7 @@ from multiauth.lib.store.user import Credentials, User
 from multiauth.lib.store.variables import AuthenticationVariable, VariableName, interpolate_string
 
 
-class DigestSecondRequestConfiguration(BaseModel):
+class DigestSecondRequestConfiguration(StrictBaseModel):
     url: str | None = Field(
         default=None,
         description=(
@@ -47,7 +48,7 @@ class DigestSecondRequestConfiguration(BaseModel):
         ]
 
 
-class DigestRequestSequenceConfiguration(BaseModel):
+class DigestRequestSequenceConfiguration(StrictBaseModel):
     first_request: HTTPRequestParameters = Field(
         description=(
             'The parameters of the first HTTP request executed during the digest procedure.'
@@ -167,7 +168,7 @@ def build_digest_headers(realm: str, username: str, password: str, domain: str, 
     return HTTPHeader(name='Authorization', values=[value])
 
 
-class DigestServerParameters(BaseModel):
+class DigestServerParameters(StrictBaseModel):
     realm: str
     nonce: str
     qop: str | None = None

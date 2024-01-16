@@ -30,6 +30,7 @@
       "type": "string"
     },
     "AuthenticationVariable": {
+      "additionalProperties": false,
       "properties": {
         "name": {
           "description": "The name of the variable",
@@ -50,6 +51,7 @@
       "type": "object"
     },
     "BasicPreset": {
+      "additionalProperties": false,
       "properties": {
         "type": {
           "const": "basic",
@@ -72,6 +74,7 @@
       "type": "object"
     },
     "BasicUserPreset": {
+      "additionalProperties": false,
       "properties": {
         "username": {
           "description": "The Basic username of the user.",
@@ -92,6 +95,7 @@
       "type": "object"
     },
     "CognitoUserpassPreset": {
+      "additionalProperties": false,
       "properties": {
         "type": {
           "const": "cognito_userpass",
@@ -135,6 +139,7 @@
       "type": "object"
     },
     "CognitoUserpassUserPreset": {
+      "additionalProperties": false,
       "properties": {
         "username": {
           "description": "The username of the user.",
@@ -155,6 +160,7 @@
       "type": "object"
     },
     "Credentials": {
+      "additionalProperties": false,
       "properties": {
         "username": {
           "anyOf": [
@@ -259,6 +265,7 @@
       "type": "object"
     },
     "DigestPreset": {
+      "additionalProperties": false,
       "properties": {
         "type": {
           "const": "digest",
@@ -329,6 +336,7 @@
       "type": "object"
     },
     "DigestRequestSequenceConfiguration": {
+      "additionalProperties": false,
       "properties": {
         "first_request": {
           "allOf": [
@@ -385,6 +393,7 @@
       "type": "object"
     },
     "DigestRunnerConfiguration": {
+      "additionalProperties": false,
       "properties": {
         "tech": {
           "const": "digest",
@@ -449,6 +458,7 @@
       "type": "object"
     },
     "DigestSecondRequestConfiguration": {
+      "additionalProperties": false,
       "properties": {
         "url": {
           "anyOf": [
@@ -494,6 +504,7 @@
       "type": "object"
     },
     "GraphQLPreset": {
+      "additionalProperties": false,
       "properties": {
         "type": {
           "const": "graphql",
@@ -560,6 +571,7 @@
       "type": "object"
     },
     "GraphQLUserPreset": {
+      "additionalProperties": false,
       "properties": {
         "username": {
           "description": "The name of the user.",
@@ -583,6 +595,7 @@
       "type": "object"
     },
     "HTTPCookie": {
+      "additionalProperties": false,
       "properties": {
         "name": {
           "title": "Name",
@@ -604,6 +617,7 @@
       "type": "object"
     },
     "HTTPHeader": {
+      "additionalProperties": false,
       "properties": {
         "name": {
           "title": "Name",
@@ -651,6 +665,7 @@
       "type": "string"
     },
     "HTTPPreset": {
+      "additionalProperties": false,
       "properties": {
         "type": {
           "const": "http",
@@ -736,6 +751,7 @@
       "type": "object"
     },
     "HTTPQueryParameter": {
+      "additionalProperties": false,
       "properties": {
         "name": {
           "title": "Name",
@@ -757,6 +773,7 @@
       "type": "object"
     },
     "HTTPRequestParameters": {
+      "additionalProperties": false,
       "properties": {
         "url": {
           "description": "The URL to send the request to",
@@ -889,6 +906,7 @@
       "type": "object"
     },
     "HTTPRunnerConfiguration": {
+      "additionalProperties": false,
       "properties": {
         "tech": {
           "const": "http",
@@ -947,6 +965,7 @@
       "type": "object"
     },
     "HTTPUserPreset": {
+      "additionalProperties": false,
       "properties": {
         "username": {
           "default": null,
@@ -1044,6 +1063,7 @@
       "type": "object"
     },
     "HeadersPreset": {
+      "additionalProperties": false,
       "properties": {
         "type": {
           "const": "headers",
@@ -1066,6 +1086,7 @@
       "type": "object"
     },
     "HeadersUserPreset": {
+      "additionalProperties": false,
       "properties": {
         "username": {
           "default": null,
@@ -1089,6 +1110,7 @@
       "type": "object"
     },
     "OAuthClientCredentialsPreset": {
+      "additionalProperties": false,
       "properties": {
         "type": {
           "const": "oauth_client_credentials",
@@ -1117,6 +1139,7 @@
       "type": "object"
     },
     "OAuthClientCredentialsUserPreset": {
+      "additionalProperties": false,
       "properties": {
         "username": {
           "description": "The arbitrary username given to the user.",
@@ -1143,6 +1166,7 @@
       "type": "object"
     },
     "OAuthUserpassPreset": {
+      "additionalProperties": false,
       "properties": {
         "type": {
           "const": "oauth_userpass",
@@ -1183,6 +1207,7 @@
       "type": "object"
     },
     "OAuthUserpassUserPreset": {
+      "additionalProperties": false,
       "properties": {
         "username": {
           "description": "The username of the user.",
@@ -1203,6 +1228,7 @@
       "type": "object"
     },
     "ProcedureConfiguration": {
+      "additionalProperties": false,
       "properties": {
         "name": {
           "description": "The name of the procedure. It must be unique and is used to reference the procedure in users.",
@@ -1251,6 +1277,7 @@
       "type": "object"
     },
     "SeleniumCommand": {
+      "additionalProperties": false,
       "properties": {
         "id": {
           "title": "Id",
@@ -1309,6 +1336,7 @@
       "type": "object"
     },
     "SeleniumProject": {
+      "additionalProperties": false,
       "properties": {
         "tests": {
           "description": "The tests of the Selenium script.",
@@ -1317,7 +1345,7 @@
               "commands": [
                 {
                   "command": "open",
-                  "id": "172d1ae2cacb488ebf2afc68eccefb84",
+                  "id": "a6f7167d69e44284b4b3c603c6fd488d",
                   "target": "https://example.com",
                   "targets": [
                     [
@@ -1328,7 +1356,7 @@
                   "value": ""
                 }
               ],
-              "id": "98c20841416f4e5c81c628170051f915",
+              "id": "c88a8148ef3144aaaa05ce9d707673ff",
               "name": "test"
             }
           ],
@@ -1346,6 +1374,7 @@
       "type": "object"
     },
     "SeleniumRunnerConfiguration": {
+      "additionalProperties": false,
       "properties": {
         "tech": {
           "const": "selenium",
@@ -1371,7 +1400,7 @@
                     "commands": [
                       {
                         "command": "open",
-                        "id": "960fcf8472d44c14abe1cf259e05f9e7",
+                        "id": "835a0fee5e55424aa380dd1455f4501b",
                         "target": "https://example.com",
                         "targets": [
                           [
@@ -1382,7 +1411,7 @@
                         "value": ""
                       }
                     ],
-                    "id": "9c6d66409bba4275adc5ce04a7a5f303",
+                    "id": "b7aeee67d52a4466854e6034828c3c2d",
                     "name": "test"
                   }
                 ]
@@ -1406,6 +1435,7 @@
       "type": "object"
     },
     "SeleniumScriptOptions": {
+      "additionalProperties": false,
       "properties": {
         "wait_for_seconds": {
           "default": 5,
@@ -1437,6 +1467,7 @@
       "type": "object"
     },
     "SeleniumScriptParameters": {
+      "additionalProperties": false,
       "properties": {
         "project": {
           "allOf": [
@@ -1497,11 +1528,12 @@
       "type": "object"
     },
     "SeleniumTest": {
+      "additionalProperties": false,
       "properties": {
         "id": {
           "description": "The id of the test.",
           "examples": [
-            "fc9cf5d1059e4165905e7810f5a4abd9"
+            "e040f80895ea4576b70d20c972f285c6"
           ],
           "title": "Id",
           "type": "string"
@@ -1519,7 +1551,7 @@
           "examples": [
             {
               "command": "open",
-              "id": "4e5511cac65340a29748c64563f24832",
+              "id": "e5ff43d338cd4cdbbda42f2e8b84f489",
               "target": "https://example.com",
               "targets": [
                 [
@@ -1546,6 +1578,7 @@
       "type": "object"
     },
     "TokenExtraction": {
+      "additionalProperties": false,
       "properties": {
         "location": {
           "allOf": [
@@ -1598,6 +1631,7 @@
       "type": "object"
     },
     "TokenInjection": {
+      "additionalProperties": false,
       "properties": {
         "location": {
           "allOf": [
@@ -1655,6 +1689,7 @@
       "type": "object"
     },
     "User": {
+      "additionalProperties": false,
       "properties": {
         "name": {
           "description": "The name of the user",
@@ -1714,6 +1749,7 @@
       "type": "object"
     },
     "UserRefresh": {
+      "additionalProperties": false,
       "properties": {
         "procedure": {
           "anyOf": [
@@ -1780,6 +1816,7 @@
       "type": "object"
     },
     "cURLPreset": {
+      "additionalProperties": false,
       "properties": {
         "type": {
           "const": "curl",
@@ -1835,6 +1872,7 @@
       "type": "object"
     },
     "cURLUserPreset": {
+      "additionalProperties": false,
       "properties": {
         "username": {
           "description": "The arbitrary name that identifies the user.",

@@ -1,5 +1,6 @@
-from pydantic import BaseModel, Field
+from pydantic import Field
 
+from multiauth.helpers.base_model import StrictBaseModel
 from multiauth.lib.audit.events.base import EventsList
 from multiauth.lib.audit.events.events import InjectedVariableEvent
 from multiauth.lib.http_core.entities import HTTPCookie, HTTPHeader, HTTPLocation, HTTPQueryParameter
@@ -7,7 +8,7 @@ from multiauth.lib.store.authentication import Authentication
 from multiauth.lib.store.variables import AuthenticationVariable
 
 
-class TokenInjection(BaseModel):
+class TokenInjection(StrictBaseModel):
     location: HTTPLocation = Field(description='The location of the HTTP request where the token should be injected')
     key: str = Field(
         description=(

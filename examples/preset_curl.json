@@ -2,8 +2,6 @@
   "presets": [
     {
       "type": "curl",
-      "client_id": "12345678901234567890",
-      "client_secret": "1234567890123456789012345678901234567890",
       "extract": {
         "location": "header",
         "key": "AccessToken"
@@ -11,7 +9,7 @@
       "inject": {
         "location": "header",
         "key": "Authorization",
-        "prefex": "Bearer "
+        "prefix": "Bearer "
       },
       "users": [
         {

@@ -1,9 +1,10 @@
-from pydantic import BaseModel, Field
+from pydantic import Field
 
+from multiauth.helpers.base_model import StrictBaseModel
 from multiauth.lib.entities import VariableName
 
 
-class AuthenticationVariable(BaseModel):
+class AuthenticationVariable(StrictBaseModel):
     name: VariableName = Field(description='The name of the variable')
     value: str = Field(description='The value of the variable')
 

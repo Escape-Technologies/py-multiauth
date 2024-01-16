@@ -3,10 +3,11 @@ from copy import deepcopy
 from typing import Literal
 from uuid import uuid4
 
-from pydantic import BaseModel, Field
+from pydantic import Field
 from selenium.webdriver import firefox
 from seleniumwire import webdriver  # type: ignore[import-untyped]
 
+from multiauth.helpers.base_model import StrictBaseModel
 from multiauth.lib.audit.events.base import EventsList
 from multiauth.lib.audit.events.events import (
     ExtractedVariableEvent,
@@ -32,7 +33,7 @@ from multiauth.lib.store.user import User
 from multiauth.lib.store.variables import AuthenticationVariable, VariableName, interpolate_string
 
 
-class SeleniumScriptOptions(BaseModel):
+class SeleniumScriptOptions(StrictBaseModel):
     wait_for_seconds: int = Field(
         default=5,
         description=(

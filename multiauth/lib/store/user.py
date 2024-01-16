@@ -1,7 +1,8 @@
 from typing import Any, Literal
 
-from pydantic import BaseModel, Field
+from pydantic import Field
 
+from multiauth.helpers.base_model import StrictBaseModel
 from multiauth.lib.entities import ProcedureName, UserName
 from multiauth.lib.http_core.entities import (
     HTTPCookie,
@@ -11,7 +12,7 @@ from multiauth.lib.http_core.entities import (
 from multiauth.lib.store.variables import AuthenticationVariable
 
 
-class Credentials(BaseModel):
+class Credentials(StrictBaseModel):
     username: UserName | None = Field(
         default=None,
         description='The username to attach to the HTTP requests sent for this user. See https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication#access_using_credentials_in_the_url',
@@ -79,7 +80,7 @@ class Credentials(BaseModel):
 InvalidSessionDetectionStrategy = Literal['status_code']
 
 
-class UserRefresh(BaseModel):
+class UserRefresh(StrictBaseModel):
     procedure: ProcedureName | None = Field(
         default=None,
         description=(
@@ -119,7 +120,7 @@ class UserRefresh(BaseModel):
     )
 
 
-class User(BaseModel):
+class User(StrictBaseModel):
     name: UserName = Field(description='The name of the user')
     credentials: Credentials | None = Field(
         description='A set of HTTP parameters used to customize requests sent for the user.',
