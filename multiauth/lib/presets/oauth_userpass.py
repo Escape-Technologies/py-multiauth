@@ -6,12 +6,21 @@ from pydantic import Field
 from multiauth.lib.entities import ProcedureName, UserName, VariableName
 from multiauth.lib.http_core.entities import HTTPHeader, HTTPLocation
 from multiauth.lib.injection import TokenInjection
-from multiauth.lib.presets.base import BasePreset
+from multiauth.lib.presets.base import BasePreset, BaseUserPreset
 from multiauth.lib.presets.basic import BasicUserPreset
 from multiauth.lib.procedure import ProcedureConfiguration
 from multiauth.lib.runners.http import HTTPRequestParameters, HTTPRunnerConfiguration, TokenExtraction
 from multiauth.lib.store.user import User, UserRefresh
 from multiauth.lib.store.variables import AuthenticationVariable
+
+
+class OAuthUserpassUserPreset(BaseUserPreset):
+    username: UserName = Field(description='The username of the user.')
+    password: str = Field(description='The password of the user.')
+
+    @property
+    def identifier(self) -> UserName:
+        return self.username
 
 
 class OAuthUserpassPreset(BasePreset):

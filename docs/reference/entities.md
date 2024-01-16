@@ -56,8 +56,20 @@ Type: object
 | client_id | `string` | `True` | The client ID to use for the OAuth requests |  |
 | client_secret | `string` | `True` | The client secret to use for the OAuth requests |  |
 | region | `N/A` | `True` | The region of the Cognito Service. |  |
-| users | `BasicUserPreset[]` | `True` | A list of users to create | [BasicUserPreset](#BasicUserPreset) |
+| users | `CognitoUserpassUserPreset[]` | `True` | A list of users to create | [CognitoUserpassUserPreset](#CognitoUserpassUserPreset) |
 | type | `N/A` | `False` |  |  |
+
+
+## <a id="CognitoUserpassUserPreset"></a>CognitoUserpassUserPreset
+
+Description: No Description.
+
+Type: object
+
+| Field Name | Type | Required | Description | Reference |
+|------------|------|----------|-------------|-----------|
+| password | `string` | `True` | The password of the user. |  |
+| username | `string` | `True` | The username of the user. |  |
 
 
 ## <a id="Credentials"></a>Credentials
@@ -338,8 +350,20 @@ Type: object
 | client_id | `string` | `True` | The client ID to use for the OAuth requests |  |
 | client_secret | `string` | `True` | The client secret to use for the OAuth requests |  |
 | url | `string` | `True` | The URL of the token endpoint of the OpenIDConnect server |  |
-| users | `BasicUserPreset[]` | `True` | A list of users to create | [BasicUserPreset](#BasicUserPreset) |
+| users | `OAuthUserpassUserPreset[]` | `True` | A list of users to create | [OAuthUserpassUserPreset](#OAuthUserpassUserPreset) |
 | type | `N/A` | `False` |  |  |
+
+
+## <a id="OAuthUserpassUserPreset"></a>OAuthUserpassUserPreset
+
+Description: No Description.
+
+Type: object
+
+| Field Name | Type | Required | Description | Reference |
+|------------|------|----------|-------------|-----------|
+| password | `string` | `True` | The password of the user. |  |
+| username | `string` | `True` | The username of the user. |  |
 
 
 ## <a id="ProcedureConfiguration"></a>ProcedureConfiguration
