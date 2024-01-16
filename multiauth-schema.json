@@ -1317,7 +1317,7 @@
               "commands": [
                 {
                   "command": "open",
-                  "id": "d5375cd5fef3456ca90a042defcf1c66",
+                  "id": "172d1ae2cacb488ebf2afc68eccefb84",
                   "target": "https://example.com",
                   "targets": [
                     [
@@ -1328,7 +1328,7 @@
                   "value": ""
                 }
               ],
-              "id": "5107c7885d0e4c0ea970dcc005460b2c",
+              "id": "98c20841416f4e5c81c628170051f915",
               "name": "test"
             }
           ],
@@ -1371,7 +1371,7 @@
                     "commands": [
                       {
                         "command": "open",
-                        "id": "f2a51ff5d8fe4003b51ffd3f6578bea0",
+                        "id": "960fcf8472d44c14abe1cf259e05f9e7",
                         "target": "https://example.com",
                         "targets": [
                           [
@@ -1382,7 +1382,7 @@
                         "value": ""
                       }
                     ],
-                    "id": "950344610e3c4bd69158723c7a5ef8a4",
+                    "id": "9c6d66409bba4275adc5ce04a7a5f303",
                     "name": "test"
                   }
                 ]
@@ -1501,7 +1501,7 @@
         "id": {
           "description": "The id of the test.",
           "examples": [
-            "618b5df72daa4d63a72ecbc36f283e5b"
+            "fc9cf5d1059e4165905e7810f5a4abd9"
           ],
           "title": "Id",
           "type": "string"
@@ -1519,7 +1519,7 @@
           "examples": [
             {
               "command": "open",
-              "id": "c22dfdb5586247a7ad800f91b8dcfb54",
+              "id": "4e5511cac65340a29748c64563f24832",
               "target": "https://example.com",
               "targets": [
                 [
@@ -1574,18 +1574,25 @@
           "title": "Regex"
         },
         "name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
           "description": "The name of the variable to store the extracted value into",
           "examples": [
             "my-token"
           ],
-          "title": "Name",
-          "type": "string"
+          "title": "Name"
         }
       },
       "required": [
         "location",
-        "key",
-        "name"
+        "key"
       ],
       "title": "TokenExtraction",
       "type": "object"

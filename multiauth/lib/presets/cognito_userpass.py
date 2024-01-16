@@ -85,15 +85,13 @@ class CognitoUserpassPreset(BasePreset):
                             HTTPHeader(name='Content-Type', values=[HTTPEncoding.AWS_JSON]),
                         ],
                         body={
-                            {
-                                'AuthParameters': {
-                                    'USERNAME': '{{ username }}',
-                                    'PASSWORD': '{{ password }}',
-                                    'SECRET_HASH': self.client_secret,
-                                },
-                                'AuthFlow': 'USER_PASSWORD_AUTH',
-                                'ClientId': self.client_id,
+                            'AuthParameters': {
+                                'USERNAME': '{{ username }}',
+                                'PASSWORD': '{{ password }}',
+                                'SECRET_HASH': self.client_secret,
                             },
+                            'AuthFlow': 'USER_PASSWORD_AUTH',
+                            'ClientId': self.client_id,
                         },
                     ),
                     extractions=[
@@ -132,14 +130,12 @@ class CognitoUserpassPreset(BasePreset):
                             HTTPHeader(name='Content-Type', values=[HTTPEncoding.AWS_JSON]),
                         ],
                         body={
-                            {
-                                'AuthParameters': {
-                                    'REFRESH_TOKEN': '{{ RefreshToken }}',
-                                    'SECRET_HASH': self.client_secret,
-                                },
-                                'AuthFlow': 'REFRESH_TOKEN_AUTH',
-                                'ClientId': self.client_id,
+                            'AuthParameters': {
+                                'REFRESH_TOKEN': '{{ RefreshToken }}',
+                                'SECRET_HASH': self.client_secret,
                             },
+                            'AuthFlow': 'REFRESH_TOKEN_AUTH',
+                            'ClientId': self.client_id,
                         },
                     ),
                     extractions=[

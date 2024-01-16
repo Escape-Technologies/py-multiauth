@@ -1,0 +1,17 @@
+{
+  "presets": [
+    {
+      "type": "cognito_userpass",
+      "region": "us-east-1",
+      "client_id": "12345678901234567890",
+      "client_secret": "1234567890123456789012345678901234567890",
+      "users": [
+        {
+          "username": "user",
+          "password": "C0mpl3xP@ssw0rd"
+        }
+      ]
+    }
+  ],
+  "$schema": "../multiauth-schema.json"
+}
