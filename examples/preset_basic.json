@@ -1,0 +1,14 @@
+{
+  "presets": [
+    {
+      "type": "basic",
+      "users": [
+        {
+          "username": "user",
+          "password": "C0mpl3xP@ssw0rd"
+        }
+      ]
+    }
+  ],
+  "$schema": "../multiauth-schema.json"
+}

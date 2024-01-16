@@ -1,9 +1,7 @@
 {
   "presets": [
     {
-      "name": "My GraphQL Config",
       "type": "headers",
-      "url": "https://gontoz.escape.tech/",
       "users": [
         {
           "username": "user",
