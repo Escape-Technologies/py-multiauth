@@ -12,7 +12,7 @@ from multiauth.lib.store.user import Credentials, User
 VARIABLE_NAME = VariableName('token')
 
 
-class HttpUserPreset(BaseUserPreset, Credentials):
+class HTTPUserPreset(BaseUserPreset, Credentials):
     @root_validator(pre=True)
     def default_name(cls, values: dict) -> dict:
         name, username = values.get('name'), values.get('username')
@@ -36,7 +36,7 @@ class HTTPPreset(BasePreset):
         examples=TokenInjection.examples(),
     )
 
-    users: Sequence[HttpUserPreset] = Field(
+    users: Sequence[HTTPUserPreset] = Field(
         description='The list of users to generate tokens for.',
     )
 

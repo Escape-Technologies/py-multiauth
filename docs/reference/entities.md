@@ -177,7 +177,7 @@ Type: object
 | extract | `N/A` | `True` | The token extraction configuration used to extract the tokens from the HTTP response. |  |
 | inject | `N/A` | `True` | The injection configuration used to inject the tokens into the HTTP requests. |  |
 | request | `N/A` | `True` | The parameters of the HTTP request used to fetch the access and refresh tokens. |  |
-| users | `HttpUserPreset[]` | `True` | The list of users to generate tokens for. | [HttpUserPreset](#HttpUserPreset) |
+| users | `HTTPUserPreset[]` | `True` | The list of users to generate tokens for. | [HTTPUserPreset](#HTTPUserPreset) |
 | type | `N/A` | `False` |  |  |
 
 
@@ -223,7 +223,7 @@ Type: object
 | extractions | `TokenExtraction[]` | `False` | The list of extractions to run at the end of the operation.For HTTP operations, variables are extracted from the response. | [TokenExtraction](#TokenExtraction) |
 
 
-## <a id="HttpUserPreset"></a>HttpUserPreset
+## <a id="HTTPUserPreset"></a>HTTPUserPreset
 
 Description: No Description.
 

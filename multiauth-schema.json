@@ -504,7 +504,7 @@
         "users": {
           "description": "The list of users to generate tokens for.",
           "items": {
-            "$ref": "#/$defs/HttpUserPreset"
+            "$ref": "#/$defs/HTTPUserPreset"
           },
           "title": "Users",
           "type": "array"
@@ -790,7 +790,7 @@
       "title": "HTTPRunnerConfiguration",
       "type": "object"
     },
-    "HttpUserPreset": {
+    "HTTPUserPreset": {
       "properties": {
         "username": {
           "anyOf": [
@@ -899,7 +899,7 @@
       "required": [
         "name"
       ],
-      "title": "HttpUserPreset",
+      "title": "HTTPUserPreset",
       "type": "object"
     },
     "OAuthClientCredentialsPreset": {
@@ -1137,7 +1137,7 @@
               "commands": [
                 {
                   "command": "open",
-                  "id": "eb9989e52cab4405a4bccb02fdc9b057",
+                  "id": "78e4de14498849968813f9f29b78af43",
                   "target": "https://example.com",
                   "targets": [
                     [
@@ -1148,7 +1148,7 @@
                   "value": ""
                 }
               ],
-              "id": "45ea6a8cc7bb42caa36dd4122212bebe",
+              "id": "3247fb3a560443deb46435dcf4d022df",
               "name": "test"
             }
           ],
@@ -1191,7 +1191,7 @@
                     "commands": [
                       {
                         "command": "open",
-                        "id": "c093ea09732b4f22b2a669680cb01e06",
+                        "id": "1528e6b717b940928650049e88509d74",
                         "target": "https://example.com",
                         "targets": [
                           [
@@ -1202,7 +1202,7 @@
                         "value": ""
                       }
                     ],
-                    "id": "ce359121725546c8bc883bc3159fec04",
+                    "id": "575750b902ab4bacb3e430ac24607647",
                     "name": "test"
                   }
                 ]
@@ -1321,7 +1321,7 @@
         "id": {
           "description": "The id of the test.",
           "examples": [
-            "1db58c656d0f4573830553ac20e1eebe"
+            "2b784817e0234e0f8f060b157fcf67a4"
           ],
           "title": "Id",
           "type": "string"
@@ -1339,7 +1339,7 @@
           "examples": [
             {
               "command": "open",
-              "id": "ad8295dcc46841d29f65747c429ca841",
+              "id": "fb4606651d0b47d0a208c4825405314d",
               "target": "https://example.com",
               "targets": [
                 [
