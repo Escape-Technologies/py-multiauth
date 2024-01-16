@@ -1,5 +1,6 @@
 import json
 import re
+from enum import StrEnum
 from http import HTTPMethod
 from typing import Any, Literal
 from urllib.parse import parse_qs, urlparse
@@ -36,6 +37,8 @@ from multiauth.lib.runners.base import (
 from multiauth.lib.store.user import Credentials, User
 from multiauth.lib.store.variables import AuthenticationVariable, interpolate_string
 
+JSONSerializable = dict | list | str | int | float | bool
+
 
 def extract_with_regex(string_list: list[str], regex_pattern: str | None) -> list[str]:
     if regex_pattern is None:
@@ -48,6 +51,26 @@ def extract_with_regex(string_list: list[str], regex_pattern: str | None) -> lis
             extracted_items.append(match.group())
 
     return extracted_items
+
+
+def search_key_in_dict(body: dict, key: str) -> Any | None:
+    """Search for a key in a dictionary."""
+
+    if key in body:
+        return body[key]
+
+    for value in body.values():
+        if isinstance(value, dict):
+            result = search_key_in_dict(value, key)
+            if result:
+                return result
+
+    return None
+
+
+class HTTPScheme(StrEnum):
+    HTTP = 'http'
+    HTTPS = 'https'
 
 
 class HTTPRequestParameters(BaseRunnerParameters):
@@ -157,21 +180,6 @@ class HTTPRunnerConfiguration(BaseRunnerConfiguration):
 
     def get_runner(self) -> 'HTTPRequestRunner':
         return HTTPRequestRunner(self)
-
-
-def search_key_in_dict(body: dict, key: str) -> Any | None:
-    """Search for a key in a dictionary."""
-
-    if key in body:
-        return body[key]
-
-    for value in body.values():
-        if isinstance(value, dict):
-            result = search_key_in_dict(value, key)
-            if result:
-                return result
-
-    return None
 
 
 class HTTPRequestRunner(BaseRunner[HTTPRunnerConfiguration]):

@@ -11,14 +11,15 @@ from multiauth.lib.procedure import ProcedureConfiguration
 from multiauth.lib.store.user import User
 
 PresetType = Literal[
-    'http',
-    'oauth_userpass',
-    'oauth_client_credentials',
     'basic',
+    'cognito_userpass',
+    'curl',
+    'digest',
     'graphql',
     'headers',
-    'digest',
-    'cognito_userpass',
+    'http',
+    'oauth_client_credentials',
+    'oauth_userpass',
 ]
 
 

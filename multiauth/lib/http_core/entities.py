@@ -3,9 +3,11 @@ import datetime
 import enum
 import json
 from http import HTTPMethod
-from urllib.parse import quote, urlparse
+from urllib.parse import quote, urlparse, urlunparse
 
 from pydantic import BaseModel, Field, field_serializer
+
+JSONSerializable = dict | list | str | int | float | bool
 
 
 class HTTPEncoding(enum.StrEnum):
@@ -33,9 +35,6 @@ class HTTPLocation(enum.StrEnum):
 class HTTPScheme(enum.StrEnum):
     HTTP = 'http'
     HTTPS = 'https'
-
-
-JSONSerializable = dict | list | str | int | float | bool
 
 
 class HTTPHeader(BaseModel):
@@ -120,6 +119,10 @@ class HTTPRequest(BaseModel):
             path=parsed_url.path,
             scheme=HTTPScheme(parsed_url.scheme),
         )
+
+    @property
+    def url(self) -> str:
+        return urlunparse((self.scheme.value, self.host, self.path, '', '', ''))
 
 
 class HTTPResponse(BaseModel):
