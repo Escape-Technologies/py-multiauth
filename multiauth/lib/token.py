@@ -6,7 +6,9 @@ from enum import StrEnum
 from http.cookies import SimpleCookie
 
 import requests
-from pydantic import BaseModel
+from pydantic import Field
+
+from multiauth.helpers.base_model import StrictBaseModel
 
 
 class TokenType(StrEnum):
@@ -15,7 +17,7 @@ class TokenType(StrEnum):
     OAUTH = 'OAUTH'
 
 
-class Token(BaseModel):
+class Token(StrictBaseModel):
     """This class represents a generic token."""
 
     raw: str
@@ -55,7 +57,7 @@ class SAMLToken(Token):
     subject: str | None = None
     notBefore: datetime | None = None
     notOnOrAfter: datetime | None = None
-    attributes: dict[str, str] = {}
+    attributes: dict[str, str] = Field(default_factory=dict)
     authnContext: str | None = None
 
 

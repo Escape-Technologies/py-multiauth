@@ -3,7 +3,9 @@ import os
 from datetime import datetime
 from typing import Literal
 
-from pydantic import BaseModel, Field, field_serializer
+from pydantic import Field, field_serializer
+
+from multiauth.helpers.base_model import StrictBaseModel
 
 EventType = Literal[
     'http_request',
@@ -27,7 +29,7 @@ EventType = Literal[
 EventSeverity = Literal['info', 'warning', 'error', 'success', 'debug']
 
 
-class Event(BaseModel, abc.ABC):
+class Event(StrictBaseModel, abc.ABC):
     type: EventType
     timestamp: datetime = Field(default_factory=datetime.utcnow)
     default_severity: EventSeverity

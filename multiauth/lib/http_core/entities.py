@@ -5,7 +5,9 @@ import json
 from http import HTTPMethod
 from urllib.parse import quote, urlparse, urlunparse
 
-from pydantic import BaseModel, Field, field_serializer
+from pydantic import Field, field_serializer
+
+from multiauth.helpers.base_model import StrictBaseModel
 
 JSONSerializable = dict | list | str | int | float | bool
 
@@ -37,7 +39,7 @@ class HTTPScheme(enum.StrEnum):
     HTTPS = 'https'
 
 
-class HTTPHeader(BaseModel):
+class HTTPHeader(StrictBaseModel):
     name: str
     values: list[str]
 
@@ -46,7 +48,7 @@ class HTTPHeader(BaseModel):
         return ','.join(self.values)
 
 
-class HTTPCookie(BaseModel):
+class HTTPCookie(StrictBaseModel):
     name: str
     values: list[str]
 
@@ -59,7 +61,7 @@ class HTTPCookie(BaseModel):
         return '; '.join(f'{cookie.name}={cookie.str_value}' for cookie in cookies)
 
 
-class HTTPQueryParameter(BaseModel):
+class HTTPQueryParameter(StrictBaseModel):
     name: str
     values: list[str]
 
@@ -68,7 +70,7 @@ class HTTPQueryParameter(BaseModel):
         return quote(','.join(self.values))
 
 
-class HTTPRequest(BaseModel):
+class HTTPRequest(StrictBaseModel):
     method: HTTPMethod
     host: str
     scheme: HTTPScheme
@@ -125,7 +127,7 @@ class HTTPRequest(BaseModel):
         return urlunparse((self.scheme.value, self.host, self.path, '', '', ''))
 
 
-class HTTPResponse(BaseModel):
+class HTTPResponse(StrictBaseModel):
     url: str
     status_code: int
     reason: str

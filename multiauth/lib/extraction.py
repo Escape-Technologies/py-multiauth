@@ -1,11 +1,12 @@
-from pydantic import BaseModel, Field
+from pydantic import Field
 
+from multiauth.helpers.base_model import StrictBaseModel
 from multiauth.lib.http_core.entities import HTTPLocation
 from multiauth.lib.presets.base import generate_seeded_slug
 from multiauth.lib.store.variables import VariableName
 
 
-class TokenExtraction(BaseModel):
+class TokenExtraction(StrictBaseModel):
     location: HTTPLocation = Field(description='The location of the HTTP request where the value should be extracted')
     key: str = Field(description='The key to use for the extracted value, depending on the location')
     regex: str | None = Field(

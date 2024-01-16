@@ -2,8 +2,9 @@ import abc
 from datetime import datetime, timedelta
 from typing import Annotated, NewType, Union
 
-from pydantic import BaseModel, Field
+from pydantic import Field
 
+from multiauth.helpers.base_model import StrictBaseModel
 from multiauth.lib.audit.events.base import EventsList
 from multiauth.lib.audit.events.events import (
     ProcedureAbortedEvent,
@@ -43,7 +44,7 @@ OperationConfigurationType = Annotated[
 DEFAULT_TTL_SECONDS = 10 * 24 * 60 * 60  # Default session ttl is 10 days
 
 
-class ProcedureConfiguration(BaseModel, abc.ABC):
+class ProcedureConfiguration(StrictBaseModel, abc.ABC):
     name: ProcedureName = Field(
         description='The name of the procedure. It must be unique and is used to reference the procedure in users.',
     )

@@ -1,14 +1,15 @@
 import abc
 import datetime
 
-from pydantic import BaseModel, Field
+from pydantic import Field
 
+from multiauth.helpers.base_model import StrictBaseModel
 from multiauth.lib.http_core.entities import HTTPCookie, HTTPHeader, HTTPQueryParameter
 from multiauth.lib.http_core.mergers import merge_cookies, merge_headers, merge_query_parameters
 from multiauth.lib.store.user import Credentials, UserName
 
 
-class Authentication(BaseModel):
+class Authentication(StrictBaseModel):
     headers: list[HTTPHeader] = Field(default_factory=list)
     cookies: list[HTTPCookie] = Field(default_factory=list)
     query_parameters: list[HTTPQueryParameter] = Field(default_factory=list)

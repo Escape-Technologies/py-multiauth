@@ -1,8 +1,7 @@
 import abc
 from typing import Generic, Literal, TypeVar
 
-from pydantic import BaseModel
-
+from multiauth.helpers.base_model import StrictBaseModel
 from multiauth.lib.audit.events.base import EventsList
 from multiauth.lib.extraction import TokenExtraction
 from multiauth.lib.store.user import User
@@ -11,14 +10,14 @@ from multiauth.lib.store.variables import AuthenticationVariable
 RunnerType = Literal['http', 'basic', 'graphql', 'selenium', 'digest']
 
 
-class BaseRunnerParameters(BaseModel, abc.ABC):
+class BaseRunnerParameters(StrictBaseModel, abc.ABC):
     pass
 
 
 RunnerParametersType = TypeVar('RunnerParametersType', bound=BaseRunnerParameters)
 
 
-class BaseRunnerConfiguration(BaseModel, abc.ABC, Generic[RunnerParametersType]):
+class BaseRunnerConfiguration(StrictBaseModel, abc.ABC, Generic[RunnerParametersType]):
     tech: RunnerType
     parameters: RunnerParametersType
     extractions: list[TokenExtraction]
