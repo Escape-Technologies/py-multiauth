@@ -3,7 +3,10 @@ from typing import Annotated, Union
 from pydantic import BaseModel, Field
 
 from multiauth.lib.presets.basic import BasicPreset
+from multiauth.lib.presets.cognito_userpass import CognitoUserpassPreset
+from multiauth.lib.presets.digest import DigestPreset
 from multiauth.lib.presets.graphql import GraphQLPreset
+from multiauth.lib.presets.headers import HeadersPreset
 from multiauth.lib.presets.http import HTTPPreset
 from multiauth.lib.presets.oauth_client_credentials import OAuthClientCredentialsPreset
 from multiauth.lib.presets.oauth_userpass import OAuthUserpassPreset
@@ -17,6 +20,9 @@ PresetType = Annotated[
         OAuthClientCredentialsPreset,
         BasicPreset,
         GraphQLPreset,
+        DigestPreset,
+        CognitoUserpassPreset,
+        HeadersPreset,
     ],
     Field(discriminator='type'),
 ]

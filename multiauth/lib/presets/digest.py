@@ -15,7 +15,7 @@ from multiauth.lib.runners.http import HTTPRequestParameters
 from multiauth.lib.store.user import Credentials, User
 
 
-class HTTPPreset(BasePreset):
+class DigestPreset(BasePreset):
     type: Literal['digest'] = 'digest'
 
     first_request: HTTPRequestParameters = Field(

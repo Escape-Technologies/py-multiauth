@@ -1,4 +1,14 @@
 
+## <a id="AWSRegion"></a>AWSRegion
+
+Description: No Description.
+
+Type: string
+
+| Field Name | Type | Required | Description | Reference |
+|------------|------|----------|-------------|-----------|
+
+
 ## <a id="AuthenticationVariable"></a>AuthenticationVariable
 
 Description: No Description.
@@ -36,6 +46,34 @@ Type: object
 | name | `string` | `False` | The name of the user. By default, the username is used. |  |
 
 
+## <a id="CognitoUserPassUserPreset"></a>CognitoUserPassUserPreset
+
+Description: No Description.
+
+Type: object
+
+| Field Name | Type | Required | Description | Reference |
+|------------|------|----------|-------------|-----------|
+| name | `string` | `True` | The name of the user. By default, the username is used. |  |
+| password | `string` | `True` | The password of the user. |  |
+| username | `string` | `True` | The username of the user. |  |
+
+
+## <a id="CognitoUserpassPreset"></a>CognitoUserpassPreset
+
+Description: No Description.
+
+Type: object
+
+| Field Name | Type | Required | Description | Reference |
+|------------|------|----------|-------------|-----------|
+| client_id | `string` | `True` | The client ID to use for the OAuth requests |  |
+| client_secret | `string` | `True` | The client secret to use for the OAuth requests |  |
+| region | `N/A` | `True` | The region of the Cognito Service. |  |
+| users | `CognitoUserPassUserPreset[]` | `True` | A list of users to create | [CognitoUserPassUserPreset](#CognitoUserPassUserPreset) |
+| type | `N/A` | `False` |  |  |
+
+
 ## <a id="Credentials"></a>Credentials
 
 Description: No Description.
@@ -50,6 +88,20 @@ Type: object
 | cookies | `HTTPCookie[]` | `False` | A list of cookies to attach to every HTTP requests sent for this user | [HTTPCookie](#HTTPCookie) |
 | headers | `HTTPHeader[]` | `False` | A list of headers to attach to every HTTP requests sent for this user | [HTTPHeader](#HTTPHeader) |
 | query_parameters | `HTTPQueryParameter[]` | `False` | A list of query parameters to attach to every HTTP requests sent for this user | [HTTPQueryParameter](#HTTPQueryParameter) |
+
+
+## <a id="DigestPreset"></a>DigestPreset
+
+Description: No Description.
+
+Type: object
+
+| Field Name | Type | Required | Description | Reference |
+|------------|------|----------|-------------|-----------|
+| first_request | `N/A` | `True` | The parameters of the first HTTP request executed during the digest procedure.It is the one that returns the WWW-Authenticate header. |  |
+| users | `BasicUserPreset[]` | `True` | The list of users to generate tokens for. | [BasicUserPreset](#BasicUserPreset) |
+| second_request | `N/A` | `False` | The parameters of the second HTTP request executed during the digest procedure.It is the one that uses the digest authentication. By default, parameters of the first request are used. |  |
+| type | `N/A` | `False` |  |  |
 
 
 ## <a id="DigestRequestSequenceConfiguration"></a>DigestRequestSequenceConfiguration
@@ -238,6 +290,30 @@ Type: object
 | cookies | `HTTPCookie[]` | `False` | A list of cookies to attach to every HTTP requests sent for this user | [HTTPCookie](#HTTPCookie) |
 | headers | `HTTPHeader[]` | `False` | A list of headers to attach to every HTTP requests sent for this user | [HTTPHeader](#HTTPHeader) |
 | query_parameters | `HTTPQueryParameter[]` | `False` | A list of query parameters to attach to every HTTP requests sent for this user | [HTTPQueryParameter](#HTTPQueryParameter) |
+
+
+## <a id="HeadersPreset"></a>HeadersPreset
+
+Description: No Description.
+
+Type: object
+
+| Field Name | Type | Required | Description | Reference |
+|------------|------|----------|-------------|-----------|
+| users | `HeadersUserPreset[]` | `True` | A list of users with basic credentials to create | [HeadersUserPreset](#HeadersUserPreset) |
+| type | `N/A` | `False` |  |  |
+
+
+## <a id="HeadersUserPreset"></a>HeadersUserPreset
+
+Description: No Description.
+
+Type: object
+
+| Field Name | Type | Required | Description | Reference |
+|------------|------|----------|-------------|-----------|
+| headers | `object` | `True` | The headers of the user. |  |
+| name | `string` | `False` | The name of the user. By default, the username is used. |  |
 
 
 ## <a id="OAuthClientCredentialsPreset"></a>OAuthClientCredentialsPreset
