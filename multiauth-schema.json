@@ -1317,7 +1317,7 @@
               "commands": [
                 {
                   "command": "open",
-                  "id": "c467bf30ac8e40c3932d0a2b7e72a8dc",
+                  "id": "9f9215dcd71344f69725f5ccd7c60724",
                   "target": "https://example.com",
                   "targets": [
                     [
@@ -1328,7 +1328,7 @@
                   "value": ""
                 }
               ],
-              "id": "b3676578904b47c2afafc1d0e7661917",
+              "id": "369a7fb4f3fb4237afdecc5955ece4c2",
               "name": "test"
             }
           ],
@@ -1371,7 +1371,7 @@
                     "commands": [
                       {
                         "command": "open",
-                        "id": "6965675e228f4190a9002e3f4f289824",
+                        "id": "98b8b1ec8f334d3787e3101903846c41",
                         "target": "https://example.com",
                         "targets": [
                           [
@@ -1382,7 +1382,7 @@
                         "value": ""
                       }
                     ],
-                    "id": "0f5ddf348ed34acaad6915c75ff91d52",
+                    "id": "de0e6ce5fc3e428bbf3f73a83efb2b5c",
                     "name": "test"
                   }
                 ]
@@ -1501,7 +1501,7 @@
         "id": {
           "description": "The id of the test.",
           "examples": [
-            "25ca8292cd94403db0699b017e6cf0f5"
+            "23f9a15bf321458f9b3a6cf0a09c0ac8"
           ],
           "title": "Id",
           "type": "string"
@@ -1519,7 +1519,7 @@
           "examples": [
             {
               "command": "open",
-              "id": "1e53c3126807415ca1122f52d0c56fae",
+              "id": "bb851db1a31448d5b83facf709006c96",
               "target": "https://example.com",
               "targets": [
                 [
@@ -1771,6 +1771,163 @@
       },
       "title": "UserRefresh",
       "type": "object"
+    },
+    "cURLPreset": {
+      "properties": {
+        "type": {
+          "const": "curl",
+          "default": "curl",
+          "title": "Type"
+        },
+        "users": {
+          "description": "The list of users to generate tokens for.",
+          "items": {
+            "$ref": "#/$defs/cURLUserPreset"
+          },
+          "title": "Users",
+          "type": "array"
+        },
+        "extract": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/TokenExtraction"
+            }
+          ],
+          "description": "The token extraction configuration used to extract the tokens from the HTTP response.",
+          "examples": [
+            {
+              "key": "Set-Cookie",
+              "location": "header",
+              "name": "my-variable"
+            }
+          ]
+        },
+        "inject": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/TokenInjection"
+            }
+          ],
+          "description": "The injection configuration used to inject the tokens into the HTTP requests.",
+          "examples": [
+            {
+              "key": "Authorization",
+              "location": "header",
+              "prefix": "Bearer ",
+              "variable": "token"
+            }
+          ]
+        }
+      },
+      "required": [
+        "users",
+        "extract",
+        "inject"
+      ],
+      "title": "cURLPreset",
+      "type": "object"
+    },
+    "cURLUserPreset": {
+      "properties": {
+        "username": {
+          "description": "The arbitrary name that identifies the user.",
+          "title": "Username",
+          "type": "string"
+        },
+        "password": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "The password to attach to the HTTP requests sent for this user. See https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication#access_using_credentials_in_the_url",
+          "examples": [
+            "john@password123#"
+          ],
+          "title": "Password"
+        },
+        "headers": {
+          "description": "A list of headers to attach to every HTTP requests sent for this user",
+          "examples": [
+            {
+              "name": "Authorization",
+              "values": [
+                "Bearer ..."
+              ]
+            }
+          ],
+          "items": {
+            "$ref": "#/$defs/HTTPHeader"
+          },
+          "title": "Headers",
+          "type": "array"
+        },
+        "cookies": {
+          "description": "A list of cookies to attach to every HTTP requests sent for this user",
+          "examples": [
+            {
+              "name": "PHPSESSIONID",
+              "values": [
+                "..."
+              ]
+            }
+          ],
+          "items": {
+            "$ref": "#/$defs/HTTPCookie"
+          },
+          "title": "Cookies",
+          "type": "array"
+        },
+        "query_parameters": {
+          "description": "A list of query parameters to attach to every HTTP requests sent for this user",
+          "examples": [
+            {
+              "name": "token",
+              "values": [
+                "..."
+              ]
+            }
+          ],
+          "items": {
+            "$ref": "#/$defs/HTTPQueryParameter"
+          },
+          "title": "Query Parameters",
+          "type": "array"
+        },
+        "body": {
+          "anyOf": [
+            {},
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "A body to merge with the bodies of every HTTP requests sent for this user",
+          "examples": [
+            {
+              "password": "john@password123#",
+              "username": "john"
+            },
+            "username=john&password=john%40password123%23"
+          ],
+          "title": "Body"
+        },
+        "curl": {
+          "description": "The curl command that is used to fetch the tokens for this user.",
+          "title": "Curl",
+          "type": "string"
+        }
+      },
+      "required": [
+        "username",
+        "curl"
+      ],
+      "title": "cURLUserPreset",
+      "type": "object"
     }
   },
   "description": "Multiauth configuration model.",
@@ -1799,6 +1956,7 @@
               "mapping": {
                 "basic": "#/$defs/BasicPreset",
                 "cognito_userpass": "#/$defs/CognitoUserpassPreset",
+                "curl": "#/$defs/cURLPreset",
                 "digest": "#/$defs/DigestPreset",
                 "graphql": "#/$defs/GraphQLPreset",
                 "headers": "#/$defs/HeadersPreset",
@@ -1832,6 +1990,9 @@
               },
               {
                 "$ref": "#/$defs/HeadersPreset"
+              },
+              {
+                "$ref": "#/$defs/cURLPreset"
               }
             ]
           },

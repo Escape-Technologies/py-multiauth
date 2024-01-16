@@ -20,7 +20,7 @@ VARIABLE_NAME = 'token'
 
 
 class cURLPreset(BasePreset):
-    type: Literal['http'] = 'http'
+    type: Literal['curl'] = 'curl'
 
     extract: TokenExtraction = Field(
         description='The token extraction configuration used to extract the tokens from the HTTP response.',

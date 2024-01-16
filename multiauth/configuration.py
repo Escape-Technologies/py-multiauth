@@ -4,6 +4,7 @@ from pydantic import BaseModel, Field
 
 from multiauth.lib.presets.basic import BasicPreset
 from multiauth.lib.presets.cognito_userpass import CognitoUserpassPreset
+from multiauth.lib.presets.curl import cURLPreset
 from multiauth.lib.presets.digest import DigestPreset
 from multiauth.lib.presets.graphql import GraphQLPreset
 from multiauth.lib.presets.headers import HeadersPreset
@@ -23,6 +24,7 @@ PresetType = Annotated[
         DigestPreset,
         CognitoUserpassPreset,
         HeadersPreset,
+        cURLPreset,
     ],
     Field(discriminator='type'),
 ]

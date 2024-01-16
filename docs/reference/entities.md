@@ -512,3 +512,34 @@ Type: object
 | session_seconds | `N/A` | `False` | Number of seconds to wait before refreshing the authentication. If not provided, multiauth willtry to infer the session duration from the returned variables |  |
 | variables | `N/A` | `False` | List of variables that will be injected at the beginning of the user&#39;srefresh procedure. If not provided, the user&#39;s variables will be used instead. |  |
 
+
+## <a id="cURLPreset"></a>cURLPreset
+
+Description: No Description.
+
+Type: object
+
+| Field Name | Type | Required | Description | Reference |
+|------------|------|----------|-------------|-----------|
+| extract | `N/A` | `True` | The token extraction configuration used to extract the tokens from the HTTP response. |  |
+| inject | `N/A` | `True` | The injection configuration used to inject the tokens into the HTTP requests. |  |
+| users | `cURLUserPreset[]` | `True` | The list of users to generate tokens for. | [cURLUserPreset](#cURLUserPreset) |
+| type | `N/A` | `False` |  |  |
+
+
+## <a id="cURLUserPreset"></a>cURLUserPreset
+
+Description: No Description.
+
+Type: object
+
+| Field Name | Type | Required | Description | Reference |
+|------------|------|----------|-------------|-----------|
+| curl | `string` | `True` | The curl command that is used to fetch the tokens for this user. |  |
+| username | `string` | `True` | The arbitrary name that identifies the user. |  |
+| body | `N/A` | `False` | A body to merge with the bodies of every HTTP requests sent for this user |  |
+| password | `N/A` | `False` | The password to attach to the HTTP requests sent for this user. See [developer.mozilla.org](https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication#access_using_credentials_in_the_url) |  |
+| cookies | `HTTPCookie[]` | `False` | A list of cookies to attach to every HTTP requests sent for this user | [HTTPCookie](#HTTPCookie) |
+| headers | `HTTPHeader[]` | `False` | A list of headers to attach to every HTTP requests sent for this user | [HTTPHeader](#HTTPHeader) |
+| query_parameters | `HTTPQueryParameter[]` | `False` | A list of query parameters to attach to every HTTP requests sent for this user | [HTTPQueryParameter](#HTTPQueryParameter) |
+
