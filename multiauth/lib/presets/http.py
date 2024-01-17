@@ -66,7 +66,7 @@ class HTTPUserPreset(BaseUserPreset):
     )
 
 
-class HTTPRequestParametersSimplified(BaseModel):
+class HTTPRequestPreset(BaseModel):
     url: str = Field(description='The URL to send the request to')
     method: HTTPMethod = Field(
         default=HTTPMethod.POST,
@@ -127,7 +127,7 @@ class HTTPRequestParametersSimplified(BaseModel):
 
 class HTTPPreset(BasePreset):
     type: Literal['http'] = 'http'
-    request: HTTPRequestParametersSimplified = Field(
+    request: HTTPRequestPreset = Field(
         description=('The parameters of the HTTP request used to fetch the access and refresh tokens.'),
     )
     extract: TokenExtraction = Field(

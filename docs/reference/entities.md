@@ -260,7 +260,7 @@ Type: object
 | query_parameters | `HTTPQueryParameter[]` | `False` | The list of query parameters to attach to the request. Query parameters are merged with the user credentials query parameters. It is possible to attach mutliple values to a query parameter. Query parameter values are url-encoded before being sent. | [HTTPQueryParameter](#HTTPQueryParameter) |
 
 
-## <a id="HTTPRequestParametersSimplified"></a>HTTPRequestParametersSimplified
+## <a id="HTTPRequestPreset"></a>HTTPRequestPreset
 
 Description: No Description.
 

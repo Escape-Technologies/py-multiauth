@@ -283,7 +283,7 @@
         "first_request": {
           "allOf": [
             {
-              "$ref": "#/$defs/HTTPRequestParametersSimplified"
+              "$ref": "#/$defs/HTTPRequestPreset"
             }
           ],
           "description": "The parameters of the first HTTP request executed during the digest procedure.It is the one that returns the WWW-Authenticate header.",
@@ -683,7 +683,7 @@
         "request": {
           "allOf": [
             {
-              "$ref": "#/$defs/HTTPRequestParametersSimplified"
+              "$ref": "#/$defs/HTTPRequestPreset"
             }
           ],
           "description": "The parameters of the HTTP request used to fetch the access and refresh tokens."
@@ -884,7 +884,7 @@
       "title": "HTTPRequestParameters",
       "type": "object"
     },
-    "HTTPRequestParametersSimplified": {
+    "HTTPRequestPreset": {
       "properties": {
         "url": {
           "description": "The URL to send the request to",
@@ -968,7 +968,7 @@
       "required": [
         "url"
       ],
-      "title": "HTTPRequestParametersSimplified",
+      "title": "HTTPRequestPreset",
       "type": "object"
     },
     "HTTPRunnerConfiguration": {
@@ -1400,7 +1400,7 @@
               "commands": [
                 {
                   "command": "open",
-                  "id": "8198428ff44a44edb4395d69a40a9879",
+                  "id": "32e9815fe6454ca58b9ebbbc6972f8ed",
                   "target": "https://example.com",
                   "targets": [
                     [
@@ -1411,7 +1411,7 @@
                   "value": ""
                 }
               ],
-              "id": "51cdbcd8cc734046b19a8472a70cfe38",
+              "id": "aaaf4164acd3471bad44c2097afbc541",
               "name": "test"
             }
           ],
@@ -1455,7 +1455,7 @@
                     "commands": [
                       {
                         "command": "open",
-                        "id": "7655b6cd065d4b53a16103e916c0830f",
+                        "id": "360c915616874115a173ebc314a0b424",
                         "target": "https://example.com",
                         "targets": [
                           [
@@ -1466,7 +1466,7 @@
                         "value": ""
                       }
                     ],
-                    "id": "3967c7043eed40748bc2f4746a1d60a8",
+                    "id": "d6ce3272461e4e0bab8fc80cdbb2705a",
                     "name": "test"
                   }
                 ]
@@ -1588,7 +1588,7 @@
         "id": {
           "description": "The id of the test.",
           "examples": [
-            "66996238781b4a019481c7b5c1e4e638"
+            "6a9f6a1f199f4be0a6c79146045979f3"
           ],
           "title": "Id",
           "type": "string"
@@ -1606,7 +1606,7 @@
           "examples": [
             {
               "command": "open",
-              "id": "c4c693098a3a4de399581a3e59726c4a",
+              "id": "c5f13639a1484f0dbd7d051c7bcbf5c3",
               "target": "https://example.com",
               "targets": [
                 [
