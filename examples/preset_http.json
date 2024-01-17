@@ -7,12 +7,7 @@
           "my-global-key1": "my-global-value1",
           "my-global-key2": "my-global-value2"
         },
-        "headers": [
-          {
-            "name": "Content-Type",
-            "values": ["application/json"]
-          }
-        ],
+        "headers": { "Content-Type": "application/json" },
         "url": "https://my-api.com"
       },
       "extract": {
@@ -28,18 +23,10 @@
       "users": [
         {
           "username": "user",
-          "headers": [
-            {
-              "name": "X-Example-Header-From-User-Variable",
-              "values": ["my-user-header"]
-            }
-          ],
-          "cookies": [
-            {
-              "name": "PHPSESSIONID",
-              "values": ["my-user-cookie"]
-            }
-          ]
+          "headers": {
+            "X-Example-Header-From-User-Variable": "my-user-header"
+          },
+          "cookies": { "PHPSESSIONID": "my-user-cookie" }
         }
       ]
     }

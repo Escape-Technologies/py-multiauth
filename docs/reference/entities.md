@@ -260,6 +260,22 @@ Type: object
 | query_parameters | `HTTPQueryParameter[]` | `False` | The list of query parameters to attach to the request. Query parameters are merged with the user credentials query parameters. It is possible to attach mutliple values to a query parameter. Query parameter values are url-encoded before being sent. | [HTTPQueryParameter](#HTTPQueryParameter) |
 
 
+## <a id="HTTPRequestPreset"></a>HTTPRequestPreset
+
+Description: No Description.
+
+Type: object
+
+| Field Name | Type | Required | Description | Reference |
+|------------|------|----------|-------------|-----------|
+| url | `string` | `True` | The URL to send the request to |  |
+| body | `N/A` | `False` | The body of the request. It can be a string or a JSON object. It is merged with the user credentials body if provided. If bodies of the HTTP request and of the user credentials are both JSON objects, they are merged. If the two bodies are strings, they are concatenated. If the two bodies are of different types, the body of the user credentials is used instead of this value. |  |
+| cookies | `N/A` | `False` | The list of cookies to attach to the request. Cookies are merged with the user credentials cookies. It is possible to attach mutliple values to a cookie. Cookie values are url-encoded before being sent. |  |
+| headers | `N/A` | `False` | The list of headers to attach to the request. Headers are merged with the user credentials headers. It is possible to attach mutliple values to a header. |  |
+| method | `N/A` | `False` | The HTTP method to use |  |
+| query_parameters | `N/A` | `False` | The list of query parameters to attach to the request. Query parameters are merged with the user credentials query parameters. It is possible to attach mutliple values to a query parameter. Query parameter values are url-encoded before being sent. |  |
+
+
 ## <a id="HTTPRunnerConfiguration"></a>HTTPRunnerConfiguration
 
 Description: No Description.
@@ -282,11 +298,11 @@ Type: object
 | Field Name | Type | Required | Description | Reference |
 |------------|------|----------|-------------|-----------|
 | body | `N/A` | `False` | A body to merge with the bodies of every HTTP requests sent for this user |  |
+| cookies | `N/A` | `False` | A dict representing the cookies to attach to every HTTP requests sent for this user |  |
+| headers | `N/A` | `False` | A dict representing the headers to attach to every HTTP requests sent for this user |  |
 | password | `N/A` | `False` | The password to attach to the HTTP requests sent for this user. See [developer.mozilla.org](https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication#access_using_credentials_in_the_url) |  |
+| query_parameters | `N/A` | `False` | A dict of query parameters to attach to every HTTP requests sent for this user |  |
 | username | `string` | `False` | The username to attach to the HTTP requests sent for this user. See [developer.mozilla.org](https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication#access_using_credentials_in_the_url) |  |
-| cookies | `HTTPCookie[]` | `False` | A list of cookies to attach to every HTTP requests sent for this user | [HTTPCookie](#HTTPCookie) |
-| headers | `HTTPHeader[]` | `False` | A list of headers to attach to every HTTP requests sent for this user | [HTTPHeader](#HTTPHeader) |
-| query_parameters | `HTTPQueryParameter[]` | `False` | A list of query parameters to attach to every HTTP requests sent for this user | [HTTPQueryParameter](#HTTPQueryParameter) |
 
 
 ## <a id="HeadersPreset"></a>HeadersPreset

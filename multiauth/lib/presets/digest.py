@@ -5,6 +5,7 @@ from pydantic import Field
 from multiauth.lib.entities import ProcedureName
 from multiauth.lib.presets.base import BasePreset
 from multiauth.lib.presets.basic import BasicUserPreset
+from multiauth.lib.presets.http import HTTPRequestPreset
 from multiauth.lib.procedure import ProcedureConfiguration
 from multiauth.lib.runners.digest import (
     DigestRequestSequenceConfiguration,
@@ -18,7 +19,7 @@ from multiauth.lib.store.user import Credentials, User
 class DigestPreset(BasePreset):
     type: Literal['digest'] = 'digest'
 
-    first_request: HTTPRequestParameters = Field(
+    first_request: HTTPRequestPreset = Field(
         description=(
             'The parameters of the first HTTP request executed during the digest procedure.'
             'It is the one that returns the WWW-Authenticate header.'
@@ -45,7 +46,7 @@ class DigestPreset(BasePreset):
                 operations=[
                     DigestRunnerConfiguration(
                         parameters=DigestRequestSequenceConfiguration(
-                            first_request=self.first_request,
+                            first_request=self.first_request.to_std_http_parameters(),
                             second_request=self.second_request,
                         ),
                         extractions=[],

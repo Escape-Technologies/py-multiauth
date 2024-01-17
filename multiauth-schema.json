@@ -283,7 +283,7 @@
         "first_request": {
           "allOf": [
             {
-              "$ref": "#/$defs/HTTPRequestParameters"
+              "$ref": "#/$defs/HTTPRequestPreset"
             }
           ],
           "description": "The parameters of the first HTTP request executed during the digest procedure.It is the one that returns the WWW-Authenticate header.",
@@ -683,31 +683,10 @@
         "request": {
           "allOf": [
             {
-              "$ref": "#/$defs/HTTPRequestParameters"
+              "$ref": "#/$defs/HTTPRequestPreset"
             }
           ],
-          "description": "The parameters of the HTTP request used to fetch the access and refresh tokens.",
-          "examples": [
-            {
-              "method": "GET",
-              "url": "https://my-api.com"
-            },
-            {
-              "body": {
-                "key1": "value1",
-                "key2": "value2"
-              },
-              "headers": [
-                {
-                  "name": "Content-Type",
-                  "values": [
-                    "application/json"
-                  ]
-                }
-              ],
-              "url": "https://my-api.com"
-            }
-          ]
+          "description": "The parameters of the HTTP request used to fetch the access and refresh tokens."
         },
         "extract": {
           "allOf": [
@@ -905,6 +884,114 @@
       "title": "HTTPRequestParameters",
       "type": "object"
     },
+    "HTTPRequestPreset": {
+      "properties": {
+        "url": {
+          "description": "The URL to send the request to",
+          "title": "Url",
+          "type": "string"
+        },
+        "method": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/HTTPMethod"
+            }
+          ],
+          "default": "POST",
+          "description": "The HTTP method to use",
+          "examples": [
+            "GET",
+            "POST",
+            "PUT"
+          ]
+        },
+        "headers": {
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "type": "string"
+              },
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "The list of headers to attach to the request. Headers are merged with the user credentials headers. It is possible to attach mutliple values to a header.",
+          "examples": [
+            {
+              "Authorization": "Bearer my-global-token",
+              "my-header": "global-value"
+            }
+          ],
+          "title": "Headers"
+        },
+        "cookies": {
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "type": "string"
+              },
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "The list of cookies to attach to the request. Cookies are merged with the user credentials cookies. It is possible to attach mutliple values to a cookie. Cookie values are url-encoded before being sent.",
+          "examples": [
+            {
+              "PHPSESSIONID": "my-global-php-session-id"
+            }
+          ],
+          "title": "Cookies"
+        },
+        "query_parameters": {
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "type": "string"
+              },
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "The list of query parameters to attach to the request. Query parameters are merged with the user credentials query parameters. It is possible to attach mutliple values to a query parameter. Query parameter values are url-encoded before being sent.",
+          "examples": [
+            {
+              "sessionId": "my-global-session-id"
+            }
+          ],
+          "title": "Query Parameters"
+        },
+        "body": {
+          "anyOf": [
+            {},
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "The body of the request. It can be a string or a JSON object. It is merged with the user credentials body if provided. If bodies of the HTTP request and of the user credentials are both JSON objects, they are merged. If the two bodies are strings, they are concatenated. If the two bodies are of different types, the body of the user credentials is used instead of this value.",
+          "examples": [
+            "my body",
+            {
+              "key1": "value1",
+              "key2": "value2"
+            },
+            12345
+          ],
+          "title": "Body"
+        }
+      },
+      "required": [
+        "url"
+      ],
+      "title": "HTTPRequestPreset",
+      "type": "object"
+    },
     "HTTPRunnerConfiguration": {
       "additionalProperties": false,
       "properties": {
@@ -993,52 +1080,64 @@
           "title": "Password"
         },
         "headers": {
-          "description": "A list of headers to attach to every HTTP requests sent for this user",
-          "examples": [
+          "anyOf": [
             {
-              "name": "Authorization",
-              "values": [
-                "Bearer ..."
-              ]
+              "additionalProperties": {
+                "type": "string"
+              },
+              "type": "object"
+            },
+            {
+              "type": "null"
             }
           ],
-          "items": {
-            "$ref": "#/$defs/HTTPHeader"
-          },
-          "title": "Headers",
-          "type": "array"
+          "description": "A dict representing the headers to attach to every HTTP requests sent for this user",
+          "examples": [
+            {
+              "Authorization": "Bearer ..."
+            }
+          ],
+          "title": "Headers"
         },
         "cookies": {
-          "description": "A list of cookies to attach to every HTTP requests sent for this user",
-          "examples": [
+          "anyOf": [
             {
-              "name": "PHPSESSIONID",
-              "values": [
-                "..."
-              ]
+              "additionalProperties": {
+                "type": "string"
+              },
+              "type": "object"
+            },
+            {
+              "type": "null"
             }
           ],
-          "items": {
-            "$ref": "#/$defs/HTTPCookie"
-          },
-          "title": "Cookies",
-          "type": "array"
+          "description": "A dict representing the cookies to attach to every HTTP requests sent for this user",
+          "examples": [
+            {
+              "PHPSESSIONID": "..."
+            }
+          ],
+          "title": "Cookies"
         },
         "query_parameters": {
-          "description": "A list of query parameters to attach to every HTTP requests sent for this user",
-          "examples": [
+          "anyOf": [
             {
-              "name": "token",
-              "values": [
-                "..."
-              ]
+              "additionalProperties": {
+                "type": "string"
+              },
+              "type": "object"
+            },
+            {
+              "type": "null"
             }
           ],
-          "items": {
-            "$ref": "#/$defs/HTTPQueryParameter"
-          },
-          "title": "Query Parameters",
-          "type": "array"
+          "description": "A dict of query parameters to attach to every HTTP requests sent for this user",
+          "examples": [
+            {
+              "sessionId": "..."
+            }
+          ],
+          "title": "Query Parameters"
         },
         "body": {
           "anyOf": [
@@ -1343,7 +1442,7 @@
               "commands": [
                 {
                   "command": "open",
-                  "id": "fe2d723ae8ce4f7188c8a8150e7c0020",
+                  "id": "21ea4649bc034c678655bac8f03cb0cf",
                   "target": "https://example.com",
                   "targets": [
                     [
@@ -1354,7 +1453,7 @@
                   "value": ""
                 }
               ],
-              "id": "066e40345ba74db4af32160c2aa03a14",
+              "id": "a2b6cac88640424d863182874cbf8ca0",
               "name": "test"
             }
           ],
@@ -1398,7 +1497,7 @@
                     "commands": [
                       {
                         "command": "open",
-                        "id": "afae15fd7d26435f961686be7ec14562",
+                        "id": "5971d2d0ced1407f9f177545e4d04f69",
                         "target": "https://example.com",
                         "targets": [
                           [
@@ -1409,7 +1508,7 @@
                         "value": ""
                       }
                     ],
-                    "id": "4c8a0772b38c4750bccf40538d13516d",
+                    "id": "352fb4e333bc4e84bc1687bc0a102447",
                     "name": "test"
                   }
                 ]
@@ -1531,7 +1630,7 @@
         "id": {
           "description": "The id of the test.",
           "examples": [
-            "f3780f66a6804d74965df442c34145c4"
+            "f1498b91a1c94f3aa2ea2e376693302b"
           ],
           "title": "Id",
           "type": "string"
@@ -1549,7 +1648,7 @@
           "examples": [
             {
               "command": "open",
-              "id": "1dac55e9f4e04e3096f93fb9188816a0",
+              "id": "bb09c002fe204f108b0c85282013a0a0",
               "target": "https://example.com",
               "targets": [
                 [
