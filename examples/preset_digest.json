@@ -1,0 +1,26 @@
+{
+  "presets": [
+    {
+      "type": "digest",
+      "first_request": {
+        "body": {
+          "my-global-key1": "my-global-value1",
+          "my-global-key2": "my-global-value2"
+        },
+        "headers": { "Content-Type": "application/json" },
+        "url": "https://my-api.com",
+        "method": "POST"
+      },
+      "second_request": {
+        "method": "GET"
+      },
+      "users": [
+        {
+          "username": "user",
+          "password": "C0mpl3xP@ssw0rd"
+        }
+      ]
+    }
+  ],
+  "$schema": "../multiauth-schema.json"
+}
