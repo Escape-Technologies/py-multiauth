@@ -19,6 +19,7 @@ PresetType = Literal[
     'http',
     'oauth_client_credentials',
     'oauth_userpass',
+    'webdriver',
 ]
 
 

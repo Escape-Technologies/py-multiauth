@@ -18,7 +18,7 @@ from multiauth.lib.store.user import Credentials, User
 
 class WebdriverUserPreset(BaseUserPreset, Credentials):
     username: UserName = Field(description='The arbitrary name that identifies the user.')
-    projet: SeleniumProject = Field(
+    project: SeleniumProject = Field(
         description=(
             'The Selenium project used to run the script. '
             'It is the one that contains the tests and commands to run. '
@@ -33,7 +33,7 @@ VARIABLE_NAME = 'token'
 
 
 class WebdriverPreset(BasePreset):
-    tech: Literal['webdriver'] = 'webdriver'
+    type: Literal['webdriver'] = 'webdriver'
 
     wait_for_seconds: int = Field(
         default=5,
@@ -75,7 +75,7 @@ class WebdriverPreset(BasePreset):
                     operations=[
                         SeleniumRunnerConfiguration(
                             parameters=SeleniumScriptParameters(
-                                project=user.projet,
+                                project=user.project,
                                 options=SeleniumScriptOptions(
                                     wait_for_seconds=self.wait_for_seconds,
                                 ),

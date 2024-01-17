@@ -1,13 +1,12 @@
 from uuid import uuid4
 
-from pydantic import Field
+from pydantic import BaseModel, Field
 
 from multiauth.helpers.base_model import StrictBaseModel
 
 
-class SeleniumCommand(StrictBaseModel):
+class SeleniumCommand(BaseModel):
     id: str
-    # comment: str
     command: str = Field(
         description=('The command of the test.'),
         examples=['open'],
@@ -71,11 +70,14 @@ class SeleniumTest(StrictBaseModel):
         ]
 
 
-class SeleniumProject(StrictBaseModel):
-    # id: str
-    # version: str
-    # name: str
-    # url: str
+class SeleniumProject(BaseModel):
+    # id: str | None = Field(default=None, description='The uuid of the Selenium project.')
+    # version: str | None = Field(default=None, description='The version of the Selenium project.')
+    # name: str | None = Field(default=None, description='The name of the Selenium project.')
+    # urls: list | None = Field(default=None, description='The urls of the Selenium project.')
+    # suites: list | None = Field(default=None, description='The suites of the Selenium project.')
+    # plugins: list | None = Field(default=None, description='The plugins of the Selenium project.')
+
     tests: list[SeleniumTest] = Field(
         description=('The tests of the Selenium script.'),
         examples=SeleniumTest.examples(),

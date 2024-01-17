@@ -1,0 +1,158 @@
+{
+  "presets": [
+    {
+      "type": "webdriver",
+      "wait_for_seconds": 5,
+      "extract": {
+        "location": "query",
+        "key": "",
+        "regex": "example-portal.*portal-session-id=([^*]*)"
+      },
+      "inject": {
+        "location": "header",
+        "key": "Authorization",
+        "prefix": "Bearer "
+      },
+      "users": [
+        {
+          "username": "user",
+          "project": {
+            "tests": [
+              {
+                "id": "aec1dcca-65ca-4e09-82a6-8da7bbddbde0",
+                "name": "Example Selenium Sequence",
+                "commands": [
+                  {
+                    "id": "bb671e84-0d81-40da-92ad-4086ec483f6d",
+                    "value": "",
+                    "target": "https://auth.example.com/signin/?return=/setup/payment-types/",
+                    "command": "open",
+                    "comment": "",
+                    "targets": []
+                  },
+                  {
+                    "id": "506078d5-9710-49fe-b657-6ac8e12277b0",
+                    "value": "",
+                    "target": "1214x1029",
+                    "command": "setWindowSize",
+                    "comment": "",
+                    "targets": []
+                  },
+                  {
+                    "id": "6406387f-c3bf-453c-8dee-561a548f6c42",
+                    "value": "username@example.com",
+                    "target": "name=username",
+                    "command": "type",
+                    "comment": "",
+                    "targets": [
+                      ["name=username", "name"],
+                      ["css=.vd-field:nth-child(1) .vd-input", "css:finder"],
+                      ["xpath=//input[@name='username']", "xpath:attributes"],
+                      [
+                        "xpath=//div[@id='react-root']/section/main/div/div/div/div/div/div[2]/form/div/div[2]/input",
+                        "xpath:idRelative"
+                      ],
+                      ["xpath=//input", "xpath:position"]
+                    ]
+                  },
+                  {
+                    "id": "adf71a06-33cc-4e89-b69b-0e324edaa314",
+                    "value": "C0mplexPassWord!",
+                    "target": "name=password",
+                    "command": "type",
+                    "comment": "",
+                    "targets": [
+                      ["name=password", "name"],
+                      ["css=.vd-field:nth-child(2) .vd-input", "css:finder"],
+                      ["xpath=//input[@name='password']", "xpath:attributes"],
+                      [
+                        "xpath=//div[@id='react-root']/section/main/div/div/div/div/div/div[2]/form/div[2]/div[2]/input",
+                        "xpath:idRelative"
+                      ],
+                      ["xpath=//div[2]/div[2]/input", "xpath:position"]
+                    ]
+                  },
+                  {
+                    "id": "0c18a7ca-b347-4402-adf7-18c02b54d326",
+                    "value": "",
+                    "target": "name=signin_submit",
+                    "command": "click",
+                    "comment": "",
+                    "targets": [
+                      ["name=signin_submit", "name"],
+                      ["css=.vd-btn", "css:finder"],
+                      [
+                        "xpath=//button[@name='signin_submit']",
+                        "xpath:attributes"
+                      ],
+                      [
+                        "xpath=//div[@id='react-root']/section/main/div/div/div/div/div/div[2]/form/div[3]/button",
+                        "xpath:idRelative"
+                      ],
+                      ["xpath=//button", "xpath:position"],
+                      [
+                        "xpath=//button[contains(.,'Sign in')]",
+                        "xpath:innerText"
+                      ]
+                    ]
+                  },
+                  {
+                    "id": "f605d39c-7360-4a67-8405-03f25e461040",
+                    "value": "",
+                    "target": "css=.vd-btn--supplementary",
+                    "command": "click",
+                    "comment": "",
+                    "targets": [
+                      ["css=.vd-btn--supplementary", "css:finder"],
+                      [
+                        "xpath=(//button[@type='button'])[3]",
+                        "xpath:attributes"
+                      ],
+                      ["xpath=//div[2]/div[2]/div/button", "xpath:position"],
+                      [
+                        "xpath=//button[contains(.,'Continue application')]",
+                        "xpath:innerText"
+                      ]
+                    ]
+                  },
+                  {
+                    "id": "e9b59e56-3117-4b52-8b7a-aeabbfa513cf",
+                    "value": "",
+                    "target": "index=2",
+                    "command": "selectFrame",
+                    "comment": "",
+                    "targets": [["index=2"]]
+                  },
+                  {
+                    "id": "760521da-c075-4aa7-a84f-98ab0e3ca9b1",
+                    "value": "",
+                    "target": "css=.css-kw31c7-ButtonContent",
+                    "command": "click",
+                    "comment": "",
+                    "targets": [
+                      ["css=.css-kw31c7-ButtonContent", "css:finder"],
+                      [
+                        "xpath=//div[@id='__next']/div/span/div[2]/div/div/div/div/div/div/button/span/span",
+                        "xpath:idRelative"
+                      ],
+                      ["xpath=//span/span", "xpath:position"]
+                    ]
+                  },
+                  {
+                    "id": "552d7f74-25bf-4213-aba3-b0c5b598f3b9",
+                    "value": "30",
+                    "target": "request_url_contains=portal-session-id",
+                    "command": "wait",
+                    "comment": "",
+                    "targets": []
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "$schema": "../multiauth-schema.json"
+}

@@ -1277,7 +1277,6 @@
       "type": "object"
     },
     "SeleniumCommand": {
-      "additionalProperties": false,
       "properties": {
         "id": {
           "title": "Id",
@@ -1336,7 +1335,6 @@
       "type": "object"
     },
     "SeleniumProject": {
-      "additionalProperties": false,
       "properties": {
         "tests": {
           "description": "The tests of the Selenium script.",
@@ -1345,7 +1343,7 @@
               "commands": [
                 {
                   "command": "open",
-                  "id": "4b60befcc82c41cdaae0c51b67e8b76e",
+                  "id": "e93e60fdbdc24805b819f4d5dbddcb95",
                   "target": "https://example.com",
                   "targets": [
                     [
@@ -1356,7 +1354,7 @@
                   "value": ""
                 }
               ],
-              "id": "a2494c777b434ad9928ec44463ca529d",
+              "id": "0087de2d0c354ab0b1d842ecfb7694b4",
               "name": "test"
             }
           ],
@@ -1400,7 +1398,7 @@
                     "commands": [
                       {
                         "command": "open",
-                        "id": "67b8c6ae95e64e8f8b4feadb1ca7dafc",
+                        "id": "c8ae950fefc14b9489eb4560dc91ca37",
                         "target": "https://example.com",
                         "targets": [
                           [
@@ -1411,7 +1409,7 @@
                         "value": ""
                       }
                     ],
-                    "id": "bab69926530b43dd9bc46f9d42a2aa35",
+                    "id": "6fad33ba6e7c4f789252f40c437d716d",
                     "name": "test"
                   }
                 ]
@@ -1533,7 +1531,7 @@
         "id": {
           "description": "The id of the test.",
           "examples": [
-            "e3e514063cc5420bb446d618250c3f93"
+            "21b2ceff2d71425695b89ea3945ac6f4"
           ],
           "title": "Id",
           "type": "string"
@@ -1551,7 +1549,7 @@
           "examples": [
             {
               "command": "open",
-              "id": "a96c7e74ef544896b8c93122371b3b1e",
+              "id": "b41d4d1f8d2f480d8d3c4d74f0a6e91f",
               "target": "https://example.com",
               "targets": [
                 [
@@ -1815,6 +1813,201 @@
       "title": "UserRefresh",
       "type": "object"
     },
+    "WebdriverPreset": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "webdriver",
+          "default": "webdriver",
+          "title": "Type"
+        },
+        "users": {
+          "description": "The list of users to generate tokens for.",
+          "items": {
+            "$ref": "#/$defs/WebdriverUserPreset"
+          },
+          "title": "Users",
+          "type": "array"
+        },
+        "wait_for_seconds": {
+          "default": 5,
+          "description": "The number of seconds to wait at various steps of the script. For example when waiting for a page to load.",
+          "examples": [
+            30
+          ],
+          "title": "Wait For Seconds",
+          "type": "integer"
+        },
+        "extract": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/TokenExtraction"
+            }
+          ],
+          "description": "The token extraction configuration used to extract the tokens from the HTTP response.",
+          "examples": [
+            {
+              "key": "Set-Cookie",
+              "location": "header",
+              "name": "my-variable"
+            }
+          ]
+        },
+        "inject": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/TokenInjection"
+            }
+          ],
+          "description": "The injection configuration used to inject the tokens into the HTTP requests.",
+          "examples": [
+            {
+              "key": "Authorization",
+              "location": "header",
+              "prefix": "Bearer ",
+              "variable": "token"
+            }
+          ]
+        }
+      },
+      "required": [
+        "users",
+        "extract",
+        "inject"
+      ],
+      "title": "WebdriverPreset",
+      "type": "object"
+    },
+    "WebdriverUserPreset": {
+      "additionalProperties": false,
+      "properties": {
+        "username": {
+          "description": "The arbitrary name that identifies the user.",
+          "title": "Username",
+          "type": "string"
+        },
+        "password": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "The password to attach to the HTTP requests sent for this user. See https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication#access_using_credentials_in_the_url",
+          "examples": [
+            "john@password123#"
+          ],
+          "title": "Password"
+        },
+        "headers": {
+          "description": "A list of headers to attach to every HTTP requests sent for this user",
+          "examples": [
+            {
+              "name": "Authorization",
+              "values": [
+                "Bearer ..."
+              ]
+            }
+          ],
+          "items": {
+            "$ref": "#/$defs/HTTPHeader"
+          },
+          "title": "Headers",
+          "type": "array"
+        },
+        "cookies": {
+          "description": "A list of cookies to attach to every HTTP requests sent for this user",
+          "examples": [
+            {
+              "name": "PHPSESSIONID",
+              "values": [
+                "..."
+              ]
+            }
+          ],
+          "items": {
+            "$ref": "#/$defs/HTTPCookie"
+          },
+          "title": "Cookies",
+          "type": "array"
+        },
+        "query_parameters": {
+          "description": "A list of query parameters to attach to every HTTP requests sent for this user",
+          "examples": [
+            {
+              "name": "token",
+              "values": [
+                "..."
+              ]
+            }
+          ],
+          "items": {
+            "$ref": "#/$defs/HTTPQueryParameter"
+          },
+          "title": "Query Parameters",
+          "type": "array"
+        },
+        "body": {
+          "anyOf": [
+            {},
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "A body to merge with the bodies of every HTTP requests sent for this user",
+          "examples": [
+            {
+              "password": "john@password123#",
+              "username": "john"
+            },
+            "username=john&password=john%40password123%23"
+          ],
+          "title": "Body"
+        },
+        "project": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/SeleniumProject"
+            }
+          ],
+          "description": "The Selenium project used to run the script. It is the one that contains the tests and commands to run. The project script can be generated using the Selenium IDE. See https://www.selenium.dev/selenium-ide/docs/en/introduction/getting-started/",
+          "examples": [
+            {
+              "tests": [
+                {
+                  "commands": [
+                    {
+                      "command": "open",
+                      "id": "command",
+                      "target": "https://example.com",
+                      "targets": [
+                        [
+                          "css",
+                          "body"
+                        ]
+                      ],
+                      "value": ""
+                    }
+                  ],
+                  "id": "test",
+                  "name": "test"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "required": [
+        "username",
+        "project"
+      ],
+      "title": "WebdriverUserPreset",
+      "type": "object"
+    },
     "cURLPreset": {
       "additionalProperties": false,
       "properties": {
@@ -1975,8 +2168,22 @@
       "type": "object"
     }
   },
+  "additionalProperties": false,
   "description": "Multiauth configuration model.",
   "properties": {
+    "$schema": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "The schema of the configuration file",
+      "title": "$Schema"
+    },
     "procedures": {
       "anyOf": [
         {
@@ -2007,7 +2214,8 @@
                 "headers": "#/$defs/HeadersPreset",
                 "http": "#/$defs/HTTPPreset",
                 "oauth_client_credentials": "#/$defs/OAuthClientCredentialsPreset",
-                "oauth_userpass": "#/$defs/OAuthUserpassPreset"
+                "oauth_userpass": "#/$defs/OAuthUserpassPreset",
+                "webdriver": "#/$defs/WebdriverPreset"
               },
               "propertyName": "type"
             },
@@ -2038,6 +2246,9 @@
               },
               {
                 "$ref": "#/$defs/cURLPreset"
+              },
+              {
+                "$ref": "#/$defs/WebdriverPreset"
               }
             ]
           },
