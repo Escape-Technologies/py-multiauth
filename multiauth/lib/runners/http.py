@@ -42,7 +42,7 @@ JSONSerializable = dict | list | str | int | float | bool
 
 def extract_with_regex(string_list: list[str], regex_pattern: str | None) -> list[str]:
     if regex_pattern is None:
-        return []  # Return an empty list when no regex is provided
+        return string_list  # Return an empty list when no regex is provided
 
     extracted_items = []
     for input_string in string_list:
