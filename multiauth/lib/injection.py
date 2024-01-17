@@ -62,10 +62,16 @@ class TokenInjection(StrictBaseModel):
             return authentication, events
 
         if self.location == HTTPLocation.HEADER:
-            header = HTTPHeader(
-                name=self.key,
-                values=[f'{self.prefix or ""}{variable.value}'],
-            )
+            if self.prefix:
+                header = HTTPHeader(
+                    name=self.key,
+                    values=[f'{self.prefix.strip()} {variable.value}'],
+                )
+            else:
+                header = HTTPHeader(
+                    name=self.key,
+                    values=[variable.value],
+                )
             authentication.headers.append(header)
             events.append(InjectedVariableEvent(variable=variable, location=HTTPLocation.HEADER, target=self.key))
         elif self.location == HTTPLocation.COOKIE:
