@@ -36,7 +36,6 @@ class BasicPreset(BasePreset):
         for user in self.users:
             res.append(
                 User(
-                    procedure=self.slug,
                     name=UserName(user.username),
                     credentials=Credentials(headers=[build_basic_headers(user.username, user.password)]),
                 ),

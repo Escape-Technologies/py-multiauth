@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "py-multiauth"
-version = "3.0.0-rc.4"
+version = "3.0.2"
 description = "Python package to interact with multiple authentication services"
 authors = ["Escape Technologies SAS <ping@escape.tech>"]
 maintainers = [
@@ -43,7 +43,7 @@ selenium = "^4.16.0"
 selenium-wire = "^5.1.0"
 pydantic = "^2.5.3"
 deepmerge = "^1.1.1"
-httpx = {extras = ["http2"], version = "^0.26.0"}
+httpx = { extras = ["http2"], version = "^0.26.0" }
 
 [tool.poetry.dev-dependencies]
 mypy = "^1.8.0"

@@ -42,7 +42,7 @@ JSONSerializable = dict | list | str | int | float | bool
 
 def extract_with_regex(string_list: list[str], regex_pattern: str | None) -> list[str]:
     if regex_pattern is None:
-        return []  # Return an empty list when no regex is provided
+        return string_list  # Return an empty list when no regex is provided
 
     extracted_items = []
     for input_string in string_list:
@@ -253,7 +253,7 @@ class HTTPRequestRunner(BaseRunner[HTTPRunnerConfiguration]):
                 case HTTPLocation.HEADER:
                     h_findings = [h for h in response.headers if h.name == extraction.key]
                     if len(h_findings) == 0:
-                        continue
+                        raise RunnerException(f'No header found with name {extraction.key}')
                     findings = extract_with_regex(h_findings[0].values, extraction.regex)
                     variable = AuthenticationVariable(name=extraction.slug, value=','.join(findings))
                     events.append(ExtractedVariableEvent(location=HTTPLocation.HEADER, variable=variable))
@@ -262,7 +262,7 @@ class HTTPRequestRunner(BaseRunner[HTTPRunnerConfiguration]):
                 case HTTPLocation.COOKIE:
                     c_findings = [c for c in response.cookies if c.name == extraction.key]
                     if len(c_findings) == 0:
-                        continue
+                        raise RunnerException(f'No cookie found with name {extraction.key}')
                     findings = extract_with_regex(c_findings[0].values, extraction.regex)
                     variable = AuthenticationVariable(name=extraction.slug, value=','.join(findings))
                     events.append(ExtractedVariableEvent(location=HTTPLocation.COOKIE, variable=variable))
@@ -275,7 +275,7 @@ class HTTPRequestRunner(BaseRunner[HTTPRunnerConfiguration]):
                         continue
                     result = search_key_in_dict(response.data_json, extraction.key)
                     if result is None:
-                        continue
+                        raise RunnerException(f'No body key found with name {extraction.key}')
                     result_str = str(result) if not isinstance(result, str) else result
                     findings = extract_with_regex([result_str], extraction.regex)
                     variable = AuthenticationVariable(name=extraction.slug, value=findings[0])
@@ -286,7 +286,7 @@ class HTTPRequestRunner(BaseRunner[HTTPRunnerConfiguration]):
                     parsed_qp = parse_qs(urlparse(response.url).query)
                     q_finding = parsed_qp.get(extraction.key)
                     if q_finding is None:
-                        continue
+                        raise RunnerException(f'No query parameter found with name {extraction.key}')
                     findings = extract_with_regex(q_finding, extraction.regex)
                     variable = AuthenticationVariable(name=extraction.slug, value=','.join(findings))
                     events.append(ExtractedVariableEvent(location=HTTPLocation.QUERY, variable=variable))
@@ -305,7 +305,10 @@ class HTTPRequestRunner(BaseRunner[HTTPRunnerConfiguration]):
             events.append(event)
             return [], events, RunnerException(event.description)
 
-        variables, extraction_events = self.extract(response)
+        try:
+            variables, extraction_events = self.extract(response)
+        except RunnerException as e:
+            return [], events, e
         events.extend(extraction_events)
 
         return variables, events, None

@@ -247,6 +247,9 @@ class Multiauth:
         for query_parameters in authentication.query_parameters:
             request.query_parameters.append(query_parameters)
 
+        if self.configuration.proxy:
+            request.proxy = self.configuration.proxy
+
         events.append(HTTPRequestEvent(request=request))
         response = send_request(request)
 

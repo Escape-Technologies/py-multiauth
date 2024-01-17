@@ -250,7 +250,7 @@
 | Property   | Type       | Required | Description | Reference |
 |------------|------------|-----|-------------|-----------|
 | name | `string` | `True` | The name of the procedure. It must be unique and is used to reference the procedure in users. |  |
-| operations | `HTTPRunnerConfiguration | DigestRunnerConfiguration | SeleniumRunnerConfiguration` | `False` | The list of operations executed during the procedure. An operation is a unit transaction, like an HTTP request, or a Selenium script. Operations are ordered, and the variables extracted from an operation can be used in the next operations. |  |
+| operations | `SeleniumRunnerConfiguration | HTTPRunnerConfiguration | DigestRunnerConfiguration` | `False` | The list of operations executed during the procedure. An operation is a unit transaction, like an HTTP request, or a Selenium script. Operations are ordered, and the variables extracted from an operation can be used in the next operations. |  |
 | injections | `TokenInjection` | `False` | The list of injections to perform at the end of the procedure. Injections are used to inject the variables extracted from the procedure into the user authentication. | [TokenInjection](#TokenInjection) |
 
 
