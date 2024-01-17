@@ -1,13 +1,19 @@
-{% for definition in definitions %}
-## <a id="{{ definition.anchor }}"></a>{{ definition.name }}
+# Objects
 
-Description: {{ definition.description }}
+{% for object in objects %}
+## <a id="{{ object.anchor }}"></a>{{ object.name }}
 
-Type: {{ definition.type }}
-
-| Field Name | Type | Required | Description | Reference |
-|------------|------|----------|-------------|-----------|
-{% for property in definition.properties -%}
+| Property   | Type       | Required | Description | Reference |
+|------------|------------|-----|-------------|-----------|
+{% for property in object.properties.values() -%}
 | {{ property.name }} | `{{ property.type }}` | `{{ property.required }}` | {{ property.description }} | {% if property.reference %}[{{ property.reference }}](#{{ property.reference }}){% endif %} |
+{% endfor %}
+{% endfor %}
+
+# Enums
+{% for enumeration in enumerations %}
+## <a id="{{ enumeration.anchor }}"></a>{{ enumeration.name }}
+{% for value in enumeration.enum_values %}
+- `{{ value }}`
 {% endfor %}
 {% endfor %}
