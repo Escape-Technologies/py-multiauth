@@ -39,7 +39,6 @@ class HeadersPreset(BasePreset):
                 User(
                     name=user.username,
                     credentials=Credentials(headers=build_headers(user)),
-                    procedure=self.slug,
                 ),
             )
 
