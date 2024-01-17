@@ -139,8 +139,8 @@ class Multiauth:
         events = EventsList()
 
         if user.procedure is not None:
-            procedure = self._get_authentication_procedure(user_name)
             try:
+                procedure = self._get_authentication_procedure(user_name)
                 procedure_authentication, procedure_events, expiration, error = procedure.run(user)
                 events.extend(procedure_events)
                 authentication = Authentication.merge(authentication, procedure_authentication)

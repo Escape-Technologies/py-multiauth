@@ -21,7 +21,7 @@ def validate_command(args: argparse.Namespace) -> None:
         for reporter in reporters:
             reporter.report(events)
     except Exception as e:
-        exit_with_error(f'Error while authenticating user {args.user}: {e}')
+        exit_with_error(f'Unexpected error while authenticating user {args.user}: {e}')
 
     if error is not None:
         exit_with_error(f'Error while authenticating user {args.user}: {error}')
