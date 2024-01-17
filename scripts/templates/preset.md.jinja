@@ -1,0 +1,37 @@
+
+# {{ result.type }} Preset Documentation
+
+## Overview
+- **Type:** {{ result.type }}
+
+## Examples
+{% for example in result.examples %}
+```yaml
+{{ example | json_to_yaml }}
+```
+{% endfor %}
+
+## Preset Details
+- **Schema Object:** {{ result.preset.name }}
+  - **Description:** {{ result.preset.description }}
+
+## Objects
+{% for obj in result.objects %}
+### {{ obj.name }}
+**Description:** {{ obj.description }}
+
+| Property | Type | Required | Description | Reference |
+|----------|------|----------|-------------|-----------|
+{% for prop in obj.properties.values() -%}
+| {{ prop.name }} | {{ prop.type }} | {{ prop.required }} | {{ prop.description }} | {{ prop.reference }} |
+{% endfor %}
+{% endfor %}
+
+## Enums
+{% for enum in result.enums %}
+### {{ enum.name }}
+**Values:**
+{% for value in enum.values %}
+- {{ value }}
+{% endfor %}
+{% endfor %}

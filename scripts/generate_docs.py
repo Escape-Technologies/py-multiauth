@@ -15,10 +15,6 @@ from scripts.entities import (
     SchemaProperty,
 )
 
-# Load JSON schema
-with open('multiauth-schema.json', 'r') as file:
-    json_schema = json.load(file)
-
 
 # URL Formatting Functions
 def format_url(url: str) -> str:
@@ -167,6 +163,10 @@ class SchemaModel:
             if 'enum' in defs
         }
 
+
+# Load JSON schema
+with open('multiauth-schema.json', 'r') as file:
+    json_schema = json.load(file)
 
 processed_objects, processed_enums = SchemaModel(json_schema).get_results()
 
