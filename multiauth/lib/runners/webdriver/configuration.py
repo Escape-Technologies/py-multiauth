@@ -1,5 +1,3 @@
-from uuid import uuid4
-
 from pydantic import BaseModel, Field
 
 from multiauth.helpers.base_model import StrictBaseModel
@@ -28,7 +26,7 @@ class SeleniumCommand(BaseModel):
     def examples() -> list:
         return [
             SeleniumCommand(
-                id=uuid4().hex,
+                id='a2b6cac88640424d863182874cbf8ca0',
                 command='open',
                 target='https://example.com',
                 targets=[['css', 'body']],
@@ -40,7 +38,7 @@ class SeleniumCommand(BaseModel):
 class SeleniumTest(StrictBaseModel):
     id: str = Field(
         description=('The id of the test.'),
-        examples=[uuid4().hex],
+        examples=['a2b6cac88640424d863182874cbf8ca0'],
     )
     name: str = Field(
         description=('The name of the test.'),
@@ -55,11 +53,11 @@ class SeleniumTest(StrictBaseModel):
     def examples() -> list:
         return [
             SeleniumTest(
-                id=uuid4().hex,
+                id='a2b6cac88640424d863182874cbf8ca0',
                 name='test',
                 commands=[
                     SeleniumCommand(
-                        id=uuid4().hex,
+                        id='a2b6cac88640424d863182874cbf8ca0',
                         targets=[['css', 'body']],
                         value='',
                         command='open',

@@ -1,7 +1,6 @@
 import os
 from copy import deepcopy
 from typing import Literal
-from uuid import uuid4
 
 from pydantic import Field
 from selenium.webdriver import firefox
@@ -85,11 +84,11 @@ class SeleniumScriptParameters(BaseRunnerParameters):
                 project=SeleniumProject(
                     tests=[
                         SeleniumTest(
-                            id=uuid4().hex,
+                            id='a2b6cac88640424d863182874cbf8ca0',
                             name='test',
                             commands=[
                                 SeleniumCommand(
-                                    id=uuid4().hex,
+                                    id='a2b6cac88640424d863182874cbf8ca0',
                                     targets=[['css', 'body']],
                                     value='',
                                     command='open',
@@ -130,11 +129,11 @@ class SeleniumRunnerConfiguration(BaseRunnerConfiguration):
                     project=SeleniumProject(
                         tests=[
                             SeleniumTest(
-                                id=uuid4().hex,
+                                id='a2b6cac88640424d863182874cbf8ca0',
                                 name='test',
                                 commands=[
                                     SeleniumCommand(
-                                        id=uuid4().hex,
+                                        id='a2b6cac88640424d863182874cbf8ca0',
                                         targets=[['css', 'body']],
                                         value='',
                                         command='open',
