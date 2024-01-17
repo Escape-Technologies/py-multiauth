@@ -14,15 +14,21 @@ from multiauth.lib.store.user import Credentials, User
 VARIABLE_NAME = VariableName('token')
 
 
-def to_headers(headers: dict[str, str]) -> list[HTTPHeader]:
+def to_headers(headers: dict[str, str] | None) -> list[HTTPHeader]:
+    if headers is None:
+        return []
     return [HTTPHeader(name=k, values=[v]) for k, v in headers.items()]
 
 
-def to_cookies(cookies: dict[str, str]) -> list[HTTPCookie]:
+def to_cookies(cookies: dict[str, str] | None) -> list[HTTPCookie]:
+    if cookies is None:
+        return []
     return [HTTPCookie(name=k, values=[v]) for k, v in cookies.items()]
 
 
-def to_query_parameters(query_parameters: dict[str, str]) -> list[HTTPQueryParameter]:
+def to_query_parameters(query_parameters: dict[str, str] | None) -> list[HTTPQueryParameter]:
+    if query_parameters is None:
+        return []
     return [HTTPQueryParameter(name=k, values=[v]) for k, v in query_parameters.items()]
 
 
@@ -37,17 +43,17 @@ class HTTPUserPreset(BaseUserPreset):
         description='The password to attach to the HTTP requests sent for this user. See https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication#access_using_credentials_in_the_url',
         examples=['john@password123#'],
     )
-    headers: dict[str, str] = Field(
+    headers: dict[str, str] | None = Field(
         default_factory=dict,
         description='A dict representing the headers to attach to every HTTP requests sent for this user',
         examples=[{'Authorization': 'Bearer ...'}],
     )
-    cookies: dict[str, str] = Field(
+    cookies: dict[str, str] | None = Field(
         default_factory=dict,
         description='A dict representing the cookies to attach to every HTTP requests sent for this user',
         examples=[{'PHPSESSIONID': '...'}],
     )
-    query_parameters: dict[str, str] = Field(
+    query_parameters: dict[str, str] | None = Field(
         default_factory=dict,
         serialization_alias='queryParameters',
         description='A dict of query parameters to attach to every HTTP requests sent for this user',
@@ -73,7 +79,7 @@ class HTTPRequestPreset(BaseModel):
         description='The HTTP method to use',
         examples=['GET', 'POST', 'PUT'],
     )
-    headers: dict[str, str] = Field(
+    headers: dict[str, str] | None = Field(
         default_factory=dict,
         description=(
             'The list of headers to attach to the request. Headers are merged with the user credentials headers. '
@@ -81,7 +87,7 @@ class HTTPRequestPreset(BaseModel):
         ),
         examples=[{'Authorization': 'Bearer my-global-token', 'my-header': 'global-value'}],
     )
-    cookies: dict[str, str] = Field(
+    cookies: dict[str, str] | None = Field(
         default_factory=dict,
         description=(
             'The list of cookies to attach to the request. Cookies are merged with the user credentials cookies. '
@@ -89,7 +95,7 @@ class HTTPRequestPreset(BaseModel):
         ),
         examples=[{'PHPSESSIONID': 'my-global-php-session-id'}],
     )
-    query_parameters: dict[str, str] = Field(
+    query_parameters: dict[str, str] | None = Field(
         default_factory=dict,
         description=(
             'The list of query parameters to attach to the request. Query parameters are merged with the user '

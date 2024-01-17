@@ -906,9 +906,17 @@
           ]
         },
         "headers": {
-          "additionalProperties": {
-            "type": "string"
-          },
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "type": "string"
+              },
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
           "description": "The list of headers to attach to the request. Headers are merged with the user credentials headers. It is possible to attach mutliple values to a header.",
           "examples": [
             {
@@ -916,34 +924,47 @@
               "my-header": "global-value"
             }
           ],
-          "title": "Headers",
-          "type": "object"
+          "title": "Headers"
         },
         "cookies": {
-          "additionalProperties": {
-            "type": "string"
-          },
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "type": "string"
+              },
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
           "description": "The list of cookies to attach to the request. Cookies are merged with the user credentials cookies. It is possible to attach mutliple values to a cookie. Cookie values are url-encoded before being sent.",
           "examples": [
             {
               "PHPSESSIONID": "my-global-php-session-id"
             }
           ],
-          "title": "Cookies",
-          "type": "object"
+          "title": "Cookies"
         },
         "query_parameters": {
-          "additionalProperties": {
-            "type": "string"
-          },
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "type": "string"
+              },
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
           "description": "The list of query parameters to attach to the request. Query parameters are merged with the user credentials query parameters. It is possible to attach mutliple values to a query parameter. Query parameter values are url-encoded before being sent.",
           "examples": [
             {
               "sessionId": "my-global-session-id"
             }
           ],
-          "title": "Query Parameters",
-          "type": "object"
+          "title": "Query Parameters"
         },
         "body": {
           "anyOf": [
@@ -1059,43 +1080,64 @@
           "title": "Password"
         },
         "headers": {
-          "additionalProperties": {
-            "type": "string"
-          },
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "type": "string"
+              },
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
           "description": "A dict representing the headers to attach to every HTTP requests sent for this user",
           "examples": [
             {
               "Authorization": "Bearer ..."
             }
           ],
-          "title": "Headers",
-          "type": "object"
+          "title": "Headers"
         },
         "cookies": {
-          "additionalProperties": {
-            "type": "string"
-          },
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "type": "string"
+              },
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
           "description": "A dict representing the cookies to attach to every HTTP requests sent for this user",
           "examples": [
             {
               "PHPSESSIONID": "..."
             }
           ],
-          "title": "Cookies",
-          "type": "object"
+          "title": "Cookies"
         },
         "query_parameters": {
-          "additionalProperties": {
-            "type": "string"
-          },
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "type": "string"
+              },
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
           "description": "A dict of query parameters to attach to every HTTP requests sent for this user",
           "examples": [
             {
               "sessionId": "..."
             }
           ],
-          "title": "Query Parameters",
-          "type": "object"
+          "title": "Query Parameters"
         },
         "body": {
           "anyOf": [
@@ -1400,7 +1442,7 @@
               "commands": [
                 {
                   "command": "open",
-                  "id": "32e9815fe6454ca58b9ebbbc6972f8ed",
+                  "id": "3698fac1c9a84d55b8495aead9ca46be",
                   "target": "https://example.com",
                   "targets": [
                     [
@@ -1411,7 +1453,7 @@
                   "value": ""
                 }
               ],
-              "id": "aaaf4164acd3471bad44c2097afbc541",
+              "id": "8852f8bc2e4944a5902a073492bd1b65",
               "name": "test"
             }
           ],
@@ -1455,7 +1497,7 @@
                     "commands": [
                       {
                         "command": "open",
-                        "id": "360c915616874115a173ebc314a0b424",
+                        "id": "0afe92952c7f4e40901d83ec8b38030b",
                         "target": "https://example.com",
                         "targets": [
                           [
@@ -1466,7 +1508,7 @@
                         "value": ""
                       }
                     ],
-                    "id": "d6ce3272461e4e0bab8fc80cdbb2705a",
+                    "id": "c905b0659e7d4054888e1ddbf0423d51",
                     "name": "test"
                   }
                 ]
@@ -1588,7 +1630,7 @@
         "id": {
           "description": "The id of the test.",
           "examples": [
-            "6a9f6a1f199f4be0a6c79146045979f3"
+            "c179c2550c274d45b4fed16d9d9b6017"
           ],
           "title": "Id",
           "type": "string"
@@ -1606,7 +1648,7 @@
           "examples": [
             {
               "command": "open",
-              "id": "c5f13639a1484f0dbd7d051c7bcbf5c3",
+              "id": "bfb0ac63cebf4666beda43d44272447a",
               "target": "https://example.com",
               "targets": [
                 [
