@@ -1,7 +1,7 @@
 from http import HTTPMethod
 from typing import Literal, Sequence
 
-from pydantic import Field, root_validator
+from pydantic import Field
 
 from multiauth.lib.entities import ProcedureName, UserName, VariableName
 from multiauth.lib.http_core.entities import HTTPEncoding, HTTPHeader, HTTPLocation
@@ -17,13 +17,6 @@ class OAuthClientCredentialsUserPreset(BaseUserPreset):
     username: UserName = Field(description='The arbitrary username given to the user.')
     client_id: str = Field(description='The client ID to use for the OAuth requests')
     client_secret: str = Field(description='The client secret to use for the OAuth requests')
-
-    @root_validator(pre=True)
-    def default_name(cls, values: dict) -> dict:
-        name, client_id = values.get('name'), values.get('client_id')
-        if name is None and client_id is not None:
-            values['name'] = client_id
-        return values
 
 
 class OAuthClientCredentialsPreset(BasePreset):
