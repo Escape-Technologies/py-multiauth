@@ -21,12 +21,12 @@
       "serial": true
     },
     {
-      "name": "Generate models references",
+      "name": "Generate docs",
       "command": "poetry run python ./scripts/generate_docs.py",
       "serial": true
     },
     {
-      "name": "Verify docs examples",
+      "name": "Verify examples",
       "command": "poetry run python ./scripts/verify_examples_conformance.py",
       "serial": true
     },
