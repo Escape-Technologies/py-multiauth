@@ -248,6 +248,7 @@ class SeleniumRunner(BaseRunner[SeleniumRunnerConfiguration]):
         driver = webdriver.Firefox(options=firefox_options)
 
         if proxy := self.selenium_configuration.parameters.options.proxy:
+            logger.info(f'Webdriver uses proxy {proxy}')
             driver.proxy = {'http': proxy, 'https': proxy}
 
         return driver

@@ -1,4 +1,3 @@
-import logging
 import re
 from typing import Literal
 
@@ -7,8 +6,6 @@ from seleniumwire.request import HTTPHeaders, Request  # type: ignore  # noqa: P
 from multiauth.lib.http_core.entities import HTTPLocation
 
 WebdriverTokenLocationType = Literal['RequestURL', 'RequestHeader', 'RequestBody', 'ResponseHeader', 'ResponseBody']
-
-logger = logging.getLogger('multiauth.providers.webdriver.extractors')
 
 
 def extract_from_request_url(url: str, rx: str) -> list[str]:
@@ -64,7 +61,6 @@ def extract_token(
         case HTTPLocation.QUERY:
             urls = [request.url for request in requests]
             for url in urls:
-                logger.info(f'{url, regex}')
                 tokens += extract_from_request_url(url, regex)
 
     _l = len(tokens)
