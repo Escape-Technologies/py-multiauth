@@ -7,7 +7,7 @@ from pydantic import Field
 from multiauth.lib.entities import ProcedureName, UserName, VariableName
 from multiauth.lib.http_core.entities import HTTPEncoding, HTTPHeader, HTTPLocation
 from multiauth.lib.injection import TokenInjection
-from multiauth.lib.presets.base import BasePreset, BaseUserPreset
+from multiauth.lib.presets.base import BasePreset, BasePresetDoc, BaseUserPreset
 from multiauth.lib.procedure import ProcedureConfiguration
 from multiauth.lib.runners.http import HTTPRequestParameters, HTTPRunnerConfiguration, TokenExtraction
 from multiauth.lib.store.user import User, UserRefresh
@@ -63,6 +63,35 @@ class CognitoUserpassPreset(BasePreset):
     client_secret: str = Field(description='The client secret to use for the OAuth requests')
 
     users: Sequence[CognitoUserpassUserPreset] = Field(description='A list of users to create')
+
+    @property
+    def _doc(self) -> BasePresetDoc:
+        return BasePresetDoc(
+            title='AWS Cognito User Password',
+            description="""The 'Cognito User Password' preset is designed for authentication using AWS Cognito with username and password credentials:
+
+            - **AWS Cognito Integration**: Leverages AWS Cognito, a comprehensive user identity and data synchronization service, for authentication.
+            - **Regional Configuration**: Allows specifying the AWS region where the Cognito service is hosted, ensuring proper routing and compliance with data residency requirements.
+            - **Client Credentials**: Utilizes a client ID and client secret for secure OAuth requests within the Cognito framework.
+            - **User Authentication**: Facilitates the creation and authentication of users with a username and password.
+
+            This preset is ideal for systems that use AWS Cognito for managing user authentication, providing a seamless integration with the AWS ecosystem.""",
+            examples=[
+                CognitoUserpassPreset(
+                    type='cognito_userpass',
+                    region=AWSRegion.US_WEST_N_CALIFORNIA,
+                    client_id='yourCognitoClientId',
+                    client_secret='yourCognitoClientSecret',  # noqa: S106
+                    users=[
+                        CognitoUserpassUserPreset(
+                            username=UserName('user1'),
+                            password='pass1',  # noqa: S106
+                        ),
+                        CognitoUserpassUserPreset(username=UserName('user2'), password='pass2'),  # noqa: S106
+                    ],
+                ),
+            ],
+        )
 
     def to_procedure_configurations(self) -> list[ProcedureConfiguration]:
         generate_token = ProcedureConfiguration(

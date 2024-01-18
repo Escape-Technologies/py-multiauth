@@ -5,7 +5,7 @@ from pydantic import Field
 
 from multiauth.lib.entities import UserName
 from multiauth.lib.http_core.entities import HTTPHeader
-from multiauth.lib.presets.base import BasePreset, BaseUserPreset
+from multiauth.lib.presets.base import BasePreset, BasePresetDoc, BaseUserPreset
 from multiauth.lib.procedure import ProcedureConfiguration
 from multiauth.lib.store.user import Credentials, User
 
@@ -26,6 +26,30 @@ class BasicPreset(BasePreset):
     users: Sequence[BasicUserPreset] = Field(
         description='A list of users with basic credentials to create',
     )
+
+    @property
+    def _doc(self) -> BasePresetDoc:
+        return BasePresetDoc(
+            title='Basic',
+            description="""The 'Basic' authentication preset is designed for straightforward authentication scenarios:
+
+            - **Credentials Encoding**: User's credentials (username and password) are encoded in **base64**.
+            - **Header Attachment**: The encoded credentials are attached to the request headers.
+            - **Authorization Header**: The client sends these credentials in the **Authorization** header of the HTTP request.
+
+            This method provides a simple and direct way to authenticate users, without requiring additional server requests for user creation or authentication. It is best suited for scenarios where simplicity and ease of implementation are prioritized.
+
+            **Note**: While this method is straightforward, it's less secure compared to more advanced authentication methods.""",  # noqa: E501
+            examples=[
+                BasicPreset(
+                    type='basic',
+                    users=[
+                        BasicUserPreset(username=UserName('user1'), password='pass1'),  # noqa: S106
+                        BasicUserPreset(username=UserName('user2'), password='pass2'),  # noqa: S106
+                    ],
+                ),
+            ],
+        )
 
     def to_procedure_configurations(self) -> list[ProcedureConfiguration]:
         return []

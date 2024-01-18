@@ -4,9 +4,9 @@ from typing import Any, Literal, Sequence
 from pydantic import BaseModel, Field
 
 from multiauth.lib.entities import ProcedureName, UserName, VariableName
-from multiauth.lib.http_core.entities import HTTPCookie, HTTPHeader, HTTPQueryParameter
+from multiauth.lib.http_core.entities import HTTPCookie, HTTPHeader, HTTPLocation, HTTPQueryParameter
 from multiauth.lib.injection import TokenInjection
-from multiauth.lib.presets.base import BasePreset, BaseUserPreset
+from multiauth.lib.presets.base import BasePreset, BasePresetDoc, BaseUserPreset
 from multiauth.lib.procedure import ProcedureConfiguration
 from multiauth.lib.runners.http import HTTPRequestParameters, HTTPRunnerConfiguration, TokenExtraction
 from multiauth.lib.store.user import Credentials, User
@@ -148,6 +148,58 @@ class HTTPPreset(BasePreset):
     users: Sequence[HTTPUserPreset] = Field(
         description='The list of users to generate tokens for.',
     )
+
+    @property
+    def _doc(self) -> BasePresetDoc:
+        return BasePresetDoc(
+            title='HTTP',
+            description="""The 'HTTP' authentication preset is designed to handle authentication via structured HTTP requests:
+
+            - **Structured Request**: Authentication is performed through a well-defined HTTP request, including URL, method, headers, cookies, query parameters, and body.
+            - **Dynamic Token Management**: The preset handles the extraction of authentication tokens from the HTTP response and subsequently reinjects them into future requests.
+            - **User Credentials**: Supports attaching various credentials to each user, such as username, password, headers, cookies, and other request parameters.
+
+            This method is particularly effective in scenarios where authentication is managed via custom HTTP endpoints, requiring precise control over request composition and token handling.""",  # noqa: E501
+            examples=[
+                HTTPPreset(
+                    type='http',
+                    request=HTTPRequestPreset(
+                        url='https://api.example.com/authenticate',
+                        method=HTTPMethod.POST,
+                        headers={'Content-Type': 'application/json'},
+                        body={'addtional': 'body', 'for': 'authentication'},
+                    ),
+                    extract=TokenExtraction(
+                        location=HTTPLocation.BODY,
+                        key='accessToken',
+                    ),
+                    inject=TokenInjection(
+                        location=HTTPLocation.HEADER,
+                        key='Authorization',
+                        prefix='Bearer ',
+                    ),
+                    users=[
+                        HTTPUserPreset(
+                            username=UserName('user1'),
+                            body={
+                                'login': 'user1',
+                                'password': 'pass1',
+                            },
+                        ),
+                        HTTPUserPreset(
+                            username=UserName('user2'),
+                            headers={'addtional': 'header'},
+                            cookies={'addtional': 'cookie'},
+                            query_parameters={'addtional': 'query param'},
+                            body={
+                                'login': 'user2',
+                                'password': 'pass2',
+                            },
+                        ),
+                    ],
+                ),
+            ],
+        )
 
     def to_procedure_configurations(self) -> list[ProcedureConfiguration]:
         return [

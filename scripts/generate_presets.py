@@ -1,5 +1,4 @@
 import json
-import os
 
 import yaml
 from jinja2 import Environment, FileSystemLoader
@@ -12,17 +11,18 @@ from scripts.generate_docs import SchemaModel
 all_examples: dict[PresetType, list[dict]] = {}
 
 
+class PresetResult(BaseModel):
+    type: PresetType
+    examples: list[dict]
+    preset: SchemaObject
+    objects: list[SchemaObject]
+    enums: list[SchemaEnum]
+
+
 # Custom filter to convert JSON to YAML
 def json_to_yaml(json_data: dict) -> str:
     return yaml.dump(json_data, default_flow_style=False, sort_keys=False)
 
-
-for file in os.listdir('examples'):
-    if file.endswith('.json'):
-        with open(os.path.join('examples', file), 'r') as f:
-            j = json.load(f)
-            for p in j.get('presets', []):
-                all_examples.setdefault(p['type'], []).append(p)
 
 # Load JSON schema
 with open('multiauth-schema.json', 'r') as f:
@@ -39,14 +39,6 @@ def get_preset(preset_type: PresetType, model: SchemaModel) -> SchemaObject:
 
 
 model = SchemaModel(json_schema)
-
-
-class PresetResult(BaseModel):
-    type: PresetType
-    examples: list[dict]
-    preset: SchemaObject
-    objects: list[SchemaObject]
-    enums: list[SchemaEnum]
 
 
 results = list[PresetResult]()
