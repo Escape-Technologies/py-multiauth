@@ -121,5 +121,5 @@ template = env.get_template('preset.md.jinja')
 # Render and write each preset to a separate file
 for result in results:
     rendered_content = template.render(result=result)
-    with open(f'docs/presets/{result.title.replace(" ", "").lower()}.md', 'w') as f:
+    with open(f'../docs/docs/05-authentication/{result.title.replace(" ", "").lower()}.md', 'w') as f:
         f.write(rendered_content)

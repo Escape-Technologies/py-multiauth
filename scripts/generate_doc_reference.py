@@ -203,5 +203,5 @@ template = env.get_template('reference.md.jinja')
 rendered_markdown = template.render(objects=processed_objects, enumerations=processed_enums)
 
 # Save the Rendered Markdown
-with open('docs/reference/entities.md', 'w') as file:
+with open('../docs/docs/05-authentication/advanced/reference.mdx', 'w') as file:
     file.write(rendered_markdown)
