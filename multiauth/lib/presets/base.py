@@ -2,6 +2,9 @@ import abc
 from typing import Literal, Sequence
 
 from pydantic import Field
+from pydantic.annotated_handlers import GetJsonSchemaHandler
+from pydantic.json_schema import JsonSchemaValue
+from pydantic_core import CoreSchema
 
 from multiauth.helpers.base_model import StrictBaseModel
 from multiauth.helpers.slug import generate_seeded_slug
@@ -21,6 +24,13 @@ PresetType = Literal[
     'oauth_userpass',
     'webdriver',
 ]
+
+
+class BasePresetDoc(StrictBaseModel):
+    kind: Literal['preset'] = Field(default='preset', description='The kind of the preset.')
+    title: str = Field(description='The title of the preset for the Documentation.')
+    description: str = Field(description='The markdown description of the preset for the Documentation')
+    examples: list = Field(description='A list of examples of the preset for the Documentation')
 
 
 ##### Credentials ####
@@ -48,3 +58,19 @@ class BasePreset(StrictBaseModel, abc.ABC):
     @abc.abstractmethod
     def to_users(self) -> list[User]:
         ...
+
+    @staticmethod
+    @abc.abstractmethod
+    def _doc() -> BasePresetDoc:
+        ...
+
+    @classmethod
+    def __get_pydantic_json_schema__(
+        cls,
+        __core_schema: CoreSchema,
+        __handler: GetJsonSchemaHandler,
+    ) -> JsonSchemaValue:
+        json_schema = __handler(__core_schema)
+        json_schema = __handler.resolve_ref_schema(json_schema)
+        json_schema['_doc'] = cls._doc().model_dump()
+        return json_schema

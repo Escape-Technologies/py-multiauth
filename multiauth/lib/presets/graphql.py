@@ -8,7 +8,7 @@ from multiauth.lib.entities import ProcedureName, UserName, VariableName
 from multiauth.lib.extraction import TokenExtraction
 from multiauth.lib.http_core.entities import HTTPEncoding, HTTPHeader, HTTPLocation
 from multiauth.lib.injection import TokenInjection
-from multiauth.lib.presets.base import BasePreset, BaseUserPreset
+from multiauth.lib.presets.base import BasePreset, BasePresetDoc, BaseUserPreset
 from multiauth.lib.procedure import ProcedureConfiguration
 from multiauth.lib.runners.http import HTTPRequestParameters, HTTPRunnerConfiguration
 from multiauth.lib.store.user import Credentials, User
@@ -62,6 +62,57 @@ class GraphQLPreset(BasePreset):
     users: Sequence[GraphQLUserPreset] = Field(
         description='A list of users with credentials contained in the GraphQL `variables` of the query',
     )
+
+    @staticmethod
+    def _doc() -> BasePresetDoc:
+        return BasePresetDoc(
+            title='GraphQL',
+            description="""The 'GraphQL' authentication preset facilitates authentication through GraphQL queries:
+
+- **GraphQL Endpoint**: The authentication is performed against a specified GraphQL endpoint.
+- **Query Templating**: Utilizes a templated GraphQL query for authentication requests.
+- **Variable Handling**: User credentials are passed as variables within the GraphQL query.
+- **Token Extraction**: Specifies how and where to extract authentication tokens (e.g., from the response body).
+- **Token Injection**: Defines how to inject the extracted token into subsequent requests.
+
+This preset is ideal for systems where authentication is managed via GraphQL APIs, allowing for flexible and powerful authentication mechanisms.""",  # noqa: E501
+            examples=[
+                GraphQLPreset(
+                    type='graphql',
+                    url='https://api.example.com/graphql-auth',
+                    query=GraphQLQuery(
+                        '\n'.join(
+                            [
+                                'mutation($login: String!, $password: String!) {',
+                                '   authenticate(login: $login, password: $password) {',
+                                '       accessToken',
+                                '   }',
+                                '}',
+                            ],
+                        ),
+                    ),
+                    extract=TokenExtraction(
+                        location=HTTPLocation.BODY,
+                        key='accessToken',
+                    ),
+                    inject=TokenInjection(
+                        location=HTTPLocation.HEADER,
+                        key='Authorization',
+                        prefix='Bearer',
+                    ),
+                    users=[
+                        GraphQLUserPreset(
+                            username=UserName('user1'),
+                            variables={'login': 'user1', 'password': 'pass1'},
+                        ),
+                        GraphQLUserPreset(
+                            username=UserName('user2'),
+                            variables={'login': 'user2', 'password': 'pass2'},
+                        ),
+                    ],
+                ),
+            ],
+        )
 
     def to_procedure_configurations(self) -> list[ProcedureConfiguration]:
         return [

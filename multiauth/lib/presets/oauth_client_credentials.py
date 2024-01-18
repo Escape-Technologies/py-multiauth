@@ -6,7 +6,7 @@ from pydantic import Field
 from multiauth.lib.entities import ProcedureName, UserName, VariableName
 from multiauth.lib.http_core.entities import HTTPEncoding, HTTPHeader, HTTPLocation
 from multiauth.lib.injection import TokenInjection
-from multiauth.lib.presets.base import BasePreset, BaseUserPreset
+from multiauth.lib.presets.base import BasePreset, BasePresetDoc, BaseUserPreset
 from multiauth.lib.procedure import ProcedureConfiguration
 from multiauth.lib.runners.http import HTTPRequestParameters, HTTPRunnerConfiguration, TokenExtraction
 from multiauth.lib.store.user import User, UserRefresh
@@ -27,6 +27,37 @@ class OAuthClientCredentialsPreset(BasePreset):
     users: Sequence[OAuthClientCredentialsUserPreset] = Field(
         description='A list of users to create',
     )
+
+    @staticmethod
+    def _doc() -> BasePresetDoc:
+        return BasePresetDoc(
+            title='OAuth Client Credentials',
+            description="""The 'OAuth Client Credentials' preset is tailored for authentication using the OAuth 2.0 client credentials grant, ideal for service accounts:
+
+- **OAuth Token Endpoint**: Directs authentication requests to the token endpoint of an OpenID Connect server.
+- **Service Account Credentials**: Utilizes client IDs and secrets to authenticate, representing service accounts rather than individual end-users.
+- **Token Generation**: Designed to obtain access tokens for service accounts without the need for a user's password.
+
+This preset is particularly effective for scenarios where applications or services themselves need to authenticate, independent of a user's direct involvement.""",  # noqa: E501
+            examples=[
+                OAuthClientCredentialsPreset(
+                    type='oauth_client_credentials',
+                    url='https://oauth.example.com/token',
+                    users=[
+                        OAuthClientCredentialsUserPreset(
+                            username=UserName('serviceAccount1'),
+                            client_id='serviceClientID1',
+                            client_secret='serviceSecret1',  # noqa: S106
+                        ),
+                        OAuthClientCredentialsUserPreset(
+                            username=UserName('serviceAccount2'),
+                            client_id='serviceClientID2',
+                            client_secret='serviceSecret2',  # noqa: S106
+                        ),
+                    ],
+                ),
+            ],
+        )
 
     def to_procedure_configurations(self) -> list[ProcedureConfiguration]:
         generate_token = ProcedureConfiguration(

@@ -24,10 +24,9 @@ class DigestSecondRequestConfiguration(StrictBaseModel):
     url: str | None = Field(
         default=None,
         description=(
-            'The path of the second HTTP request executed during the digest procedure.'
-            'By default, the path of the first request is used.'
+            'The URL of the second HTTP request executed during the digest procedure.'
+            'By default, the URL of the first request is used.'
         ),
-        examples=['/digest'],
     )
     method: HTTPMethod | None = Field(
         default=None,
@@ -42,7 +41,7 @@ class DigestSecondRequestConfiguration(StrictBaseModel):
     def examples() -> list:
         return [
             DigestSecondRequestConfiguration(
-                url='/digest',
+                url='https://auth.example.com/digest',
                 method=HTTPMethod.POST,
             ).dict(exclude_defaults=True),
         ]

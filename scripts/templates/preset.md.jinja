@@ -1,0 +1,42 @@
+# {{ result.title }}
+
+## Description
+{{ result.preset.description }}
+
+## Examples
+{% for example in result.examples %}
+```yaml
+{{ example | json_to_yaml }}
+```
+{% endfor %}
+
+## Extensive Configuration
+
+| Property | Type | Required | Description | Reference |
+|----------|------|----------|-------------|-----------|
+{% for prop in result.preset.properties.values() -%}
+| {{ prop.name }} | `{{ prop.type }}` | `{{ prop.required }}` | {{ prop.description }} | {% if prop.reference %}[{{ prop.reference }}](#{{ prop.reference }}){% endif %} |
+{% endfor %}
+
+{% if result.objects %}
+## Objects
+{% for obj in result.objects %}
+### <a id="{{ obj.anchor }}"></a>{{ obj.name }}
+| Property | Type | Required | Description | Reference |
+|----------|------|----------|-------------|-----------|
+{% for prop in obj.properties.values() -%}
+| {{ prop.name }} | `{{ prop.type }}` | `{{ prop.required }}` | {{ prop.description }} | {% if prop.reference %}[{{ prop.reference }}](#{{ prop.reference }}){% endif %} |
+{% endfor %}
+{% endfor %}
+{% endif %}
+
+{% if result.enums %}
+## Enums
+
+{% for enum in result.enums %}
+### <a id="{{ enum.anchor }}"></a>{{ enum.name }}
+{% for value in enum.enum_values %}
+- `{{ value }}`
+{% endfor %}
+{% endfor %}
+{% endif %}

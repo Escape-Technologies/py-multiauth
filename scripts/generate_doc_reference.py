@@ -1,23 +1,19 @@
 import json
 import re
+from typing import Any, Dict, List, TypeVar, Union
 from urllib.parse import urlparse
 
 from jinja2 import Environment, FileSystemLoader
 
 from scripts.entities import (
-    ObjectDescription,
-    PropertyDescription,
     PropertyRequired,
     PropertyType,
     SchemaAnchor,
+    SchemaDescription,
     SchemaEnum,
     SchemaObject,
     SchemaProperty,
 )
-
-# Load JSON schema
-with open('multiauth-schema.json', 'r') as file:
-    json_schema = json.load(file)
 
 
 # URL Formatting Functions
@@ -30,6 +26,20 @@ def format_url(url: str) -> str:
 def replace_urls(text: str) -> str:
     url_pattern = re.compile(r'https?://[^\s]+')
     return url_pattern.sub(lambda match: format_url(match.group(0)), text)
+
+
+T = TypeVar('T', bound=Union[Dict[Any, Any], List[Any]])
+
+
+def remove_none_empty(data: T) -> T:
+    """
+    Recursively remove all None values and empty containers from dictionaries and lists.
+    """
+    if isinstance(data, dict):
+        return {k: remove_none_empty(v) for k, v in data.items() if v is not None and v != '' and v != {} and v != []}  # type: ignore[return-value]
+    if isinstance(data, list):
+        return [remove_none_empty(v) for v in data if v is not None and v != '' and v != {} and v != []]  # type: ignore[return-value]
+    return data
 
 
 # Property Processing Function
@@ -143,15 +153,28 @@ class SchemaModel:
                     name=property_name,
                     type=prop_type,
                     required=PropertyRequired(required and property_name in defs.get('required', [])),
-                    description=PropertyDescription(replace_urls(details.get('description', ''))),
+                    description=SchemaDescription(replace_urls(details.get('description', ''))),
                     reference=ref,
                 )
+
+            description = None
+            kind = None
+            examples = None
+            title = None
+            if '_doc' in defs:
+                description = SchemaDescription(replace_urls(defs['_doc']['description']))
+                kind = defs['_doc']['kind']
+                examples = remove_none_empty(defs['_doc']['examples'])
+                title = defs['_doc']['title']
 
             all_objects[object_name] = SchemaObject(
                 name=object_name,
                 anchor=object_name,
-                description=ObjectDescription(replace_urls(defs.get('description', ''))),
+                description=description,
                 properties=properties,
+                kind=kind,
+                examples=examples,
+                title=title,
             )
 
         return all_objects
@@ -168,11 +191,15 @@ class SchemaModel:
         }
 
 
+# Load JSON schema
+with open('multiauth-schema.json', 'r') as file:
+    json_schema = json.load(file)
+
 processed_objects, processed_enums = SchemaModel(json_schema).get_results()
 
 # Template Rendering
 env = Environment(loader=FileSystemLoader('scripts/templates'), autoescape=True)
-template = env.get_template('schema-property.md.jinja')
+template = env.get_template('reference.md.jinja')
 rendered_markdown = template.render(objects=processed_objects, enumerations=processed_enums)
 
 # Save the Rendered Markdown

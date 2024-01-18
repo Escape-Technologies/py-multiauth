@@ -51,6 +51,26 @@
       "type": "object"
     },
     "BasicPreset": {
+      "_doc": {
+        "description": "The 'Basic' authentication preset is designed for straightforward authentication scenarios:\n\n- **Credentials Encoding**: User's credentials (username and password) are encoded in **base64**.\n- **Header Attachment**: The encoded credentials are attached to the request headers.\n- **Authorization Header**: The client sends these credentials in the **Authorization** header of the HTTP request.\n\nThis method provides a simple and direct way to authenticate users, without requiring additional server requests for user creation or authentication. It is best suited for scenarios where simplicity and ease of implementation are prioritized.\n\n**Note**: While this method is straightforward, it's less secure compared to more advanced authentication methods.",
+        "examples": [
+          {
+            "type": "basic",
+            "users": [
+              {
+                "password": "pass1",
+                "username": "user1"
+              },
+              {
+                "password": "pass2",
+                "username": "user2"
+              }
+            ]
+          }
+        ],
+        "kind": "preset",
+        "title": "Basic"
+      },
       "additionalProperties": false,
       "properties": {
         "type": {
@@ -95,6 +115,29 @@
       "type": "object"
     },
     "CognitoUserpassPreset": {
+      "_doc": {
+        "description": "The 'Cognito User Password' preset is designed for authentication using AWS Cognito with username and password credentials:\n\n- **AWS Cognito Integration**: Leverages AWS Cognito, a comprehensive user identity and data synchronization service, for authentication.\n- **Regional Configuration**: Allows specifying the AWS region where the Cognito service is hosted, ensuring proper routing and compliance with data residency requirements.\n- **Client Credentials**: Utilizes a client ID and client secret for secure OAuth requests within the Cognito framework.\n- **User Authentication**: Facilitates the creation and authentication of users with a username and password.\n\nThis preset is ideal for systems that use AWS Cognito for managing user authentication, providing a seamless integration with the AWS ecosystem.",
+        "examples": [
+          {
+            "client_id": "yourCognitoClientId",
+            "client_secret": "yourCognitoClientSecret",
+            "region": "us-west-1",
+            "type": "cognito_userpass",
+            "users": [
+              {
+                "password": "pass1",
+                "username": "user1"
+              },
+              {
+                "password": "pass2",
+                "username": "user2"
+              }
+            ]
+          }
+        ],
+        "kind": "preset",
+        "title": "AWS Cognito User Password"
+      },
       "additionalProperties": false,
       "properties": {
         "type": {
@@ -265,6 +308,44 @@
       "type": "object"
     },
     "DigestPreset": {
+      "_doc": {
+        "description": "The 'Digest' authentication preset employs a challenge-response mechanism for enhanced security:\n\n- **Initial Request**: Involves sending a request to a server endpoint that responds with a `WWW-Authenticate` header, initiating the authentication process.\n- **Credentials Processing**: The client creates a hashed version of the user's credentials using the challenge details received.\n- **Second Request**: The client sends a second request with this hashed information to authenticate.\n\nThis method enhances security by avoiding the transmission of actual passwords over the network.\nDigest Authentication is suitable for scenarios requiring enhanced security without the complexities of more advanced authentication methods.",
+        "examples": [
+          {
+            "first_request": {
+              "body": null,
+              "cookies": {
+                "session_id": "123456"
+              },
+              "headers": {
+                "Accept": "application/json"
+              },
+              "method": "GET",
+              "query_parameters": {
+                "query": "info"
+              },
+              "url": "https://api.example.com/request"
+            },
+            "second_request": {
+              "method": "POST",
+              "url": "https://api.example.com/authenticate"
+            },
+            "type": "digest",
+            "users": [
+              {
+                "password": "aliceSecret",
+                "username": "alice"
+              },
+              {
+                "password": "bobSecret",
+                "username": "bob"
+              }
+            ]
+          }
+        ],
+        "kind": "preset",
+        "title": "Digest"
+      },
       "additionalProperties": false,
       "properties": {
         "type": {
@@ -323,7 +404,7 @@
           "examples": [
             {
               "method": "POST",
-              "url": "/digest"
+              "url": "https://auth.example.com/digest"
             }
           ]
         }
@@ -381,7 +462,7 @@
           "examples": [
             {
               "method": "POST",
-              "url": "/digest"
+              "url": "https://auth.example.com/digest"
             }
           ]
         }
@@ -470,10 +551,7 @@
             }
           ],
           "default": null,
-          "description": "The path of the second HTTP request executed during the digest procedure.By default, the path of the first request is used.",
-          "examples": [
-            "/digest"
-          ],
+          "description": "The URL of the second HTTP request executed during the digest procedure.By default, the URL of the first request is used.",
           "title": "Url"
         },
         "method": {
@@ -504,6 +582,46 @@
       "type": "object"
     },
     "GraphQLPreset": {
+      "_doc": {
+        "description": "The 'GraphQL' authentication preset facilitates authentication through GraphQL queries:\n\n- **GraphQL Endpoint**: The authentication is performed against a specified GraphQL endpoint.\n- **Query Templating**: Utilizes a templated GraphQL query for authentication requests.\n- **Variable Handling**: User credentials are passed as variables within the GraphQL query.\n- **Token Extraction**: Specifies how and where to extract authentication tokens (e.g., from the response body).\n- **Token Injection**: Defines how to inject the extracted token into subsequent requests.\n\nThis preset is ideal for systems where authentication is managed via GraphQL APIs, allowing for flexible and powerful authentication mechanisms.",
+        "examples": [
+          {
+            "extract": {
+              "key": "accessToken",
+              "location": "body",
+              "name": null,
+              "regex": null
+            },
+            "inject": {
+              "key": "Authorization",
+              "location": "header",
+              "prefix": "Bearer",
+              "variable": null
+            },
+            "query": "mutation($login: String!, $password: String!) {\n   authenticate(login: $login, password: $password) {\n       accessToken\n   }\n}",
+            "type": "graphql",
+            "url": "https://api.example.com/graphql-auth",
+            "users": [
+              {
+                "username": "user1",
+                "variables": {
+                  "login": "user1",
+                  "password": "pass1"
+                }
+              },
+              {
+                "username": "user2",
+                "variables": {
+                  "login": "user2",
+                  "password": "pass2"
+                }
+              }
+            ]
+          }
+        ],
+        "kind": "preset",
+        "title": "GraphQL"
+      },
       "additionalProperties": false,
       "properties": {
         "type": {
@@ -665,6 +783,71 @@
       "type": "string"
     },
     "HTTPPreset": {
+      "_doc": {
+        "description": "The 'HTTP' authentication preset is designed to handle authentication via structured HTTP requests:\n\n- **Structured Request**: Authentication is performed through a well-defined HTTP request, including URL, method, headers, cookies, query parameters, and body.\n- **Dynamic Token Management**: The preset handles the extraction of authentication tokens from the HTTP response and subsequently reinjects them into future requests.\n- **User Credentials**: Supports attaching various credentials to each user, such as username, password, headers, cookies, and other request parameters.\n\nThis method is particularly effective in scenarios where authentication is managed via custom HTTP endpoints, requiring precise control over request composition and token handling.",
+        "examples": [
+          {
+            "extract": {
+              "key": "accessToken",
+              "location": "body",
+              "name": null,
+              "regex": null
+            },
+            "inject": {
+              "key": "Authorization",
+              "location": "header",
+              "prefix": "Bearer ",
+              "variable": null
+            },
+            "request": {
+              "body": {
+                "addtional": "body",
+                "for": "authentication"
+              },
+              "cookies": {},
+              "headers": {
+                "Content-Type": "application/json"
+              },
+              "method": "POST",
+              "query_parameters": {},
+              "url": "https://api.example.com/authenticate"
+            },
+            "type": "http",
+            "users": [
+              {
+                "body": {
+                  "login": "user1",
+                  "password": "pass1"
+                },
+                "cookies": {},
+                "headers": {},
+                "password": null,
+                "query_parameters": {},
+                "username": "user1"
+              },
+              {
+                "body": {
+                  "login": "user2",
+                  "password": "pass2"
+                },
+                "cookies": {
+                  "addtional": "cookie"
+                },
+                "headers": {
+                  "addtional": "header"
+                },
+                "password": null,
+                "query_parameters": {
+                  "addtional": "query param"
+                },
+                "username": "user2"
+              }
+            ]
+          }
+        ],
+        "kind": "preset",
+        "title": "HTTP"
+      },
       "additionalProperties": false,
       "properties": {
         "type": {
@@ -1162,6 +1345,30 @@
       "type": "object"
     },
     "HeadersPreset": {
+      "_doc": {
+        "description": "The 'Headers' authentication preset is a straightforward, manual authentication method:\n\n- **Manual Token Injection**: Authentication is achieved by manually injecting tokens or credentials into the request headers. No authentication request is necessary.\n- **Static Credentials**: User credentials are static and defined in advance, making setup simple.\n- **Token Expiry Consideration**: A key aspect to consider is that since tokens are manually set, they may expire, necessitating regular manual updates to maintain access.\n\nThis preset is ideal for scenarios where authentication can be handled via predefined headers, but users should be mindful of the need to regularly update tokens or credentials to avoid access issues.",
+        "examples": [
+          {
+            "type": "headers",
+            "users": [
+              {
+                "headers": {
+                  "Authorization": "Bearer user1Token"
+                },
+                "username": "user1"
+              },
+              {
+                "headers": {
+                  "Authorization": "Bearer user2Token"
+                },
+                "username": "user2"
+              }
+            ]
+          }
+        ],
+        "kind": "preset",
+        "title": "Headers"
+      },
       "additionalProperties": false,
       "properties": {
         "type": {
@@ -1188,8 +1395,7 @@
       "additionalProperties": false,
       "properties": {
         "username": {
-          "default": null,
-          "description": "The name of the user. By default, the username is used.",
+          "description": "The name of the user.",
           "title": "Username",
           "type": "string"
         },
@@ -1203,12 +1409,36 @@
         }
       },
       "required": [
+        "username",
         "headers"
       ],
       "title": "HeadersUserPreset",
       "type": "object"
     },
     "OAuthClientCredentialsPreset": {
+      "_doc": {
+        "description": "The 'OAuth Client Credentials' preset is tailored for authentication using the OAuth 2.0 client credentials grant, ideal for service accounts:\n\n- **OAuth Token Endpoint**: Directs authentication requests to the token endpoint of an OpenID Connect server.\n- **Service Account Credentials**: Utilizes client IDs and secrets to authenticate, representing service accounts rather than individual end-users.\n- **Token Generation**: Designed to obtain access tokens for service accounts without the need for a user's password.\n\nThis preset is particularly effective for scenarios where applications or services themselves need to authenticate, independent of a user's direct involvement.",
+        "examples": [
+          {
+            "type": "oauth_client_credentials",
+            "url": "https://oauth.example.com/token",
+            "users": [
+              {
+                "client_id": "serviceClientID1",
+                "client_secret": "serviceSecret1",
+                "username": "serviceAccount1"
+              },
+              {
+                "client_id": "serviceClientID2",
+                "client_secret": "serviceSecret2",
+                "username": "serviceAccount2"
+              }
+            ]
+          }
+        ],
+        "kind": "preset",
+        "title": "OAuth Client Credentials"
+      },
       "additionalProperties": false,
       "properties": {
         "type": {
@@ -1265,6 +1495,29 @@
       "type": "object"
     },
     "OAuthUserpassPreset": {
+      "_doc": {
+        "description": "The 'OAuth User Password' preset is designed for authentication using the OAuth 2.0 framework with user password credentials:\n\n- **OAuth Token Endpoint**: Authentication requests are sent to the specified OAuth token endpoint of an OpenID Connect server.\n- **Client Credentials**: Includes the client ID and client secret for authenticating the OAuth request.\n- **User Password Credentials**: This preset supports the OAuth password grant type, using individual user passwords for token generation.\n\nThis method is suitable for systems that require secure, OAuth-based authentication with user credentials, especially in scenarios where direct user-password-based authentication is preferred.",
+        "examples": [
+          {
+            "client_id": "client123",
+            "client_secret": "secretXYZ",
+            "type": "oauth_userpass",
+            "url": "https://oauth.example.com/token",
+            "users": [
+              {
+                "password": "pass1",
+                "username": "user1"
+              },
+              {
+                "password": "pass2",
+                "username": "user2"
+              }
+            ]
+          }
+        ],
+        "kind": "preset",
+        "title": "OAuth User Password"
+      },
       "additionalProperties": false,
       "properties": {
         "type": {
@@ -1913,6 +2166,151 @@
       "type": "object"
     },
     "WebdriverPreset": {
+      "_doc": {
+        "description": "The 'Webdriver' authentication preset is designed for scenarios where traditional authentication methods are not feasible, and it relies on Selenium-based web automation:\n\n- **Selenium Project Integration**: Utilizes Selenium Projects, created via Selenium IDE, to automate the login process on a web interface.\n- **Dynamic Interaction**: Capable of handling complex login procedures including multi-step forms, CAPTCHAs, and JavaScript-based interactions.\n- **Token Extraction and Injection**: Extracts authentication tokens from the web automation flow and injects them into HTTP requests.\n- **Consideration**: Preferred as a last-resort option due to the overhead and potential fragility of maintaining Selenium scripts.\n\nThis preset is particularly useful when other forms of API-based authentication are not available, requiring direct interaction with web interfaces for authentication.",
+        "examples": [
+          {
+            "extract": {
+              "key": "",
+              "location": "query",
+              "name": null,
+              "regex": "example-portal.*portal-session-id=([^&]*)"
+            },
+            "inject": {
+              "key": "Authorization",
+              "location": "header",
+              "prefix": "Bearer ",
+              "variable": null
+            },
+            "type": "webdriver",
+            "users": [
+              {
+                "body": null,
+                "cookies": [],
+                "headers": [],
+                "password": null,
+                "project": {
+                  "tests": [
+                    {
+                      "commands": [
+                        {
+                          "command": "open",
+                          "id": "bb671e84-0d81-40da-92ad-4086ec483f6d",
+                          "target": "https://auth.example.com/signin/?return=/setup/payment-types/",
+                          "targets": [],
+                          "value": ""
+                        },
+                        {
+                          "command": "type",
+                          "id": "6406387f-c3bf-453c-8dee-561a548f6c42",
+                          "target": "name=username",
+                          "targets": [
+                            [
+                              "name=username",
+                              "name"
+                            ],
+                            [
+                              "css=.vd-field:nth-child(1) .vd-input",
+                              "css:finder"
+                            ],
+                            [
+                              "xpath=//input[@name='username']",
+                              "xpath:attributes"
+                            ],
+                            [
+                              "xpath=//div[@id='react-root']/section/main/div/div/div/div/div/div[2]/form/div/div[2]/input",
+                              "xpath:idRelative"
+                            ],
+                            [
+                              "xpath=//input",
+                              "xpath:position"
+                            ]
+                          ],
+                          "value": "username@example.com"
+                        },
+                        {
+                          "command": "type",
+                          "id": "adf71a06-33cc-4e89-b69b-0e324edaa314",
+                          "target": "name=password",
+                          "targets": [
+                            [
+                              "name=password",
+                              "name"
+                            ],
+                            [
+                              "css=.vd-field:nth-child(2) .vd-input",
+                              "css:finder"
+                            ],
+                            [
+                              "xpath=//input[@name='password']",
+                              "xpath:attributes"
+                            ],
+                            [
+                              "xpath=//div[@id='react-root']/section/main/div/div/div/div/div/div[2]/form/div[2]/div[2]/input",
+                              "xpath:idRelative"
+                            ],
+                            [
+                              "xpath=//div[2]/div[2]/input",
+                              "xpath:position"
+                            ]
+                          ],
+                          "value": "C0mplexPassWord!"
+                        },
+                        {
+                          "command": "click",
+                          "id": "0c18a7ca-b347-4402-adf7-18c02b54d326",
+                          "target": "name=signin_submit",
+                          "targets": [
+                            [
+                              "name=signin_submit",
+                              "name"
+                            ],
+                            [
+                              "css=.vd-btn",
+                              "css:finder"
+                            ],
+                            [
+                              "xpath=//button[@name='signin_submit']",
+                              "xpath:attributes"
+                            ],
+                            [
+                              "xpath=//div[@id='react-root']/section/main/div/div/div/div/div/div[2]/form/div[3]/button",
+                              "xpath:idRelative"
+                            ],
+                            [
+                              "xpath=//button",
+                              "xpath:position"
+                            ],
+                            [
+                              "xpath=//button[contains(.,'Sign in')]",
+                              "xpath:innerText"
+                            ]
+                          ],
+                          "value": ""
+                        },
+                        {
+                          "command": "wait",
+                          "id": "552d7f74-25bf-4213-aba3-b0c5b598f3b9",
+                          "target": "request_url_contains=portal-session-id",
+                          "targets": [],
+                          "value": "30"
+                        }
+                      ],
+                      "id": "aec1dcca-65ca-4e09-82a6-8da7bbddbde0",
+                      "name": "Example Selenium Sequence"
+                    }
+                  ]
+                },
+                "query_parameters": [],
+                "username": "user"
+              }
+            ],
+            "wait_for_seconds": 30
+          }
+        ],
+        "kind": "preset",
+        "title": "Webdriver"
+      },
       "additionalProperties": false,
       "properties": {
         "type": {
@@ -2108,6 +2506,65 @@
       "type": "object"
     },
     "cURLPreset": {
+      "_doc": {
+        "description": "The 'cURL' authentication preset is designed for dynamic token generation and reuse:\n\n- **cURL Command Parsing**: Parses a cURL command to send an authentication request.\n- **Dynamic Token Extraction**: Extracts the authentication token from the cURL command's HTTP response.\n- **Token Re-injection**: Reinjects the extracted token into subsequent authenticated requests.\n\nThis preset is particularly useful for scenarios where authentication tokens are dynamically generated and need to be efficiently extracted and reused in ongoing requests.\n\nTwo common use cases are:\n- **Bearer JWT Token**: A REST API request that generates a Bearer JWT Token, which is then reinjected into the Authorization header for subsequent requests.\n- **Set-Cookie**: A REST API request that generates a cookie, which is then set in the cookies for subsequent requests.",
+        "examples": [
+          {
+            "extract": {
+              "key": "Authorization",
+              "location": "header",
+              "name": null,
+              "regex": null
+            },
+            "inject": {
+              "key": "Authorization",
+              "location": "header",
+              "prefix": "Bearer",
+              "variable": null
+            },
+            "type": "curl",
+            "users": [
+              {
+                "body": null,
+                "cookies": [],
+                "curl": "curl -X POST https://api.example.com/auth -d \"username=user1&password=pass1\"",
+                "headers": [],
+                "password": null,
+                "query_parameters": [],
+                "username": "user1"
+              }
+            ]
+          },
+          {
+            "extract": {
+              "key": "Set-Cookie",
+              "location": "header",
+              "name": null,
+              "regex": "session_id=(\\S+);"
+            },
+            "inject": {
+              "key": "session_id",
+              "location": "cookie",
+              "prefix": null,
+              "variable": "sessionId"
+            },
+            "type": "curl",
+            "users": [
+              {
+                "body": null,
+                "cookies": [],
+                "curl": "curl -X POST https://api.example.com/login -d \"username=user2&password=pass2\"",
+                "headers": [],
+                "password": null,
+                "query_parameters": [],
+                "username": "user2"
+              }
+            ]
+          }
+        ],
+        "kind": "preset",
+        "title": "cURL"
+      },
       "additionalProperties": false,
       "properties": {
         "type": {
