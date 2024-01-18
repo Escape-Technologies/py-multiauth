@@ -1,3 +1,4 @@
+import logging
 import re
 import time
 
@@ -6,12 +7,17 @@ from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from seleniumwire import webdriver  # type: ignore[import-untyped]
+from seleniumwire.request import Request  # type: ignore[import-untyped]
 
 from multiauth.lib.audit.events.base import EventsList
 from multiauth.lib.audit.events.events import (
+    HTTPFailureEvent,
+    HTTPRequestEvent,
+    HTTPResponseEvent,
     SeleniumScriptErrorEvent,
     SeleniumScriptLogEvent,
 )
+from multiauth.lib.http_core.entities import HTTPHeader, HTTPQueryParameter, HTTPRequest, HTTPResponse
 from multiauth.lib.runners.base import RunnerException
 from multiauth.lib.runners.webdriver.configuration import SeleniumCommand
 from multiauth.lib.runners.webdriver.transformers import (
@@ -28,40 +34,150 @@ class SeleniumCommandException(RunnerException):
         super().__init__(message)
 
 
+def build_http_request_from_selenium_request(request: Request) -> HTTPRequest:
+    return HTTPRequest(
+        method=request.method.upper(),
+        cookies=[],
+        data_text=request.body.decode('utf-8', 'ignore') if request.body else '',
+        headers=[HTTPHeader(name=name, values=[str(value)]) for name, value in request.headers.items()],
+        host=request.host,
+        path=request.path,
+        scheme=request.url.split('://')[0],
+        query_parameters=[
+            HTTPQueryParameter(
+                name=name,
+                values=values if isinstance(values, list) else [values],
+            )
+            for name, values in request.params.items()
+        ],
+    )
+
+
+def build_http_response_from_selenium_request(request: Request) -> HTTPResponse:
+    return HTTPResponse(
+        status_code=request.response.status_code,
+        data_text=request.response.body.decode('utf-8', 'ignore') if request.response.body else '',
+        headers=[HTTPHeader(name=name, values=[str(value)]) for name, value in request.response.headers.items()],
+        reason=request.response.reason,
+        elapsed=(request.response.date - request.date).total_seconds(),
+        url=request.url,
+        cookies=[],
+    )
+
+
+logger = logging.getLogger(__name__)
+
+
 class SeleniumCommandHandler:
     driver: webdriver.Firefox
 
     wait_for_seconds: int
     pooling_interval: float
 
-    def __init__(self, driver: webdriver.Firefox, wait_for_seconds: int = 5) -> None:
+    reported_hosts: set[str]
+
+    def __init__(
+        self,
+        driver: webdriver.Firefox,
+        wait_for_seconds: int = 5,
+        reported_hosts: set[str] | None = None,
+    ) -> None:
         self.driver = driver
         self.wait_for_seconds = wait_for_seconds
         self.pooling_interval = 0.5
+        self.reported_hosts = reported_hosts or set()
+
+    def get_http_events_from(
+        self,
+        from_index: int = 0,
+    ) -> list[HTTPRequestEvent | HTTPFailureEvent | HTTPResponseEvent]:
+        events: list[HTTPRequestEvent | HTTPFailureEvent | HTTPResponseEvent] = []
+
+        blacklisted_extensions = [
+            '.js',
+            '.css',
+            '.png',
+            '.jpg',
+            '.gif',
+            '.json',
+            '.ico',
+            '.svg',
+            '.woff',
+            '.woff2',
+            '.eot',
+            '.ttf',
+            '.otf',
+        ]
+
+        requests: list[Request] = [
+            r
+            for r in self.driver.requests[from_index:]
+            if not any(r.url.endswith(ext) for ext in blacklisted_extensions)
+        ]
+
+        for request in requests:
+            if next((host for host in self.reported_hosts if host in request.url), None) is None:
+                continue
+            try:
+                events.append(
+                    HTTPRequestEvent(
+                        request=build_http_request_from_selenium_request(request),
+                    ),
+                )
+
+                if request.response:
+                    events.append(
+                        HTTPResponseEvent(
+                            response=build_http_response_from_selenium_request(request),
+                        ),
+                    )
+                else:
+                    events.append(
+                        HTTPFailureEvent(
+                            reason='unknown',
+                            description='No response received',
+                        ),
+                    )
+            except Exception as e:
+                logger.error(f'Failed to build HTTP request from selenium request: {e}')
+                events.append(
+                    HTTPFailureEvent(
+                        reason='unknown',
+                        description=f'Failed to decode response: {e}',
+                    ),
+                )
+                continue
+
+        return events
 
     def run_command(self, command: SeleniumCommand) -> tuple[EventsList, SeleniumCommandException | None]:
+        current_request_index = len(self.driver.requests)
         match command.command:
             case 'open':
-                return self.open(command)
+                events, exception = self.open(command)
             case 'setWindowSize':
-                return self.set_window_size(command)
+                events, exception = self.set_window_size(command)
             case 'click':
-                return self.click(command)
+                events, exception = self.click(command)
             case 'type':
-                return self.type(command)
+                events, exception = self.type(command)
             case 'mouseOver':
-                return self.mouse_over(command)
+                events, exception = self.mouse_over(command)
             case 'mouseOut':
-                return self.mouse_out(command)
+                events, exception = self.mouse_out(command)
             case 'wait':
-                return self.wait(command)
+                events, exception = self.wait(command)
             case 'selectFrame':
-                return self.select_frame(command)
+                events, exception = self.select_frame(command)
+            case _:
+                message = f'Unhandled command `{command.command}`'
+                error = SeleniumCommandException(message=message)
+                events = EventsList(SeleniumScriptErrorEvent(message=message, from_exception=str(error)))
+                return events, error
 
-        message = f'Unhandled command `{command.command}`'
-        error = SeleniumCommandException(message=message)
-        events = EventsList(SeleniumScriptErrorEvent(message=message, from_exception=str(error)))
-        return events, error
+        events.extend(self.get_http_events_from(current_request_index))
+
+        return events, exception
 
     def find_element(self, selector: str, value: str) -> WebElement:
         wait = WebDriverWait(self.driver, self.wait_for_seconds)
@@ -139,6 +255,7 @@ class SeleniumCommandHandler:
     def open(self, command: SeleniumCommand) -> tuple[EventsList, SeleniumCommandException | None]:
         events = EventsList()
         url = command.target
+
         try:
             self.driver.get(url)
             events.append(SeleniumScriptLogEvent(message=f'Opened URL `{url}`'))
@@ -153,10 +270,13 @@ class SeleniumCommandHandler:
         width, height = command.target.split('x')
 
         try:
+            logger.info(f'Set window size to {width}x{height}')
             self.driver.set_window_size(int(width), int(height))
+            logger.info(f'Done setting window size to {width}x{height}')
             events.append(SeleniumScriptLogEvent(message=f'Set window size to `{width}x{height}`'))
             return events, None
         except Exception as e:
+            logger.error(f'Failed to set window size to {width}x{height}: {e}')
             message = f'Failed to set window size to `{width}x{height}`'
             events.append(SeleniumScriptErrorEvent(message=message, from_exception=str(e)))
             return events, SeleniumCommandException(message, base_exception=e)
@@ -312,6 +432,9 @@ class SeleniumCommandHandler:
             time.sleep(self.pooling_interval)
 
         events.append(
-            SeleniumScriptLogEvent(message=f'Failed to find request url matching `{regex}`', severity='warning'),
+            SeleniumScriptLogEvent(
+                message=f'Failed to find request url matching `{regex}` after waiting {max_wait_time}s',
+                severity='warning',
+            ),
         )
         return events, None

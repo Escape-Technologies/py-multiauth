@@ -1,8 +1,8 @@
 import logging
 import re
-from typing import Any, Literal
+from typing import Literal
 
-from seleniumwire.request import Request  # type: ignore[import-untyped]
+from seleniumwire.request import HTTPHeaders, Request  # type: ignore  # noqa: PGH003
 
 from multiauth.lib.http_core.entities import HTTPLocation
 
@@ -11,58 +11,29 @@ WebdriverTokenLocationType = Literal['RequestURL', 'RequestHeader', 'RequestBody
 logger = logging.getLogger('multiauth.providers.webdriver.extractors')
 
 
-def extract_from_request_url(requests: Any, rx: str) -> list[str]:
+def extract_from_request_url(url: str, rx: str) -> list[str]:
     res = []
 
-    for request in requests:
-        if match := re.search(rx, request.url):
+    if match := re.search(rx, url):
+        res.append(match.group(1))
+
+    return res
+
+
+def extract_from_header(headers: HTTPHeaders, rx: str) -> list[str]:
+    res = []
+
+    for header, header_value in headers.items():
+        if match := re.search(rx, header + ': ' + header_value):
             res.append(match.group(1))
 
     return res
 
 
-def extract_from_request_header(requests: Any, rx: str) -> list[str]:
+def extract_from_body(body: bytes, rx: str) -> list[str]:
     res = []
-
-    for request in requests:
-        for header, header_value in request.headers.items():
-            if match := re.search(rx, header + ': ' + header_value):
-                res.append(match.group(1))
-
-    return res
-
-
-def extract_from_response_header(requests: Any, rx: str) -> list[str]:
-    res = []
-    for request in requests:
-        if not request.response:
-            continue
-        for header, header_value in request.response.headers.items():
-            if match := re.search(rx, header + ': ' + header_value):
-                res.append(match.group(1))
-
-    return res
-
-
-def extract_from_request_body(requests: Any, rx: str) -> list[str]:
-    res = []
-    for request in requests:
-        if match := re.search(rx, request.body.decode()):
-            res.append(match.group(1))
-
-    return res
-
-
-def extract_from_response_body(requests: Any, rx: str) -> list[str]:
-    res = []
-    for request in requests:
-        if not request.response:
-            continue
-        try:
-            if match := re.search(rx, request.response.body.decode()):
-                res.append(match.group(1))
-        except Exception as e:
-            logger.debug(f'Skipping {request.url} due to error {e}')
+    if match := re.search(rx, body.decode()):
+        res.append(match.group(1))
 
     return res
 
@@ -76,15 +47,25 @@ def extract_token(
     if regex is None:
         raise Exception('Regex is required')
 
+    tokens: list[str] = []
+
     match location:
         case HTTPLocation.BODY:
-            tokens = extract_from_request_body(requests, regex)
-            tokens += extract_from_response_body(requests, regex)
+            for request in requests:
+                if request.body:
+                    tokens += extract_from_body(request.body, regex)
+                if request.response and request.response.body:
+                    tokens += extract_from_body(request.response.body, regex)
         case HTTPLocation.HEADER:
-            tokens = extract_from_request_header(requests, regex)
-            tokens += extract_from_response_header(requests, regex)
+            for request in requests:
+                tokens += extract_from_header(request.headers, regex)
+                if request.response:
+                    tokens += extract_from_header(request.response.headers, regex)
         case HTTPLocation.QUERY:
-            tokens = extract_from_request_url(requests, regex)
+            urls = [request.url for request in requests]
+            for url in urls:
+                logger.info(f'{url, regex}')
+                tokens += extract_from_request_url(url, regex)
 
     _l = len(tokens)
 

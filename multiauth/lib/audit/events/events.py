@@ -14,6 +14,12 @@ class HTTPRequestEvent(Event):
     @property
     def logline(self) -> str:
         txt = f' {self.request.method} {self.request.scheme}://{self.request.host}{self.request.path}\n'
+        data_str = 'No data'
+        if self.request.data_text is not None:
+            if len(self.request.data_text) > 100:
+                data_str = self.request.data_text[:100] + '...' + f' ({len(self.request.data_text)} bytes)'
+            else:
+                data_str = self.request.data_text
         if self.request.proxy:
             proxy_txt = self.request.proxy.split('@')[-1] if '@' in self.request.proxy else self.request.proxy
             txt += f'PROXY> {proxy_txt}\n'
@@ -23,7 +29,7 @@ class HTTPRequestEvent(Event):
         for cookie in self.request.cookies:
             for v in cookie.values:
                 txt += f'C> {cookie.name}: {v}\n'
-        txt += f'{self.request.data_text}'
+        txt += data_str
 
         return txt
 
@@ -47,13 +53,21 @@ class HTTPResponseEvent(Event):
     @property
     def logline(self) -> str:
         txt = f' {self.response.status_code} {self.response.reason} in {self.response.elapsed.microseconds//1000}ms\n'
+
+        data_str = 'No data'
+        if self.response.data_text is not None:
+            if len(self.response.data_text) > 100:
+                data_str = self.response.data_text[:100] + '...' + f' ({len(self.response.data_text.encode())} bytes)'
+            else:
+                data_str = self.response.data_text
+
         for header in self.response.headers:
             for v in header.values:
                 txt += f'H< {header.name}: {v}\n'
         for cookie in self.response.cookies:
             for v in cookie.values:
                 txt += f'C< {cookie.name}: {v}\n'
-        txt += f'{self.response.data_text}'
+        txt += data_str
 
         return txt
 
