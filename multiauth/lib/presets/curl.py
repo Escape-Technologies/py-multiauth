@@ -36,21 +36,21 @@ class cURLPreset(BasePreset):
         description='The list of users to generate tokens for.',
     )
 
-    @property
-    def _doc(self) -> BasePresetDoc:
+    @staticmethod
+    def _doc() -> BasePresetDoc:
         return BasePresetDoc(
             title='cURL',
             description="""The 'cURL' authentication preset is designed for dynamic token generation and reuse:
 
-            - **cURL Command Parsing**: Parses a cURL command to send an authentication request.
-            - **Dynamic Token Extraction**: Extracts the authentication token from the cURL command's HTTP response.
-            - **Token Re-injection**: Reinjects the extracted token into subsequent authenticated requests.
+- **cURL Command Parsing**: Parses a cURL command to send an authentication request.
+- **Dynamic Token Extraction**: Extracts the authentication token from the cURL command's HTTP response.
+- **Token Re-injection**: Reinjects the extracted token into subsequent authenticated requests.
 
-            This preset is particularly useful for scenarios where authentication tokens are dynamically generated and need to be efficiently extracted and reused in ongoing requests.
+This preset is particularly useful for scenarios where authentication tokens are dynamically generated and need to be efficiently extracted and reused in ongoing requests.
 
-            Two common use cases are:
-            1. **Bearer JWT Token**: A REST API request that generates a Bearer JWT Token, which is then reinjected into the Authorization header for subsequent requests.
-            2. **Set-Cookie**: A REST API request that generates a cookie, which is then set in the cookies for subsequent requests.""",  # noqa: E501
+Two common use cases are:
+- **Bearer JWT Token**: A REST API request that generates a Bearer JWT Token, which is then reinjected into the Authorization header for subsequent requests.
+- **Set-Cookie**: A REST API request that generates a cookie, which is then set in the cookies for subsequent requests.""",  # noqa: E501
             examples=[
                 cURLPreset(
                     type='curl',

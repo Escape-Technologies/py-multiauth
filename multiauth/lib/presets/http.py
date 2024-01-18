@@ -149,17 +149,17 @@ class HTTPPreset(BasePreset):
         description='The list of users to generate tokens for.',
     )
 
-    @property
-    def _doc(self) -> BasePresetDoc:
+    @staticmethod
+    def _doc() -> BasePresetDoc:
         return BasePresetDoc(
             title='HTTP',
             description="""The 'HTTP' authentication preset is designed to handle authentication via structured HTTP requests:
 
-            - **Structured Request**: Authentication is performed through a well-defined HTTP request, including URL, method, headers, cookies, query parameters, and body.
-            - **Dynamic Token Management**: The preset handles the extraction of authentication tokens from the HTTP response and subsequently reinjects them into future requests.
-            - **User Credentials**: Supports attaching various credentials to each user, such as username, password, headers, cookies, and other request parameters.
+- **Structured Request**: Authentication is performed through a well-defined HTTP request, including URL, method, headers, cookies, query parameters, and body.
+- **Dynamic Token Management**: The preset handles the extraction of authentication tokens from the HTTP response and subsequently reinjects them into future requests.
+- **User Credentials**: Supports attaching various credentials to each user, such as username, password, headers, cookies, and other request parameters.
 
-            This method is particularly effective in scenarios where authentication is managed via custom HTTP endpoints, requiring precise control over request composition and token handling.""",  # noqa: E501
+This method is particularly effective in scenarios where authentication is managed via custom HTTP endpoints, requiring precise control over request composition and token handling.""",  # noqa: E501
             examples=[
                 HTTPPreset(
                     type='http',

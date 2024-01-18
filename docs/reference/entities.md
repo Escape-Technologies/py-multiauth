@@ -87,7 +87,7 @@
 
 | Property   | Type       | Required | Description | Reference |
 |------------|------------|-----|-------------|-----------|
-| url | `string` | `False` | The path of the second HTTP request executed during the digest procedure.By default, the path of the first request is used. |  |
+| url | `string` | `False` | The URL of the second HTTP request executed during the digest procedure.By default, the URL of the first request is used. |  |
 | method | `HTTPMethod` | `False` | The method of the second HTTP request executed during the digest procedure.By default, the method of the first request is used. | [HTTPMethod](#HTTPMethod) |
 
 
@@ -204,7 +204,7 @@
 
 | Property   | Type       | Required | Description | Reference |
 |------------|------------|-----|-------------|-----------|
-| username | `string` | `False` | The name of the user. By default, the username is used. |  |
+| username | `string` | `True` | The name of the user. |  |
 | headers | `Dict[string, string]` | `True` | The headers of the user. |  |
 
 

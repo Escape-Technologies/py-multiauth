@@ -58,18 +58,18 @@ class WebdriverPreset(BasePreset):
         description='The list of users to generate tokens for.',
     )
 
-    @property
-    def _doc(self) -> BasePresetDoc:
+    @staticmethod
+    def _doc() -> BasePresetDoc:
         return BasePresetDoc(
             title='Webdriver',
             description="""The 'Webdriver' authentication preset is designed for scenarios where traditional authentication methods are not feasible, and it relies on Selenium-based web automation:
 
-            - **Selenium Project Integration**: Utilizes Selenium Projects, created via Selenium IDE, to automate the login process on a web interface.
-            - **Dynamic Interaction**: Capable of handling complex login procedures including multi-step forms, CAPTCHAs, and JavaScript-based interactions.
-            - **Token Extraction and Injection**: Extracts authentication tokens from the web automation flow and injects them into HTTP requests.
-            - **Consideration**: Preferred as a last-resort option due to the overhead and potential fragility of maintaining Selenium scripts.
+- **Selenium Project Integration**: Utilizes Selenium Projects, created via Selenium IDE, to automate the login process on a web interface.
+- **Dynamic Interaction**: Capable of handling complex login procedures including multi-step forms, CAPTCHAs, and JavaScript-based interactions.
+- **Token Extraction and Injection**: Extracts authentication tokens from the web automation flow and injects them into HTTP requests.
+- **Consideration**: Preferred as a last-resort option due to the overhead and potential fragility of maintaining Selenium scripts.
 
-            This preset is particularly useful when other forms of API-based authentication are not available, requiring direct interaction with web interfaces for authentication.""",  # noqa: E501
+This preset is particularly useful when other forms of API-based authentication are not available, requiring direct interaction with web interfaces for authentication.""",  # noqa: E501
             examples=[
                 WebdriverPreset(
                     type='webdriver',

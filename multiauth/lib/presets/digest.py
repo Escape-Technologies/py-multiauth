@@ -40,18 +40,18 @@ class DigestPreset(BasePreset):
         description='The list of users to generate tokens for.',
     )
 
-    @property
-    def _doc(self) -> BasePresetDoc:
+    @staticmethod
+    def _doc() -> BasePresetDoc:
         return BasePresetDoc(
             title='Digest',
             description="""The 'Digest' authentication preset employs a challenge-response mechanism for enhanced security:
 
-            - **Initial Request**: Involves sending a request to a server endpoint that responds with a `WWW-Authenticate` header, initiating the authentication process.
-            - **Credentials Processing**: The client creates a hashed version of the user's credentials using the challenge details received.
-            - **Second Request**: The client sends a second request with this hashed information to authenticate.
+- **Initial Request**: Involves sending a request to a server endpoint that responds with a `WWW-Authenticate` header, initiating the authentication process.
+- **Credentials Processing**: The client creates a hashed version of the user's credentials using the challenge details received.
+- **Second Request**: The client sends a second request with this hashed information to authenticate.
 
-            This method enhances security by avoiding the transmission of actual passwords over the network.
-            Digest Authentication is suitable for scenarios requiring enhanced security without the complexities of more advanced authentication methods.""",  # noqa: E501
+This method enhances security by avoiding the transmission of actual passwords over the network.
+Digest Authentication is suitable for scenarios requiring enhanced security without the complexities of more advanced authentication methods.""",  # noqa: E501
             examples=[
                 DigestPreset(
                     type='digest',

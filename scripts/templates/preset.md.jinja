@@ -1,8 +1,7 @@
+# {{ result.title }}
 
-# {{ result.type }} Preset Documentation
-
-## Overview
-- **Type:** {{ result.type }}
+## Description
+{{ result.preset.description }}
 
 ## Examples
 {% for example in result.examples %}
@@ -11,27 +10,33 @@
 ```
 {% endfor %}
 
-## Preset Details
-- **Schema Object:** {{ result.preset.name }}
-  - **Description:** {{ result.preset.description }}
-
-## Objects
-{% for obj in result.objects %}
-### {{ obj.name }}
-**Description:** {{ obj.description }}
+## Extensive Configuration
 
 | Property | Type | Required | Description | Reference |
 |----------|------|----------|-------------|-----------|
-{% for prop in obj.properties.values() -%}
-| {{ prop.name }} | {{ prop.type }} | {{ prop.required }} | {{ prop.description }} | {{ prop.reference }} |
-{% endfor %}
+{% for prop in result.preset.properties.values() -%}
+| {{ prop.name }} | `{{ prop.type }}` | `{{ prop.required }}` | {{ prop.description }} | {% if prop.reference %}[{{ prop.reference }}](#{{ prop.reference }}){% endif %} |
 {% endfor %}
 
+{% if result.objects %}
+## Objects
+{% for obj in result.objects %}
+### <a id="{{ obj.anchor }}"></a>{{ obj.name }}
+| Property | Type | Required | Description | Reference |
+|----------|------|----------|-------------|-----------|
+{% for prop in obj.properties.values() -%}
+| {{ prop.name }} | `{{ prop.type }}` | `{{ prop.required }}` | {{ prop.description }} | {% if prop.reference %}[{{ prop.reference }}](#{{ prop.reference }}){% endif %} |
+{% endfor %}
+{% endfor %}
+{% endif %}
+
+{% if result.enums %}
 ## Enums
+
 {% for enum in result.enums %}
-### {{ enum.name }}
-**Values:**
-{% for value in enum.values %}
-- {{ value }}
+### <a id="{{ enum.anchor }}"></a>{{ enum.name }}
+{% for value in enum.enum_values %}
+- `{{ value }}`
 {% endfor %}
 {% endfor %}
+{% endif %}

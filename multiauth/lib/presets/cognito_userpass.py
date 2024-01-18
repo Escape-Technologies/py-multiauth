@@ -64,18 +64,18 @@ class CognitoUserpassPreset(BasePreset):
 
     users: Sequence[CognitoUserpassUserPreset] = Field(description='A list of users to create')
 
-    @property
-    def _doc(self) -> BasePresetDoc:
+    @staticmethod
+    def _doc() -> BasePresetDoc:
         return BasePresetDoc(
             title='AWS Cognito User Password',
             description="""The 'Cognito User Password' preset is designed for authentication using AWS Cognito with username and password credentials:
 
-            - **AWS Cognito Integration**: Leverages AWS Cognito, a comprehensive user identity and data synchronization service, for authentication.
-            - **Regional Configuration**: Allows specifying the AWS region where the Cognito service is hosted, ensuring proper routing and compliance with data residency requirements.
-            - **Client Credentials**: Utilizes a client ID and client secret for secure OAuth requests within the Cognito framework.
-            - **User Authentication**: Facilitates the creation and authentication of users with a username and password.
+- **AWS Cognito Integration**: Leverages AWS Cognito, a comprehensive user identity and data synchronization service, for authentication.
+- **Regional Configuration**: Allows specifying the AWS region where the Cognito service is hosted, ensuring proper routing and compliance with data residency requirements.
+- **Client Credentials**: Utilizes a client ID and client secret for secure OAuth requests within the Cognito framework.
+- **User Authentication**: Facilitates the creation and authentication of users with a username and password.
 
-            This preset is ideal for systems that use AWS Cognito for managing user authentication, providing a seamless integration with the AWS ecosystem.""",
+This preset is ideal for systems that use AWS Cognito for managing user authentication, providing a seamless integration with the AWS ecosystem.""",  # noqa: E501
             examples=[
                 CognitoUserpassPreset(
                     type='cognito_userpass',

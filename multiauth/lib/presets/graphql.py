@@ -63,19 +63,19 @@ class GraphQLPreset(BasePreset):
         description='A list of users with credentials contained in the GraphQL `variables` of the query',
     )
 
-    @property
-    def _doc(self) -> BasePresetDoc:
+    @staticmethod
+    def _doc() -> BasePresetDoc:
         return BasePresetDoc(
             title='GraphQL',
             description="""The 'GraphQL' authentication preset facilitates authentication through GraphQL queries:
 
-            - **GraphQL Endpoint**: The authentication is performed against a specified GraphQL endpoint.
-            - **Query Templating**: Utilizes a templated GraphQL query for authentication requests.
-            - **Variable Handling**: User credentials are passed as variables within the GraphQL query.
-            - **Token Extraction**: Specifies how and where to extract authentication tokens (e.g., from the response body).
-            - **Token Injection**: Defines how to inject the extracted token into subsequent requests.
+- **GraphQL Endpoint**: The authentication is performed against a specified GraphQL endpoint.
+- **Query Templating**: Utilizes a templated GraphQL query for authentication requests.
+- **Variable Handling**: User credentials are passed as variables within the GraphQL query.
+- **Token Extraction**: Specifies how and where to extract authentication tokens (e.g., from the response body).
+- **Token Injection**: Defines how to inject the extracted token into subsequent requests.
 
-            This preset is ideal for systems where authentication is managed via GraphQL APIs, allowing for flexible and powerful authentication mechanisms.""",  # noqa: E501
+This preset is ideal for systems where authentication is managed via GraphQL APIs, allowing for flexible and powerful authentication mechanisms.""",  # noqa: E501
             examples=[
                 GraphQLPreset(
                     type='graphql',

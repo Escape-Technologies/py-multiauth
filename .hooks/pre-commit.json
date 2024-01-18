@@ -22,7 +22,7 @@
     },
     {
       "name": "Generate docs",
-      "command": "poetry run python ./scripts/generate_docs.py",
+      "command": "poetry run python ./scripts/generate_doc_presets.py ./scripts/generate_doc_reference.py",
       "serial": true
     },
     {

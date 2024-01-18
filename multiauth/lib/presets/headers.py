@@ -25,17 +25,17 @@ class HeadersPreset(BasePreset):
         description='A list of users with basic credentials to create',
     )
 
-    @property
-    def _doc(self) -> BasePresetDoc:
+    @staticmethod
+    def _doc() -> BasePresetDoc:
         return BasePresetDoc(
             title='Headers',
             description="""The 'Headers' authentication preset is a straightforward, manual authentication method:
 
-            - **Manual Token Injection**: Authentication is achieved by manually injecting tokens or credentials into the request headers. No authentication request is necessary.
-            - **Static Credentials**: User credentials are static and defined in advance, making setup simple.
-            - **Token Expiry Consideration**: A key aspect to consider is that since tokens are manually set, they may expire, necessitating regular manual updates to maintain access.
+- **Manual Token Injection**: Authentication is achieved by manually injecting tokens or credentials into the request headers. No authentication request is necessary.
+- **Static Credentials**: User credentials are static and defined in advance, making setup simple.
+- **Token Expiry Consideration**: A key aspect to consider is that since tokens are manually set, they may expire, necessitating regular manual updates to maintain access.
 
-            This preset is ideal for scenarios where authentication can be handled via predefined headers, but users should be mindful of the need to regularly update tokens or credentials to avoid access issues.""",  # noqa: E501
+This preset is ideal for scenarios where authentication can be handled via predefined headers, but users should be mindful of the need to regularly update tokens or credentials to avoid access issues.""",  # noqa: E501
             examples=[
                 HeadersPreset(
                     type='headers',

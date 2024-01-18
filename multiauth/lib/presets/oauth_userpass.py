@@ -27,17 +27,17 @@ class OAuthUserpassPreset(BasePreset):
 
     users: Sequence[OAuthUserpassUserPreset] = Field(description='A list of users to create')
 
-    @property
-    def _doc(self) -> BasePresetDoc:
+    @staticmethod
+    def _doc() -> BasePresetDoc:
         return BasePresetDoc(
             title='OAuth User Password',
             description="""The 'OAuth User Password' preset is designed for authentication using the OAuth 2.0 framework with user password credentials:
 
-            - **OAuth Token Endpoint**: Authentication requests are sent to the specified OAuth token endpoint of an OpenID Connect server.
-            - **Client Credentials**: Includes the client ID and client secret for authenticating the OAuth request.
-            - **User Password Credentials**: This preset supports the OAuth password grant type, using individual user passwords for token generation.
+- **OAuth Token Endpoint**: Authentication requests are sent to the specified OAuth token endpoint of an OpenID Connect server.
+- **Client Credentials**: Includes the client ID and client secret for authenticating the OAuth request.
+- **User Password Credentials**: This preset supports the OAuth password grant type, using individual user passwords for token generation.
 
-            This method is suitable for systems that require secure, OAuth-based authentication with user credentials, especially in scenarios where direct user-password-based authentication is preferred.""",  # noqa: E501
+This method is suitable for systems that require secure, OAuth-based authentication with user credentials, especially in scenarios where direct user-password-based authentication is preferred.""",  # noqa: E501
             examples=[
                 OAuthUserpassPreset(
                     type='oauth_userpass',

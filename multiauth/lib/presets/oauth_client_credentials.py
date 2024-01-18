@@ -28,17 +28,17 @@ class OAuthClientCredentialsPreset(BasePreset):
         description='A list of users to create',
     )
 
-    @property
-    def _doc(self) -> BasePresetDoc:
+    @staticmethod
+    def _doc() -> BasePresetDoc:
         return BasePresetDoc(
             title='OAuth Client Credentials',
             description="""The 'OAuth Client Credentials' preset is tailored for authentication using the OAuth 2.0 client credentials grant, ideal for service accounts:
 
-            - **OAuth Token Endpoint**: Directs authentication requests to the token endpoint of an OpenID Connect server.
-            - **Service Account Credentials**: Utilizes client IDs and secrets to authenticate, representing service accounts rather than individual end-users.
-            - **Token Generation**: Designed to obtain access tokens for service accounts without the need for a user's password.
+- **OAuth Token Endpoint**: Directs authentication requests to the token endpoint of an OpenID Connect server.
+- **Service Account Credentials**: Utilizes client IDs and secrets to authenticate, representing service accounts rather than individual end-users.
+- **Token Generation**: Designed to obtain access tokens for service accounts without the need for a user's password.
 
-            This preset is particularly effective for scenarios where applications or services themselves need to authenticate, independent of a user's direct involvement.""",  # noqa: E501
+This preset is particularly effective for scenarios where applications or services themselves need to authenticate, independent of a user's direct involvement.""",  # noqa: E501
             examples=[
                 OAuthClientCredentialsPreset(
                     type='oauth_client_credentials',

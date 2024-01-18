@@ -1,5 +1,5 @@
 import abc
-from typing import ClassVar, Literal, Sequence
+from typing import Literal, Sequence
 
 from pydantic import Field
 from pydantic.annotated_handlers import GetJsonSchemaHandler
@@ -27,7 +27,7 @@ PresetType = Literal[
 
 
 class BasePresetDoc(StrictBaseModel):
-    kind: ClassVar = 'preset'
+    kind: Literal['preset'] = Field(default='preset', description='The kind of the preset.')
     title: str = Field(description='The title of the preset for the Documentation.')
     description: str = Field(description='The markdown description of the preset for the Documentation')
     examples: list = Field(description='A list of examples of the preset for the Documentation')
@@ -59,8 +59,9 @@ class BasePreset(StrictBaseModel, abc.ABC):
     def to_users(self) -> list[User]:
         ...
 
-    @abc.abstractproperty
-    def _doc(self) -> BasePresetDoc:
+    @staticmethod
+    @abc.abstractmethod
+    def _doc() -> BasePresetDoc:
         ...
 
     @classmethod
@@ -71,5 +72,5 @@ class BasePreset(StrictBaseModel, abc.ABC):
     ) -> JsonSchemaValue:
         json_schema = __handler(__core_schema)
         json_schema = __handler.resolve_ref_schema(json_schema)
-        json_schema['_doc'] = cls._doc.model_dump()
+        json_schema['_doc'] = cls._doc().model_dump()
         return json_schema
