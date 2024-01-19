@@ -158,10 +158,15 @@
             "users": [
               {
                 "password": "pass1",
+                "scopes": [
+                  "create",
+                  "delete"
+                ],
                 "username": "user1"
               },
               {
                 "password": "pass2",
+                "scopes": null,
                 "username": "user2"
               }
             ]
@@ -257,6 +262,22 @@
           "description": "The password of the user.",
           "title": "Password",
           "type": "string"
+        },
+        "scopes": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "A list of scopes to request for the user. If not specified, no scopes will be requested.",
+          "title": "Scopes"
         }
       },
       "required": [
@@ -1529,11 +1550,16 @@
               {
                 "client_id": "serviceClientID1",
                 "client_secret": "serviceSecret1",
+                "scopes": null,
                 "username": "serviceAccount1"
               },
               {
                 "client_id": "serviceClientID2",
                 "client_secret": "serviceSecret2",
+                "scopes": [
+                  "create",
+                  "delete"
+                ],
                 "username": "serviceAccount2"
               }
             ]
@@ -1619,6 +1645,22 @@
           "description": "The client secret to use for the OAuth requests",
           "title": "Client Secret",
           "type": "string"
+        },
+        "scopes": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "A list of scopes to request for the user. If not specified, no scopes will be requested.",
+          "title": "Scopes"
         }
       },
       "required": [
@@ -1641,11 +1683,21 @@
             "users": [
               {
                 "password": "pass1",
+                "scopes": null,
                 "username": "user1"
               },
               {
                 "password": "pass2",
+                "scopes": null,
                 "username": "user2"
+              },
+              {
+                "password": "pass3",
+                "scopes": [
+                  "create",
+                  "delete"
+                ],
+                "username": "user3"
               }
             ]
           }
@@ -1737,6 +1789,22 @@
           "description": "The password of the user.",
           "title": "Password",
           "type": "string"
+        },
+        "scopes": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "A list of scopes to request for the user. If not specified, no scopes will be requested.",
+          "title": "Scopes"
         }
       },
       "required": [

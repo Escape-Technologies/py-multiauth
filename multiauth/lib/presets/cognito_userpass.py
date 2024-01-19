@@ -52,6 +52,10 @@ class AWSRegion(enum.StrEnum):
 class CognitoUserpassUserPreset(BaseUserPreset):
     username: UserName = Field(description='The username of the user.')
     password: str = Field(description='The password of the user.')
+    scopes: list[str] | None = Field(
+        default=None,
+        description='A list of scopes to request for the user. If not specified, no scopes will be requested.',
+    )
 
 
 class CognitoUserpassPreset(BasePreset):
@@ -85,7 +89,8 @@ This preset is ideal for systems that use AWS Cognito for managing user authenti
                     users=[
                         CognitoUserpassUserPreset(
                             username=UserName('user1'),
-                            password='pass1',  # noqa: S106
+                            password='pass1',  # noqa: S106,
+                            scopes=['create', 'delete'],
                         ),
                         CognitoUserpassUserPreset(username=UserName('user2'), password='pass2'),  # noqa: S106
                     ],
