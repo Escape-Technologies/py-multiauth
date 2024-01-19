@@ -1,5 +1,7 @@
 import json
+import os
 import re
+import sys
 from typing import Any, Dict, List, TypeVar, Union
 from urllib.parse import urlparse
 
@@ -201,6 +203,10 @@ processed_objects, processed_enums = SchemaModel(json_schema).get_results()
 env = Environment(loader=FileSystemLoader('scripts/templates'), autoescape=True)
 template = env.get_template('reference.md.jinja')
 rendered_markdown = template.render(objects=processed_objects, enumerations=processed_enums)
+
+if not os.path.isdir('../docs/docs/05-authentication/advanced'):
+    print("The docs repo doesn't exist, skipping the generation of the reference.md file")  # noqa: T201
+    sys.exit(0)
 
 # Save the Rendered Markdown
 with open('../docs/docs/05-authentication/advanced/reference.mdx', 'w') as file:
