@@ -1,5 +1,6 @@
 import logging
 import os
+from copy import deepcopy
 from typing import Literal
 from urllib.parse import urlparse
 
@@ -208,7 +209,7 @@ class SeleniumRunner(BaseRunner[SeleniumRunnerConfiguration]):
                     events.append(SeleniumScriptErrorEvent(message='Aborting test due to an exception'))
                     break
 
-        requests = driver.requests
+        requests = deepcopy(driver.requests)
         driver.quit()
 
         variables: list[AuthenticationVariable] = []
