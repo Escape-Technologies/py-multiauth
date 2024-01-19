@@ -71,7 +71,7 @@ class CognitoUserpassPreset(BasePreset):
     @staticmethod
     def _doc() -> BasePresetDoc:
         return BasePresetDoc(
-            title='AWS Cognito User Password',
+            title='AWS Cognito',
             description="""The 'Cognito User Password' preset is designed for authentication using AWS Cognito with username and password credentials:
 
 - **AWS Cognito Integration**: Leverages AWS Cognito, a comprehensive user identity and data synchronization service, for authentication.

@@ -166,14 +166,13 @@
               },
               {
                 "password": "pass2",
-                "scopes": null,
                 "username": "user2"
               }
             ]
           }
         ],
         "kind": "preset",
-        "title": "AWS Cognito User Password"
+        "title": "AWS Cognito"
       },
       "additionalProperties": false,
       "properties": {
@@ -1550,7 +1549,6 @@
               {
                 "client_id": "serviceClientID1",
                 "client_secret": "serviceSecret1",
-                "scopes": null,
                 "username": "serviceAccount1"
               },
               {
@@ -1683,12 +1681,10 @@
             "users": [
               {
                 "password": "pass1",
-                "scopes": null,
                 "username": "user1"
               },
               {
                 "password": "pass2",
-                "scopes": null,
                 "username": "user2"
               },
               {
