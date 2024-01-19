@@ -216,12 +216,16 @@ class SeleniumRunner(BaseRunner[SeleniumRunnerConfiguration]):
 
         for extraction in self.selenium_configuration.extractions:
             try:
-                token = extract_token(
+                token, _evt = extract_token(
                     extraction.location,
                     extraction.key,
                     extraction.regex,
                     requests,
                 )
+                events.extend(_evt)
+                if token is None:
+                    return variables, events, RunnerException('Failed to extract token')
+
                 variable = AuthenticationVariable(name=extraction.slug, value=token)
                 events.append(ExtractedVariableEvent(location=extraction.location, variable=variable))
                 variables.append(variable)

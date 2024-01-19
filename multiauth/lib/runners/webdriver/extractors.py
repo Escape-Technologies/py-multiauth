@@ -3,6 +3,8 @@ from typing import Literal
 
 from seleniumwire.request import HTTPHeaders, Request  # type: ignore  # noqa: PGH003
 
+from multiauth.lib.audit.events.base import Event
+from multiauth.lib.audit.events.events import SeleniumScriptErrorEvent
 from multiauth.lib.http_core.entities import HTTPLocation
 
 WebdriverTokenLocationType = Literal['RequestURL', 'RequestHeader', 'RequestBody', 'ResponseHeader', 'ResponseBody']
@@ -40,7 +42,9 @@ def extract_token(
     key: str,  # noqa: ARG001 todo(antoine@escape.tech): Uniformise extraction
     regex: str | None,
     requests: list[Request],
-) -> str:
+) -> tuple[str | None, list[Event]]:
+    events: list[Event] = []
+
     if regex is None:
         raise Exception('Regex is required')
 
@@ -63,15 +67,19 @@ def extract_token(
             for url in urls:
                 tokens += extract_from_request_url(url, regex)
 
-    _l = len(tokens)
+    _l = len(set(tokens))
 
     if _l == 0:
-        raise Exception(f'Could not find token in `{location}` with regex `{regex}`')
+        events.append(SeleniumScriptErrorEvent(message=f'Could not find token in `{location}` with regex `{regex}`'))
+        return None, events
 
     if _l > 1:
-        raise Exception(
-            f'We could find {_l} token in `{location}` with regex `{regex}`: `{tokens}`.\
+        events.append(
+            SeleniumScriptErrorEvent(
+                message=f'We could find {_l} tokens in `{location}` with regex `{regex}`: `{tokens}`.\
               Please strengthen your regex so that only one is found.',
+            ),
         )
+        return None, events
 
-    return tokens[0]
+    return tokens[0], events
