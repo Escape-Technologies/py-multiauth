@@ -14,24 +14,6 @@ from multiauth.lib.store.user import Credentials, User
 VARIABLE_NAME = VariableName('token')
 
 
-def to_headers(headers: dict[str, str] | None) -> list[HTTPHeader]:
-    if headers is None:
-        return []
-    return [HTTPHeader(name=k, values=[v]) for k, v in headers.items()]
-
-
-def to_cookies(cookies: dict[str, str] | None) -> list[HTTPCookie]:
-    if cookies is None:
-        return []
-    return [HTTPCookie(name=k, values=[v]) for k, v in cookies.items()]
-
-
-def to_query_parameters(query_parameters: dict[str, str] | None) -> list[HTTPQueryParameter]:
-    if query_parameters is None:
-        return []
-    return [HTTPQueryParameter(name=k, values=[v]) for k, v in query_parameters.items()]
-
-
 class HTTPUserPreset(BaseUserPreset):
     username: UserName = Field(
         default=None,
@@ -123,10 +105,10 @@ class HTTPRequestPreset(BaseModel):
         return HTTPRequestParameters(
             url=self.url,
             method=self.method,
-            headers=to_headers(self.headers),
-            cookies=to_cookies(self.cookies),
+            headers=HTTPHeader.from_dict(self.headers),
+            cookies=HTTPCookie.from_dict(self.cookies),
             body=self.body,
-            query_parameters=to_query_parameters(self.query_parameters),
+            query_parameters=HTTPQueryParameter.from_dict(self.query_parameters),
             proxy=None,
         )
 
@@ -236,10 +218,10 @@ This method is particularly effective in scenarios where authentication is manag
                 credentials=Credentials(
                     username=user.username,
                     password=user.password,
-                    headers=to_headers(user.headers),
-                    cookies=to_cookies(user.cookies),
+                    headers=HTTPHeader.from_dict(user.headers),
+                    cookies=HTTPCookie.from_dict(user.cookies),
                     body=user.body,
-                    query_parameters=to_query_parameters(user.query_parameters),
+                    query_parameters=HTTPQueryParameter.from_dict(user.query_parameters),
                 ),
                 procedure=self.slug,
             )

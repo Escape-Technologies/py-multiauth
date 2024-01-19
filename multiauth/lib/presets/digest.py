@@ -4,6 +4,7 @@ from typing import Literal, Sequence
 from pydantic import Field
 
 from multiauth.lib.entities import ProcedureName, UserName
+from multiauth.lib.http_core.entities import HTTPCookie, HTTPHeader
 from multiauth.lib.presets.base import BasePreset, BasePresetDoc
 from multiauth.lib.presets.basic import BasicUserPreset
 from multiauth.lib.presets.http import HTTPRequestPreset
@@ -98,6 +99,8 @@ Digest Authentication is suitable for scenarios requiring enhanced security with
                 credentials=Credentials(
                     username=user.username,
                     password=user.password,
+                    headers=HTTPHeader.from_dict(user.headers),
+                    cookies=HTTPCookie.from_dict(user.cookies),
                 ),
             )
             for user in self.users

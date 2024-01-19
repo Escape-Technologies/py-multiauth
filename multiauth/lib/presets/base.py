@@ -38,6 +38,14 @@ class BasePresetDoc(StrictBaseModel):
 
 class BaseUserPreset(StrictBaseModel, abc.ABC):
     username: UserName = Field(description='The username of the user.')
+    headers: dict[str, str] | None = Field(
+        default=None,
+        description='Optional headers injected during the authentication process and in authentified requests.',
+    )
+    cookies: dict[str, str] | None = Field(
+        default=None,
+        description='Optional cookies injected during the authentication process and in authentified requests.',
+    )
 
 
 class BasePreset(StrictBaseModel, abc.ABC):
@@ -72,5 +80,5 @@ class BasePreset(StrictBaseModel, abc.ABC):
     ) -> JsonSchemaValue:
         json_schema = __handler(__core_schema)
         json_schema = __handler.resolve_ref_schema(json_schema)
-        json_schema['_doc'] = cls._doc().model_dump()
+        json_schema['_doc'] = cls._doc().model_dump(exclude_none=True)
         return json_schema

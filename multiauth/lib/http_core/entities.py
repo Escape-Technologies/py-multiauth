@@ -47,6 +47,23 @@ class HTTPHeader(StrictBaseModel):
     def str_value(self) -> str:
         return ','.join(self.values)
 
+    @staticmethod
+    def from_dict(headers: dict[str, str] | None) -> list['HTTPHeader']:
+        if headers is None:
+            return []
+        return [HTTPHeader(name=k, values=[v]) for k, v in headers.items()]
+
+    @staticmethod
+    def merge(headers: list['HTTPHeader']) -> list['HTTPHeader']:
+        """Merge headers with the same name."""
+        headers_dict = {}
+        for header in headers:
+            if header.name not in headers_dict:
+                headers_dict[header.name] = header
+            else:
+                headers_dict[header.name].values += header.values
+        return list(headers_dict.values())
+
 
 class HTTPCookie(StrictBaseModel):
     name: str
@@ -60,6 +77,12 @@ class HTTPCookie(StrictBaseModel):
     def serialize(cookies: list['HTTPCookie']) -> str:
         return '; '.join(f'{cookie.name}={cookie.str_value}' for cookie in cookies)
 
+    @staticmethod
+    def from_dict(cookies: dict[str, str] | None) -> list['HTTPCookie']:
+        if cookies is None:
+            return []
+        return [HTTPCookie(name=k, values=[v]) for k, v in cookies.items()]
+
 
 class HTTPQueryParameter(StrictBaseModel):
     name: str
@@ -68,6 +91,12 @@ class HTTPQueryParameter(StrictBaseModel):
     @property
     def str_value(self) -> str:
         return quote(','.join(self.values))
+
+    @staticmethod
+    def from_dict(query_parameters: dict[str, str] | None) -> list['HTTPQueryParameter']:
+        if query_parameters is None:
+            return []
+        return [HTTPQueryParameter(name=k, values=[v]) for k, v in query_parameters.items()]
 
 
 class HTTPRequest(StrictBaseModel):

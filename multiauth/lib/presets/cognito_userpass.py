@@ -5,12 +5,12 @@ from typing import Literal, Sequence
 from pydantic import Field
 
 from multiauth.lib.entities import ProcedureName, UserName, VariableName
-from multiauth.lib.http_core.entities import HTTPEncoding, HTTPHeader, HTTPLocation
+from multiauth.lib.http_core.entities import HTTPCookie, HTTPEncoding, HTTPHeader, HTTPLocation
 from multiauth.lib.injection import TokenInjection
 from multiauth.lib.presets.base import BasePreset, BasePresetDoc, BaseUserPreset
 from multiauth.lib.procedure import ProcedureConfiguration
 from multiauth.lib.runners.http import HTTPRequestParameters, HTTPRunnerConfiguration, TokenExtraction
-from multiauth.lib.store.user import User, UserRefresh
+from multiauth.lib.store.user import Credentials, User, UserRefresh
 from multiauth.lib.store.variables import AuthenticationVariable
 
 ###########################
@@ -184,6 +184,10 @@ This preset is ideal for systems that use AWS Cognito for managing user authenti
         return [
             User(
                 name=UserName(user.username),
+                credentials=Credentials(
+                    headers=HTTPHeader.from_dict(user.headers),
+                    cookies=HTTPCookie.from_dict(user.cookies),
+                ),
                 variables=[
                     AuthenticationVariable(name=VariableName('username'), value=user.username),
                     AuthenticationVariable(name=VariableName('password'), value=user.password),

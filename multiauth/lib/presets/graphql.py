@@ -6,7 +6,7 @@ from pydantic import Field
 
 from multiauth.lib.entities import ProcedureName, UserName, VariableName
 from multiauth.lib.extraction import TokenExtraction
-from multiauth.lib.http_core.entities import HTTPEncoding, HTTPHeader, HTTPLocation
+from multiauth.lib.http_core.entities import HTTPCookie, HTTPEncoding, HTTPHeader, HTTPLocation
 from multiauth.lib.injection import TokenInjection
 from multiauth.lib.presets.base import BasePreset, BasePresetDoc, BaseUserPreset
 from multiauth.lib.procedure import ProcedureConfiguration
@@ -141,6 +141,8 @@ This preset is ideal for systems where authentication is managed via GraphQL API
                     'query': self.query,
                     'variables': user.variables,
                 },
+                headers=HTTPHeader.from_dict(user.headers),
+                cookies=HTTPCookie.from_dict(user.cookies),
             )
             res.append(
                 User(

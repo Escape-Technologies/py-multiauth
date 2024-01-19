@@ -3,7 +3,7 @@ from typing import Literal, Sequence
 from pydantic import Field
 
 from multiauth.lib.entities import ProcedureName, UserName, VariableName
-from multiauth.lib.http_core.entities import HTTPLocation
+from multiauth.lib.http_core.entities import HTTPCookie, HTTPHeader, HTTPLocation
 from multiauth.lib.injection import TokenInjection
 from multiauth.lib.presets.base import BasePreset, BasePresetDoc, BaseUserPreset
 from multiauth.lib.procedure import ProcedureConfiguration
@@ -17,7 +17,7 @@ from multiauth.lib.runners.webdriver.runner import (
 from multiauth.lib.store.user import Credentials, User
 
 
-class WebdriverUserPreset(BaseUserPreset, Credentials):
+class WebdriverUserPreset(BaseUserPreset):
     username: UserName = Field(description='The arbitrary name that identifies the user.')
     project: SeleniumProject = Field(
         description=(
@@ -209,6 +209,10 @@ This preset is particularly useful when other forms of API-based authentication 
             User(
                 name=user.username,
                 procedure=ProcedureName(self.slug + user.username),
+                credentials=Credentials(
+                    headers=HTTPHeader.from_dict(user.headers),
+                    cookies=HTTPCookie.from_dict(user.cookies),
+                ),
             )
             for user in self.users
         ]

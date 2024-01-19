@@ -4,7 +4,7 @@ from pydantic import Field
 
 from multiauth.lib.entities import ProcedureName, UserName, VariableName
 from multiauth.lib.http_core.curl import parse_curl
-from multiauth.lib.http_core.entities import HTTPLocation
+from multiauth.lib.http_core.entities import HTTPCookie, HTTPHeader, HTTPLocation
 from multiauth.lib.injection import TokenInjection
 from multiauth.lib.presets.base import BasePreset, BasePresetDoc, BaseUserPreset
 from multiauth.lib.procedure import ProcedureConfiguration
@@ -12,7 +12,7 @@ from multiauth.lib.runners.http import HTTPRequestParameters, HTTPRunnerConfigur
 from multiauth.lib.store.user import Credentials, User
 
 
-class cURLUserPreset(BaseUserPreset, Credentials):
+class cURLUserPreset(BaseUserPreset):
     username: UserName = Field(description='The arbitrary name that identifies the user.')
     curl: str = Field(description='The curl command that is used to fetch the tokens for this user.')
 
@@ -139,6 +139,10 @@ Two common use cases are:
             User(
                 name=user.username,
                 procedure=ProcedureName(self.slug + user.username),
+                credentials=Credentials(
+                    headers=HTTPHeader.from_dict(user.headers),
+                    cookies=HTTPCookie.from_dict(user.cookies),
+                ),
             )
             for user in self.users
         ]

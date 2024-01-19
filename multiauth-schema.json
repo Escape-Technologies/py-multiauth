@@ -101,6 +101,38 @@
           "title": "Username",
           "type": "string"
         },
+        "headers": {
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "type": "string"
+              },
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional headers injected during the authentication process and in authentified requests.",
+          "title": "Headers"
+        },
+        "cookies": {
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "type": "string"
+              },
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional cookies injected during the authentication process and in authentified requests.",
+          "title": "Cookies"
+        },
         "password": {
           "description": "The Basic password of the user.",
           "title": "Password",
@@ -188,6 +220,38 @@
           "description": "The username of the user.",
           "title": "Username",
           "type": "string"
+        },
+        "headers": {
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "type": "string"
+              },
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional headers injected during the authentication process and in authentified requests.",
+          "title": "Headers"
+        },
+        "cookies": {
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "type": "string"
+              },
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional cookies injected during the authentication process and in authentified requests.",
+          "title": "Cookies"
         },
         "password": {
           "description": "The password of the user.",
@@ -313,7 +377,6 @@
         "examples": [
           {
             "first_request": {
-              "body": null,
               "cookies": {
                 "session_id": "123456"
               },
@@ -588,15 +651,12 @@
           {
             "extract": {
               "key": "accessToken",
-              "location": "body",
-              "name": null,
-              "regex": null
+              "location": "body"
             },
             "inject": {
               "key": "Authorization",
               "location": "header",
-              "prefix": "Bearer",
-              "variable": null
+              "prefix": "Bearer"
             },
             "query": "mutation($login: String!, $password: String!) {\n   authenticate(login: $login, password: $password) {\n       accessToken\n   }\n}",
             "type": "graphql",
@@ -696,6 +756,38 @@
           "title": "Username",
           "type": "string"
         },
+        "headers": {
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "type": "string"
+              },
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional headers injected during the authentication process and in authentified requests.",
+          "title": "Headers"
+        },
+        "cookies": {
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "type": "string"
+              },
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional cookies injected during the authentication process and in authentified requests.",
+          "title": "Cookies"
+        },
         "variables": {
           "additionalProperties": {
             "type": "string"
@@ -789,15 +881,12 @@
           {
             "extract": {
               "key": "accessToken",
-              "location": "body",
-              "name": null,
-              "regex": null
+              "location": "body"
             },
             "inject": {
               "key": "Authorization",
               "location": "header",
-              "prefix": "Bearer ",
-              "variable": null
+              "prefix": "Bearer "
             },
             "request": {
               "body": {
@@ -821,7 +910,6 @@
                 },
                 "cookies": {},
                 "headers": {},
-                "password": null,
                 "query_parameters": {},
                 "username": "user1"
               },
@@ -836,7 +924,6 @@
                 "headers": {
                   "addtional": "header"
                 },
-                "password": null,
                 "query_parameters": {
                   "addtional": "query param"
                 },
@@ -1246,22 +1333,6 @@
           "title": "Username",
           "type": "string"
         },
-        "password": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "The password to attach to the HTTP requests sent for this user. See https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication#access_using_credentials_in_the_url",
-          "examples": [
-            "john@password123#"
-          ],
-          "title": "Password"
-        },
         "headers": {
           "anyOf": [
             {
@@ -1301,6 +1372,22 @@
             }
           ],
           "title": "Cookies"
+        },
+        "password": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "The password to attach to the HTTP requests sent for this user. See https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication#access_using_credentials_in_the_url",
+          "examples": [
+            "john@password123#"
+          ],
+          "title": "Password"
         },
         "query_parameters": {
           "anyOf": [
@@ -1406,6 +1493,22 @@
           "description": "The headers of the user.",
           "title": "Headers",
           "type": "object"
+        },
+        "cookies": {
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "type": "string"
+              },
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional cookies injected during the authentication process and in authentified requests.",
+          "title": "Cookies"
         }
       },
       "required": [
@@ -1474,6 +1577,38 @@
           "description": "The arbitrary username given to the user.",
           "title": "Username",
           "type": "string"
+        },
+        "headers": {
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "type": "string"
+              },
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional headers injected during the authentication process and in authentified requests.",
+          "title": "Headers"
+        },
+        "cookies": {
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "type": "string"
+              },
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional cookies injected during the authentication process and in authentified requests.",
+          "title": "Cookies"
         },
         "client_id": {
           "description": "The client ID to use for the OAuth requests",
@@ -1565,6 +1700,38 @@
           "description": "The username of the user.",
           "title": "Username",
           "type": "string"
+        },
+        "headers": {
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "type": "string"
+              },
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional headers injected during the authentication process and in authentified requests.",
+          "title": "Headers"
+        },
+        "cookies": {
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "type": "string"
+              },
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional cookies injected during the authentication process and in authentified requests.",
+          "title": "Cookies"
         },
         "password": {
           "description": "The password of the user.",
@@ -2173,22 +2340,16 @@
             "extract": {
               "key": "",
               "location": "query",
-              "name": null,
               "regex": "example-portal.*portal-session-id=([^&]*)"
             },
             "inject": {
               "key": "Authorization",
               "location": "header",
-              "prefix": "Bearer ",
-              "variable": null
+              "prefix": "Bearer "
             },
             "type": "webdriver",
             "users": [
               {
-                "body": null,
-                "cookies": [],
-                "headers": [],
-                "password": null,
                 "project": {
                   "tests": [
                     {
@@ -2301,7 +2462,6 @@
                     }
                   ]
                 },
-                "query_parameters": [],
                 "username": "user"
               }
             ],
@@ -2383,87 +2543,37 @@
           "title": "Username",
           "type": "string"
         },
-        "password": {
+        "headers": {
           "anyOf": [
             {
-              "type": "string"
+              "additionalProperties": {
+                "type": "string"
+              },
+              "type": "object"
             },
             {
               "type": "null"
             }
           ],
           "default": null,
-          "description": "The password to attach to the HTTP requests sent for this user. See https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication#access_using_credentials_in_the_url",
-          "examples": [
-            "john@password123#"
-          ],
-          "title": "Password"
-        },
-        "headers": {
-          "description": "A list of headers to attach to every HTTP requests sent for this user",
-          "examples": [
-            {
-              "name": "Authorization",
-              "values": [
-                "Bearer ..."
-              ]
-            }
-          ],
-          "items": {
-            "$ref": "#/$defs/HTTPHeader"
-          },
-          "title": "Headers",
-          "type": "array"
+          "description": "Optional headers injected during the authentication process and in authentified requests.",
+          "title": "Headers"
         },
         "cookies": {
-          "description": "A list of cookies to attach to every HTTP requests sent for this user",
-          "examples": [
-            {
-              "name": "PHPSESSIONID",
-              "values": [
-                "..."
-              ]
-            }
-          ],
-          "items": {
-            "$ref": "#/$defs/HTTPCookie"
-          },
-          "title": "Cookies",
-          "type": "array"
-        },
-        "query_parameters": {
-          "description": "A list of query parameters to attach to every HTTP requests sent for this user",
-          "examples": [
-            {
-              "name": "token",
-              "values": [
-                "..."
-              ]
-            }
-          ],
-          "items": {
-            "$ref": "#/$defs/HTTPQueryParameter"
-          },
-          "title": "Query Parameters",
-          "type": "array"
-        },
-        "body": {
           "anyOf": [
-            {},
+            {
+              "additionalProperties": {
+                "type": "string"
+              },
+              "type": "object"
+            },
             {
               "type": "null"
             }
           ],
           "default": null,
-          "description": "A body to merge with the bodies of every HTTP requests sent for this user",
-          "examples": [
-            {
-              "password": "john@password123#",
-              "username": "john"
-            },
-            "username=john&password=john%40password123%23"
-          ],
-          "title": "Body"
+          "description": "Optional cookies injected during the authentication process and in authentified requests.",
+          "title": "Cookies"
         },
         "project": {
           "allOf": [
@@ -2512,25 +2622,17 @@
           {
             "extract": {
               "key": "Authorization",
-              "location": "header",
-              "name": null,
-              "regex": null
+              "location": "header"
             },
             "inject": {
               "key": "Authorization",
               "location": "header",
-              "prefix": "Bearer",
-              "variable": null
+              "prefix": "Bearer"
             },
             "type": "curl",
             "users": [
               {
-                "body": null,
-                "cookies": [],
                 "curl": "curl -X POST https://api.example.com/auth -d \"username=user1&password=pass1\"",
-                "headers": [],
-                "password": null,
-                "query_parameters": [],
                 "username": "user1"
               }
             ]
@@ -2539,24 +2641,17 @@
             "extract": {
               "key": "Set-Cookie",
               "location": "header",
-              "name": null,
               "regex": "session_id=(\\S+);"
             },
             "inject": {
               "key": "session_id",
               "location": "cookie",
-              "prefix": null,
               "variable": "sessionId"
             },
             "type": "curl",
             "users": [
               {
-                "body": null,
-                "cookies": [],
                 "curl": "curl -X POST https://api.example.com/login -d \"username=user2&password=pass2\"",
-                "headers": [],
-                "password": null,
-                "query_parameters": [],
                 "username": "user2"
               }
             ]
@@ -2628,87 +2723,37 @@
           "title": "Username",
           "type": "string"
         },
-        "password": {
+        "headers": {
           "anyOf": [
             {
-              "type": "string"
+              "additionalProperties": {
+                "type": "string"
+              },
+              "type": "object"
             },
             {
               "type": "null"
             }
           ],
           "default": null,
-          "description": "The password to attach to the HTTP requests sent for this user. See https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication#access_using_credentials_in_the_url",
-          "examples": [
-            "john@password123#"
-          ],
-          "title": "Password"
-        },
-        "headers": {
-          "description": "A list of headers to attach to every HTTP requests sent for this user",
-          "examples": [
-            {
-              "name": "Authorization",
-              "values": [
-                "Bearer ..."
-              ]
-            }
-          ],
-          "items": {
-            "$ref": "#/$defs/HTTPHeader"
-          },
-          "title": "Headers",
-          "type": "array"
+          "description": "Optional headers injected during the authentication process and in authentified requests.",
+          "title": "Headers"
         },
         "cookies": {
-          "description": "A list of cookies to attach to every HTTP requests sent for this user",
-          "examples": [
-            {
-              "name": "PHPSESSIONID",
-              "values": [
-                "..."
-              ]
-            }
-          ],
-          "items": {
-            "$ref": "#/$defs/HTTPCookie"
-          },
-          "title": "Cookies",
-          "type": "array"
-        },
-        "query_parameters": {
-          "description": "A list of query parameters to attach to every HTTP requests sent for this user",
-          "examples": [
-            {
-              "name": "token",
-              "values": [
-                "..."
-              ]
-            }
-          ],
-          "items": {
-            "$ref": "#/$defs/HTTPQueryParameter"
-          },
-          "title": "Query Parameters",
-          "type": "array"
-        },
-        "body": {
           "anyOf": [
-            {},
+            {
+              "additionalProperties": {
+                "type": "string"
+              },
+              "type": "object"
+            },
             {
               "type": "null"
             }
           ],
           "default": null,
-          "description": "A body to merge with the bodies of every HTTP requests sent for this user",
-          "examples": [
-            {
-              "password": "john@password123#",
-              "username": "john"
-            },
-            "username=john&password=john%40password123%23"
-          ],
-          "title": "Body"
+          "description": "Optional cookies injected during the authentication process and in authentified requests.",
+          "title": "Cookies"
         },
         "curl": {
           "description": "The curl command that is used to fetch the tokens for this user.",

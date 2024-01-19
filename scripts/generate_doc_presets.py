@@ -98,7 +98,7 @@ for model in schema.objects.values():
     examples = []
     if preset.examples:
         for example in preset.examples:
-            examples.append({'preset': sort_keys(example)})
+            examples.append({'preset': [sort_keys(example)]})
 
     results.append(
         PresetResult(

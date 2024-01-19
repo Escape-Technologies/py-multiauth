@@ -3,7 +3,7 @@ from typing import Literal, Sequence
 from pydantic import Field
 
 from multiauth.lib.entities import UserName
-from multiauth.lib.http_core.entities import HTTPHeader
+from multiauth.lib.http_core.entities import HTTPCookie, HTTPHeader
 from multiauth.lib.presets.base import BasePreset, BasePresetDoc, BaseUserPreset
 from multiauth.lib.procedure import ProcedureConfiguration
 from multiauth.lib.store.user import Credentials, User
@@ -54,10 +54,13 @@ This preset is ideal for scenarios where authentication can be handled via prede
         res: list[User] = []
 
         for user in self.users:
+            built_headers = build_headers(user)
+            headers = HTTPHeader.merge(HTTPHeader.from_dict(user.headers) + built_headers)
+
             res.append(
                 User(
                     name=user.username,
-                    credentials=Credentials(headers=build_headers(user)),
+                    credentials=Credentials(headers=headers, cookies=HTTPCookie.from_dict(user.cookies)),
                 ),
             )
 
