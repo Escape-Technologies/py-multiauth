@@ -17,13 +17,16 @@ class OAuthClientCredentialsUserPreset(BaseUserPreset):
     username: UserName = Field(description='The arbitrary username given to the user.')
     client_id: str = Field(description='The client ID to use for the OAuth requests')
     client_secret: str = Field(description='The client secret to use for the OAuth requests')
+    scopes: list[str] | None = Field(
+        default=None,
+        description='A list of scopes to request for the user. If not specified, no scopes will be requested.',
+    )
 
 
 class OAuthClientCredentialsPreset(BasePreset):
     type: Literal['oauth_client_credentials'] = 'oauth_client_credentials'
 
     url: str = Field(description='The URL of the token endpoint of the OpenIDConnect server')
-
     users: Sequence[OAuthClientCredentialsUserPreset] = Field(
         description='A list of users to create',
     )
@@ -51,6 +54,7 @@ This preset is particularly effective for scenarios where applications or servic
                         ),
                         OAuthClientCredentialsUserPreset(
                             username=UserName('serviceAccount2'),
+                            scopes=['create', 'delete'],
                             client_id='serviceClientID2',
                             client_secret='serviceSecret2',  # noqa: S106
                         ),
@@ -83,6 +87,7 @@ This preset is particularly effective for scenarios where applications or servic
                             'grant_type=client_credentials'
                             '&client_id={{ client_id }}'
                             '&client_secret={{ client_secret }}'
+                            '&scope={{ scope }}'
                         ),
                     ),
                     extractions=[
@@ -119,6 +124,7 @@ This preset is particularly effective for scenarios where applications or servic
                             'grant_type=refresh_token&refresh_token={{ refresh_token }}'
                             '&client_id={{ client_id }}'
                             '&client_secret={{ client_secret }}'
+                            '&scope={{ scope }}'
                         ),
                     ),
                     extractions=[
@@ -141,6 +147,7 @@ This preset is particularly effective for scenarios where applications or servic
                 variables=[
                     AuthenticationVariable(name=VariableName('client_id'), value=user.client_id),
                     AuthenticationVariable(name=VariableName('client_secret'), value=user.client_secret),
+                    AuthenticationVariable(name=VariableName('scope'), value='+'.join(user.scopes or [])),
                 ],
                 procedure=self.slug,
                 refresh=UserRefresh(procedure=ProcedureName(self.slug + '-refresh')),

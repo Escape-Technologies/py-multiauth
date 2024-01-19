@@ -15,6 +15,10 @@ from multiauth.lib.store.variables import AuthenticationVariable
 
 class OAuthUserpassUserPreset(BaseUserPreset):
     password: str = Field(description='The password of the user.')
+    scopes: list[str] | None = Field(
+        default=None,
+        description='A list of scopes to request for the user. If not specified, no scopes will be requested.',
+    )
 
 
 class OAuthUserpassPreset(BasePreset):
@@ -47,6 +51,11 @@ This method is suitable for systems that require secure, OAuth-based authenticat
                     users=[
                         OAuthUserpassUserPreset(username=UserName('user1'), password='pass1'),  # noqa: S106
                         OAuthUserpassUserPreset(username=UserName('user2'), password='pass2'),  # noqa: S106
+                        OAuthUserpassUserPreset(
+                            username=UserName('user3'),
+                            password='pass3',  # noqa: S106
+                            scopes=['create', 'delete'],
+                        ),
                     ],
                 ),
             ],
@@ -74,6 +83,7 @@ This method is suitable for systems that require secure, OAuth-based authenticat
                         ],
                         body=(
                             'grant_type=password&username={{ username }}&password={{ password }}'
+                            '&scope={{ scope }}'
                             f'&client_id={self.client_id}'
                             f'&client_secret={self.client_secret}'
                         ),
@@ -115,6 +125,7 @@ This method is suitable for systems that require secure, OAuth-based authenticat
                         ],
                         body=(
                             'grant_type=refresh_token&refresh_token={{ refresh_token }}'
+                            '&scope={{ scope }}'
                             f'&client_id={self.client_id}'
                             f'&client_secret={self.client_secret}'
                         ),
@@ -139,6 +150,7 @@ This method is suitable for systems that require secure, OAuth-based authenticat
                 variables=[
                     AuthenticationVariable(name=VariableName('username'), value=user.username),
                     AuthenticationVariable(name=VariableName('password'), value=user.password),
+                    AuthenticationVariable(name=VariableName('scope'), value='+'.join(user.scopes or [])),
                 ],
                 procedure=self.slug,
                 refresh=UserRefresh(procedure=ProcedureName(self.slug + '-refresh')),
